@@ -59,7 +59,7 @@ class ConsoleExporter(BaseExporter):
 
 
 class CollectionExporter(BaseExporter):
-    collected_vars: List[EnvVar]
+    collected_vars: List[EnvVar] = field(default_factory=list)
 
     def handle(self, env_var: EnvVar):
         self.collected_vars.append(env_var)

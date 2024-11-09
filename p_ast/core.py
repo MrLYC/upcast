@@ -45,16 +45,26 @@ class EnvVar(BaseModel):
         other_range = other.node.range()
 
         if my_range.start.line < other_range.start.line:
-            return merged
-        if my_range.start.column < other_range.start.column:
-            return merged
-        if my_range.end.line > other_range.end.line:
-            return merged
-        if my_range.end.column > other_range.end.column:
-            return merged
+            self.node = other.node
+            merged = True
+        elif (
+            my_range.start.line == other_range.start.line
+            and my_range.start.column < other_range.start.column
+        ):
+            self.node = other.node
+            merged = True
 
-        self.node = other.node
-        return True
+        if my_range.end.line > other_range.end.line:
+            self.node = other.node
+            merged = True
+        elif (
+            my_range.end.line == other_range.end.line
+            and my_range.end.column > other_range.end.column
+        ):
+            self.node = other.node
+            merged = True
+
+        return merged
 
 
 class PYVar(BaseModel):
