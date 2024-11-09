@@ -1,4 +1,4 @@
-from typing import Set, List, Protocol, runtime_checkable, Dict
+from typing import Set, List, Protocol, runtime_checkable, Dict, Tuple
 
 from ast_grep_py import SgNode, SgRoot
 from mypy.binder import defaultdict
@@ -9,17 +9,18 @@ class Var(BaseModel):
     node: SgNode
     file: str
     name: str
-    value_type: str = ""
+    position: Tuple[int, int]
+    cast: str = ""
     value: str = ""
 
     class Config:
         arbitrary_types_allowed = True
 
-    def line_range(self) -> str:
-        r = self.node.range()
-        if r.start.line == r.end.line:
-            return str(r.start.line)
-        return f"{r.start.line}-{r.end.line}"
+    def location(self) -> str:
+        return f"{self.file}:{self.position[0]}, {self.position[1]}"
+
+    def statement(self) -> str:
+        return self.node.text()
 
 
 class Context(BaseModel):

@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass
-from typing import TextIO
+from typing import TextIO, List
 
 from black.cache import field
 from pydantic import BaseModel
@@ -29,7 +29,7 @@ class CSVExporter:
         self.file = open(self.path, "w", encoding="utf-8-sig")
         self.writer = csv.DictWriter(
             self.file,
-            fieldnames=["name", "value_type", "value", "file", "line"],
+            fieldnames=["name", "cast", "value", "location", "statement"],
         )
 
     def begin(self):
@@ -39,10 +39,10 @@ class CSVExporter:
         self.writer.writerow(
             {
                 "name": env_var.name,
-                "value_type": env_var.value_type,
+                "cast": env_var.cast,
                 "value": env_var.value,
-                "line": env_var.line_range(),
-                "file": env_var.file,
+                "location": env_var.location(),
+                "statement": env_var.statement(),
             }
         )
 
@@ -52,9 +52,17 @@ class CSVExporter:
 
 class ConsoleExporter(BaseExporter):
     def handle(self, env_var: Var):
-        line = f"{env_var.file}:{env_var.line_range()}"
-
         if env_var.value:
-            print(f"{env_var.name}={env_var.value} in {line}")
+            print(f"{env_var.name}={env_var.value} at {env_var.location()}")
         else:
-            print(f"{env_var.name} in {line}")
+            print(f"{env_var.name} at {env_var.position}")
+
+
+class CollectionExporter(BaseExporter):
+    collected_vars: List[Var]
+
+    def handle(self, env_var: Var):
+        self.vars.append(env_var)
+
+    def get_vars(self):
+        return self.collected_vars
