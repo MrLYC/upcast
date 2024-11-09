@@ -22,7 +22,8 @@ def check(exporter, hub):
         file = StringIO(code)
         file.name = "anonymous.py"
         hub.run([file])
-        return exporter.get_vars()
+
+        return exporter.get_merged_vars()
 
     return do
 
@@ -31,13 +32,63 @@ def check(exporter, hub):
 def check_one(check):
     def do(code: str):
         exported = check(code)
-        assert len(exported) == 1
-        return exported[0]
+        values = list(exported.values())
+        assert len(values) == 1
+        return values[0]
 
     return do
 
 
 class TestEnvVarHub:
+    def test_example(self, check):
+        exported = check(
+            """
+            import os
+            from environ import Env
+
+            VALUE1 = os.getenv('KEY1')
+            VALUE2 = os.getenv('KEY2', 'default')
+            VALUE3 = os.getenv('KEY3') or 'default'
+            VALUE4 = str(os.getenv('KEY4') or 'default')
+            VALUE5 = os.environ['KEY5']
+            VALUE6 = int(os.environ['KEY6'])
+            VALUE7 = os.environ.get('KEY7')
+            VALUE8 = os.environ.get('KEY8', 'default')
+            VALUE9 = os.environ.get('KEY9') or 'default'
+            VALUE10 = int(os.environ.get('KEY10')) or 1
+
+            env = Env(
+                KEY11=(bool, False)
+            )
+            VALUE11 = env('KEY11')
+            VALUE12 = env('KEY12')
+            VALUE13 = env.str('KEY13')
+            VALUE14 = env.str('KEY14', 'default')
+            VALUE15 = env.str('KEY15', default='default')
+            """
+        )
+
+        for i in [
+            {"name": "KEY1", "value": "", "cast": ""},
+            {"name": "KEY2", "value": "'default'", "cast": ""},
+            {"name": "KEY3", "value": "'default'", "cast": ""},
+            {"name": "KEY4", "value": "'default'", "cast": "str"},
+            {"name": "KEY5", "value": "", "cast": ""},
+            {"name": "KEY6", "value": "", "cast": "int"},
+            {"name": "KEY7", "value": "", "cast": ""},
+            {"name": "KEY8", "value": "'default'", "cast": ""},
+            {"name": "KEY9", "value": "'default'", "cast": ""},
+            {"name": "KEY10", "value": "1", "cast": "int"},
+            {"name": "KEY11", "value": "False", "cast": "bool"},
+            {"name": "KEY12", "value": "", "cast": ""},
+            {"name": "KEY13", "value": "", "cast": "str"},
+            {"name": "KEY14", "value": "'default'", "cast": "str"},
+            {"name": "KEY15", "value": "'default'", "cast": "str"},
+        ]:
+            v = exported[i["name"]]
+            assert v.name == i["name"]
+            assert v.value == i["value"]
+            assert v.cast == i["cast"]
 
     @pytest.mark.parametrize(
         "import_statement, statement_prefix",

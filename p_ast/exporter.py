@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass
-from typing import TextIO, List
+from typing import TextIO, List, Dict
 
 from black.cache import field
 from pydantic import BaseModel
@@ -64,5 +64,12 @@ class CollectionExporter(BaseExporter):
     def handle(self, env_var: EnvVar):
         self.collected_vars.append(env_var)
 
-    def get_vars(self):
-        return self.collected_vars
+    def get_merged_vars(self) -> Dict[str, EnvVar]:
+        merged_vars: Dict[str, EnvVar] = {}
+        for i in self.collected_vars:
+            if i.name in merged_vars:
+                merged_vars[i.name].merge_from(i, False)
+            else:
+                merged_vars[i.name] = i
+
+        return merged_vars

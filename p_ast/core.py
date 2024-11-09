@@ -22,14 +22,14 @@ class EnvVar(BaseModel):
     def statement(self) -> str:
         return self.node.text()
 
-    def merge_from(self, other: "EnvVar") -> bool:
+    def merge_from(self, other: "EnvVar", strict: bool = True) -> bool:
         if self.name != other.name:
             return False
 
-        if self.file != other.file:
+        if strict and self.file != other.file:
             return False
 
-        if self.position != other.position:
+        if strict and self.position != other.position:
             return False
 
         merged = False
@@ -82,9 +82,12 @@ class Context(BaseModel):
     env_vars: Dict[Tuple[int, int], EnvVar] = Field(default_factory=dict)
 
     def has_module(self, path: str) -> bool:
-        module, _, name = path.rpartition(":")
+        module, sep, name = path.rpartition(":")
 
-        return self.has_imports(module, name)
+        if sep:
+            return self.has_imports(module, name)
+
+        return self.has_imports(name, "")
 
     def has_imports(self, path: str, name: str = "") -> bool:
         if not path:
@@ -93,7 +96,7 @@ class Context(BaseModel):
         if path in self.imports:
             return True
 
-        if f"{path}:{name}" in self.imports:
+        if name and f"{path}:{name}" in self.imports:
             return True
 
         return self.has_star_imports()

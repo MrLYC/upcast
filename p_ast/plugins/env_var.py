@@ -1,10 +1,10 @@
 import ast
-from typing import Optional, List, Dict, Tuple, Set
+from typing import Optional, List, Set
 
 from ast_grep_py import SgNode, Range
 
 from p_ast.core import Plugin, Context, EnvVar, PluginHub
-from p_ast.plugins.base import StarImportPlugin, ModuleImportPlugin
+from p_ast.plugins.base import ModuleImportPlugin
 
 
 class FixMixin:
@@ -94,18 +94,68 @@ class EnvRefPlugin(Plugin, FixMixin):
                 yield env_var
 
     def handle(self, context: Context, node: SgNode):
-        discovered_vars: Dict[Tuple[int, int], EnvVar] = {}
-
         for pattern in self.patterns:
             for i in self.iter_var_by_pattern(pattern, node):
-                discovered_var = discovered_vars.get(i.position)
-                if not discovered_var:
-                    discovered_vars[i.position] = i
-                else:
-                    discovered_var.merge_from(i)
+                context.add_env_var(i)
 
-        for i in discovered_vars.values():
-            context.add_env_var(i)
+
+class DjangoEnvPlugin(EnvRefPlugin):
+    pattern: str = ""
+    priority: int = 7
+    var_class: str = "Env"
+    var_name: str = "env"
+
+    @property
+    def patterns(self) -> List[str]:
+        yield f"{self.var_name}.$TYPE($NAME)"
+        yield f"{self.var_name}($NAME)"
+        yield f"{self.var_name}.$TYPE($NAME, default=$VALUE)"
+        yield f"{self.var_name}.$TYPE($NAME, $VALUE)"
+
+    def should_run(self, context: Context, node: SgNode) -> bool:
+        if context.has_module("environ"):
+            self.var_class = "environ.Env"
+
+            return True
+
+        if context.has_imports("environ", "Env"):
+            return True
+
+        return False
+
+    def handle_declare(self, context: Context, node: SgNode) -> str:
+        declare_node = node.find(pattern=f"$NAME = {self.var_class}($$$ARGS)")
+        if not declare_node:
+            return self.var_name
+
+        self.var_name = declare_node["NAME"].text()
+
+        for i in declare_node.get_multiple_matches("ARGS"):
+            if not i.matches(kind="keyword_argument"):
+                continue
+
+            name_node = i.child(0)
+            name_node_range = name_node.range()
+            arg_node = i.child(2)
+            cast_node = arg_node.child(1)
+            value_node = arg_node.child(3)
+
+            context.add_env_var(
+                EnvVar(
+                    node=i,
+                    name=name_node.text(),
+                    value=value_node.text(),
+                    cast=cast_node.text(),
+                    position=(
+                        name_node_range.start.line,
+                        name_node_range.start.column,
+                    ),
+                )
+            )
+
+    def handle(self, context: Context, node: SgNode):
+        self.handle_declare(context, node)
+        super().handle(context, node)
 
 
 class EnvVarHub(PluginHub):
@@ -114,8 +164,7 @@ class EnvVarHub(PluginHub):
     @property
     def plugins(self) -> List[Plugin]:
         return [
-            StarImportPlugin(),
-            ModuleImportPlugin(module="os"),
+            ModuleImportPlugin(),
             # stdlib
             EnvRefPlugin(pattern="os.getenv($NAME)", module="os"),
             EnvRefPlugin(pattern="os.getenv($NAME, $VALUE)", module="os"),
@@ -131,19 +180,6 @@ class EnvVarHub(PluginHub):
             EnvRefPlugin(
                 pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"
             ),
-            # custom function
-            EnvRefPlugin(pattern="get_env_or_raise($NAME)"),
             # django env
-            EnvRefPlugin(
-                pattern=f"{self.django_env_name}.$TYPE($NAME)",
-                module="environ",
-                imports="Env",
-                type_convert=False,
-            ),
-            EnvRefPlugin(
-                pattern=f"{self.django_env_name}.$TYPE($NAME, default=$VALUE)",
-                module="environ",
-                imports="Env",
-                type_convert=False,
-            ),
+            DjangoEnvPlugin(),
         ]
