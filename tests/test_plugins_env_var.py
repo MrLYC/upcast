@@ -70,14 +70,14 @@ class TestEnvVarHub:
 
         for i in [
             {"name": "KEY1", "value": "", "cast": ""},
-            {"name": "KEY2", "value": "'default'", "cast": ""},
-            {"name": "KEY3", "value": "'default'", "cast": ""},
+            {"name": "KEY2", "value": "'default'", "cast": "str"},
+            {"name": "KEY3", "value": "'default'", "cast": "str"},
             {"name": "KEY4", "value": "'default'", "cast": "str"},
             {"name": "KEY5", "value": "", "cast": ""},
             {"name": "KEY6", "value": "", "cast": "int"},
             {"name": "KEY7", "value": "", "cast": ""},
-            {"name": "KEY8", "value": "'default'", "cast": ""},
-            {"name": "KEY9", "value": "'default'", "cast": ""},
+            {"name": "KEY8", "value": "'default'", "cast": "str"},
+            {"name": "KEY9", "value": "'default'", "cast": "str"},
             {"name": "KEY10", "value": "1", "cast": "int"},
             {"name": "KEY11", "value": "False", "cast": "bool"},
             {"name": "KEY12", "value": "", "cast": ""},
@@ -103,10 +103,10 @@ class TestEnvVarHub:
         "statement, name, expected_value1, expected_cast1",
         [
             ("getenv('KEY')", "KEY", "", ""),
-            ("getenv('KEY', 'default')", "KEY", "'default'", ""),
+            ("getenv('KEY', 'default')", "KEY", "'default'", "str"),
             ("environ['KEY']", "KEY", "", ""),
             ("environ.get('KEY')", "KEY", "", ""),
-            ("environ.get('KEY', 'default')", "KEY", "'default'", ""),
+            ("environ.get('KEY', 'default')", "KEY", "'default'", "str"),
         ],
     )
     @pytest.mark.parametrize(

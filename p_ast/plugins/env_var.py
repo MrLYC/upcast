@@ -8,6 +8,17 @@ from p_ast.plugins.base import ModuleImportPlugin
 
 
 class FixMixin:
+    value_kind_to_cast_mappings = {
+        "string": "str",
+        "integer": "int",
+        "float": "float",
+        "true": "bool",
+        "false": "bool",
+        "list": "list",
+        "tuple": "tuple",
+        "dictionary": "dictionary",
+    }
+
     def handle_name(self, node: Optional[SgNode]) -> (str, Range):
         if not node:
             return ""
@@ -31,6 +42,9 @@ class FixMixin:
 
         if not value_node:
             return cast, ""
+
+        if not cast and value_node.kind() in self.value_kind_to_cast_mappings:
+            cast = self.value_kind_to_cast_mappings[value_node.kind()]
 
         return cast, value_node.text()
 
