@@ -69,26 +69,27 @@ class TestEnvVarHub:
         )
 
         for i in [
-            {"name": "KEY1", "value": "", "cast": ""},
-            {"name": "KEY2", "value": "'default'", "cast": "str"},
-            {"name": "KEY3", "value": "'default'", "cast": "str"},
-            {"name": "KEY4", "value": "'default'", "cast": "str"},
-            {"name": "KEY5", "value": "", "cast": ""},
-            {"name": "KEY6", "value": "", "cast": "int"},
-            {"name": "KEY7", "value": "", "cast": ""},
-            {"name": "KEY8", "value": "'default'", "cast": "str"},
-            {"name": "KEY9", "value": "'default'", "cast": "str"},
-            {"name": "KEY10", "value": "1", "cast": "int"},
-            {"name": "KEY11", "value": "False", "cast": "bool"},
-            {"name": "KEY12", "value": "", "cast": ""},
-            {"name": "KEY13", "value": "", "cast": "str"},
-            {"name": "KEY14", "value": "'default'", "cast": "str"},
-            {"name": "KEY15", "value": "'default'", "cast": "str"},
+            {"name": "KEY1", "value": "", "cast": "", "required": False},
+            {"name": "KEY2", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY3", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY4", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY5", "value": "", "cast": "", "required": True},
+            {"name": "KEY6", "value": "", "cast": "int", "required": True},
+            {"name": "KEY7", "value": "", "cast": "", "required": False},
+            {"name": "KEY8", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY9", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY10", "value": "1", "cast": "int", "required": False},
+            {"name": "KEY11", "value": "False", "cast": "bool", "required": False},
+            {"name": "KEY12", "value": "", "cast": "", "required": True},
+            {"name": "KEY13", "value": "", "cast": "str", "required": True},
+            {"name": "KEY14", "value": "'default'", "cast": "str", "required": False},
+            {"name": "KEY15", "value": "'default'", "cast": "str", "required": False},
         ]:
             v = exported[i["name"]]
             assert v.name == i["name"]
             assert v.value == i["value"]
             assert v.cast == i["cast"]
+            assert v.required == i["required"]
 
     @pytest.mark.parametrize(
         "import_statement, statement_prefix",
@@ -100,13 +101,13 @@ class TestEnvVarHub:
         ],
     )
     @pytest.mark.parametrize(
-        "statement, name, expected_value1, expected_cast1",
+        "statement, name, expected_value1, expected_cast1, required",
         [
-            ("getenv('KEY')", "KEY", "", ""),
-            ("getenv('KEY', 'default')", "KEY", "'default'", "str"),
-            ("environ['KEY']", "KEY", "", ""),
-            ("environ.get('KEY')", "KEY", "", ""),
-            ("environ.get('KEY', 'default')", "KEY", "'default'", "str"),
+            ("getenv('KEY')", "KEY", "", "", False),
+            ("getenv('KEY', 'default')", "KEY", "'default'", "str", False),
+            ("environ['KEY']", "KEY", "", "", True),
+            ("environ.get('KEY')", "KEY", "", "", False),
+            ("environ.get('KEY', 'default')", "KEY", "'default'", "str", False),
         ],
     )
     @pytest.mark.parametrize(
@@ -132,6 +133,7 @@ class TestEnvVarHub:
         expected_value2,
         expected_cast2,
         statement_template,
+        required,
     ):
         real_statement = f"{statement_prefix}{statement}"
 
@@ -147,4 +149,5 @@ class TestEnvVarHub:
         assert exported.name == name
         assert exported.value == expected_value1 or expected_value2
         assert exported.cast == expected_cast1 or expected_cast2
+        assert exported.required == required
         assert exported.statement() == real_statement

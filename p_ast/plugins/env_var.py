@@ -49,7 +49,9 @@ class FixMixin:
         return cast, value_node.text()
 
     def make_env_var(
-        self, result: SgNode, available_casts: Set[str] = frozenset()
+        self,
+        result: SgNode,
+        required: bool,
     ) -> Optional[EnvVar]:
         name_node = result.get_match("NAME")
         if not name_node:
@@ -62,8 +64,6 @@ class FixMixin:
         cast, value = self.handle_value(
             result.get_match("TYPE"), result.get_match("VALUE")
         )
-        if available_casts and cast not in available_casts:
-            return None
 
         name_node_range = name_node.range()
 
@@ -72,6 +72,7 @@ class FixMixin:
             name=name,
             value=value,
             cast=cast,
+            required=required,
             position=(name_node_range.start.line, name_node_range.start.column),
         )
 
@@ -82,6 +83,7 @@ class EnvRefPlugin(Plugin, FixMixin):
     imports: str = ""
     type_convert: bool = True
     or_default: bool = True
+    required: bool = False
     priority: int = 8
 
     @property
@@ -103,7 +105,7 @@ class EnvRefPlugin(Plugin, FixMixin):
 
     def iter_var_by_pattern(self, pattern: str, node: SgNode):
         for i in node.find_all(pattern=pattern):
-            env_var = self.make_env_var(i)
+            env_var = self.make_env_var(i, self.required)
             if env_var:
                 yield env_var
 
@@ -113,11 +115,12 @@ class EnvRefPlugin(Plugin, FixMixin):
                 context.add_env_var(i)
 
 
-class DjangoEnvPlugin(EnvRefPlugin):
+class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
     pattern: str = ""
     priority: int = 7
     var_class: str = "Env"
     var_name: str = "env"
+    defined_vars: Set[str] = set()
 
     @property
     def patterns(self) -> List[str]:
@@ -149,15 +152,17 @@ class DjangoEnvPlugin(EnvRefPlugin):
                 continue
 
             name_node = i.child(0)
+            name = name_node.text()
             name_node_range = name_node.range()
             arg_node = i.child(2)
             cast_node = arg_node.child(1)
             value_node = arg_node.child(3)
 
+            self.defined_vars.add(name)
             context.add_env_var(
                 EnvVar(
                     node=i,
-                    name=name_node.text(),
+                    name=name,
                     value=value_node.text(),
                     cast=cast_node.text(),
                     position=(
@@ -169,7 +174,12 @@ class DjangoEnvPlugin(EnvRefPlugin):
 
     def handle(self, context: Context, node: SgNode):
         self.handle_declare(context, node)
-        super().handle(context, node)
+        for pattern in self.patterns:
+            for i in self.iter_var_by_pattern(pattern, node):
+                if not i.value and i.name not in self.defined_vars:
+                    i.required = True
+
+                context.add_env_var(i)
 
 
 class EnvVarHub(PluginHub):
@@ -182,14 +192,16 @@ class EnvVarHub(PluginHub):
             # stdlib
             EnvRefPlugin(pattern="os.getenv($NAME)", module="os"),
             EnvRefPlugin(pattern="os.getenv($NAME, $VALUE)", module="os"),
-            EnvRefPlugin(pattern="os.environ[$NAME]", module="os"),
+            EnvRefPlugin(pattern="os.environ[$NAME]", module="os", required=True),
             EnvRefPlugin(pattern="os.environ.get($NAME)", module="os"),
             EnvRefPlugin(pattern="os.environ.get($NAME, $VALUE)", module="os"),
             EnvRefPlugin(pattern="getenv($NAME)", module="os", imports="getenv"),
             EnvRefPlugin(
                 pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"
             ),
-            EnvRefPlugin(pattern="environ[$NAME]", module="os", imports="environ"),
+            EnvRefPlugin(
+                pattern="environ[$NAME]", module="os", imports="environ", required=True
+            ),
             EnvRefPlugin(pattern="environ.get($NAME)", module="os", imports="environ"),
             EnvRefPlugin(
                 pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"

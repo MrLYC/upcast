@@ -29,7 +29,7 @@ class CSVExporter:
         self.file = open(self.path, "w", encoding="utf-8-sig")
         self.writer = csv.DictWriter(
             self.file,
-            fieldnames=["name", "cast", "value", "location", "statement"],
+            fieldnames=["name", "cast", "value", "required", "location", "statement"],
         )
 
     def begin(self):
@@ -41,6 +41,7 @@ class CSVExporter:
                 "name": env_var.name,
                 "cast": env_var.cast,
                 "value": env_var.value,
+                "required": "*" if env_var.required else "",
                 "location": env_var.location(),
                 "statement": env_var.statement(),
             }

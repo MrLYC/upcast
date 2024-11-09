@@ -12,6 +12,7 @@ class EnvVar(BaseModel):
     file: str = ""
     cast: str = ""
     value: str = ""
+    required: bool = False
 
     class Config:
         arbitrary_types_allowed = True
