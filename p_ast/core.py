@@ -1,4 +1,4 @@
-from typing import Set, List, Protocol, runtime_checkable, Dict, Tuple
+from typing import Set, List, Protocol, runtime_checkable, Dict, Tuple, Iterable, TextIO
 
 from ast_grep_py import SgNode, SgRoot
 from mypy.binder import defaultdict
@@ -17,10 +17,44 @@ class EnvVar(BaseModel):
         arbitrary_types_allowed = True
 
     def location(self) -> str:
-        return f"{self.file}:{self.position[0]}, {self.position[1]}"
+        return f"{self.file}:{self.position[0]},{self.position[1]}"
 
     def statement(self) -> str:
         return self.node.text()
+
+    def merge_from(self, other: "EnvVar") -> bool:
+        if self.name != other.name:
+            return False
+
+        if self.file != other.file:
+            return False
+
+        if self.position != other.position:
+            return False
+
+        merged = False
+        if not self.cast and other.cast:
+            self.cast = other.cast
+            merged = True
+
+        if not self.value and other.value:
+            self.value = other.value
+            merged = True
+
+        my_range = self.node.range()
+        other_range = other.node.range()
+
+        if my_range.start.line < other_range.start.line:
+            return merged
+        if my_range.start.column < other_range.start.column:
+            return merged
+        if my_range.end.line > other_range.end.line:
+            return merged
+        if my_range.end.column > other_range.end.column:
+            return merged
+
+        self.node = other.node
+        return True
 
 
 class PYVar(BaseModel):
@@ -35,8 +69,7 @@ class Context(BaseModel):
     filename: str = ""
     imports: Set[str] = Field(default_factory=set)
     star_imports: Set[str] = Field(default_factory=set)
-    env_vars: Dict[str, List[EnvVar]] = Field(default_factory=lambda: defaultdict(list))
-    py_vars: Dict[str, PYVar] = Field(default_factory=dict)
+    env_vars: Dict[Tuple[int, int], EnvVar] = Field(default_factory=dict)
 
     def has_module(self, path: str) -> bool:
         module, _, name = path.rpartition(":")
@@ -72,14 +105,16 @@ class Context(BaseModel):
 
     def add_env_var(self, env_var: EnvVar) -> bool:
         env_var.file = self.filename
-        self.env_vars[env_var.name].append(env_var)
+        declared = self.env_vars.get(env_var.position)
+        if declared:
+            declared.merge_from(env_var)
+            return False
 
+        self.env_vars[env_var.position] = env_var
         return True
 
-    def add_py_var(self, py_var: PYVar) -> bool:
-        self.py_vars[py_var.name] = py_var
-
-        return True
+    def iter_env_vars(self) -> Iterable[EnvVar]:
+        return self.env_vars.values()
 
 
 class Plugin(BaseModel):
@@ -115,22 +150,21 @@ class PluginHub(BaseModel):
     def plugins(self) -> List[Plugin]:
         raise NotImplementedError
 
-    def run(self, paths: List[str]):
+    def run(self, files: Iterable[TextIO]):
         results: Dict[str, List[EnvVar]] = defaultdict(list)
         sorted_plugins = sorted(self.plugins, key=lambda p: p.priority)
         self.exporter.begin()
-        for path in paths:
-            with open(path) as f:
-                code = f.read()
-                root = SgRoot(code, "python")
+        for f in files:
+            code = f.read()
+            root = SgRoot(code, "python")
 
-            context = Context(filename=path)
+            context = Context(filename=f.name)
             root_node = root.root()
             for plugin in sorted_plugins:
                 plugin.run(context, root_node)
 
-            for v in context.env_vars:
-                results[v].extend(context.env_vars[v])
+            for v in context.iter_env_vars():
+                results[v.name].append(v)
 
         for v in results:
             for var in results[v]:

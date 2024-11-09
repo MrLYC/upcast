@@ -101,27 +101,8 @@ class EnvRefPlugin(Plugin, FixMixin):
                 discovered_var = discovered_vars.get(i.position)
                 if not discovered_var:
                     discovered_vars[i.position] = i
-                    continue
-
-                if i.value and not discovered_var.value:
-                    discovered_var.value = i.value
-
-                if i.cast and not discovered_var.cast:
-                    discovered_var.cast = i.cast
-
-                var_range = i.node.range()
-                discovered_var_range = discovered_var.node.range()
-
-                if var_range.start.line < discovered_var_range.start.line:
-                    continue
-                if var_range.start.column < discovered_var_range.start.column:
-                    continue
-                if var_range.end.line > discovered_var_range.end.line:
-                    continue
-                if var_range.end.column > discovered_var_range.end.column:
-                    continue
-
-                discovered_var.node = i.node
+                else:
+                    discovered_var.merge_from(i)
 
         for i in discovered_vars.values():
             context.add_env_var(i)
