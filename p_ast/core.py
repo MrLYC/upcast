@@ -5,11 +5,11 @@ from mypy.binder import defaultdict
 from pydantic import BaseModel, Field
 
 
-class Var(BaseModel):
+class EnvVar(BaseModel):
     node: SgNode
-    file: str
     name: str
     position: Tuple[int, int]
+    file: str = ""
     cast: str = ""
     value: str = ""
 
@@ -23,11 +23,20 @@ class Var(BaseModel):
         return self.node.text()
 
 
+class PYVar(BaseModel):
+    node: SgNode
+    name: str
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
 class Context(BaseModel):
     filename: str = ""
     imports: Set[str] = Field(default_factory=set)
     star_imports: Set[str] = Field(default_factory=set)
-    vars: Dict[str, List[Var]] = Field(default_factory=lambda: defaultdict(list))
+    env_vars: Dict[str, List[EnvVar]] = Field(default_factory=lambda: defaultdict(list))
+    py_vars: Dict[str, PYVar] = Field(default_factory=dict)
 
     def has_module(self, path: str) -> bool:
         module, _, name = path.rpartition(":")
@@ -61,9 +70,14 @@ class Context(BaseModel):
         if name == "*":
             self.star_imports.add(module)
 
-    def add_var(self, env_var: Var) -> bool:
+    def add_env_var(self, env_var: EnvVar) -> bool:
         env_var.file = self.filename
-        self.vars[env_var.name].append(env_var)
+        self.env_vars[env_var.name].append(env_var)
+
+        return True
+
+    def add_py_var(self, py_var: PYVar) -> bool:
+        self.py_vars[py_var.name] = py_var
 
         return True
 
@@ -85,14 +99,14 @@ class Plugin(BaseModel):
 
 
 @runtime_checkable
-class VarExporter(Protocol):
+class EnvVarExporter(Protocol):
     def begin(self): ...
-    def handle(self, var: Var): ...
+    def handle(self, var: EnvVar): ...
     def end(self): ...
 
 
 class PluginHub(BaseModel):
-    exporter: VarExporter
+    exporter: EnvVarExporter
 
     class Config:
         arbitrary_types_allowed = True
@@ -102,7 +116,7 @@ class PluginHub(BaseModel):
         raise NotImplementedError
 
     def run(self, paths: List[str]):
-        results: Dict[str, List[Var]] = defaultdict(list)
+        results: Dict[str, List[EnvVar]] = defaultdict(list)
         sorted_plugins = sorted(self.plugins, key=lambda p: p.priority)
         self.exporter.begin()
         for path in paths:
@@ -115,8 +129,8 @@ class PluginHub(BaseModel):
             for plugin in sorted_plugins:
                 plugin.run(context, root_node)
 
-            for v in context.vars:
-                results[v].extend(context.vars[v])
+            for v in context.env_vars:
+                results[v].extend(context.env_vars[v])
 
         for v in results:
             for var in results[v]:

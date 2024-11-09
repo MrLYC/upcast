@@ -1,58 +1,13 @@
 import ast
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Set
 
 from ast_grep_py import SgNode, Range
 
-from p_ast.core import Plugin, Context, Var, PluginHub
+from p_ast.core import Plugin, Context, EnvVar, PluginHub
+from p_ast.plugins.base import StarImportPlugin, ModuleImportPlugin
 
 
-class ModuleImportPlugin(Plugin):
-    module: str
-    priority: int = 2
-
-    def handle_import(self, context: Context, node: SgNode):
-        if node.find(pattern=f"import {self.module}"):
-            return True
-
-    def handle(self, context: Context, node: SgNode):
-        if self.handle_import(context, node):
-            context.add_module(self.module)
-
-
-class StarImportPlugin(Plugin):
-    priority: int = 2
-
-    def handle(self, context: Context, node: SgNode):
-        result = node.find_all(pattern="from $MODULE import *")
-        for i in result:
-            context.add_imports(i.get_match("MODULE").text(), "*")
-
-
-class EnvRefPlugin(Plugin):
-    pattern: str
-    module: str = ""
-    imports: str = ""
-    type_convert: bool = True
-    or_default: bool = True
-    priority: int = 9
-
-    @property
-    def patterns(self) -> List[str]:
-        yield self.pattern
-
-        if self.type_convert and self.or_default:
-            yield f"$TYPE({self.pattern}) or $VALUE"
-            yield f"$TYPE({self.pattern} or $VALUE)"
-
-        if self.type_convert:
-            yield f"$TYPE({self.pattern})"
-
-        if self.or_default:
-            yield f"{self.pattern} or $VALUE"
-
-    def should_run(self, context: Context, node: SgNode) -> bool:
-        return context.has_imports(self.module, self.imports)
-
+class FixMixin:
     def handle_name(self, node: Optional[SgNode]) -> (str, Range):
         if not node:
             return ""
@@ -79,33 +34,70 @@ class EnvRefPlugin(Plugin):
 
         return cast, value_node.text()
 
-    def iter_var_by_pattern(self, pattern: str, context: Context, node: SgNode):
+    def make_env_var(
+        self, result: SgNode, available_casts: Set[str] = frozenset()
+    ) -> Optional[EnvVar]:
+        name_node = result.get_match("NAME")
+        if not name_node:
+            return None
+
+        name = self.handle_name(name_node)
+        if not name:
+            return None
+
+        cast, value = self.handle_value(
+            result.get_match("TYPE"), result.get_match("VALUE")
+        )
+        if available_casts and cast not in available_casts:
+            return None
+
+        name_node_range = name_node.range()
+
+        return EnvVar(
+            node=result,
+            name=name,
+            value=value,
+            cast=cast,
+            position=(name_node_range.start.line, name_node_range.start.column),
+        )
+
+
+class EnvRefPlugin(Plugin, FixMixin):
+    pattern: str
+    module: str = ""
+    imports: str = ""
+    type_convert: bool = True
+    or_default: bool = True
+    priority: int = 8
+
+    @property
+    def patterns(self) -> List[str]:
+        yield self.pattern
+
+        if self.type_convert and self.or_default:
+            yield f"$TYPE({self.pattern}) or $VALUE"
+            yield f"$TYPE({self.pattern} or $VALUE)"
+
+        if self.type_convert:
+            yield f"$TYPE({self.pattern})"
+
+        if self.or_default:
+            yield f"{self.pattern} or $VALUE"
+
+    def should_run(self, context: Context, node: SgNode) -> bool:
+        return context.has_imports(self.module, self.imports)
+
+    def iter_var_by_pattern(self, pattern: str, node: SgNode):
         for i in node.find_all(pattern=pattern):
-            name_node = i.get_match("NAME")
-            if not name_node:
-                continue
-
-            name = self.handle_name(name_node)
-            if not name:
-                continue
-
-            cast, value = self.handle_value(i.get_match("TYPE"), i.get_match("VALUE"))
-            name_node_range = name_node.range()
-
-            yield Var(
-                node=i,
-                file=context.filename,
-                name=name,
-                value=value,
-                cast=cast,
-                position=(name_node_range.start.line, name_node_range.start.column),
-            )
+            env_var = self.make_env_var(i)
+            if env_var:
+                yield env_var
 
     def handle(self, context: Context, node: SgNode):
-        discovered_vars: Dict[Tuple[int, int], Var] = {}
+        discovered_vars: Dict[Tuple[int, int], EnvVar] = {}
 
         for pattern in self.patterns:
-            for i in self.iter_var_by_pattern(pattern, context, node):
+            for i in self.iter_var_by_pattern(pattern, node):
                 discovered_var = discovered_vars.get(i.position)
                 if not discovered_var:
                     discovered_vars[i.position] = i
@@ -132,7 +124,7 @@ class EnvRefPlugin(Plugin):
                 discovered_var.node = i.node
 
         for i in discovered_vars.values():
-            context.add_var(i)
+            context.add_env_var(i)
 
 
 class EnvVarHub(PluginHub):
@@ -158,6 +150,8 @@ class EnvVarHub(PluginHub):
             EnvRefPlugin(
                 pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"
             ),
+            # custom function
+            EnvRefPlugin(pattern="get_env_or_raise($NAME)"),
             # django env
             EnvRefPlugin(
                 pattern=f"{self.django_env_name}.$TYPE($NAME)",

@@ -5,14 +5,14 @@ from typing import TextIO, List
 from black.cache import field
 from pydantic import BaseModel
 
-from p_ast.core import Var
+from p_ast.core import EnvVar
 
 
 class BaseExporter(BaseModel):
     def begin(self):
         pass
 
-    def handle(self, env_var: Var):
+    def handle(self, env_var: EnvVar):
         raise NotImplementedError()
 
     def end(self):
@@ -35,7 +35,7 @@ class CSVExporter:
     def begin(self):
         self.writer.writeheader()
 
-    def handle(self, env_var: Var):
+    def handle(self, env_var: EnvVar):
         self.writer.writerow(
             {
                 "name": env_var.name,
@@ -51,7 +51,7 @@ class CSVExporter:
 
 
 class ConsoleExporter(BaseExporter):
-    def handle(self, env_var: Var):
+    def handle(self, env_var: EnvVar):
         if env_var.value:
             print(f"{env_var.name}={env_var.value} at {env_var.location()}")
         else:
@@ -59,10 +59,10 @@ class ConsoleExporter(BaseExporter):
 
 
 class CollectionExporter(BaseExporter):
-    collected_vars: List[Var]
+    collected_vars: List[EnvVar]
 
-    def handle(self, env_var: Var):
-        self.vars.append(env_var)
+    def handle(self, env_var: EnvVar):
+        self.collected_vars.append(env_var)
 
     def get_vars(self):
         return self.collected_vars
