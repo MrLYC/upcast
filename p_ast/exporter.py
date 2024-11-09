@@ -53,10 +53,14 @@ class CSVExporter:
 
 class ConsoleExporter(BaseExporter):
     def handle(self, env_var: EnvVar):
+        prefix = ""
+        if env_var.required:
+            prefix = "*"
+
         if env_var.value:
-            print(f"{env_var.name}={env_var.value} at {env_var.location()}")
+            print(f"{prefix}{env_var.name}={env_var.value} at {env_var.location()}")
         else:
-            print(f"{env_var.name} at {env_var.position}")
+            print(f"{prefix}{env_var.name} at {env_var.location()}")
 
 
 class CollectionExporter(BaseExporter):
