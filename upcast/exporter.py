@@ -1,8 +1,7 @@
 import csv
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TextIO, List, Dict
 
-from black.cache import field
 from pydantic import BaseModel
 
 from upcast.core import EnvVar
