@@ -5,7 +5,7 @@ from typing import TextIO, List, Dict
 from black.cache import field
 from pydantic import BaseModel
 
-from p_ast.core import EnvVar
+from upcast.core import EnvVar
 
 
 class BaseExporter(BaseModel):

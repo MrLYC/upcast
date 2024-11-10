@@ -2,8 +2,8 @@ from typing import List
 
 import click
 
-from p_ast.exporter import CSVExporter, ConsoleExporter
-from p_ast.plugins.env_var import EnvVarHub
+from upcast.exporter import CSVExporter, ConsoleExporter
+from upcast.plugins.env_var import EnvVarHub
 
 
 @click.group()

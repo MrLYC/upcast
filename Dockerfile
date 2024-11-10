@@ -16,6 +16,6 @@ COPY poetry.lock pyproject.toml /code/
 RUN poetry install --no-interaction --no-ansi --no-root --no-dev
 
 # Copy Python code to the Docker image
-COPY p_ast /code/p_ast/
+COPY upcast /code/upcast/
 
-CMD [ "python", "p_ast/foo.py"]
+CMD [ "python", "upcast/foo.py"]

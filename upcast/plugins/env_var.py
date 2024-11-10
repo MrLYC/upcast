@@ -3,8 +3,8 @@ from typing import Optional, List, Set
 
 from ast_grep_py import SgNode, Range
 
-from p_ast.core import Plugin, Context, EnvVar, PluginHub
-from p_ast.plugins.base import ModuleImportPlugin
+from upcast.core import Plugin, Context, EnvVar, PluginHub
+from upcast.plugins.base import ModuleImportPlugin
 
 
 class FixMixin:

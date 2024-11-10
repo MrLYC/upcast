@@ -2,8 +2,8 @@ from io import StringIO
 
 import pytest
 
-from p_ast.exporter import CollectionExporter
-from p_ast.plugins.env_var import EnvVarHub
+from upcast.exporter import CollectionExporter
+from upcast.plugins.env_var import EnvVarHub
 
 
 @pytest.fixture

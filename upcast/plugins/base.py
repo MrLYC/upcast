@@ -1,6 +1,6 @@
 from ast_grep_py import SgNode
 
-from p_ast.core import Plugin, Context
+from upcast.core import Plugin, Context
 
 
 class ModuleImportPlugin(Plugin):
