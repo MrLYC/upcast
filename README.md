@@ -6,44 +6,31 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/mrlyc/p-ast)](https://img.shields.io/github/commit-activity/m/mrlyc/p-ast)
 [![License](https://img.shields.io/github/license/mrlyc/p-ast)](https://img.shields.io/github/license/mrlyc/p-ast)
 
-AST tools
+This project provides a series of tools to analyze Python projects. It does not actually execute code but only uses
+static analysis methods. Therefore, it has a more universal application scenario.
 
 - **Github repository**: <https://github.com/mrlyc/p-ast/>
 - **Documentation** <https://mrlyc.github.io/p-ast/>
 
-## Getting started with your project
-
-First, create a repository on GitHub with the same name as this project, and then run the following commands:
+## Installation
 
 ```bash
-git init -b main
-git add .
-git commit -m "init commit"
-git remote add origin git@github.com:mrlyc/p-ast.git
-git push -u origin main
+pip install p-ast
 ```
 
-Finally, install the environment and the pre-commit hooks with
+## Usage
+
+### find-env-vars
+
+Infer the environment variables that a program depends on through code, including information such as default values and
+types.
 
 ```bash
-make install
+p-ast find-env-vars /path/to/your/python/project/**/*.py
 ```
 
-You are now ready to start development on your project!
-The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
+The `-o` option can be used to output a csv file for further analysis.
 
-To finalize the set-up for publishing to PyPI or Artifactory, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
-
-## Releasing a new version
-
-- Create an API Token on [PyPI](https://pypi.org/).
-- Add the API Token to your projects secrets with the name `PYPI_TOKEN` by visiting [this page](https://github.com/mrlyc/p-ast/settings/secrets/actions/new).
-- Create a [new release](https://github.com/mrlyc/p-ast/releases/new) on Github.
-- Create a new tag in the form `*.*.*`.
-- For more details, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/cicd/#how-to-trigger-a-release).
-
----
-
-Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).
+```bash
+p-ast find-env-vars /path/to/your/python/project/**/*.py -o env-vars.csv
+```
