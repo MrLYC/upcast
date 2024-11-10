@@ -1,7 +1,7 @@
+from collections import defaultdict
 from typing import Set, List, Protocol, runtime_checkable, Dict, Tuple, Iterable, TextIO
 
 from ast_grep_py import SgNode, SgRoot
-from mypy.binder import defaultdict
 from pydantic import BaseModel, Field
 
 
