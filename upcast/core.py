@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Set, List, Protocol, runtime_checkable, Dict, Tuple, Iterable, TextIO
+from typing import Protocol, TextIO, runtime_checkable, Iterable
 
 from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel, Field
@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class EnvVar(BaseModel):
     node: SgNode
     name: str
-    position: Tuple[int, int]
+    position: tuple[int, int]
     file: str = ""
     cast: str = ""
     value: str = ""
@@ -45,20 +45,14 @@ class EnvVar(BaseModel):
         my_range = self.node.range()
         other_range = other.node.range()
 
-        if my_range.start.line < other_range.start.line:
-            self.node = other.node
-            merged = True
-        elif (
+        if my_range.start.line < other_range.start.line or (
             my_range.start.line == other_range.start.line
             and my_range.start.column < other_range.start.column
         ):
             self.node = other.node
             merged = True
 
-        if my_range.end.line > other_range.end.line:
-            self.node = other.node
-            merged = True
-        elif (
+        if my_range.end.line > other_range.end.line or (
             my_range.end.line == other_range.end.line
             and my_range.end.column > other_range.end.column
         ):
@@ -78,9 +72,9 @@ class PYVar(BaseModel):
 
 class Context(BaseModel):
     filename: str = ""
-    imports: Set[str] = Field(default_factory=set)
-    star_imports: Set[str] = Field(default_factory=set)
-    env_vars: Dict[Tuple[int, int], EnvVar] = Field(default_factory=dict)
+    imports: set[str] = Field(default_factory=set)
+    star_imports: set[str] = Field(default_factory=set)
+    env_vars: dict[tuple[int, int], EnvVar] = Field(default_factory=dict)
 
     def has_module(self, path: str) -> bool:
         module, sep, name = path.rpartition(":")
@@ -161,11 +155,11 @@ class PluginHub(BaseModel):
         arbitrary_types_allowed = True
 
     @property
-    def plugins(self) -> List[Plugin]:
+    def plugins(self) -> list[Plugin]:
         raise NotImplementedError
 
     def run(self, files: Iterable[TextIO]):
-        results: Dict[str, List[EnvVar]] = defaultdict(list)
+        results: dict[str, list[EnvVar]] = defaultdict(list)
         sorted_plugins = sorted(self.plugins, key=lambda p: p.priority)
         self.exporter.begin()
         for f in files:

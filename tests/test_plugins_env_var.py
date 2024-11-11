@@ -138,12 +138,10 @@ class TestEnvVarHub:
         real_statement = f"{statement_prefix}{statement}"
 
         exported = check_one(
-            "\n".join(
-                [
-                    import_statement,
-                    statement_template.format(statement=real_statement),
-                ]
-            )
+            "\n".join([
+                import_statement,
+                statement_template.format(statement=real_statement),
+            ])
         )
 
         assert exported.name == name

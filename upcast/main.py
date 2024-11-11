@@ -1,10 +1,9 @@
-from typing import List
+import os
 
 import click
 
-from upcast.exporter import CSVExporter, BaseExporter, HTMLExporter
+from upcast.exporter import BaseExporter, CSVExporter, HTMLExporter
 from upcast.plugins.env_var import EnvVarHub
-import os
 
 
 @click.group()
@@ -15,10 +14,10 @@ def main():
 @main.command()
 @click.option("-o", "--output", default="", type=click.Path())
 @click.argument("path", nargs=-1)
-def find_env_vars(output: str, path: List[str]):
+def find_env_vars(output: str, path: list[str]):
     def iter_files():
         for i in path:
-            with open(i, "r") as f:
+            with open(i) as f:
                 yield f
 
     _, output_ext = os.path.splitext(output)

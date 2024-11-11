@@ -1,9 +1,9 @@
 import ast
-from typing import Optional, List, Set
+from typing import Optional
 
-from ast_grep_py import SgNode, Range
+from ast_grep_py import Range, SgNode
 
-from upcast.core import Plugin, Context, EnvVar, PluginHub
+from upcast.core import Context, EnvVar, Plugin, PluginHub
 from upcast.plugins.base import ModuleImportPlugin
 
 
@@ -33,9 +33,7 @@ class FixMixin:
 
         return ast.literal_eval(statement)
 
-    def handle_value(
-        self, cast_node: Optional[SgNode], value_node: Optional[SgNode]
-    ) -> (str, str):
+    def handle_value(self, cast_node: Optional[SgNode], value_node: Optional[SgNode]) -> (str, str):
         cast = ""
         if cast_node and cast_node.matches(kind="identifier"):
             cast = cast_node.text()
@@ -61,9 +59,7 @@ class FixMixin:
         if not name:
             return None
 
-        cast, value = self.handle_value(
-            result.get_match("TYPE"), result.get_match("VALUE")
-        )
+        cast, value = self.handle_value(result.get_match("TYPE"), result.get_match("VALUE"))
 
         name_node_range = name_node.range()
 
@@ -87,7 +83,7 @@ class EnvRefPlugin(Plugin, FixMixin):
     priority: int = 8
 
     @property
-    def patterns(self) -> List[str]:
+    def patterns(self) -> list[str]:
         yield self.pattern
 
         if self.type_convert and self.or_default:
@@ -120,10 +116,10 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
     priority: int = 7
     var_class: str = "Env"
     var_name: str = "env"
-    defined_vars: Set[str] = set()
+    defined_vars: set[str] = set()
 
     @property
-    def patterns(self) -> List[str]:
+    def patterns(self) -> list[str]:
         yield f"{self.var_name}.$TYPE($NAME)"
         yield f"{self.var_name}($NAME)"
         yield f"{self.var_name}.$TYPE($NAME, default=$VALUE)"
@@ -135,10 +131,7 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
 
             return True
 
-        if context.has_imports("environ", "Env"):
-            return True
-
-        return False
+        return bool(context.has_imports("environ", "Env"))
 
     def handle_declare(self, context: Context, node: SgNode) -> str:
         declare_node = node.find(pattern=f"$NAME = {self.var_class}($$$ARGS)")
@@ -186,7 +179,7 @@ class EnvVarHub(PluginHub):
     django_env_name: str = "env"
 
     @property
-    def plugins(self) -> List[Plugin]:
+    def plugins(self) -> list[Plugin]:
         return [
             ModuleImportPlugin(),
             # stdlib
@@ -196,16 +189,10 @@ class EnvVarHub(PluginHub):
             EnvRefPlugin(pattern="os.environ.get($NAME)", module="os"),
             EnvRefPlugin(pattern="os.environ.get($NAME, $VALUE)", module="os"),
             EnvRefPlugin(pattern="getenv($NAME)", module="os", imports="getenv"),
-            EnvRefPlugin(
-                pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"
-            ),
-            EnvRefPlugin(
-                pattern="environ[$NAME]", module="os", imports="environ", required=True
-            ),
+            EnvRefPlugin(pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"),
+            EnvRefPlugin(pattern="environ[$NAME]", module="os", imports="environ", required=True),
             EnvRefPlugin(pattern="environ.get($NAME)", module="os", imports="environ"),
-            EnvRefPlugin(
-                pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"
-            ),
+            EnvRefPlugin(pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"),
             # django env
             DjangoEnvPlugin(),
         ]

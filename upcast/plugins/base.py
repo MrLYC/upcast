@@ -1,13 +1,13 @@
 from ast_grep_py import SgNode
 
-from upcast.core import Plugin, Context
+from upcast.core import Context, Plugin
 
 
 class ModuleImportPlugin(Plugin):
     priority: int = 2
 
     def handle_import(self, context: Context, node: SgNode) -> bool:
-        result = node.find(pattern=f"import $MODULE")
+        result = node.find(pattern="import $MODULE")
         if not result:
             return False
 
