@@ -2,7 +2,6 @@ import os
 
 import click
 
-from tests.test_plugins_env_var import exporter
 from upcast.exporter import BaseExporter, MultiExporter
 from upcast.plugins.env_var import EnvVarHub
 
