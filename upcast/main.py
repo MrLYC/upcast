@@ -2,8 +2,9 @@ from typing import List
 
 import click
 
-from upcast.exporter import CSVExporter, ConsoleExporter
+from upcast.exporter import CSVExporter, BaseExporter, HTMLExporter
 from upcast.plugins.env_var import EnvVarHub
+import os
 
 
 @click.group()
@@ -20,10 +21,14 @@ def find_env_vars(output: str, path: List[str]):
             with open(i, "r") as f:
                 yield f
 
+    _, output_ext = os.path.splitext(output)
+
     if not output:
-        exporter = ConsoleExporter()
-    elif output.endswith(".csv"):
+        exporter = BaseExporter()
+    elif output_ext == ".csv":
         exporter = CSVExporter(path=output)
+    elif output_ext == ".html":
+        exporter = HTMLExporter(path=output)
     else:
         raise click.UsageError("Output format not supported")
 

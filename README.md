@@ -34,3 +34,8 @@ The `-o` option can be used to output a csv file for further analysis.
 ```bash
 upcast find-env-vars /path/to/your/python/project/**/*.py -o env-vars.csv
 ```
+
+Support the following output formats:
+
+- csv
+- html
