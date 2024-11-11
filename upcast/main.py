@@ -2,7 +2,8 @@ import os
 
 import click
 
-from upcast.exporter import BaseExporter, CSVExporter, HTMLExporter
+from tests.test_plugins_env_var import exporter
+from upcast.exporter import BaseExporter, MultiExporter
 from upcast.plugins.env_var import EnvVarHub
 
 
@@ -12,24 +13,18 @@ def main():
 
 
 @main.command()
-@click.option("-o", "--output", default="", type=click.Path())
+@click.option("-o", "--output", default=[], type=click.Path(), multiple=True)
 @click.argument("path", nargs=-1)
-def find_env_vars(output: str, path: list[str]):
+def find_env_vars(output: list[str], path: list[str]):
     def iter_files():
         for i in path:
             with open(i) as f:
                 yield f
 
-    _, output_ext = os.path.splitext(output)
-
     if not output:
         exporter = BaseExporter()
-    elif output_ext == ".csv":
-        exporter = CSVExporter(path=output)
-    elif output_ext == ".html":
-        exporter = HTMLExporter(path=output)
     else:
-        raise click.UsageError("Output format not supported")
+        exporter = MultiExporter.from_paths(output)
 
     hub = EnvVarHub(exporter=exporter)
     hub.run(iter_files())

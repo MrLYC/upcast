@@ -1,10 +1,11 @@
 import csv
 from dataclasses import dataclass, field
 from typing import TextIO
+import os
 
 from pydantic import BaseModel
 
-from upcast.core import EnvVar
+from upcast.core import EnvVar, EnvVarExporter
 
 
 class BaseExporter(BaseModel):
@@ -31,6 +32,37 @@ class BaseExporter(BaseModel):
 
 
 @dataclass
+class MultiExporter:
+    exporters: list[EnvVarExporter] = field(default_factory=list)
+
+    @classmethod
+    def from_paths(cls, paths: list[str]):
+        exporters = []
+        for i in paths:
+            _, ext = os.path.splitext(i)
+            if ext == ".csv":
+                exporters.append(CSVExporter(path=i))
+            elif ext == ".html":
+                exporters.append(HTMLExporter(path=i))
+            else:
+                raise ValueError(f"Output format not supported: {ext}")
+
+        return cls(exporters=exporters)
+
+    def begin(self):
+        for i in self.exporters:
+            i.begin()
+
+    def handle(self, env_var: EnvVar):
+        for i in self.exporters:
+            i.handle(env_var)
+
+    def end(self):
+        for i in self.exporters:
+            i.end()
+
+
+@dataclass
 class CSVExporter:
     path: str
     file: TextIO = field(init=False)
@@ -47,14 +79,16 @@ class CSVExporter:
         self.writer.writeheader()
 
     def handle(self, env_var: EnvVar):
-        self.writer.writerow({
-            "name": env_var.name,
-            "cast": env_var.cast,
-            "value": env_var.value,
-            "required": "*" if env_var.required else "",
-            "location": env_var.location(),
-            "statement": env_var.statement(),
-        })
+        self.writer.writerow(
+            {
+                "name": env_var.name,
+                "cast": env_var.cast,
+                "value": env_var.value,
+                "required": "*" if env_var.required else "",
+                "location": env_var.location(),
+                "statement": env_var.statement(),
+            }
+        )
 
     def end(self):
         self.file.close()
@@ -83,27 +117,31 @@ class HTMLExporter:
     def begin(self):
         self.file.write("<html><head><title>Env Vars</title></head><body><table>")
         self.file.write(
-            "\n".join([
-                "<tr><th>Name</th>",
-                "<th>Value</th>",
-                "<th>Cast</th>",
-                "<th>Required</th>",
-                "<th>Statement</th></tr>" "<th>Location</th>",
-            ])
+            "\n".join(
+                [
+                    "<tr><th>Name</th>",
+                    "<th>Value</th>",
+                    "<th>Cast</th>",
+                    "<th>Required</th>",
+                    "<th>Statement</th></tr>" "<th>Location</th>",
+                ]
+            )
         )
 
     def handle(self, env_var: EnvVar):
         self.file.write(
-            "\n".join([
-                "<tr>",
-                f"<td>{env_var.name}</td>",
-                f"<td>{env_var.value}</td>",
-                f"<td>{env_var.cast}</td>",
-                f"<td>{'Yes' if env_var.required else ''}</td>",
-                f"<td>{env_var.statement()}</td>",
-                f"<td>{env_var.location()}</td>",
-                "</tr>",
-            ])
+            "\n".join(
+                [
+                    "<tr>",
+                    f"<td>{env_var.name}</td>",
+                    f"<td>{env_var.value}</td>",
+                    f"<td>{env_var.cast}</td>",
+                    f"<td>{'Yes' if env_var.required else ''}</td>",
+                    f"<td>{env_var.statement()}</td>",
+                    f"<td>{env_var.location()}</td>",
+                    "</tr>",
+                ]
+            )
         )
 
     def end(self):
