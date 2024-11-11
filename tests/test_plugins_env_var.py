@@ -2,13 +2,13 @@ from io import StringIO
 
 import pytest
 
-from upcast.exporter import CollectionExporter
+from upcast.exporter import BaseExporter
 from upcast.plugins.env_var import EnvVarHub
 
 
 @pytest.fixture
 def exporter():
-    return CollectionExporter()
+    return BaseExporter()
 
 
 @pytest.fixture
