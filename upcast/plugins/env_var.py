@@ -1,7 +1,8 @@
 import ast
-from typing import Optional, ClassVar
-from pydantic import Field
+from typing import ClassVar, Optional
+
 from ast_grep_py import Range, SgNode
+from pydantic import Field
 
 from upcast.core import Context, EnvVar, Plugin, PluginHub
 from upcast.plugins.base import ModuleImportPlugin
@@ -33,9 +34,7 @@ class FixMixin:
 
         return ast.literal_eval(statement)
 
-    def handle_value(
-        self, cast_node: Optional[SgNode], value_node: Optional[SgNode]
-    ) -> (str, str):
+    def handle_value(self, cast_node: Optional[SgNode], value_node: Optional[SgNode]) -> (str, str):
         cast = ""
         if cast_node and cast_node.matches(kind="identifier"):
             cast = cast_node.text()
@@ -61,9 +60,7 @@ class FixMixin:
         if not name:
             return None
 
-        cast, value = self.handle_value(
-            result.get_match("TYPE"), result.get_match("VALUE")
-        )
+        cast, value = self.handle_value(result.get_match("TYPE"), result.get_match("VALUE"))
 
         name_node_range = name_node.range()
 
@@ -193,16 +190,10 @@ class EnvVarHub(PluginHub):
             EnvRefPlugin(pattern="os.environ.get($NAME)", module="os"),
             EnvRefPlugin(pattern="os.environ.get($NAME, $VALUE)", module="os"),
             EnvRefPlugin(pattern="getenv($NAME)", module="os", imports="getenv"),
-            EnvRefPlugin(
-                pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"
-            ),
-            EnvRefPlugin(
-                pattern="environ[$NAME]", module="os", imports="environ", required=True
-            ),
+            EnvRefPlugin(pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"),
+            EnvRefPlugin(pattern="environ[$NAME]", module="os", imports="environ", required=True),
             EnvRefPlugin(pattern="environ.get($NAME)", module="os", imports="environ"),
-            EnvRefPlugin(
-                pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"
-            ),
+            EnvRefPlugin(pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"),
             # django env
             DjangoEnvPlugin(),
         ]
