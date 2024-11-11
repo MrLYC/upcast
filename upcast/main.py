@@ -1,9 +1,7 @@
-import os
-
 import click
 
-from upcast.exporter import BaseExporter, MultiExporter
-from upcast.plugins.env_var import EnvVarHub
+from upcast.env_var.exporter import BaseExporter, MultiExporter
+from upcast.env_var.plugin import EnvVarHub
 
 
 @click.group()

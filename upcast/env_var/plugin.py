@@ -4,8 +4,47 @@ from typing import ClassVar, Optional
 from ast_grep_py import Range, SgNode
 from pydantic import Field
 
-from upcast.core import Context, EnvVar, Plugin, PluginHub
-from upcast.plugins.base import ModuleImportPlugin
+from upcast.env_var.core import Context, EnvVar, Plugin, PluginHub
+from ast_grep_py import SgNode
+
+from upcast.env_var.core import Context, Plugin
+
+
+class ModuleImportPlugin(Plugin):
+    priority: int = 2
+
+    def handle_import(self, context: Context, node: SgNode) -> bool:
+        result = node.find(pattern="import $MODULE")
+        if not result:
+            return False
+
+        module_node = result.get_match("MODULE")
+        context.add_module(module_node.text())
+
+    def handle_import_from(self, context: Context, node: SgNode):
+        result = node.find_all(pattern="from $MODULE import $$$NAME")
+        for i in result:
+            module_node = i.get_match("MODULE")
+            module_name = module_node.text()
+
+            for name_node in i.get_multiple_matches("NAME"):
+                if name_node.kind() == ",":
+                    continue
+
+                context.add_imports(module_name, name_node.text())
+
+    def handle(self, context: Context, node: SgNode):
+        self.handle_import(context, node)
+        self.handle_import_from(context, node)
+
+
+class PyVarPlugin(Plugin):
+    priority: int = 2
+
+    def handle(self, context: Context, node: SgNode):
+        if node.matches(kind="assign"):
+            name = node.get_match("NAME").text()
+            context.add_py_var(name)
 
 
 class FixMixin:
@@ -34,7 +73,9 @@ class FixMixin:
 
         return ast.literal_eval(statement)
 
-    def handle_value(self, cast_node: Optional[SgNode], value_node: Optional[SgNode]) -> (str, str):
+    def handle_value(
+        self, cast_node: Optional[SgNode], value_node: Optional[SgNode]
+    ) -> (str, str):
         cast = ""
         if cast_node and cast_node.matches(kind="identifier"):
             cast = cast_node.text()
@@ -60,7 +101,9 @@ class FixMixin:
         if not name:
             return None
 
-        cast, value = self.handle_value(result.get_match("TYPE"), result.get_match("VALUE"))
+        cast, value = self.handle_value(
+            result.get_match("TYPE"), result.get_match("VALUE")
+        )
 
         name_node_range = name_node.range()
 
@@ -190,10 +233,16 @@ class EnvVarHub(PluginHub):
             EnvRefPlugin(pattern="os.environ.get($NAME)", module="os"),
             EnvRefPlugin(pattern="os.environ.get($NAME, $VALUE)", module="os"),
             EnvRefPlugin(pattern="getenv($NAME)", module="os", imports="getenv"),
-            EnvRefPlugin(pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"),
-            EnvRefPlugin(pattern="environ[$NAME]", module="os", imports="environ", required=True),
+            EnvRefPlugin(
+                pattern="getenv($NAME, $VALUE)", module="os", imports="getenv"
+            ),
+            EnvRefPlugin(
+                pattern="environ[$NAME]", module="os", imports="environ", required=True
+            ),
             EnvRefPlugin(pattern="environ.get($NAME)", module="os", imports="environ"),
-            EnvRefPlugin(pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"),
+            EnvRefPlugin(
+                pattern="environ.get($NAME, $VALUE)", module="os", imports="environ"
+            ),
             # django env
             DjangoEnvPlugin(),
         ]

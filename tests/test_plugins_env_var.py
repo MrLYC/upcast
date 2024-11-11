@@ -2,8 +2,8 @@ from io import StringIO
 
 import pytest
 
-from upcast.exporter import BaseExporter
-from upcast.plugins.env_var import EnvVarHub
+from upcast.env_var.exporter import BaseExporter
+from upcast.env_var.plugin import EnvVarHub
 
 
 @pytest.fixture
@@ -138,10 +138,12 @@ class TestEnvVarHub:
         real_statement = f"{statement_prefix}{statement}"
 
         exported = check_one(
-            "\n".join([
-                import_statement,
-                statement_template.format(statement=real_statement),
-            ])
+            "\n".join(
+                [
+                    import_statement,
+                    statement_template.format(statement=real_statement),
+                ]
+            )
         )
 
         assert exported.name == name

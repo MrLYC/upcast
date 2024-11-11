@@ -5,7 +5,7 @@ import os
 
 from pydantic import BaseModel
 
-from upcast.core import EnvVar, EnvVarExporter
+from upcast.env_var.core import EnvVar, EnvVarExporter
 
 
 class BaseExporter(BaseModel):
