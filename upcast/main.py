@@ -11,8 +11,15 @@ def main():
 
 @main.command()
 @click.option("-o", "--output", default=[], type=click.Path(), multiple=True)
+@click.option("--additional-patterns", default=[], multiple=True)
+@click.option("--additional-required-patterns", default=[], multiple=True)
 @click.argument("path", nargs=-1)
-def find_env_vars(output: list[str], path: list[str]):
+def find_env_vars(
+    output: list[str],
+    path: list[str],
+    additional_patterns: list[str],
+    additional_required_patterns: list[str],
+):
     def iter_files():
         for i in path:
             with open(i) as f:
@@ -23,7 +30,11 @@ def find_env_vars(output: list[str], path: list[str]):
     else:
         exporter = MultiExporter.from_paths(output)
 
-    hub = EnvVarHub(exporter=exporter)
+    hub = EnvVarHub(
+        exporter=exporter,
+        additional_patterns=additional_patterns,
+        additional_required_patterns=additional_required_patterns,
+    )
     hub.run(iter_files())
 
 

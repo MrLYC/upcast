@@ -1,13 +1,12 @@
 import ast
+from lib2to3.fixes.fix_input import context
 from typing import ClassVar, Optional
 
-from ast_grep_py import Range, SgNode
+from ast_grep_py import Range
 from pydantic import Field
 
-from upcast.env_var.core import Context, EnvVar, Plugin, PluginHub
+from upcast.env_var.core import EnvVar, PluginHub, Context, Plugin, PYVar
 from ast_grep_py import SgNode
-
-from upcast.env_var.core import Context, Plugin
 
 
 class ModuleImportPlugin(Plugin):
@@ -42,9 +41,19 @@ class PyVarPlugin(Plugin):
     priority: int = 2
 
     def handle(self, context: Context, node: SgNode):
-        if node.matches(kind="assign"):
-            name = node.get_match("NAME").text()
-            context.add_py_var(name)
+        assign_nodes = node.find_all(pattern="$NAME = $VALUE")
+        for i in assign_nodes:
+            name = i.get_match("NAME").text()
+            if not name.isupper():
+                continue
+
+            value = i["VALUE"]
+            if value.kind() != "string":
+                continue
+
+            context.add_py_var(
+                PYVar(name=name, node=i, value=ast.literal_eval(value.text()))
+            )
 
 
 class FixMixin:
@@ -59,22 +68,25 @@ class FixMixin:
         "dictionary": "dictionary",
     }
 
-    def handle_name(self, node: Optional[SgNode]) -> (str, Range):
+    def handle_name(self, context: Context, node: Optional[SgNode]) -> (str, Range):
         if not node:
             return ""
 
-        if not node.matches(kind="string"):
-            return ""
-
         statement = node.text()
-        if statement.startswith("f"):
-            # fstring is not supported
+        node_kind = node.kind()
+        if node_kind not in ["string", "binary_operator"]:
             return ""
 
-        return ast.literal_eval(statement)
+        if node_kind == "string" and not statement.startswith("f"):
+            return ast.literal_eval(statement)
+
+        return eval(statement, context.get_py_vars(), {})
 
     def handle_value(
-        self, cast_node: Optional[SgNode], value_node: Optional[SgNode]
+        self,
+        context: Context,
+        cast_node: Optional[SgNode],
+        value_node: Optional[SgNode],
     ) -> (str, str):
         cast = ""
         if cast_node and cast_node.matches(kind="identifier"):
@@ -90,6 +102,7 @@ class FixMixin:
 
     def make_env_var(
         self,
+        context: Context,
         result: SgNode,
         required: bool,
     ) -> Optional[EnvVar]:
@@ -97,12 +110,12 @@ class FixMixin:
         if not name_node:
             return None
 
-        name = self.handle_name(name_node)
+        name = self.handle_name(context, name_node)
         if not name:
             return None
 
         cast, value = self.handle_value(
-            result.get_match("TYPE"), result.get_match("VALUE")
+            context, result.get_match("TYPE"), result.get_match("VALUE")
         )
 
         name_node_range = name_node.range()
@@ -143,15 +156,15 @@ class EnvRefPlugin(Plugin, FixMixin):
     def should_run(self, context: Context, node: SgNode) -> bool:
         return context.has_imports(self.module, self.imports)
 
-    def iter_var_by_pattern(self, pattern: str, node: SgNode):
+    def iter_var_by_pattern(self, context: Context, pattern: str, node: SgNode):
         for i in node.find_all(pattern=pattern):
-            env_var = self.make_env_var(i, self.required)
+            env_var = self.make_env_var(context, i, self.required)
             if env_var:
                 yield env_var
 
     def handle(self, context: Context, node: SgNode):
         for pattern in self.patterns:
-            for i in self.iter_var_by_pattern(pattern, node):
+            for i in self.iter_var_by_pattern(context, pattern, node):
                 context.add_env_var(i)
 
 
@@ -212,7 +225,7 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
     def handle(self, context: Context, node: SgNode):
         self.handle_declare(context, node)
         for pattern in self.patterns:
-            for i in self.iter_var_by_pattern(pattern, node):
+            for i in self.iter_var_by_pattern(context, pattern, node):
                 if not i.value and i.name not in self.defined_vars:
                     i.required = True
 
@@ -221,11 +234,14 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
 
 class EnvVarHub(PluginHub):
     django_env_name: str = "env"
+    additional_required_patterns: list[str] = Field(default_factory=list)
+    additional_patterns: list[str] = Field(default_factory=list)
 
     @property
     def plugins(self) -> list[Plugin]:
-        return [
+        p = [
             ModuleImportPlugin(),
+            PyVarPlugin(),
             # stdlib
             EnvRefPlugin(pattern="os.getenv($NAME)", module="os"),
             EnvRefPlugin(pattern="os.getenv($NAME, $VALUE)", module="os"),
@@ -246,3 +262,11 @@ class EnvVarHub(PluginHub):
             # django env
             DjangoEnvPlugin(),
         ]
+
+        for i in self.additional_required_patterns:
+            p.append(EnvRefPlugin(pattern=i, required=True, priority=10))
+
+        for i in self.additional_patterns:
+            p.append(EnvRefPlugin(pattern=i, priority=10))
+
+        return p

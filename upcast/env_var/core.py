@@ -1,6 +1,6 @@
 from collections import defaultdict
 from collections.abc import Iterable
-from typing import Protocol, TextIO, runtime_checkable
+from typing import Protocol, TextIO, runtime_checkable, Any
 
 from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel, Field
@@ -24,6 +24,27 @@ class EnvVar(BaseModel):
     def statement(self) -> str:
         return self.node.text()
 
+    def _merge_range(self, other: "EnvVar") -> bool:
+        merged = False
+        my_range = self.node.range()
+        other_range = other.node.range()
+
+        if my_range.start.line < other_range.start.line or (
+            my_range.start.line == other_range.start.line
+            and my_range.start.column < other_range.start.column
+        ):
+            self.node = other.node
+            merged = True
+
+        if my_range.end.line > other_range.end.line or (
+            my_range.end.line == other_range.end.line
+            and my_range.end.column > other_range.end.column
+        ):
+            self.node = other.node
+            merged = True
+
+        return merged
+
     def merge_from(self, other: "EnvVar", strict: bool = True) -> bool:
         if self.name != other.name:
             return False
@@ -43,19 +64,11 @@ class EnvVar(BaseModel):
             self.value = other.value
             merged = True
 
-        my_range = self.node.range()
-        other_range = other.node.range()
-
-        if my_range.start.line < other_range.start.line or (
-            my_range.start.line == other_range.start.line and my_range.start.column < other_range.start.column
-        ):
-            self.node = other.node
+        if not self.required and other.required:
+            self.required = other.required
             merged = True
 
-        if my_range.end.line > other_range.end.line or (
-            my_range.end.line == other_range.end.line and my_range.end.column > other_range.end.column
-        ):
-            self.node = other.node
+        if self._merge_range(other):
             merged = True
 
         return merged
@@ -64,6 +77,7 @@ class EnvVar(BaseModel):
 class PYVar(BaseModel):
     node: SgNode
     name: str
+    value: Any
 
     class Config:
         arbitrary_types_allowed = True
@@ -74,6 +88,7 @@ class Context(BaseModel):
     imports: set[str] = Field(default_factory=set)
     star_imports: set[str] = Field(default_factory=set)
     env_vars: dict[tuple[int, int], EnvVar] = Field(default_factory=dict)
+    py_vars: dict[str, PYVar] = Field(default_factory=dict)
 
     def has_module(self, path: str) -> bool:
         module, sep, name = path.rpartition(":")
@@ -120,8 +135,15 @@ class Context(BaseModel):
         self.env_vars[env_var.position] = env_var
         return True
 
+    def add_py_var(self, py_var: PYVar) -> bool:
+        self.py_vars[py_var.name] = py_var
+        return True
+
     def iter_env_vars(self) -> Iterable[EnvVar]:
         return self.env_vars.values()
+
+    def get_py_vars(self) -> dict[str, Any]:
+        return {k: v.value for k, v in self.py_vars.items()}
 
 
 class Plugin(BaseModel):

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "upcast"
-version = "0.1.6"
+version = "0.1.7"
 description = "AST tools"
 authors = ["MrLYC <github@m.mrlyc.com>"]
 repository = "https://github.com/mrlyc/upcast"

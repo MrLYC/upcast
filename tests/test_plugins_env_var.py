@@ -91,6 +91,26 @@ class TestEnvVarHub:
             assert v.cast == i["cast"]
             assert v.required == i["required"]
 
+    def test_additional_patterns(self, hub: EnvVarHub, check):
+        hub.additional_patterns = ["get_env_or($NAME, $VALUE)"]
+        hub.additional_required_patterns = ["get_env_or_raise($NAME)"]
+
+        exported = check(
+            """
+            VALUE1 = get_env_or('KEY1', 'default')
+            VALUE2 = get_env_or_raise('KEY2')
+            """
+        )
+
+        key1 = exported["KEY1"]
+        assert key1.name == "KEY1"
+        assert key1.value == "'default'"
+        assert key1.required == False
+
+        key2 = exported["KEY2"]
+        assert key2.name == "KEY2"
+        assert key2.required == True
+
     @pytest.mark.parametrize(
         "import_statement, statement_prefix",
         [
@@ -151,3 +171,22 @@ class TestEnvVarHub:
         assert exported.cast == expected_cast1 or expected_cast2
         assert exported.required == required
         assert exported.statement() == real_statement
+
+    @pytest.mark.parametrize(
+        "statement, expected_name",
+        [
+            ("getenv(PREFIX + 'KEY')", "APP_KEY"),
+            ("getenv(f'{PREFIX}KEY')", "APP_KEY"),
+        ],
+    )
+    def test_key_concat(self, check_one, statement, expected_name):
+        exported = check_one(
+            f"""
+            from os import getenv
+            
+            PREFIX = 'APP_'
+            VALUE1 = {statement}
+            """
+        )
+
+        assert exported.name == expected_name
