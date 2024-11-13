@@ -113,7 +113,7 @@ class FixMixin:
             value=value,
             cast=cast,
             required=required,
-            position=(name_node_range.start.line, name_node_range.start.column),
+            position=(name_node_range.start.line + 1, name_node_range.start.column + 1),
         )
 
 
@@ -203,8 +203,8 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
                     value=value_node.text(),
                     cast=cast_node.text(),
                     position=(
-                        name_node_range.start.line,
-                        name_node_range.start.column,
+                        name_node_range.start.line + 1,
+                        name_node_range.start.column + 1,
                     ),
                 )
             )
