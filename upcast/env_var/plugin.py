@@ -1,5 +1,4 @@
 import ast
-from lib2to3.fixes.fix_input import context
 from typing import ClassVar, Optional
 
 from ast_grep_py import Range
@@ -7,6 +6,7 @@ from pydantic import Field
 
 from upcast.env_var.core import EnvVar, PluginHub, Context, Plugin, PYVar
 from ast_grep_py import SgNode
+from upcast.utils import FunctionArgs
 
 
 class ModuleImportPlugin(Plugin):
@@ -196,22 +196,18 @@ class DjangoEnvPlugin(EnvRefPlugin, FixMixin):
             return self.var_name
 
         self.var_name = declare_node["NAME"].text()
+        args = FunctionArgs().parse(declare_node, "ARGS")
 
-        for i in declare_node.get_multiple_matches("ARGS"):
-            if not i.matches(kind="keyword_argument"):
-                continue
-
-            name_node = i.child(0)
-            name = name_node.text()
-            name_node_range = name_node.range()
-            arg_node = i.child(2)
+        for name, arg in args.args.items():
+            arg_node = arg.value_node
             cast_node = arg_node.child(1)
             value_node = arg_node.child(3)
+            name_node_range = arg.node.range()
 
             self.defined_vars.add(name)
             context.add_env_var(
                 EnvVar(
-                    node=i,
+                    node=arg.node,
                     name=name,
                     value=value_node.text(),
                     cast=cast_node.text(),

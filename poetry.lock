@@ -351,6 +351,22 @@ url = "https://mirrors.jlu.edu.cn/pypi/web/simple"
 reference = "my_mirror"
 
 [[package]]
+name = "evalidate"
+version = "2.0.3"
+description = "Validation and secure evaluation of untrusted python expressions"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "evalidate-2.0.3-py3-none-any.whl", hash = "sha256:0ec20b9b29649c7b93436e05254d1871e3137c6c91c13973436393d648a7461c"},
+    {file = "evalidate-2.0.3.tar.gz", hash = "sha256:5a18e1bd7427ccde2518bad90d7bcec07308a2346822ac094e8fcf8094b8fab8"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.jlu.edu.cn/pypi/web/simple"
+reference = "my_mirror"
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -1392,4 +1408,4 @@ reference = "my_mirror"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "a20dc95339cfa7b223c8e74de3dbdf5eb67cedf8149225f404029b20f7c6adf0"
+content-hash = "fc183956fd4878e0ce143597f4948f0e6118dde3e0bfb0210df3aada37c35e40"

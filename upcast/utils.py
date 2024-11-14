@@ -1,28 +1,40 @@
 from dataclasses import field
-from typing import Optional
-
+from dataclasses import dataclass
 from ast_grep_py import SgNode
 
 
+@dataclass
+class FunctionArg:
+    name: str
+    node: SgNode
+    value_node: SgNode
+
+
+@dataclass
 class FunctionArgs:
-    args: list[SgNode] = field(default_factory=list)
-    kwargs: dict[str, SgNode] = field(default_factory=dict)
+    args: dict[str, FunctionArg] = field(default_factory=dict)
 
-    def parse(self, node: SgNode, group: str):
+    def parse(self, node: SgNode, group: str, args: tuple[str] = ()) -> "FunctionArgs":
+        pos = 0
+        len_args = len(args)
+
         for i in node.get_multiple_matches(group):
-            if i.matches(kind=","):
+            kind = i.kind()
+
+            if kind == ",":
                 continue
-            elif i.matches(kind="keyword_argument"):
-                self.kwargs[i.child(0).text()] = i.child(1)
-            else:
-                self.args.append(i)
 
-    def get_args(self, keys: dict[str, int]) -> dict[str, Optional[SgNode]]:
-        args: dict[str, Optional[SgNode]] = {}
-        for key, index in keys.items():
-            if index < len(self.args):
-                args[key] = self.args[index]
-            elif key in self.kwargs:
-                args[key] = self.kwargs[key]
+            elif kind == "keyword_argument":
+                pos = len_args
+                name_node = i.child(0)
+                name = name_node.text()
 
-        return args
+                self.args[name] = FunctionArg(name=name, node=i, value_node=i.child(2))
+
+            elif pos < len_args:
+                pos += 1
+                name = args[pos]
+
+                self.args[name] = FunctionArg(name=name, node=i, value_node=i)
+
+        return self
