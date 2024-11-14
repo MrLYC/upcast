@@ -177,16 +177,18 @@ class TestEnvVarHub:
         [
             ("getenv(PREFIX + 'KEY')", "APP_KEY"),
             ("getenv(f'{PREFIX}KEY')", "APP_KEY"),
+            ("getenv('%sKEY' % PREFIX)", "APP_KEY"),
         ],
     )
     def test_key_concat(self, check_one, statement, expected_name):
         exported = check_one(
-            f"""
-            from os import getenv
-            
-            PREFIX = 'APP_'
-            VALUE1 = {statement}
-            """
+            "\n".join(
+                [
+                    "from os import getenv",
+                    "PREFIX = 'APP_'",
+                    f"VALUE = {statement}",
+                ]
+            )
         )
 
         assert exported.name == expected_name

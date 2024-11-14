@@ -1,5 +1,5 @@
-from dataclasses import field
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
 from ast_grep_py import SgNode
 
 

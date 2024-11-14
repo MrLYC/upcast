@@ -1,7 +1,7 @@
 import csv
+import os
 from dataclasses import dataclass, field
 from typing import TextIO
-import os
 
 from pydantic import BaseModel
 

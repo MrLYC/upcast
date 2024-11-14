@@ -1,11 +1,9 @@
-import ast
 from typing import ClassVar, Optional
 
-from ast_grep_py import Range
+from ast_grep_py import Range, SgNode
 from pydantic import Field
 
-from upcast.env_var.core import EnvVar, PluginHub, Context, Plugin, PYVar
-from ast_grep_py import SgNode
+from upcast.env_var.core import Context, EnvVar, Plugin, PluginHub, PYVar
 from upcast.utils import FunctionArgs
 
 
@@ -43,17 +41,21 @@ class PyVarPlugin(Plugin):
     def handle(self, context: Context, node: SgNode):
         assign_nodes = node.find_all(pattern="$NAME = $VALUE")
         for i in assign_nodes:
-            name = i.get_match("NAME").text()
-            if not name.isupper():
+            name_node = i["NAME"]
+            name_node_range = name_node.range()
+            if name_node_range.start.column != 0:
                 continue
 
-            value = i["VALUE"]
-            if value.kind() != "string":
+            value_node = i["VALUE"]
+            if value_node.kind() == "call":
                 continue
 
-            context.add_py_var(
-                PYVar(name=name, node=i, value=ast.literal_eval(value.text()))
-            )
+            try:
+                value = context.evalidate_node(value_node)
+            except Exception:
+                continue
+
+            context.add_global_var(PYVar(name=name_node.text(), node=i, value=value))
 
 
 class FixMixin:
@@ -72,15 +74,14 @@ class FixMixin:
         if not node:
             return ""
 
-        statement = node.text()
         node_kind = node.kind()
         if node_kind not in ["string", "binary_operator"]:
             return ""
 
-        if node_kind == "string" and not statement.startswith("f"):
-            return ast.literal_eval(statement)
-
-        return eval(statement, context.get_py_vars(), {})
+        try:
+            return context.evalidate_node(node)
+        except Exception:
+            return node.text()
 
     def handle_value(
         self,

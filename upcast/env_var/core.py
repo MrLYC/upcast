@@ -1,7 +1,9 @@
+import bisect
 from collections import defaultdict
 from collections.abc import Iterable
-from typing import Protocol, TextIO, runtime_checkable, Any
+from typing import Any, Protocol, TextIO, runtime_checkable
 
+import evalidate
 from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel, Field
 
@@ -77,7 +79,7 @@ class EnvVar(BaseModel):
 class PYVar(BaseModel):
     node: SgNode
     name: str
-    value: Any
+    value: Any = None
 
     class Config:
         arbitrary_types_allowed = True
@@ -88,7 +90,26 @@ class Context(BaseModel):
     imports: set[str] = Field(default_factory=set)
     star_imports: set[str] = Field(default_factory=set)
     env_vars: dict[tuple[int, int], EnvVar] = Field(default_factory=dict)
-    py_vars: dict[str, PYVar] = Field(default_factory=dict)
+    global_vars: list[PYVar] = Field(default_factory=list)
+    eval_model: evalidate.EvalModel = Field(
+        default_factory=lambda: evalidate.EvalModel(
+            nodes=[
+                "JoinedStr",
+                "Expression",
+                "FormattedValue",
+                "Constant",
+                "Name",
+                "Load",
+                "BinOp",
+                "Add",
+                "Sub",
+                "Mult",
+                "Div",
+                "Mod",
+                "Attribute",
+            ]
+        )
+    )
 
     def has_module(self, path: str) -> bool:
         module, sep, name = path.rpartition(":")
@@ -135,15 +156,29 @@ class Context(BaseModel):
         self.env_vars[env_var.position] = env_var
         return True
 
-    def add_py_var(self, py_var: PYVar) -> bool:
-        self.py_vars[py_var.name] = py_var
+    def add_global_var(self, py_var: PYVar) -> bool:
+        def _sort_key(v: PYVar):
+            r = v.node.range()
+            return r.start.line, r.start.column
+
+        bisect.insort(self.global_vars, py_var, key=_sort_key)
         return True
 
     def iter_env_vars(self) -> Iterable[EnvVar]:
         return self.env_vars.values()
 
-    def get_py_vars(self) -> dict[str, Any]:
-        return {k: v.value for k, v in self.py_vars.items()}
+    def evalidate_node(self, node: SgNode) -> Any:
+        scopes: dict[str, Any] = {}
+        node_range = node.range()
+
+        for i in self.global_vars:
+            var_range = i.node.range()
+            if node_range.start.line < var_range.start.line:
+                break
+
+            scopes[i.name] = i.value
+
+        return evalidate.Expr(node.text(), model=self.eval_model).eval(scopes)
 
 
 class Plugin(BaseModel):
