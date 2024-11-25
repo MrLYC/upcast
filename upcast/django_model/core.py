@@ -1,6 +1,7 @@
 import os.path
 import re
 from collections.abc import Iterable
+from contextlib import suppress
 from textwrap import dedent
 from typing import Any, ClassVar, Protocol, TextIO
 
@@ -90,7 +91,6 @@ class ModelDefinitionPlugin(FileBasePlugin):
         "null",
         "blank",
         "choices",
-        "default",
         "help_text",
         "verbose_name",
         "max_length",
@@ -135,13 +135,21 @@ class ModelDefinitionPlugin(FileBasePlugin):
                 continue
 
             imported, _, type_ = cls.partition(".")
+            safe_kwargs = {}
+            for k in self.field_available_kwargs:
+                v = args.get(k)
+                if not v:
+                    continue
+
+                with suppress(Exception):
+                    safe_kwargs[k] = v.value()
 
             yield models.ModelField(
                 node=i,
                 name=attr,
                 type=type_ or imported,
                 class_path=cls,
-                kwargs={name: value.value_node.text() for name, value in args.items()},
+                kwargs=safe_kwargs,
             )
 
     def iter_indexes_from_model(self, context: models.Context, node: SgNode, model: models.Model):

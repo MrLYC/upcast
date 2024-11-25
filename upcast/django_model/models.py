@@ -1,5 +1,6 @@
 import os.path
 from collections import defaultdict
+from typing import Any
 
 from ast_grep_py import SgNode
 from pydantic import BaseModel, Field
@@ -10,7 +11,7 @@ class ModelField(BaseModel):
     name: str = Field("", title="Name of the field")
     type: str = Field("", title="Type of the field")
     class_path: str = Field("", title="Class path of the field")
-    kwargs: dict[str, str] = Field(default_factory=dict, title="Keyword arguments")
+    kwargs: dict[str, Any] = Field(default_factory=dict, title="Keyword arguments")
 
     class Config:
         arbitrary_types_allowed = True
