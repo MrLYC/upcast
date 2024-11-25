@@ -78,11 +78,20 @@ class FunctionArgs:
 @dataclass
 class AnalysisModuleImport:
     node: SgNode
+    module: str
+
+    def make_path_absolute(self, path: str) -> str:
+        if not path.startswith("."):
+            return path
+
+        relpath = path.lstrip(".")
+        module_list = self.module.rsplit(".", maxsplit=len(path) - len(relpath))
+        return ".".join(module_list) + relpath
 
     def parse_multiple_matches(self, matches: list[SgNode]):
         for i in matches:
             node_kind = i.kind()
-            if node_kind == "dotted_name":
+            if node_kind in ("dotted_name", "wildcard_import"):
                 yield i.text(), ""
 
             elif node_kind == "aliased_import":
@@ -97,7 +106,7 @@ class AnalysisModuleImport:
 
     def iter_import_from(self, node: SgNode):
         for i in node.find_all(pattern="from $MODULE import $$$NAME"):
-            path = i["MODULE"].text()
+            path = self.make_path_absolute(i["MODULE"].text())
 
             for name, alias in self.parse_multiple_matches(i.get_multiple_matches("NAME")):
                 yield path, name, alias

@@ -1,4 +1,5 @@
 import os.path
+from collections import defaultdict
 
 from ast_grep_py import SgNode
 from pydantic import BaseModel, Field
@@ -37,7 +38,7 @@ class Model(BaseModel):
     node: SgNode = Field(title="Node of the model", exclude=True)
     name: str = Field(title="Name of the model")
     file: str = Field(title="Path of the file")
-    modules: list[str] = Field(default_factory=list, title="Modules of the model")
+    locations: list[str] = Field(default_factory=list, title="Modules of the model")
     position: tuple[int, int] = Field(title="Position of the model")
     bases: list[ModelBase] = Field(default_factory=list, title="Base classes of the model")
     fields: list[ModelField] = Field(default_factory=list, title="Fields of the model")
@@ -48,7 +49,6 @@ class Model(BaseModel):
 
 
 class ImportedModule(BaseModel):
-    path: str = Field("", title="Path of the module")
     module: str = Field("", title="Module name")
     name: str = Field("", title="Name of the class")
     alias: str = Field("", title="Alias of the class")
@@ -60,7 +60,10 @@ class Context(BaseModel):
     current_file: str = Field("", title="Current file")
     resolved_models: dict[str, Model] = Field(default_factory=dict, title="Resolved models")
     unresolved_models: list[Model] = Field(default_factory=list, title="Unresolved models")
-    imported_models: dict[str, ImportedModule] = Field(default_factory=dict, title="Imported models")
+    module_imports: dict[str, ImportedModule] = Field(default_factory=dict, title="Imported models")
+    module_refs: dict[str, dict[str, ImportedModule]] = Field(
+        default_factory=lambda: defaultdict(dict), title="Module references"
+    )
 
     class Config:
         arbitrary_types_allowed = True
@@ -68,13 +71,20 @@ class Context(BaseModel):
     def switch_to_file(self, file: str):
         self.current_file = file if file else ""
         self.module = self.file_to_module(file)
-        self.imported_models = {}
+        self.module_imports = {}
 
     def reset(self):
         self.switch_to_file("")
 
-    def add_imported_module(self, module: ImportedModule):
-        self.imported_models[module.alias or module.name] = module
+    def add_imported_module(self, module: ImportedModule, export: bool = False):
+        self.module_imports[module.alias or module.name] = module
+
+        if export:
+            self.module_refs[module.module][module.name] = ImportedModule(
+                module=self.module,
+                name=module.name,
+                alias=module.alias,
+            )
 
     def file_to_module(self, file: str) -> str:
         if not file:

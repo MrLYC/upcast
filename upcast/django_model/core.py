@@ -31,6 +31,7 @@ class Runner(BaseModel):
             ModuleImportPlugin(),
             ModelDefinitionPlugin(),
             ClassPathFixPlugin(),
+            ExportModelPlugin(),
         ]
 
     def run(self, files: Iterable[TextIO]):
@@ -62,12 +63,19 @@ class ModuleImportPlugin(FileBasePlugin):
     """查找模块导入"""
 
     def should_run(self, context: models.Context, node: SgNode) -> bool:
-        return True
+        return "models" in context.current_file
 
     def run(self, context: models.Context, node: SgNode):
-        analysis = AnalysisModuleImport(node=node)
-        for path, name, alias in analysis.iter_import(node):
-            context.add_imported_module(models.ImportedModule(path=path, name=name, alias=alias))
+        analysis = AnalysisModuleImport(node=node, module=context.module)
+        for module, name, alias in analysis.iter_import(node):
+            context.add_imported_module(
+                models.ImportedModule(
+                    module=module,
+                    name=name,
+                    alias=alias,
+                ),
+                export=context.current_file.endswith(os.path.join("models", "__init__.py")),
+            )
 
 
 class ModelDefinitionPlugin(FileBasePlugin):
@@ -180,15 +188,8 @@ class ModelDefinitionPlugin(FileBasePlugin):
 
         return any("Model" in m.name for m in model.bases)
 
-    def iter_module(self, context: models.Context, node: SgNode, model: models.Model):
-        yield context.module
-
-        path, file = os.path.split(model.file)
-        if file == "models.py":
-            return
-
-        if path.endswith("models"):
-            yield context.file_to_module(path)
+    def locations(self, context: models.Context, node: SgNode, model: models.Model):
+        yield f"{context.module}.{model.name}"
 
     def run(self, context: models.Context, node: SgNode):
         for i in node.find_all(
@@ -211,7 +212,7 @@ class ModelDefinitionPlugin(FileBasePlugin):
             model.bases.extend(self.iter_base_classes(context, i, model))
             model.fields.extend(self.iter_fields(context, i, model))
             model.indexes.extend(self.iter_indexes(context, i, model))
-            model.modules.extend(self.iter_module(context, i, model))
+            model.locations.extend(self.locations(context, i, model))
 
             if not self.is_look_like_django_model(model):
                 continue
@@ -220,8 +221,8 @@ class ModelDefinitionPlugin(FileBasePlugin):
 
     def finish(self, context: models.Context) -> bool:
         for i in context.unresolved_models:
-            for module in i.modules:
-                context.resolved_models[f"{module}:{i.name}"] = i
+            for location in i.locations:
+                context.resolved_models[location] = i
 
         context.unresolved_models = []
         return True
@@ -235,19 +236,11 @@ class ClassPathFixPlugin(FileBasePlugin):
 
     def get_module_path(self, context: models.Context, class_path: str):
         imported, _, attribute = class_path.partition(".")
-        if not attribute:
-            return f"{context.module}.{imported}"
+        module = context.module_imports.get(imported)
+        if module:
+            return f"{module.module}.{class_path}"
 
-        module = context.imported_models.get(imported)
-        if not module:
-            module_path = "_"
-        elif module.path.startswith("."):
-            module_path_list = context.module.split(".")
-            module_path = ".".join(module_path_list[: len(module_path_list) + 1])
-        else:
-            module_path = module.path
-
-        return f"{module_path}.{class_path}"
+        return f"{context.module}.{class_path}"
 
     def fix_bases(self, context: models.Context, model: models.Model):
         for i in model.bases:
@@ -264,3 +257,25 @@ class ClassPathFixPlugin(FileBasePlugin):
 
             self.fix_bases(context, model)
             self.fix_fields(context, model)
+
+
+class ExportModelPlugin(FileBasePlugin):
+    def should_run(self, context: models.Context, node: SgNode) -> bool:
+        return False
+
+    def finish(self, context: models.Context) -> bool:
+        for model in context.resolved_models.values():
+            for location in model.locations:
+                module, _, name = location.rpartition(".")
+                module_refs = context.module_refs.get(module)
+                if not module_refs:
+                    continue
+
+                for imported in [name, "*"]:
+                    module_ref = module_refs.get(imported)
+                    if not module_ref:
+                        continue
+
+                    model.locations.append(f"{module_ref.module}.{module_ref.alias or name}")
+
+        return True
