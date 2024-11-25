@@ -1,11 +1,13 @@
 import json
 import sys
 from contextlib import nullcontext
+from glob import glob
 from typing import Optional
 
 import click
 
 from upcast.django_model.core import Runner
+from upcast.django_model.models import Context
 from upcast.env_var.exporter import BaseExporter, MultiExporter
 from upcast.env_var.plugin import EnvVarHub
 
@@ -43,22 +45,22 @@ def find_env_vars(
 
 @main.command()
 @click.option("-o", "--output", default=None, type=click.Path())
-@click.argument("path", nargs=-1)
-def analyze_django_models(output: Optional[str], path: list[str]):
+@click.argument("root")
+def analyze_django_models(output: Optional[str], root: str):
     def iter_files():
-        for i in path:
+        for i in glob(f"{root}/**/*.py", recursive=True):
             with open(i) as f:
                 yield f
 
     output_file = open(output, "w") if output else nullcontext(sys.stdout)
 
     with output_file as f:
-        runner = Runner()
+        runner = Runner(context=Context(root_dir=root))
         runner.run(iter_files())
 
         f.write(
             json.dumps(
-                {k: v.model_dump() for k, v in runner.context.resolved_models.items()},
+                [m.model_dump() for m in runner.context.get_models()],
                 indent=2,
             )
         )

@@ -1,10 +1,11 @@
+import os.path
 import re
 from collections.abc import Iterable
 from textwrap import dedent
 from typing import Protocol, TextIO
 
 from ast_grep_py import SgNode, SgRoot
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from upcast.django_model import models
 from upcast.utils import AnalysisModuleImport, FunctionArgs
@@ -19,7 +20,7 @@ class Plugin(Protocol):
 
 
 class Runner(BaseModel):
-    context: models.Context = Field(default_factory=models.Context, title="Context of the runner")
+    context: models.Context
 
     class Config:
         arbitrary_types_allowed = True
@@ -30,7 +31,6 @@ class Runner(BaseModel):
             ModuleImportPlugin(),
             ModelDefinitionPlugin(),
             ClassPathFixPlugin(),
-            MarkResolvedPlugin(),
         ]
 
     def run(self, files: Iterable[TextIO]):
@@ -114,7 +114,7 @@ class ModelDefinitionPlugin(FileBasePlugin):
                     kind="primary_key",
                 )
 
-            if kwargs.get("index") == "True":
+            if kwargs.get("db_index") == "True":
                 yield models.ModelIndex(
                     node=f.node,
                     fields=[f.name],
@@ -180,6 +180,16 @@ class ModelDefinitionPlugin(FileBasePlugin):
 
         return any("Model" in m.name for m in model.bases)
 
+    def iter_module(self, context: models.Context, node: SgNode, model: models.Model):
+        yield context.module
+
+        path, file = os.path.split(model.file)
+        if file == "models.py":
+            return
+
+        if path.endswith("models"):
+            yield context.file_to_module(path)
+
     def run(self, context: models.Context, node: SgNode):
         for i in node.find_all(
             pattern=dedent(
@@ -195,17 +205,26 @@ class ModelDefinitionPlugin(FileBasePlugin):
                 node=i,
                 name=i["NAME"].text(),
                 file=context.current_file,
-                location=(node_range.start.line, node_range.start.column),
+                position=(node_range.start.line, node_range.start.column),
             )
 
             model.bases.extend(self.iter_base_classes(context, i, model))
             model.fields.extend(self.iter_fields(context, i, model))
             model.indexes.extend(self.iter_indexes(context, i, model))
+            model.modules.extend(self.iter_module(context, i, model))
 
             if not self.is_look_like_django_model(model):
                 continue
 
             context.unresolved_models.append(model)
+
+    def finish(self, context: models.Context) -> bool:
+        for i in context.unresolved_models:
+            for module in i.modules:
+                context.resolved_models[f"{module}:{i.name}"] = i
+
+        context.unresolved_models = []
+        return True
 
 
 class ClassPathFixPlugin(FileBasePlugin):
@@ -214,21 +233,29 @@ class ClassPathFixPlugin(FileBasePlugin):
     def should_run(self, context: models.Context, node: SgNode) -> bool:
         return True
 
+    def get_module_path(self, context: models.Context, class_path: str):
+        imported, _, attribute = class_path.partition(".")
+        if not attribute:
+            return f"{context.module}.{imported}"
+
+        module = context.imported_models.get(imported)
+        if not module:
+            module_path = "_"
+        elif module.path.startswith("."):
+            module_path_list = context.module.split(".")
+            module_path = ".".join(module_path_list[: len(module_path_list) + 1])
+        else:
+            module_path = module.path
+
+        return f"{module_path}.{class_path}"
+
     def fix_bases(self, context: models.Context, model: models.Model):
         for i in model.bases:
-            imported, _, attribute = i.class_path.partition(".")
-            module = context.imported_models.get(imported)
-            module_path = module.path if module else "?"
-
-            i.class_path = f"{module_path}.{i.class_path}"
+            i.class_path = self.get_module_path(context, i.class_path)
 
     def fix_fields(self, context: models.Context, model: models.Model):
         for i in model.fields:
-            imported, _, attribute = i.class_path.partition(".")
-            module = context.imported_models.get(imported)
-            module_path = module.path if module else "?"
-
-            i.class_path = f"{module_path}.{i.class_path}"
+            i.class_path = self.get_module_path(context, i.class_path)
 
     def run(self, context: models.Context, node: SgNode):
         for model in context.unresolved_models:
@@ -237,17 +264,3 @@ class ClassPathFixPlugin(FileBasePlugin):
 
             self.fix_bases(context, model)
             self.fix_fields(context, model)
-
-
-class MarkResolvedPlugin(Plugin):
-    """标记已解析的模型"""
-
-    def should_run(self, context: models.Context, node: SgNode) -> bool:
-        return False
-
-    def finish(self, context: models.Context) -> bool:
-        for i in context.unresolved_models:
-            context.resolved_models[f"{i.file}:{i.location[0]},{i.location[1]}"] = i
-
-        context.unresolved_models = []
-        return True
