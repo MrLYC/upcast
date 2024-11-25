@@ -2,7 +2,7 @@ import os.path
 import re
 from collections.abc import Iterable
 from textwrap import dedent
-from typing import Protocol, TextIO
+from typing import Any, ClassVar, Protocol, TextIO
 
 from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel
@@ -81,8 +81,23 @@ class ModuleImportPlugin(FileBasePlugin):
 class ModelDefinitionPlugin(FileBasePlugin):
     """查找模型定义"""
 
-    field_attr_regex: re.Pattern = re.compile(r"^[\w_]+$")
-    field_type_regex: re.Pattern = re.compile(r"^.*Field.*$")
+    field_name_regex: ClassVar[re.Pattern] = re.compile(r"^\w[\w_]+$")
+    field_type_regex: ClassVar[re.Pattern] = re.compile(r"^.*Field.*$")
+    field_available_kwargs: ClassVar[set[str]] = {
+        "primary_key",
+        "db_index",
+        "unique",
+        "null",
+        "blank",
+        "choices",
+        "default",
+        "help_text",
+        "verbose_name",
+        "max_length",
+        "auto_created",
+        "on_delete",
+        "related_name",
+    }
 
     def should_run(self, context: models.Context, node: SgNode) -> bool:
         return "models" in context.current_file
@@ -93,21 +108,38 @@ class ModelDefinitionPlugin(FileBasePlugin):
             if kind in ["attribute", "identifier"]:
                 yield models.ModelBase(node=i, name=i.text(), class_path=i.text())
 
-    def iter_fields(self, context: models.Context, node: SgNode, model: models.Model):
-        for i in node.find_all(pattern="$ATTR = $CLS($$$ARGS)"):
-            attr = i["ATTR"].text()
-            cls = i["CLS"].text()
+    def is_look_like_django_field(self, attr: str, cls: str, kwargs: dict[str, Any]) -> bool:
+        if not self.field_name_regex.match(attr):
+            return False
 
-            if not self.field_attr_regex.match(attr) or not self.field_type_regex.match(cls):
+        if not self.field_type_regex.match(cls):
+            return False
+
+        if kwargs.keys() & self.field_available_kwargs:
+            return True
+
+        return not kwargs
+
+    def iter_fields(self, context: models.Context, node: SgNode, model: models.Model):
+        class_indent = node.range().start.column
+
+        for i in node.find_all(pattern="$ATTR = $CLS($$$ARGS)"):
+            if i.range().start.column <= class_indent:
                 continue
 
+            attr = i["ATTR"].text()
+            cls = i["CLS"].text()
             args = FunctionArgs().parse_args(i, "ARGS")
 
-            _, _, type_ = cls.rpartition(".")
+            if not self.is_look_like_django_field(attr, cls, args):
+                continue
+
+            imported, _, type_ = cls.partition(".")
+
             yield models.ModelField(
                 node=i,
                 name=attr,
-                type=type_,
+                type=type_ or imported,
                 class_path=cls,
                 kwargs={name: value.value_node.text() for name, value in args.items()},
             )
