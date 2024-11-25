@@ -1,9 +1,10 @@
 import os.path
-from collections import defaultdict
+from collections import defaultdict,Counter
 from typing import Any
 
 from ast_grep_py import SgNode
 from pydantic import BaseModel, Field
+
 
 
 class ModelField(BaseModel):
@@ -41,6 +42,7 @@ class Model(BaseModel):
     file: str = Field(title="Path of the file")
     locations: list[str] = Field(default_factory=list, title="Modules of the model")
     position: tuple[int, int] = Field(title="Position of the model")
+    references: int = Field(0, title="Number of references")
     bases: list[ModelBase] = Field(default_factory=list, title="Base classes of the model")
     fields: list[ModelField] = Field(default_factory=list, title="Fields of the model")
     indexes: list[ModelIndex] = Field(default_factory=list, title="Indexes of the model")
@@ -54,6 +56,9 @@ class ImportedModule(BaseModel):
     name: str = Field("", title="Name of the class")
     alias: str = Field("", title="Alias of the class")
 
+    def real_name(self):
+        return self.alias or self.name
+
 
 class Context(BaseModel):
     root_dir: str = Field(title="Root directory")
@@ -65,6 +70,7 @@ class Context(BaseModel):
     module_refs: dict[str, dict[str, ImportedModule]] = Field(
         default_factory=lambda: defaultdict(dict), title="Module references"
     )
+    refrences: Counter[str] = Field(default_factory=Counter, title="Model references")
 
     class Config:
         arbitrary_types_allowed = True
@@ -78,7 +84,7 @@ class Context(BaseModel):
         self.switch_to_file("")
 
     def add_imported_module(self, module: ImportedModule, export: bool = False):
-        self.module_imports[module.alias or module.name] = module
+        self.module_imports[module.real_name()] = module
 
         if export:
             self.module_refs[module.module][module.name] = ImportedModule(
@@ -112,4 +118,4 @@ class Context(BaseModel):
         for i in self.unresolved_models:
             models[id(i)] = i
 
-        return list(models.values())
+        return sorted(models.values(), key=lambda i: (-i.references, i.name))

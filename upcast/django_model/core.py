@@ -9,7 +9,8 @@ from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel
 
 from upcast.django_model import models
-from upcast.utils import AnalysisModuleImport, FunctionArgs
+from upcast.utils import AnalysisModuleImport, FunctionArgs, make_path_absolute
+from itertools import chain
 
 
 class Plugin(Protocol):
@@ -33,6 +34,7 @@ class Runner(BaseModel):
             ModelDefinitionPlugin(),
             ClassPathFixPlugin(),
             ExportModelPlugin(),
+            ModelReferencePlugin(),
         ]
 
     def run(self, files: Iterable[TextIO]):
@@ -50,9 +52,9 @@ class Runner(BaseModel):
 
         self.context.reset()
         while plugins:
-            for plugin in plugins:
-                if plugin.finish(self.context):
-                    plugins.remove(plugin)
+            plugin = plugins.pop(0)
+            if not plugin.finish(self.context):
+                plugins.append(plugin)
 
 
 class FileBasePlugin(Plugin):
@@ -64,7 +66,7 @@ class ModuleImportPlugin(FileBasePlugin):
     """查找模块导入"""
 
     def should_run(self, context: models.Context, node: SgNode) -> bool:
-        return "models" in context.current_file
+        return True
 
     def run(self, context: models.Context, node: SgNode):
         analysis = AnalysisModuleImport(node=node, module=context.module)
@@ -317,5 +319,66 @@ class ExportModelPlugin(FileBasePlugin):
                         continue
 
                     model.locations.append(f"{module_ref.module}.{module_ref.alias or name}")
+
+        return True
+
+
+class ModelReferencePlugin(FileBasePlugin):
+    def should_run(self, context: models.Context, node: SgNode) -> bool:
+        return True
+
+    def run(self, context: models.Context, node: SgNode):
+        models:dict[str, str] = {}
+        refrences: list[str] = []
+
+        for m in chain(node.find_all(pattern="$MODEL.objects.$METHOD($$$ARGS)"), node.find_all(pattern="$MODEL.objects.$METHOD()")):
+            
+            model = m["MODEL"].text()
+            models[model] = ""
+
+            refrences.append(model)
+
+        for module in context.module_imports.values():
+            name = module.real_name()
+            if name == "*":
+                continue
+
+            if "models" in module.module:
+                path = f"{module.module}.{name}"
+
+            elif module.name == "models":
+                path = f"{module.module}.{name}"
+
+            else:
+                continue
+
+            models[name] = path
+
+        for model in models:
+            for m in chain(node.find_all(pattern=f"{model}($$$ARGS)"), node.find_all(pattern=f"$K = {model}")):
+                refrences.append(model)
+
+
+        for refrence in refrences:
+            imported, _, name = refrence.partition(".")
+            path = models.get(imported)
+            if not path:
+                continue
+
+            if name:
+                real_path = f"{path}.{name}"
+
+            else:
+                real_path = path
+
+            context.refrences.update([real_path])
+
+    def finish(self, context: models.Context) -> bool:
+        
+        for model in context.resolved_models.values():
+            for location in model.locations:
+                refrence = context.refrences.get(location)
+                if refrence:
+                    model.references += refrence
 
         return True
