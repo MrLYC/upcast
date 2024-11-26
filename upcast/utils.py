@@ -69,6 +69,11 @@ class FunctionArgs:
 
                 self.args[name] = FunctionArg(name=name, node=i, value_node=i)
 
+            else:
+                pos += 1
+                name = str(pos)
+                self.args[name] = FunctionArg(name=name, node=i, value_node=i)
+
         return self
 
     def parse_args(self, node: SgNode, group: str, args: tuple[str] = ()) -> dict[str, FunctionArg]:
@@ -88,7 +93,6 @@ def make_path_absolute(root_module: str, path: str) -> str:
 class AnalysisModuleImport:
     node: SgNode
     module: str
-
 
     def parse_multiple_matches(self, matches: list[SgNode]):
         for i in matches:

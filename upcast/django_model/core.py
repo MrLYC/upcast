@@ -2,15 +2,15 @@ import os.path
 import re
 from collections.abc import Iterable
 from contextlib import suppress
+from itertools import chain
 from textwrap import dedent
-from typing import Any, ClassVar, Protocol, TextIO
+from typing import Any, ClassVar, Optional, Protocol, TextIO
 
 from ast_grep_py import SgNode, SgRoot
 from pydantic import BaseModel
 
 from upcast.django_model import models
-from upcast.utils import AnalysisModuleImport, FunctionArgs, make_path_absolute
-from itertools import chain
+from upcast.utils import AnalysisModuleImport, Evalidate, FunctionArgs
 
 
 class Plugin(Protocol):
@@ -32,7 +32,7 @@ class Runner(BaseModel):
         return [
             ModuleImportPlugin(),
             ModelDefinitionPlugin(),
-            ClassPathFixPlugin(),
+            # ClassPathFixPlugin(),
             ExportModelPlugin(),
             ModelReferencePlugin(),
         ]
@@ -92,13 +92,18 @@ class ModelDefinitionPlugin(FileBasePlugin):
         "unique",
         "null",
         "blank",
-        "choices",
         "help_text",
         "verbose_name",
         "max_length",
         "auto_created",
         "on_delete",
         "related_name",
+        "types",
+        "editable",
+        "db_column",
+        "db_comment",
+        "db_tablespace",
+        "db_default",
     }
 
     def should_run(self, context: models.Context, node: SgNode) -> bool:
@@ -108,7 +113,11 @@ class ModelDefinitionPlugin(FileBasePlugin):
         for i in node.get_multiple_matches("BASE"):
             kind = i.kind()
             if kind in ["attribute", "identifier"]:
-                yield models.ModelBase(node=i, name=i.text(), class_path=i.text())
+                cls = i.text()
+                class_path = context.get_module_path(cls)
+                _, name = context.split_module_path(class_path)
+
+                yield models.ModelBase(node=i, name=name, class_path=class_path)
 
     def is_look_like_django_field(self, attr: str, cls: str, kwargs: dict[str, Any]) -> bool:
         if not self.field_name_regex.match(attr):
@@ -136,7 +145,6 @@ class ModelDefinitionPlugin(FileBasePlugin):
             if not self.is_look_like_django_field(attr, cls, args):
                 continue
 
-            imported, _, type_ = cls.partition(".")
             safe_kwargs = {}
             for k in self.field_available_kwargs:
                 v = args.get(k)
@@ -146,11 +154,13 @@ class ModelDefinitionPlugin(FileBasePlugin):
                 with suppress(Exception):
                     safe_kwargs[k] = v.value()
 
+            class_path = context.get_module_path(cls)
+            _, type_ = context.split_module_path(class_path)
             yield models.ModelField(
                 node=i,
                 name=attr,
-                type=type_ or imported,
-                class_path=cls,
+                type=type_,
+                class_path=class_path,
                 kwargs=safe_kwargs,
             )
 
@@ -178,8 +188,8 @@ class ModelDefinitionPlugin(FileBasePlugin):
                     kind="unique",
                 )
 
-    def iter_indexes_from_meta(self, context: models.Context, node: SgNode, model: models.Model):
-        meta_cls = node.find(
+    def get_model_meta(self, context: models.Context, node: SgNode) -> Optional[models.ModelMeta]:
+        meta = node.find(
             pattern=dedent(
                 """
                 class Meta:
@@ -187,8 +197,29 @@ class ModelDefinitionPlugin(FileBasePlugin):
                 """
             )
         )
-        if not meta_cls:
+        if not meta:
+            return None
+
+        model_meta = models.ModelMeta(node=meta)
+        evalidate = Evalidate()
+
+        for i in meta.find_all(pattern="$KEY = $VALUE"):
+            key = i["KEY"].text()
+
+            if key not in model_meta.model_fields:
+                continue
+
+            with suppress(Exception):
+                value = evalidate.eval(i["VALUE"].text())
+                setattr(model_meta, key, value)
+
+        return model_meta
+
+    def iter_indexes_from_meta(self, context: models.Context, node: SgNode, model: models.Model):
+        if not model.meta:
             return
+
+        meta_cls = model.meta.node
 
         unique_together = meta_cls.find(pattern="unique_together = ($$$ARGS)")
         if unique_together:
@@ -231,10 +262,37 @@ class ModelDefinitionPlugin(FileBasePlugin):
         return any("Model" in m.name for m in model.bases)
 
     def locations(self, context: models.Context, node: SgNode, model: models.Model):
-        yield f"{context.module}.{model.name}"
+        yield context.get_module_path(model.name)
+
+    def iter_methods(self, context: models.Context, node: SgNode, model: models.Model):
+        for i in node.find_all(
+            pattern=dedent(
+                """
+                def $METHOD($$$ARGS):
+                    $$$DEFINITION
+                """
+            )
+        ):
+            node_range = i.range()
+            args = FunctionArgs().parse_args(i, "ARGS")
+
+            yield models.ModelMethod(
+                node=i,
+                name=i["METHOD"].text(),
+                args=len(args),
+                lines=node_range.end.line - node_range.start.line,
+            )
+
+    def get_model_manager_name(self, context: models.Context, node: SgNode) -> str:
+        match = node.find(pattern="objects = $MANAGER($$$ARGS)")
+        if not match:
+            return ""
+
+        manager = match["MANAGER"].text()
+        return context.get_module_path(manager)
 
     def run(self, context: models.Context, node: SgNode):
-        for i in node.find_all(
+        for cls in node.find_all(
             pattern=dedent(
                 """
                 class $NAME($$$BASE):
@@ -242,19 +300,23 @@ class ModelDefinitionPlugin(FileBasePlugin):
                 """
             )
         ):
-            node_range = i.range()
+            node_range = cls.range()
 
             model = models.Model(
-                node=i,
-                name=i["NAME"].text(),
+                node=cls,
+                name=cls["NAME"].text(),
                 file=context.current_file,
                 position=(node_range.start.line, node_range.start.column),
+                lines=node_range.end.line - node_range.start.line,
+                manager=self.get_model_manager_name(context, cls),
+                meta=self.get_model_meta(context, cls),
             )
 
-            model.bases.extend(self.iter_base_classes(context, i, model))
-            model.fields.extend(self.iter_fields(context, i, model))
-            model.indexes.extend(self.iter_indexes(context, i, model))
-            model.locations.extend(self.locations(context, i, model))
+            model.bases.extend(self.iter_base_classes(context, cls, model))
+            model.fields.extend(self.iter_fields(context, cls, model))
+            model.indexes.extend(self.iter_indexes(context, cls, model))
+            model.locations.extend(self.locations(context, cls, model))
+            model.methods.extend(self.iter_methods(context, cls, model))
 
             if not self.is_look_like_django_model(model):
                 continue
@@ -276,21 +338,13 @@ class ClassPathFixPlugin(FileBasePlugin):
     def should_run(self, context: models.Context, node: SgNode) -> bool:
         return True
 
-    def get_module_path(self, context: models.Context, class_path: str):
-        imported, _, attribute = class_path.partition(".")
-        module = context.module_imports.get(imported)
-        if module:
-            return f"{module.module}.{class_path}"
-
-        return f"{context.module}.{class_path}"
-
     def fix_bases(self, context: models.Context, model: models.Model):
         for i in model.bases:
-            i.class_path = self.get_module_path(context, i.class_path)
+            i.class_path = context.get_module_path(i.class_path)
 
     def fix_fields(self, context: models.Context, model: models.Model):
         for i in model.fields:
-            i.class_path = self.get_module_path(context, i.class_path)
+            i.class_path = context.get_module_path(i.class_path)
 
     def run(self, context: models.Context, node: SgNode):
         for model in context.unresolved_models:
@@ -328,57 +382,51 @@ class ModelReferencePlugin(FileBasePlugin):
         return True
 
     def run(self, context: models.Context, node: SgNode):
-        models:dict[str, str] = {}
-        refrences: list[str] = []
+        related_models: dict[str, str] = {}
+        refs: list[str] = []
 
-        for m in chain(node.find_all(pattern="$MODEL.objects.$METHOD($$$ARGS)"), node.find_all(pattern="$MODEL.objects.$METHOD()")):
-            
+        for m in chain(
+            node.find_all(pattern="$MODEL.objects.$METHOD($$$ARGS)"),
+            node.find_all(pattern="$MODEL.objects.$METHOD()"),
+        ):
             model = m["MODEL"].text()
-            models[model] = ""
+            related_models[model] = context.module
 
-            refrences.append(model)
+            refs.append(model)
 
         for module in context.module_imports.values():
             name = module.real_name()
             if name == "*":
                 continue
 
-            if "models" in module.module:
-                path = f"{module.module}.{name}"
-
-            elif module.name == "models":
+            if module.name == "models" or "models" in module.module:
                 path = f"{module.module}.{name}"
 
             else:
                 continue
 
-            models[name] = path
+            related_models[name] = path
 
-        for model in models:
-            for m in chain(node.find_all(pattern=f"{model}($$$ARGS)"), node.find_all(pattern=f"$K = {model}")):
-                refrences.append(model)
+        for model in related_models:
+            for _ in chain(
+                node.find_all(pattern=f"{model}($$$ARGS)"),
+                node.find_all(pattern=f"$K = {model}"),
+            ):
+                refs.append(model)
 
-
-        for refrence in refrences:
-            imported, _, name = refrence.partition(".")
-            path = models.get(imported)
+        for ref in refs:
+            imported, _, name = ref.partition(".")
+            path = related_models.get(imported)
             if not path:
                 continue
 
-            if name:
-                real_path = f"{path}.{name}"
-
-            else:
-                real_path = path
-
-            context.refrences.update([real_path])
+            context.weight.update([f"{path}.{name}" if name else path])
 
     def finish(self, context: models.Context) -> bool:
-        
         for model in context.resolved_models.values():
             for location in model.locations:
-                refrence = context.refrences.get(location)
-                if refrence:
-                    model.references += refrence
+                weight = context.weight.get(location)
+                if weight:
+                    model.weight += weight
 
         return True

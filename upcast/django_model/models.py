@@ -1,10 +1,9 @@
 import os.path
-from collections import defaultdict,Counter
-from typing import Any
+from collections import Counter, defaultdict
+from typing import Any, Optional
 
 from ast_grep_py import SgNode
 from pydantic import BaseModel, Field
-
 
 
 class ModelField(BaseModel):
@@ -36,16 +35,44 @@ class ModelBase(BaseModel):
         arbitrary_types_allowed = True
 
 
+class ModelMethod(BaseModel):
+    node: SgNode = Field(title="Node of the method", exclude=True)
+    name: str = Field("", title="Name of the method")
+    args: int = Field(0, title="Number of arguments")
+    lines: int = Field(0, title="Number of lines")
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
+class ModelMeta(BaseModel):
+    node: SgNode = Field(title="Node of the model", exclude=True)
+    abstract: bool = Field(False, title="Abstract model")
+    app_label: str = Field("", title="App label")
+    db_table: str = Field("", title="Database table")
+    managed: bool = Field(True, title="Managed model")
+    proxy: bool = Field(False, title="Proxy model")
+    verbose_name: str = Field("", title="Verbose name")
+    verbose_name_plural: str = Field("", title="Verbose name plural")
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
 class Model(BaseModel):
     node: SgNode = Field(title="Node of the model", exclude=True)
     name: str = Field(title="Name of the model")
     file: str = Field(title="Path of the file")
     locations: list[str] = Field(default_factory=list, title="Modules of the model")
     position: tuple[int, int] = Field(title="Position of the model")
-    references: int = Field(0, title="Number of references")
+    weight: int = Field(0, title="Weight of model")
+    lines: int = Field(0, title="Number of lines")
     bases: list[ModelBase] = Field(default_factory=list, title="Base classes of the model")
     fields: list[ModelField] = Field(default_factory=list, title="Fields of the model")
     indexes: list[ModelIndex] = Field(default_factory=list, title="Indexes of the model")
+    methods: list[ModelMethod] = Field(default_factory=list, title="Methods of the model")
+    manager: str = Field("", title="Manager of the model")
+    meta: Optional[ModelMeta] = Field(default=None, title="Meta of the model")
 
     class Config:
         arbitrary_types_allowed = True
@@ -70,7 +97,7 @@ class Context(BaseModel):
     module_refs: dict[str, dict[str, ImportedModule]] = Field(
         default_factory=lambda: defaultdict(dict), title="Module references"
     )
-    refrences: Counter[str] = Field(default_factory=Counter, title="Model references")
+    weight: Counter[str] = Field(default_factory=Counter, title="Model weight")
 
     class Config:
         arbitrary_types_allowed = True
@@ -109,6 +136,21 @@ class Context(BaseModel):
 
         return path.replace(os.path.sep, ".")
 
+    def get_module_path(self, path: str) -> str:
+        imported, _, attribute = path.partition(".")
+        module = self.module_imports.get(imported)
+        if module:
+            return f"{module.module}.{path}"
+
+        return f"{self.module}.{path}"
+
+    def split_module_path(self, path: str) -> tuple[str, str]:
+        path, sep, name = path.rpartition(".")
+        if sep:
+            return path, name
+
+        return "", path
+
     def get_models(self) -> list[Model]:
         models: dict[int, Model] = {}
 
@@ -118,4 +160,4 @@ class Context(BaseModel):
         for i in self.unresolved_models:
             models[id(i)] = i
 
-        return sorted(models.values(), key=lambda i: (-i.references, i.name))
+        return sorted(models.values(), key=lambda i: (-i.weight, -i.lines, i.name))
