@@ -86,7 +86,7 @@ def make_path_absolute(root_module: str, path: str) -> str:
 
     relpath = path.lstrip(".")
     module_list = root_module.rsplit(".", maxsplit=len(path) - len(relpath))
-    return ".".join(module_list) + relpath
+    return f"{'.'.join(module_list)}.{relpath}"
 
 
 @dataclass

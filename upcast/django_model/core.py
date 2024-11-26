@@ -32,9 +32,8 @@ class Runner(BaseModel):
         return [
             ModuleImportPlugin(),
             ModelDefinitionPlugin(),
-            # ClassPathFixPlugin(),
             ExportModelPlugin(),
-            ModelReferencePlugin(),
+            ModelWeightCalcPlugin(),
         ]
 
     def run(self, files: Iterable[TextIO]):
@@ -167,21 +166,21 @@ class ModelDefinitionPlugin(FileBasePlugin):
     def iter_indexes_from_model(self, context: models.Context, node: SgNode, model: models.Model):
         for f in model.fields:
             kwargs = f.kwargs
-            if kwargs.get("primary_key") == "True" or f.name == "id":
+            if kwargs.get("primary_key") or f.name == "id":
                 yield models.ModelIndex(
                     node=f.node,
                     fields=[f.name],
                     kind="primary_key",
                 )
 
-            if kwargs.get("db_index") == "True":
+            if kwargs.get("db_index"):
                 yield models.ModelIndex(
                     node=f.node,
                     fields=[f.name],
                     kind="index",
                 )
 
-            if kwargs.get("unique") == "True":
+            if kwargs.get("unique"):
                 yield models.ModelIndex(
                     node=f.node,
                     fields=[f.name],
@@ -215,40 +214,71 @@ class ModelDefinitionPlugin(FileBasePlugin):
 
         return model_meta
 
+    def iter_indexes_from_meta_unique_together(self, context: models.Context, node: SgNode, model: models.Model):
+        if not model.meta:
+            return
+
+        meta_cls = model.meta.node
+        evalidate = Evalidate()
+
+        unique_together = meta_cls.find(pattern="unique_together = $FIELDS")
+        if not unique_together:
+            return
+
+        fields = []
+        with suppress(Exception):
+            fields.extend(evalidate.eval(unique_together["FIELDS"].text()))
+
+        if not fields:
+            return
+
+        if isinstance(fields[0], str):
+            yield models.ModelIndex(
+                node=unique_together,
+                kind="unique",
+                fields=list(fields),
+            )
+            return
+
+        for i in fields:
+            yield models.ModelIndex(
+                node=unique_together,
+                kind="unique",
+                fields=list(i),
+            )
+
     def iter_indexes_from_meta(self, context: models.Context, node: SgNode, model: models.Model):
         if not model.meta:
             return
 
         meta_cls = model.meta.node
 
-        unique_together = meta_cls.find(pattern="unique_together = ($$$ARGS)")
-        if unique_together:
-            for i in unique_together.get_multiple_matches("ARGS"):
-                yield models.ModelIndex(
-                    node=i,
-                    fields=[j.text() for j in i.get_multiple_matches("$$$ARGS") if j.kind() == "string"],
-                    kind="unique",
-                )
-
-        indexes = meta_cls.find(pattern="indexes = [$$$INDEX]")
+        indexes = meta_cls.find(pattern="indexes = $INDEXES")
         if indexes:
-            for i in indexes.get_multiple_matches("INDEX"):
-                item = i.find(pattern="$F($$$ARGS)")
-                if not item:
-                    continue
-
-                args = FunctionArgs().parse_args(item, "ARGS")
-                fields = args["fields"].value()
+            for i in indexes.find_all(pattern="$F($$$ARGS)"):
+                args = FunctionArgs().parse_args(i, "ARGS")
+                fields = args.get("fields")
                 if not fields:
                     continue
 
+                fields_value = fields.value()
+                if not fields_value:
+                    continue
+
+                unique = args.get("unique")
+                if not unique:
+                    continue
+
+                unique_value = unique.value()
+
                 yield models.ModelIndex(
                     node=i,
-                    fields=args["fields"].value(),
-                    kind="unique" if args.get("unique") == "True" else "index",
+                    fields=fields_value,
+                    kind=unique_value,
                 )
 
     def iter_indexes(self, context: models.Context, node: SgNode, model: models.Model):
+        yield from self.iter_indexes_from_meta_unique_together(context, node, model)
         yield from self.iter_indexes_from_model(context, node, model)
         yield from self.iter_indexes_from_meta(context, node, model)
 
@@ -265,13 +295,23 @@ class ModelDefinitionPlugin(FileBasePlugin):
         yield context.get_module_path(model.name)
 
     def iter_methods(self, context: models.Context, node: SgNode, model: models.Model):
-        for i in node.find_all(
-            pattern=dedent(
-                """
+        for i in chain(
+            node.find_all(
+                pattern=dedent(
+                    """
                 def $METHOD($$$ARGS):
                     $$$DEFINITION
                 """
-            )
+                )
+            ),
+            node.find_all(
+                pattern=dedent(
+                    """
+                def $METHOD($$$ARGS) -> $RETURN:
+                    $$$DEFINITION
+                """
+                )
+            ),
         ):
             node_range = i.range()
             args = FunctionArgs().parse_args(i, "ARGS")
@@ -332,29 +372,6 @@ class ModelDefinitionPlugin(FileBasePlugin):
         return True
 
 
-class ClassPathFixPlugin(FileBasePlugin):
-    """修复类路径"""
-
-    def should_run(self, context: models.Context, node: SgNode) -> bool:
-        return True
-
-    def fix_bases(self, context: models.Context, model: models.Model):
-        for i in model.bases:
-            i.class_path = context.get_module_path(i.class_path)
-
-    def fix_fields(self, context: models.Context, model: models.Model):
-        for i in model.fields:
-            i.class_path = context.get_module_path(i.class_path)
-
-    def run(self, context: models.Context, node: SgNode):
-        for model in context.unresolved_models:
-            if model.file != context.current_file:
-                continue
-
-            self.fix_bases(context, model)
-            self.fix_fields(context, model)
-
-
 class ExportModelPlugin(FileBasePlugin):
     def should_run(self, context: models.Context, node: SgNode) -> bool:
         return False
@@ -377,7 +394,7 @@ class ExportModelPlugin(FileBasePlugin):
         return True
 
 
-class ModelReferencePlugin(FileBasePlugin):
+class ModelWeightCalcPlugin(FileBasePlugin):
     def should_run(self, context: models.Context, node: SgNode) -> bool:
         return True
 
@@ -385,10 +402,7 @@ class ModelReferencePlugin(FileBasePlugin):
         related_models: dict[str, str] = {}
         refs: list[str] = []
 
-        for m in chain(
-            node.find_all(pattern="$MODEL.objects.$METHOD($$$ARGS)"),
-            node.find_all(pattern="$MODEL.objects.$METHOD()"),
-        ):
+        for m in node.find_all(pattern="$MODEL.objects.$METHOD($$$ARGS)"):
             model = m["MODEL"].text()
             related_models[model] = context.module
 
@@ -411,6 +425,7 @@ class ModelReferencePlugin(FileBasePlugin):
             for _ in chain(
                 node.find_all(pattern=f"{model}($$$ARGS)"),
                 node.find_all(pattern=f"$K = {model}"),
+                node.find_all(pattern=f"$V: {model}"),
             ):
                 refs.append(model)
 
