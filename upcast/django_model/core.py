@@ -84,7 +84,6 @@ class ModelDefinitionPlugin(FileBasePlugin):
     """查找模型定义"""
 
     field_name_regex: ClassVar[re.Pattern] = re.compile(r"^\w[\w_]+$")
-    field_type_regex: ClassVar[re.Pattern] = re.compile(r"^.*Field.*$")
     field_available_kwargs: ClassVar[set[str]] = {
         "primary_key",
         "db_index",
@@ -122,13 +121,7 @@ class ModelDefinitionPlugin(FileBasePlugin):
         if not self.field_name_regex.match(attr):
             return False
 
-        if not self.field_type_regex.match(cls):
-            return False
-
-        if kwargs.keys() & self.field_available_kwargs:
-            return True
-
-        return not kwargs
+        return any(i.endswith("Field") for i in cls.rpartition("."))
 
     def iter_fields(self, context: models.Context, node: SgNode, model: models.Model):
         class_indent = node.range().start.column
@@ -140,20 +133,18 @@ class ModelDefinitionPlugin(FileBasePlugin):
             attr = i["ATTR"].text()
             cls = i["CLS"].text()
             args = FunctionArgs().parse_args(i, "ARGS")
+            class_path = context.get_module_path(cls)
 
-            if not self.is_look_like_django_field(attr, cls, args):
+            if not self.is_look_like_django_field(attr, class_path, args):
                 continue
 
             safe_kwargs = {}
-            for k in self.field_available_kwargs:
-                v = args.get(k)
-                if not v:
+            for k, v in args.items():
+                if k not in self.field_available_kwargs:
                     continue
-
                 with suppress(Exception):
                     safe_kwargs[k] = v.value()
 
-            class_path = context.get_module_path(cls)
             _, type_ = context.split_module_path(class_path)
             yield models.ModelField(
                 node=i,
@@ -289,7 +280,11 @@ class ModelDefinitionPlugin(FileBasePlugin):
         if not model.bases:
             return False
 
-        return any("Model" in m.name for m in model.bases)
+        for finfo in model.fields:
+            if "django." in finfo.class_path:
+                return True
+
+        return any("django." in base.class_path for base in model.bases)
 
     def locations(self, context: models.Context, node: SgNode, model: models.Model):
         yield context.get_module_path(model.name)

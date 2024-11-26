@@ -152,3 +152,40 @@ class TestRunner:
         sid_index = author.indexes[3]
         assert sid_index.fields == ["sid"]
         assert sid_index.kind == "unique"
+
+    def test_skip_pydantic_model(self, check):
+        results = check({
+            "src/models.py": """
+                from pydantic import BaseModel, Field
+
+                class Author(BaseModel):
+                    first_name = Field()
+                """,
+        })
+
+        assert len(results) == 0
+
+    def test_model_field_challenge(self, check):
+        results = check({
+            "src/models.py": """
+                from django.db import models
+                from common import *
+                from common import fields
+
+                class Author(models.Model):
+                    id = models.AutoField()
+                    name_zh_hans = I18NField.zh_hans()
+                    name_zh_hant = fields.I18NField.zh_hant()
+
+                    callback = MyField().callback
+                """,
+        })
+
+        assert len(results) == 1
+
+        author = results[0]
+        assert len(author.fields) == 3
+
+        assert author.fields[0].name == "id"
+        assert author.fields[1].name == "name_zh_hans"
+        assert author.fields[2].name == "name_zh_hant"
