@@ -3,7 +3,7 @@ from typing import Optional
 
 import click
 
-from upcast.django_scanner import scan_django_models
+from upcast.django_model_scanner import scan_django_models
 from upcast.env_var.exporter import BaseExporter, MultiExporter
 from upcast.env_var.plugin import EnvVarHub
 

@@ -4,8 +4,8 @@ from typing import Any, Optional
 
 from astroid import nodes
 
-from upcast.django_scanner.ast_utils import is_django_model
-from upcast.django_scanner.model_parser import merge_abstract_fields, parse_model
+from upcast.django_model_scanner.ast_utils import is_django_model
+from upcast.django_model_scanner.model_parser import merge_abstract_fields, parse_model
 
 
 class DjangoModelChecker:

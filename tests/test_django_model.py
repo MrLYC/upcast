@@ -6,7 +6,7 @@ from textwrap import dedent
 import pytest
 import yaml
 
-from upcast.django_scanner import scan_django_models
+from upcast.django_model_scanner import scan_django_models
 
 
 @pytest.fixture

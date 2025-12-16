@@ -52,29 +52,84 @@ def _check_direct_bases_for_django(class_node: nodes.ClassDef) -> bool:
     """
     try:
         for base in class_node.bases:
-            base_str = base.as_string()
-            # Check common patterns: models.Model, Model, etc.
-            if any(pattern in base_str for pattern in ["models.Model", "Model", "db.models.Model"]):
-                # Check if Django is imported in this module
-                if _check_django_imports(class_node):
-                    return True
+            # Check if base matches Django model pattern
+            if _check_base_pattern_match(base, class_node):
+                return True
+            # Check if base is itself a Django model (for indirect inheritance)
+            if _check_base_is_django_model_recursive(base):
+                return True
+    except Exception:  # noqa: S110
+        pass
+    return False
 
-                # Try to infer the base
-                try:
-                    inferred_list = list(base.infer())
-                    for inferred in inferred_list:
-                        # Check if it's Uninferable
-                        if inferred.__class__.__name__ in ("Uninferable", "UninferableBase"):
-                            # Django not installed, but pattern matches - likely a Django model
-                            return True
-                        # Check if it has qname attribute (ClassDef, Module, etc.)
-                        elif hasattr(inferred, "qname"):
-                            qname = inferred.qname()  # type: ignore[attr-defined]
-                            if "django.db.models" in qname:
-                                return True
-                except Exception:  # noqa: S110
-                    # If inference fails but pattern matches and Django is imported, assume it's a model
-                    pass
+
+def _check_base_pattern_match(base: nodes.NodeNG, class_node: nodes.ClassDef) -> bool:
+    """Check if base class matches Django model string patterns.
+
+    Args:
+        base: The base class node
+        class_node: The class node being checked
+
+    Returns:
+        True if base matches Django model patterns
+    """
+    try:
+        base_str = base.as_string()
+        # Check common patterns: models.Model, Model, etc.
+        if not any(pattern in base_str for pattern in ["models.Model", "Model", "db.models.Model"]):
+            return False
+
+        # Check if Django is imported in this module
+        if _check_django_imports(class_node):
+            return True
+
+        # Try to infer the base
+        return _check_inferred_base(base)
+    except Exception:
+        return False
+
+
+def _check_inferred_base(base: nodes.NodeNG) -> bool:
+    """Check if inferred base is a Django model.
+
+    Args:
+        base: The base class node
+
+    Returns:
+        True if inferred base is a Django model
+    """
+    try:
+        inferred_list = list(base.infer())
+        for inferred in inferred_list:
+            # Check if it's Uninferable
+            if inferred.__class__.__name__ in ("Uninferable", "UninferableBase"):
+                # Django not installed, but pattern matches - likely a Django model
+                return True
+            # Check if it has qname attribute (ClassDef, Module, etc.)
+            if hasattr(inferred, "qname"):
+                qname = inferred.qname()  # type: ignore[attr-defined]
+                if "django.db.models" in qname:
+                    return True
+    except Exception:  # noqa: S110
+        pass
+    return False
+
+
+def _check_base_is_django_model_recursive(base: nodes.NodeNG) -> bool:
+    """Recursively check if base class is a Django model.
+
+    Args:
+        base: The base class node
+
+    Returns:
+        True if base is a Django model through recursive checking
+    """
+    try:
+        inferred_list = list(base.infer())
+        for inferred in inferred_list:
+            # Recursively check if the base class is a Django model (combines nested if with and)
+            if isinstance(inferred, nodes.ClassDef) and is_django_model(inferred):
+                return True
     except Exception:  # noqa: S110
         pass
     return False
@@ -158,8 +213,8 @@ def is_django_field(node: nodes.Assign) -> bool:
         for inferred in inferred_list:
             if hasattr(inferred, "qname"):
                 qname = inferred.qname()  # type: ignore[attr-defined]
-                # Check if it's from django.db.models.fields
-                if "django.db.models.fields" in qname:
+                # Check if it's from django.db.models - this covers fields, fields.related, etc.
+                if "django.db.models" in qname:
                     return True
     except Exception:  # noqa: S110
         pass
@@ -167,7 +222,7 @@ def is_django_field(node: nodes.Assign) -> bool:
     # Fallback: pattern matching for field names
     try:
         func_str = node.value.func.as_string()
-        if "Field" in func_str and _is_field_pattern(func_str):
+        if _is_field_pattern(func_str):
             return True
     except Exception:  # noqa: S110
         pass
@@ -179,16 +234,21 @@ def _is_field_pattern(func_str: str) -> bool:
     """Check if a function string matches Django field patterns.
 
     Args:
-        func_str: The function string (e.g., "models.CharField")
+        func_str: The function string (e.g., "models.CharField", "models.ForeignKey")
 
     Returns:
         True if it matches Django field patterns
     """
-    field_patterns = [
-        "models.",
-        "fields.",
-    ]
-    return any(pattern in func_str for pattern in field_patterns) and "Field" in func_str
+    # Check if it's prefixed with models. or fields.
+    field_prefixes = ["models.", "fields."]
+    has_prefix = any(prefix in func_str for prefix in field_prefixes)
+
+    if not has_prefix:
+        return False
+
+    # Check if it ends with Field or Key (for CharField, ForeignKey, etc.)
+    field_suffixes = ["Field", "Key"]
+    return any(func_str.endswith(suffix) for suffix in field_suffixes)
 
 
 def safe_as_string(node: nodes.NodeNG) -> str:

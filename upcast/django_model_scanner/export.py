@@ -13,11 +13,12 @@ def export_to_yaml(models: dict[str, dict[str, Any]], output_path: str) -> None:
         output_path: Path to the output YAML file
     """
     # Format models for output
-    formatted_models = {}
-    for qname, model in models.items():
-        formatted_models[qname] = format_model_output(model)
+    formatted_models = format_model_output(models)
 
     # Write to YAML file
+    from pathlib import Path
+
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(
             formatted_models,
@@ -39,9 +40,7 @@ def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
         YAML formatted string
     """
     # Format models for output
-    formatted_models = {}
-    for qname, model in models.items():
-        formatted_models[qname] = format_model_output(model)
+    formatted_models = format_model_output(models)
 
     return yaml.safe_dump(
         formatted_models,
@@ -52,8 +51,23 @@ def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
     )
 
 
-def format_model_output(model: dict[str, Any]) -> dict[str, Any]:
-    """Format a model dictionary for YAML output.
+def format_model_output(models: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Format models dictionary for YAML output.
+
+    Args:
+        models: Dictionary of model data keyed by qualified name
+
+    Returns:
+        Formatted models dictionary suitable for YAML export
+    """
+    formatted_models = {}
+    for qname, model in models.items():
+        formatted_models[qname] = _format_single_model(model)
+    return formatted_models
+
+
+def _format_single_model(model: dict[str, Any]) -> dict[str, Any]:
+    """Format a single model dictionary for YAML output.
 
     Args:
         model: Raw model data dictionary

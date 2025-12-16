@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from astroid import nodes
 
-from upcast.django_scanner.ast_utils import infer_literal_value, is_django_field, safe_as_string
+from upcast.django_model_scanner.ast_utils import infer_literal_value, is_django_field, safe_as_string
 
 
 def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any] | None:
@@ -73,10 +73,15 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
                         **field_options,
                     }
 
-    if not result["fields"] and not result["relationships"]:
-        return None
+    # Keep the model if:
+    # 1. It has fields or relationships, OR
+    # 2. It's abstract (fields will be inherited by children), OR
+    # 3. It has Meta options
+    if result["fields"] or result["relationships"] or result["abstract"] or result["meta"]:
+        return result
 
-    return result
+    # Skip only empty non-abstract models without Meta
+    return None
 
 
 def parse_field(assign_node: nodes.Assign) -> Optional[tuple[str, str, dict[str, Any]]]:
@@ -129,8 +134,8 @@ def _extract_field_type(call: nodes.Call) -> Optional[str]:
     """
     try:
         if isinstance(call.func, nodes.Attribute):
-            # Pattern: models.CharField
-            return safe_as_string(call.func)
+            # Pattern: models.CharField - return just the field name
+            return call.func.attrname
         elif isinstance(call.func, nodes.Name):
             # Pattern: CharField (direct import)
             return call.func.name
@@ -174,7 +179,10 @@ def _is_relationship_field(field_type: str) -> bool:
     Returns:
         True if it's a relationship field
     """
-    return field_type in {"ForeignKey", "OneToOneField", "ManyToManyField"}
+    # Check both short names and full paths
+    relationship_types = {"ForeignKey", "OneToOneField", "ManyToManyField"}
+    # Check if field_type ends with one of the relationship types
+    return field_type in relationship_types or any(field_type.endswith(rt) for rt in relationship_types)
 
 
 def parse_meta_class(class_node: nodes.ClassDef) -> dict[str, Any]:

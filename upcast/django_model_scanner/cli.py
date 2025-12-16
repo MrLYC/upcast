@@ -6,8 +6,8 @@ from typing import Any, Optional
 
 from astroid import MANAGER, nodes
 
-from upcast.django_scanner.checker import DjangoModelChecker
-from upcast.django_scanner.export import export_to_yaml, export_to_yaml_string
+from upcast.django_model_scanner.checker import DjangoModelChecker
+from upcast.django_model_scanner.export import export_to_yaml, export_to_yaml_string
 
 
 def scan_django_models(path: str, output: Optional[str] = None, verbose: bool = False) -> str:  # noqa: C901
@@ -115,6 +115,18 @@ def _find_project_root(start_path: Path, verbose: bool = False) -> str:
     # Start from the directory
     search_path = start_path if start_path.is_dir() else start_path.parent
     search_path = search_path.resolve()
+
+    # First check if current path is inside a src/ directory
+    current = search_path
+    while current.parent != current:  # Stop at filesystem root
+        if current.name == "src":
+            # Check if this src/ contains Python packages
+            has_python_packages = any(current.rglob("__init__.py"))
+            if has_python_packages:
+                if verbose:
+                    print(f"Found Python packages in src/, using: {current}", file=sys.stderr)
+                return str(current)
+        current = current.parent
 
     # Check if there's a src/ subdirectory with Python packages
     src_dir = search_path / "src"
