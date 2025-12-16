@@ -1,9 +1,11 @@
 """Visitor pattern implementation for environment variable detection."""
 
+from pathlib import Path
+
 import astroid
 from astroid import nodes
 
-from upcast.env_var_scanner.ast_utils import infer_literal_value, safe_as_string
+from upcast.env_var_scanner.ast_utils import safe_as_string
 from upcast.env_var_scanner.env_var_parser import (
     EnvVarInfo,
     EnvVarUsage,
@@ -14,10 +16,15 @@ from upcast.env_var_scanner.env_var_parser import (
 class EnvVarChecker:
     """Checker that visits AST nodes to detect environment variable usage."""
 
-    def __init__(self):
-        """Initialize the checker with empty results."""
+    def __init__(self, base_path: str | None = None):
+        """Initialize the checker with empty results.
+
+        Args:
+            base_path: Base path for calculating relative paths (default: current working directory)
+        """
         self.env_vars: dict[str, EnvVarInfo] = {}
         self.current_file: str = ""
+        self.base_path = Path(base_path) if base_path else Path.cwd()
 
     def check_file(self, file_path: str) -> None:
         """Analyze a Python file for environment variable usage.
@@ -25,7 +32,12 @@ class EnvVarChecker:
         Args:
             file_path: Path to the Python file to analyze
         """
-        self.current_file = file_path
+        # Store as relative path
+        try:
+            self.current_file = str(Path(file_path).relative_to(self.base_path))
+        except ValueError:
+            # If file_path is not relative to base_path, use as-is
+            self.current_file = file_path
 
         try:
             with open(file_path, encoding="utf-8") as f:
@@ -66,8 +78,22 @@ class EnvVarChecker:
             if "environ" not in value_str:
                 return
 
-            # Extract the key
-            var_name = node.slice.value if isinstance(node.slice, nodes.Const) else infer_literal_value(node.slice)
+            # Skip if this is part of a Del statement
+            parent = node.parent
+            while parent:
+                if isinstance(parent, nodes.Delete):
+                    return
+                # Stop at statement level
+                if isinstance(parent, (nodes.Module, nodes.FunctionDef, nodes.ClassDef)):
+                    break
+                parent = parent.parent
+
+            # Extract the key - must be a string literal, not a variable
+            if not isinstance(node.slice, nodes.Const):
+                # Skip if key is not a constant (e.g., os.environ[variable])
+                return
+
+            var_name = node.slice.value
 
             if not isinstance(var_name, str):
                 return

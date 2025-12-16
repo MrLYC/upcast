@@ -121,6 +121,87 @@ class TestEnvVarChecker:
             db_host = results["DB_HOST"]
             assert len(db_host.usages) >= 1
 
+    def test_exclude_del_statements(self, tmp_path):
+        """Should not detect environ access in del statements."""
+        test_file = tmp_path / "test_del.py"
+        test_file.write_text(
+            """
+import os
+
+# Should NOT be detected - del statement
+del os.environ['DELETE_ME']
+
+# Should be detected - normal read
+value = os.environ['KEEP_ME']
+"""
+        )
+
+        checker = EnvVarChecker()
+        checker.check_file(str(test_file))
+        results = checker.get_results()
+
+        # Should only detect KEEP_ME, not DELETE_ME
+        assert "DELETE_ME" not in results
+        assert "KEEP_ME" in results
+
+    def test_exclude_variable_keys(self, tmp_path):
+        """Should not detect environ access with variable keys."""
+        test_file = tmp_path / "test_var_keys.py"
+        test_file.write_text(
+            """
+import os
+
+# Should NOT be detected - variable key
+key = 'SOME_KEY'
+value = os.environ[key]
+
+# Should NOT be detected - variable in loop
+for k in os.environ:
+    print(os.environ[k])
+
+# Should be detected - literal key
+api_key = os.environ['API_KEY']
+"""
+        )
+
+        checker = EnvVarChecker()
+        checker.check_file(str(test_file))
+        results = checker.get_results()
+
+        # Should only detect API_KEY
+        assert "SOME_KEY" not in results
+        assert "k" not in results
+        assert "key" not in results
+        assert "API_KEY" in results
+
+    def test_exclude_environ_dict_methods(self, tmp_path):
+        """Should not detect os.environ dict methods as env var access."""
+        test_file = tmp_path / "test_dict_methods.py"
+        test_file.write_text(
+            """
+import os
+
+# Should NOT be detected - dict methods
+for k, v in os.environ.items():
+    print(k)
+
+keys = os.environ.keys()
+values = os.environ.values()
+
+# Should be detected - actual env var access
+debug = os.getenv('DEBUG', 'false')
+"""
+        )
+
+        checker = EnvVarChecker()
+        checker.check_file(str(test_file))
+        results = checker.get_results()
+
+        # Should only detect DEBUG
+        assert "k" not in results
+        assert "v" not in results
+        assert "DEBUG" in results
+
 
 class TestScanFunctions:
     """Tests for scan_files and scan_directory functions."""

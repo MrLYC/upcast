@@ -15,8 +15,8 @@ def scan_directory(directory: str, pattern: str = "**/*.py") -> EnvVarChecker:
     Returns:
         EnvVarChecker with aggregated results
     """
-    checker = EnvVarChecker()
-    dir_path = Path(directory)
+    dir_path = Path(directory).resolve()
+    checker = EnvVarChecker(base_path=str(dir_path))
 
     for file_path in dir_path.glob(pattern):
         if file_path.is_file():
@@ -34,7 +34,8 @@ def scan_files(file_paths: list[str]) -> EnvVarChecker:
     Returns:
         EnvVarChecker with aggregated results
     """
-    checker = EnvVarChecker()
+    # Use current working directory as base for relative paths
+    checker = EnvVarChecker(base_path=str(Path.cwd()))
 
     for file_path in file_paths:
         checker.check_file(file_path)
