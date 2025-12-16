@@ -44,8 +44,12 @@ def scan_django_models(path: str, output: Optional[str] = None, verbose: bool = 
     if verbose:
         print(f"Scanning {len(python_files)} Python file(s)...", file=sys.stderr)
 
-    # Create checker
-    checker = DjangoModelChecker()
+    # Determine root path for module path calculation
+    # Try to find the project root by looking for marker files
+    root_path = _find_project_root(input_path, verbose)
+
+    # Create checker with root path
+    checker = DjangoModelChecker(root_path=root_path)
 
     # Process each file
     for py_file in python_files:
@@ -95,6 +99,39 @@ def _collect_python_files(path: Path) -> list[Path]:
     return list(path.rglob("*.py"))
 
 
+def _find_project_root(start_path: Path, verbose: bool = False) -> str:
+    """Find the Python package root directory.
+
+    For projects with src/ layout, returns the src/ directory.
+    Otherwise returns the start_path itself.
+
+    Args:
+        start_path: Starting path (file or directory) - typically the repository root
+        verbose: Enable verbose output
+
+    Returns:
+        Absolute path to the Python package root directory
+    """
+    # Start from the directory
+    search_path = start_path if start_path.is_dir() else start_path.parent
+    search_path = search_path.resolve()
+
+    # Check if there's a src/ subdirectory with Python packages
+    src_dir = search_path / "src"
+    if src_dir.is_dir():
+        # Check if src/ contains Python packages (has __init__.py files)
+        has_python_packages = any(src_dir.rglob("__init__.py"))
+        if has_python_packages:
+            if verbose:
+                print(f"Found Python packages in src/, using: {src_dir}", file=sys.stderr)
+            return str(src_dir)
+
+    # Otherwise use the search path itself as root
+    if verbose:
+        print(f"Using directory as Python root: {search_path}", file=sys.stderr)
+    return str(search_path)
+
+
 def _scan_file(file_path: Path, checker: DjangoModelChecker, verbose: bool = False) -> None:
     """Scan a single Python file for Django models.
 
@@ -104,8 +141,30 @@ def _scan_file(file_path: Path, checker: DjangoModelChecker, verbose: bool = Fal
         verbose: Enable verbose output
     """
     try:
-        # Parse the file with astroid
-        module = MANAGER.ast_from_file(str(file_path))
+        # Calculate module name from file path relative to root
+        modname = None
+        if checker.root_path:
+            try:
+                root_p = Path(checker.root_path).resolve()
+                file_p = file_path.resolve()
+                if file_p.is_relative_to(root_p):
+                    rel_path = file_p.relative_to(root_p)
+                    # Convert to module path
+                    if rel_path.name == "__init__.py":
+                        # For __init__.py, use parent directory as module
+                        if rel_path.parent.parts:
+                            modname = ".".join(rel_path.parent.parts)
+                    else:
+                        # Remove .py extension
+                        modname = ".".join(rel_path.with_suffix("").parts)
+            except (ValueError, OSError):
+                pass
+
+        # Parse the file with astroid, providing module name if available
+        if modname:
+            module = MANAGER.ast_from_file(str(file_path), modname=modname)
+        else:
+            module = MANAGER.ast_from_file(str(file_path))
 
         # Visit all ClassDef nodes in the module
         _visit_module_nodes(module, checker)

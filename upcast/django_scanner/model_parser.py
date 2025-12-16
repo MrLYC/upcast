@@ -7,11 +7,12 @@ from astroid import nodes
 from upcast.django_scanner.ast_utils import infer_literal_value, is_django_field, safe_as_string
 
 
-def parse_model(class_node: nodes.ClassDef) -> dict[str, Any]:
+def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any]:
     """Parse a Django model class and extract all information.
 
     Args:
         class_node: The model class definition node
+        root_path: Unused, kept for backward compatibility
 
     Returns:
         Dictionary containing model information with keys:
@@ -24,10 +25,18 @@ def parse_model(class_node: nodes.ClassDef) -> dict[str, Any]:
         - relationships: Dictionary of relationship field definitions
         - meta: Dictionary of Meta class options
     """
+    # Extract module path from qname
+    # qname format: "module.path.ClassName"
+    qname = class_node.qname()
+    qname_parts = qname.split(".")
+
+    # Module is everything except the last part (class name)
+    module_path = ".".join(qname_parts[:-1]) if len(qname_parts) > 1 else ""
+
     result: dict[str, Any] = {
         "name": class_node.name,
-        "qname": class_node.qname(),
-        "module": class_node.root().name,
+        "qname": qname,
+        "module": module_path,
         "bases": [],
         "abstract": False,
         "fields": {},

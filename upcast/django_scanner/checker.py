@@ -1,6 +1,6 @@
 """Pylint checker for Django model scanning."""
 
-from typing import Any
+from typing import Any, Optional
 
 from astroid import nodes
 
@@ -18,9 +18,14 @@ class DjangoModelChecker:
 
     name = "django-model-scanner"
 
-    def __init__(self) -> None:
-        """Initialize the checker with empty model storage."""
+    def __init__(self, root_path: Optional[str] = None) -> None:
+        """Initialize the checker with empty model storage.
+
+        Args:
+            root_path: Root directory path for calculating relative module paths
+        """
         self.models: dict[str, dict[str, Any]] = {}
+        self.root_path = root_path
 
     def visit_classdef(self, node: nodes.ClassDef) -> None:
         """Visit a class definition node.
@@ -31,7 +36,7 @@ class DjangoModelChecker:
         # Check if this is a Django model
         if is_django_model(node):
             # Parse the model
-            model_data = parse_model(node)
+            model_data = parse_model(node, self.root_path)
 
             # Store by qualified name
             qname = node.qname()
