@@ -46,7 +46,7 @@ If you are proposing a new feature:
 # Get Started!
 
 Ready to contribute? Here's how to set up `upcast` for local development.
-Please note this documentation assumes you already have `poetry` and `Git` installed and ready to go.
+Please note this documentation assumes you already have `uv` and `Git` installed and ready to go.
 
 1. Fork the `upcast` repo on GitHub.
 
@@ -72,14 +72,16 @@ pyenv local <x.y.z>
 Then, install and activate the environment with:
 
 ```bash
-poetry install
-poetry shell
+uv sync --all-extras
+source .venv/bin/activate  # On Unix/macOS
+# or
+.venv\Scripts\activate  # On Windows
 ```
 
 4. Install pre-commit to run linters/formatters at commit time:
 
 ```bash
-poetry run pre-commit install
+uv run pre-commit install
 ```
 
 5. Create a branch for local development:

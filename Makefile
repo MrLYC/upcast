@@ -1,29 +1,29 @@
 .PHONY: install
-install: ## Install the poetry environment and install the pre-commit hooks
-	@echo "🚀 Creating virtual environment using pyenv and poetry"
-	@poetry install
-	@poetry run pre-commit install
-	@poetry shell
+install: ## Install the UV environment and install the pre-commit hooks
+	@echo "🚀 Creating virtual environment using UV"
+	@uv sync --all-extras
+	@uv run pre-commit install
+	@echo "✓ Virtual environment ready at .venv/"
 
 .PHONY: check
 check: ## Run code quality tools.
-	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry check --lock"
-	@poetry check --lock
+	@echo "🚀 Checking UV lock file consistency with 'pyproject.toml': Running uv lock --check"
+	@uv lock --check
 	@echo "🚀 Linting code: Running pre-commit"
-	@poetry run pre-commit run -a
+	@uv run pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"
-	@poetry run mypy
+	@uv run mypy
 
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
 	@$(eval args := )
-	@poetry run pytest -vv --cov --cov-config=pyproject.toml --cov-report=xml ${args}
+	@uv run pytest -vv --cov --cov-config=pyproject.toml --cov-report=xml ${args}
 
 .PHONY: build
-build: clean-build ## Build wheel file using poetry
+build: clean-build ## Build wheel file using UV
 	@echo "🚀 Creating wheel file"
-	@poetry build
+	@uv build
 
 .PHONY: clean-build
 clean-build: ## clean build artifacts
@@ -32,7 +32,7 @@ clean-build: ## clean build artifacts
 .PHONY: publish
 publish: ## publish a release to pypi.
 	@echo "🚀 Publishing."
-	@poetry publish --build
+	@uv publish
 
 .PHONY: help
 help:
