@@ -46,18 +46,9 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
 
     # Extract base classes
     for base in class_node.bases:
-        base_str = safe_as_string(base)  # type: ignore[arg-type]  # base is NodeNG
-        try:
-            inferred_list = list(base.infer())
-            for inferred in inferred_list:
-                if hasattr(inferred, "qname"):
-                    result["bases"].append(inferred.qname())  # type: ignore[attr-defined]
-                    break
-            else:
-                # No qname found, use string representation
-                result["bases"].append(base_str)
-        except Exception:
-            result["bases"].append(base_str)
+        base_qname = _extract_base_qname(base, class_node)
+        if base_qname:
+            result["bases"].append(base_qname)
 
     # Parse Meta class
     result["meta"] = parse_meta_class(class_node)
@@ -222,6 +213,73 @@ def get_meta_option(assign_node: nodes.Assign) -> Any:
         return infer_literal_value(assign_node.value)
     except Exception:
         return None
+
+
+def _extract_base_qname(base: Any, class_node: nodes.ClassDef) -> Optional[str]:  # noqa: C901
+    """Extract the qualified name of a base class with full module path.
+
+    Args:
+        base: The base class node
+        class_node: The class definition node (for accessing module imports)
+
+    Returns:
+        Full qualified name of the base class (e.g., "django.db.models.Model")
+    """
+    base_str = safe_as_string(base)  # type: ignore[arg-type]
+
+    try:
+        # Try to infer the base class to get its qname
+        try:
+            inferred_list = list(base.infer())
+            for inferred in inferred_list:
+                if hasattr(inferred, "qname"):
+                    qname = inferred.qname()  # type: ignore[attr-defined]
+                    # Return valid qname if it contains module path
+                    if qname and "." in qname and not qname.startswith("builtins."):
+                        return qname
+        except Exception:
+            return base_str
+
+        # Fallback: Try to get from import statement
+        base_name = None
+        if isinstance(base, nodes.Attribute):
+            # Pattern: models.Model
+            base_name = base.attrname
+            # Try to find where 'models' is imported from
+            if isinstance(base.expr, nodes.Name):
+                module_name = base.expr.name
+                # Look up the import to get the full module path
+                try:
+                    module_root = class_node.root()
+                    for import_node in module_root.nodes_of_class(nodes.Import):
+                        for name, alias in import_node.names:
+                            if (alias or name) == module_name:
+                                return f"{name}.{base_name}"
+                    for import_node in module_root.nodes_of_class(nodes.ImportFrom):
+                        if import_node.modname and (import_node.level == 0):
+                            for name, alias in import_node.names:
+                                if (alias or name) == module_name:
+                                    return f"{import_node.modname}.{name}.{base_name}"
+                except Exception:
+                    return base_str
+        elif isinstance(base, nodes.Name):
+            # Pattern: Model (direct import)
+            base_name = base.name
+            # Try to find where the base class is imported from
+            try:
+                module_root = class_node.root()
+                for import_node in module_root.nodes_of_class(nodes.ImportFrom):
+                    if import_node.modname:
+                        for name, alias in import_node.names:
+                            if (alias or name) == base_name:
+                                return f"{import_node.modname}.{name}"
+            except Exception:
+                return base_str
+
+    except Exception:
+        return base_str
+
+    return base_str
 
 
 def merge_abstract_fields(model: dict[str, Any], all_models: dict[str, dict[str, Any]]) -> None:  # noqa: C901

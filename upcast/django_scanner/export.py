@@ -66,6 +66,11 @@ def format_model_output(model: dict[str, Any]) -> dict[str, Any]:
         "abstract": model.get("abstract", False),
     }
 
+    # Add base classes
+    bases = model.get("bases", [])
+    if bases:
+        output["bases"] = bases
+
     # Add Meta options (excluding abstract which is already at top level)
     meta = model.get("meta", {})
     if meta:
