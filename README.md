@@ -20,80 +20,86 @@ pip install upcast
 
 ## Usage
 
-### analyze-django-models
+### scan-env-vars
 
-Analyze Django models in Python files and export structured information to YAML format. This command uses astroid for accurate type inference and supports abstract model inheritance, relationship fields, and Meta class options.
+**New in this version!** Scan Python files for environment variable usage with advanced type inference and aggregation. This command uses astroid for semantic analysis and provides comprehensive information about environment variables used in your project.
 
 ```bash
-upcast analyze-django-models /path/to/django/project/
+upcast scan-env-vars /path/to/your/python/project/
+```
+
+Scan specific files:
+
+```bash
+upcast scan-env-vars file1.py file2.py
 ```
 
 Output to a file:
 
 ```bash
-upcast analyze-django-models /path/to/django/project/ -o models.yaml
+upcast scan-env-vars /path/to/your/python/project/ -o env-vars.yaml
+```
+
+JSON output format:
+
+```bash
+upcast scan-env-vars /path/to/your/python/project/ --format json -o env-vars.json
 ```
 
 Enable verbose output:
 
 ```bash
-upcast analyze-django-models /path/to/django/project/ -o models.yaml --verbose
+upcast scan-env-vars /path/to/your/python/project/ -v
 ```
 
 **Output Format:**
 
-The command generates YAML output with the following structure:
+The command generates YAML (or JSON) output with aggregated information by environment variable name:
 
 ```yaml
-app.models.Author:
-  module: app.models
-  abstract: false
-  meta:
-    db_table: authors
-    unique_together:
-      - - first_name
-        - last_name
-  fields:
-    first_name:
-      type: CharField
-      max_length: 100
-    last_name:
-      type: CharField
-      max_length: 100
-    email:
-      type: EmailField
-      unique: true
-  relationships:
-    books:
-      type: ForeignKey
-      to: app.models.Book
-      related_name: author_books
+DATABASE_URL:
+  types:
+    - str
+  defaults:
+    - postgresql://localhost/db
+  usages:
+    - location: config/settings.py:15
+      statement: os.getenv('DATABASE_URL', 'postgresql://localhost/db')
+      type: str
+      default: postgresql://localhost/db
+      required: false
+    - location: config/database.py:8
+      statement: env.str('DATABASE_URL')
+      type: str
+      default: null
+      required: true
+  required: true
+
+API_KEY:
+  types: []
+  defaults: []
+  usages:
+    - location: api/client.py:23
+      statement: os.environ['API_KEY']
+      type: null
+      default: null
+      required: true
+  required: true
 ```
 
 **Features:**
 
-- **Accurate Model Detection**: Uses astroid for type inference to detect Django models
-- **Abstract Inheritance**: Automatically merges fields from abstract parent models
-- **Relationship Fields**: Detects ForeignKey, OneToOneField, and ManyToManyField
-- **Meta Class Options**: Extracts db_table, abstract, ordering, and other Meta options
-- **YAML Output**: Human-readable structured output format
+- **Advanced Type Inference**: Detects types from:
+  - Explicit type conversions: `int(os.getenv('PORT'))`
+  - Default value literals: `os.getenv('DEBUG', False)`
+  - Django-environ typed methods: `env.int('WORKERS')`
+  - `or` expressions: `env('DEBUG') or False`
+- **Multiple Pattern Support**:
+  - Standard library: `os.getenv()`, `os.environ[]`, `os.environ.get()`
+  - Django-environ: `env()`, `env.str()`, `env.int()`, `env.bool()`, etc.
+  - Aliased imports: `from os import getenv`
+- **Aggregation by Variable**: Shows all usages of each variable across your codebase
+- **Required Detection**: Identifies which variables are required vs optional
+- **Multiple Output Formats**: YAML (human-readable) or JSON (machine-readable)
 
-### find-env-vars
-
-Infer the environment variables that a program depends on through code, including information such as default values and
-types.
-
-```bash
-upcast find-env-vars /path/to/your/python/project/**/*.py
-```
-
-The `-o` option can be used to output a csv file for further analysis.
-
-```bash
-upcast find-env-vars /path/to/your/python/project/**/*.py -o env-vars.csv
-```
-
-Support the following output formats:
-
-- csv
-- html
+**Type Inference Rules:**

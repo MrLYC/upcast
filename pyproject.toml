@@ -7,10 +7,8 @@ readme = "README.md"
 requires-python = ">=3.9,<4.0"
 license = { file = "LICENSE" }
 dependencies = [
-    "ast-grep-py>=0.29.0",
     "pydantic>=2.9.2",
     "click>=8.1.7",
-    "evalidate>=2.0.3",
     "astroid>=3.0.0",
     "pyyaml>=6.0.0",
 ]
