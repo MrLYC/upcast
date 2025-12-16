@@ -8,6 +8,7 @@ from astroid import nodes
 from upcast.env_var_scanner.ast_utils import (
     infer_literal_value,
     infer_type_from_value,
+    is_env_var_call,
     resolve_string_concat,
     safe_as_string,
 )
@@ -60,6 +61,10 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
     Returns:
         EnvVarUsage object or None if not an env var call
     """
+    # First, check if this is actually an env var call
+    if not is_env_var_call(node):
+        return None
+
     func_str = safe_as_string(node.func)
 
     # Extract variable name from first argument

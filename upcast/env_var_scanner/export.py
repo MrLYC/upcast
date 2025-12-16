@@ -26,9 +26,6 @@ def export_to_yaml(env_vars: dict[str, EnvVarInfo]) -> str:
                 {
                     "location": usage.location,
                     "statement": usage.statement,
-                    "type": usage.type,
-                    "default": usage.default,
-                    "required": usage.required,
                 }
                 for usage in sorted(info.usages, key=lambda u: u.location)
             ],
@@ -57,9 +54,6 @@ def export_to_json(env_vars: dict[str, EnvVarInfo]) -> str:
                 {
                     "location": usage.location,
                     "statement": usage.statement,
-                    "type": usage.type,
-                    "default": usage.default,
-                    "required": usage.required,
                 }
                 for usage in sorted(info.usages, key=lambda u: u.location)
             ],

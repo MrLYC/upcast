@@ -5,8 +5,10 @@ from typing import Any, Optional, Union
 from astroid import nodes
 
 
-def is_env_var_call(node: Union[nodes.Call, nodes.NodeNG]) -> bool:
+def is_env_var_call(node: Union[nodes.Call, nodes.NodeNG]) -> bool:  # noqa: C901
     """Check if a Call node represents an environment variable access pattern.
+
+    Uses precise AST analysis to avoid false positives like request.headers.get().
 
     Args:
         node: An astroid Call node
@@ -18,27 +20,49 @@ def is_env_var_call(node: Union[nodes.Call, nodes.NodeNG]) -> bool:
         return False
 
     try:
-        func_str = safe_as_string(node.func)
+        func = node.func
 
-        # Check for common patterns
-        patterns = [
-            "os.getenv",
-            "os.environ.get",
-            "getenv",
-            "env",
-            "environ.get",
-        ]
-
-        for pattern in patterns:
-            if pattern in func_str:
-                return True
-
-        # Check for django-environ typed methods (env.str, env.int, etc.)
-        if "env." in func_str and any(
-            type_method in func_str
-            for type_method in [".str(", ".int(", ".bool(", ".float(", ".list(", ".dict(", ".json("]
-        ):
+        # Pattern: getenv(...) - direct name reference
+        if isinstance(func, nodes.Name) and func.name == "getenv":
             return True
+
+        # Pattern: env(...) - direct name reference (django-environ)
+        if isinstance(func, nodes.Name) and func.name == "env":
+            return True
+
+        # Pattern: os.getenv(...) or environ.get(...) or env.str(...)
+        if isinstance(func, nodes.Attribute):
+            attr_name = func.attrname
+
+            # Get the object being accessed (use expr, not value)
+            expr = func.expr
+
+            # Pattern: os.getenv
+            if isinstance(expr, nodes.Name):
+                if expr.name == "os" and attr_name == "getenv":
+                    return True
+                # Pattern: environ.get
+                if expr.name == "environ" and attr_name == "get":
+                    return True
+                # Pattern: env.str, env.int, etc. (django-environ)
+                if expr.name == "env" and attr_name in (
+                    "str",
+                    "int",
+                    "bool",
+                    "float",
+                    "list",
+                    "dict",
+                    "json",
+                    "url",
+                    "db",
+                ):
+                    return True
+
+            # Pattern: os.environ.get
+            if isinstance(expr, nodes.Attribute) and expr.attrname == "environ" and attr_name == "get":
+                inner_expr = expr.expr
+                if isinstance(inner_expr, nodes.Name) and inner_expr.name == "os":
+                    return True
 
     except Exception:  # noqa: S110
         pass
