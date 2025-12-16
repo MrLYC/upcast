@@ -7,7 +7,7 @@ from astroid import nodes
 from upcast.django_scanner.ast_utils import infer_literal_value, is_django_field, safe_as_string
 
 
-def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any]:
+def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any] | None:
     """Parse a Django model class and extract all information.
 
     Args:
@@ -72,6 +72,9 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
                         "type": field_type,
                         **field_options,
                     }
+
+    if not result["fields"] and not result["relationships"]:
+        return None
 
     return result
 

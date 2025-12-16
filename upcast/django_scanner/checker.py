@@ -34,13 +34,16 @@ class DjangoModelChecker:
             node: The ClassDef node to visit
         """
         # Check if this is a Django model
-        if is_django_model(node):
-            # Parse the model
-            model_data = parse_model(node, self.root_path)
+        if not is_django_model(node):
+            return
+        # Parse the model
+        model_data = parse_model(node, self.root_path)
+        if model_data is None:
+            return
 
-            # Store by qualified name
-            qname = node.qname()
-            self.models[qname] = model_data
+        # Store by qualified name
+        qname = node.qname()
+        self.models[qname] = model_data
 
     def close(self) -> None:
         """Perform second-pass processing after all nodes are visited.
