@@ -136,7 +136,7 @@ def _extract_field_type(call: nodes.Call) -> Optional[str]:
     try:
         if isinstance(call.func, nodes.Attribute):
             # Pattern: models.CharField
-            return call.func.attrname
+            return safe_as_string(call.func)
         elif isinstance(call.func, nodes.Name):
             # Pattern: CharField (direct import)
             return call.func.name
