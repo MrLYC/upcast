@@ -14,8 +14,8 @@ class BaseExporter(BaseModel):
     def begin(self):
         pass
 
-    def handle(self, env_var: EnvVar):
-        self.collected_vars.append(env_var)
+    def handle(self, var: EnvVar):
+        self.collected_vars.append(var)
 
     def get_merged_vars(self) -> dict[str, EnvVar]:
         merged_vars: dict[str, EnvVar] = {}
@@ -53,9 +53,9 @@ class MultiExporter:
         for i in self.exporters:
             i.begin()
 
-    def handle(self, env_var: EnvVar):
+    def handle(self, var: EnvVar):
         for i in self.exporters:
-            i.handle(env_var)
+            i.handle(var)
 
     def end(self):
         for i in self.exporters:
@@ -78,32 +78,30 @@ class CSVExporter:
     def begin(self):
         self.writer.writeheader()
 
-    def handle(self, env_var: EnvVar):
-        self.writer.writerow(
-            {
-                "name": env_var.name,
-                "cast": env_var.cast,
-                "value": env_var.value,
-                "required": "*" if env_var.required else "",
-                "location": env_var.location(),
-                "statement": env_var.statement(),
-            }
-        )
+    def handle(self, var: EnvVar):
+        self.writer.writerow({
+            "name": var.name,
+            "cast": var.cast,
+            "value": var.value,
+            "required": "*" if var.required else "",
+            "location": var.location(),
+            "statement": var.statement(),
+        })
 
     def end(self):
         self.file.close()
 
 
 class ConsoleExporter(BaseExporter):
-    def handle(self, env_var: EnvVar):
+    def handle(self, var: EnvVar):
         prefix = ""
-        if env_var.required:
+        if var.required:
             prefix = "*"
 
-        if env_var.value:
-            print(f"{prefix}{env_var.name}={env_var.value} at {env_var.location()}")
+        if var.value:
+            print(f"{prefix}{var.name}={var.value} at {var.location()}")
         else:
-            print(f"{prefix}{env_var.name} at {env_var.location()}")
+            print(f"{prefix}{var.name} at {var.location()}")
 
 
 @dataclass
@@ -117,31 +115,27 @@ class HTMLExporter:
     def begin(self):
         self.file.write("<html><head><title>Env Vars</title></head><body><table>")
         self.file.write(
-            "\n".join(
-                [
-                    "<tr><th>Name</th>",
-                    "<th>Value</th>",
-                    "<th>Cast</th>",
-                    "<th>Required</th>",
-                    "<th>Statement</th></tr>" "<th>Location</th>",
-                ]
-            )
+            "\n".join([
+                "<tr><th>Name</th>",
+                "<th>Value</th>",
+                "<th>Cast</th>",
+                "<th>Required</th>",
+                "<th>Statement</th></tr>" "<th>Location</th>",
+            ])
         )
 
-    def handle(self, env_var: EnvVar):
+    def handle(self, var: EnvVar):
         self.file.write(
-            "\n".join(
-                [
-                    "<tr>",
-                    f"<td>{env_var.name}</td>",
-                    f"<td>{env_var.value}</td>",
-                    f"<td>{env_var.cast}</td>",
-                    f"<td>{'Yes' if env_var.required else ''}</td>",
-                    f"<td>{env_var.statement()}</td>",
-                    f"<td>{env_var.location()}</td>",
-                    "</tr>",
-                ]
-            )
+            "\n".join([
+                "<tr>",
+                f"<td>{var.name}</td>",
+                f"<td>{var.value}</td>",
+                f"<td>{var.cast}</td>",
+                f"<td>{'Yes' if var.required else ''}</td>",
+                f"<td>{var.statement()}</td>",
+                f"<td>{var.location()}</td>",
+                "</tr>",
+            ])
         )
 
     def end(self):

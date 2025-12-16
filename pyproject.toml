@@ -11,6 +11,8 @@ dependencies = [
     "pydantic>=2.9.2",
     "click>=8.1.7",
     "evalidate>=2.0.3",
+    "astroid>=3.0.0",
+    "pyyaml>=6.0.0",
 ]
 
 [project.optional-dependencies]
@@ -39,6 +41,11 @@ index-url = "https://mirrors.jlu.edu.cn/pypi/web/simple"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+]
 
 [tool.mypy]
 files = ["upcast"]

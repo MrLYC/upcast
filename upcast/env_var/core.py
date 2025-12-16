@@ -32,15 +32,13 @@ class EnvVar(BaseModel):
         other_range = other.node.range()
 
         if my_range.start.line < other_range.start.line or (
-            my_range.start.line == other_range.start.line
-            and my_range.start.column < other_range.start.column
+            my_range.start.line == other_range.start.line and my_range.start.column < other_range.start.column
         ):
             self.node = other.node
             merged = True
 
         if my_range.end.line > other_range.end.line or (
-            my_range.end.line == other_range.end.line
-            and my_range.end.column > other_range.end.column
+            my_range.end.line == other_range.end.line and my_range.end.column > other_range.end.column
         ):
             self.node = other.node
             merged = True

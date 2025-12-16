@@ -1,191 +1,205 @@
-from io import StringIO
+"""Tests for Django model scanner."""
+
+from pathlib import Path
 from textwrap import dedent
 
 import pytest
+import yaml
 
-from upcast.django_model import models
-from upcast.django_model.core import Runner
-
-
-@pytest.fixture
-def context():
-    return models.Context(root_dir="src")
+from upcast.django_scanner import scan_django_models
 
 
 @pytest.fixture
-def runner(context):
-    return Runner(context=context)
+def temp_django_project(tmp_path: Path) -> Path:
+    """Create a temporary Django project with test models."""
+    # Create models.py with test models
+    models_file = tmp_path / "models.py"
+    models_file.write_text(
+        dedent(
+            """
+        from django.db import models
+
+
+        class Author(models.Model):
+            first_name = models.CharField(max_length=100)
+            last_name = models.CharField(max_length=100)
+            email = models.EmailField(unique=True)
+
+            class Meta:
+                db_table = "authors"
+                unique_together = [("first_name", "last_name")]
+
+
+        class Book(models.Model):
+            title = models.CharField(max_length=200)
+            author = models.ForeignKey("Author", on_delete=models.CASCADE, related_name="books")
+            published_date = models.DateField()
+            isbn = models.CharField(max_length=13, unique=True)
+
+            class Meta:
+                db_table = "books"
+                ordering = ["-published_date"]
+    """
+        )
+    )
+
+    return tmp_path
 
 
 @pytest.fixture
-def check(context, runner):
-    def do(file_mapping: dict[str, str]):
-        files: list[StringIO] = []
-
-        for name, code in file_mapping.items():
-            file = StringIO(dedent(code))
-            file.name = name
-            files.append(file)
-
-        runner.run(files)
-
-        return context.get_models()
-
-    return do
+def temp_abstract_models(tmp_path: Path) -> Path:
+    """Create temporary Django project with abstract models."""
+    models_file = tmp_path / "models.py"
+    models_file.write_text(
+        dedent(
+            """
+        from django.db import models
 
 
-class TestRunner:
-    def test_analyze_django_models(self, check):
-        results = check({
-            "src/models/__init__.py": "from .author import *",
-            "src/models/author.py": """
-                from django.db import models
-                from common import JsonField, SimpleManager, AdminManager, ModelMixin
+        class TimeStampedModel(models.Model):
+            created_at = models.DateTimeField(auto_now_add=True)
+            updated_at = models.DateTimeField(auto_now=True)
+
+            class Meta:
+                abstract = True
 
 
-                class Author(ModelMixin, models.Model):
-                    first_name = models.CharField(max_length=100, db_index=True)
-                    last_name = models.CharField(max_length=100, db_index=True)
-                    sid = models.IntegerField(unique=True)
-                    extra = JsonField()
+        class Article(TimeStampedModel):
+            title = models.CharField(max_length=200)
+            content = models.TextField()
 
-                    objects = SimpleManager()
-                    admin_objects = AdminManager()
+            class Meta:
+                db_table = "articles"
+    """
+        )
+    )
 
-                    def __str__(self):
-                        return f"{self.first_name} {self.last_name}"
+    return tmp_path
 
-                    class Meta:
-                        db_table = "authors"
-                        unique_together = ["first_name", "last_name"]
 
-                    @property
-                    def full_name(self) -> str:
-                        return self.get_full_name()
+class TestDjangoModelScanner:
+    """Test the Django model scanner functionality."""
 
-                    def do_something(self, action: str) -> str:
-                        return f"{action} {self.full_name}"
-                """,
-            "src/tests.py": """
-                from models import Author
+    def test_basic_model_detection(self, temp_django_project: Path) -> None:
+        """Test basic Django model detection."""
+        result = scan_django_models(str(temp_django_project))
+        models = yaml.safe_load(result)
 
-                Model = Author
+        # Should find 2 models: Author and Book
+        assert len(models) >= 2
 
-                author: Author = Author(first_name="YC", last_name="L", sid=1)
-                author.save()
+        # Check Author model exists
+        author_models = [k for k in models if k.endswith("Author")]
+        assert len(author_models) == 1
 
-                assert isinstance(Author.objects.get(sid=1), Model)
-                """,
-        })
+        author_key = author_models[0]
+        author = models[author_key]
 
-        assert len(results) == 1
+        assert author["abstract"] is False
+        assert "first_name" in author["fields"]
+        assert "last_name" in author["fields"]
+        assert "email" in author["fields"]
 
-        author = results[0]
-        assert author.name == "Author"
-        assert author.file == "src/models/author.py"
-        assert "models.author.Author" in author.locations
-        assert "models.Author" in author.locations
-        assert author.manager == "common.SimpleManager"
-        assert author.weight == 4
-        assert author.lines > 0
+    def test_field_types_and_options(self, temp_django_project: Path) -> None:
+        """Test field type detection and option extraction."""
+        result = scan_django_models(str(temp_django_project))
+        models = yaml.safe_load(result)
 
-        assert len(author.bases) == 2
+        author_models = [k for k in models if k.endswith("Author")]
+        author = models[author_models[0]]
 
-        mixin = author.bases[0]
-        assert mixin.name == "ModelMixin"
-        assert mixin.class_path == "common.ModelMixin"
+        # Check field types
+        assert author["fields"]["first_name"]["type"] == "CharField"
+        assert author["fields"]["email"]["type"] == "EmailField"
 
-        base_model = author.bases[1]
-        assert base_model.name == "Model"
-        assert base_model.class_path == "django.db.models.Model"
+        # Check field options
+        assert author["fields"]["first_name"]["max_length"] == 100
+        assert author["fields"]["email"]["unique"] is True
 
-        assert len(author.fields) == 4
+    def test_relationship_fields(self, temp_django_project: Path) -> None:
+        """Test relationship field detection."""
+        result = scan_django_models(str(temp_django_project))
+        models = yaml.safe_load(result)
 
-        first_name = author.fields[0]
-        assert first_name.name == "first_name"
-        assert first_name.type == "CharField"
-        assert first_name.class_path == "django.db.models.CharField"
-        assert first_name.kwargs == {"max_length": 100, "db_index": True}
+        book_models = [k for k in models if k.endswith("Book")]
+        book = models[book_models[0]]
 
-        sid = author.fields[2]
-        assert sid.name == "sid"
-        assert sid.type == "IntegerField"
-        assert sid.class_path == "django.db.models.IntegerField"
-        assert sid.kwargs == {"unique": True}
+        # Should have relationships section
+        assert "relationships" in book
+        assert "author" in book["relationships"]
 
-        extra = author.fields[3]
-        assert extra.name == "extra"
-        assert extra.type == "JsonField"
-        assert extra.class_path == "common.JsonField"
-        assert extra.kwargs == {}
+        # Check relationship details
+        author_rel = book["relationships"]["author"]
+        assert author_rel["type"] == "ForeignKey"
+        assert "Author" in author_rel["to"]
+        assert author_rel["related_name"] == "books"
 
-        assert len(author.methods) == 3
-        method_args = {
-            "__str__": 1,
-            "full_name": 1,
-            "do_something": 2,
-        }
+    def test_meta_class_options(self, temp_django_project: Path) -> None:
+        """Test Meta class option extraction."""
+        result = scan_django_models(str(temp_django_project))
+        models = yaml.safe_load(result)
 
-        for method in author.methods:
-            assert method.args == method_args.pop(method.name)
-            assert method.lines > 0
+        author_models = [k for k in models if k.endswith("Author")]
+        author = models[author_models[0]]
 
-        assert not method_args
+        # Check Meta options
+        assert "meta" in author
+        assert author["meta"]["db_table"] == "authors"
+        assert author["meta"]["unique_together"] == [["first_name", "last_name"]]
 
-        meta = author.meta
-        assert meta.db_table == "authors"
+    def test_abstract_model_inheritance(self, temp_abstract_models: Path) -> None:
+        """Test abstract model inheritance and field merging."""
+        result = scan_django_models(str(temp_abstract_models))
+        models = yaml.safe_load(result)
 
-        assert len(author.indexes) == 4
+        # Should find both abstract and concrete models
+        timestamped_models = [k for k in models if k.endswith("TimeStampedModel")]
+        article_models = [k for k in models if k.endswith("Article")]
 
-        unique_together = author.indexes[0]
-        assert unique_together.fields == ["first_name", "last_name"]
-        assert unique_together.kind == "unique"
+        assert len(timestamped_models) == 1
+        assert len(article_models) == 1
 
-        first_name_index = author.indexes[1]
-        assert first_name_index.fields == ["first_name"]
-        assert first_name_index.kind == "index"
+        # Check abstract model
+        timestamped = models[timestamped_models[0]]
+        assert timestamped["abstract"] is True
+        assert "created_at" in timestamped["fields"]
+        assert "updated_at" in timestamped["fields"]
 
-        last_name_index = author.indexes[2]
-        assert last_name_index.fields == ["last_name"]
-        assert last_name_index.kind == "index"
+        # Check concrete model has inherited fields
+        article = models[article_models[0]]
+        assert article["abstract"] is False
+        assert "title" in article["fields"]
+        assert "content" in article["fields"]
+        # Abstract fields should be merged
+        assert "created_at" in article["fields"]
+        assert "updated_at" in article["fields"]
 
-        sid_index = author.indexes[3]
-        assert sid_index.fields == ["sid"]
-        assert sid_index.kind == "unique"
+    def test_output_to_file(self, temp_django_project: Path, tmp_path: Path) -> None:
+        """Test writing output to a file."""
+        output_file = tmp_path / "models.yaml"
+        result = scan_django_models(str(temp_django_project), output=str(output_file))
 
-    def test_skip_pydantic_model(self, check):
-        results = check({
-            "src/models.py": """
-                from pydantic import BaseModel, Field
+        # Should return empty string when writing to file
+        assert result == ""
 
-                class Author(BaseModel):
-                    first_name = Field()
-                """,
-        })
+        # File should exist and contain valid YAML
+        assert output_file.exists()
 
-        assert len(results) == 0
+        with open(output_file) as f:
+            models = yaml.safe_load(f)
 
-    def test_model_field_challenge(self, check):
-        results = check({
-            "src/models.py": """
-                from django.db import models
-                from common import *
-                from common import fields
+        assert len(models) >= 2
 
-                class Author(models.Model):
-                    id = models.AutoField()
-                    name_zh_hans = I18NField.zh_hans()
-                    name_zh_hant = fields.I18NField.zh_hant()
+    def test_nonexistent_path(self) -> None:
+        """Test error handling for nonexistent path."""
+        with pytest.raises(FileNotFoundError):
+            scan_django_models("/nonexistent/path")
 
-                    callback = MyField().callback
-                """,
-        })
+    def test_single_file_scan(self, temp_django_project: Path) -> None:
+        """Test scanning a single Python file."""
+        models_file = temp_django_project / "models.py"
+        result = scan_django_models(str(models_file))
+        models = yaml.safe_load(result)
 
-        assert len(results) == 1
-
-        author = results[0]
-        assert len(author.fields) == 3
-
-        assert author.fields[0].name == "id"
-        assert author.fields[1].name == "name_zh_hans"
-        assert author.fields[2].name == "name_zh_hant"
+        # Should find models in the single file
+        assert len(models) >= 2

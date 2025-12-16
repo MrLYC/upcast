@@ -105,11 +105,11 @@ class TestEnvVarHub:
         key1 = exported["KEY1"]
         assert key1.name == "KEY1"
         assert key1.value == "'default'"
-        assert key1.required == False
+        assert not key1.required
 
         key2 = exported["KEY2"]
         assert key2.name == "KEY2"
-        assert key2.required == True
+        assert key2.required
 
     @pytest.mark.parametrize(
         "import_statement, statement_prefix",
@@ -158,12 +158,10 @@ class TestEnvVarHub:
         real_statement = f"{statement_prefix}{statement}"
 
         exported = check_one(
-            "\n".join(
-                [
-                    import_statement,
-                    statement_template.format(statement=real_statement),
-                ]
-            )
+            "\n".join([
+                import_statement,
+                statement_template.format(statement=real_statement),
+            ])
         )
 
         assert exported.name == name
@@ -182,13 +180,11 @@ class TestEnvVarHub:
     )
     def test_key_concat(self, check_one, statement, expected_name):
         exported = check_one(
-            "\n".join(
-                [
-                    "from os import getenv",
-                    "PREFIX = 'APP_'",
-                    f"VALUE = {statement}",
-                ]
-            )
+            "\n".join([
+                "from os import getenv",
+                "PREFIX = 'APP_'",
+                f"VALUE = {statement}",
+            ])
         )
 
         assert exported.name == expected_name
