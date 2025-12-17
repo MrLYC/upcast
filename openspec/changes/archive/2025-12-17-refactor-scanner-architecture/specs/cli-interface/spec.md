@@ -1,6 +1,6 @@
 # cli-interface Specification
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Consistent Command Naming
 
@@ -125,7 +125,3 @@ The system SHALL provide clear, consistent help text for all commands and option
 - **AND** link to the new command name
 
 **DIFF**: Help text includes deprecation info
-
-## REMOVED Requirements
-
-None - existing CLI requirements are preserved and enhanced.
