@@ -6,12 +6,21 @@ from upcast.common.file_utils import collect_python_files, validate_path
 from upcast.env_var_scanner.checker import EnvVarChecker
 
 
-def scan_directory(directory: str, pattern: str = "**/*.py") -> EnvVarChecker:
+def scan_directory(
+    directory: str,
+    pattern: str = "**/*.py",
+    include_patterns: list[str] | None = None,
+    exclude_patterns: list[str] | None = None,
+    use_default_excludes: bool = True,
+) -> EnvVarChecker:
     """Scan a directory for Python files and detect environment variables.
 
     Args:
         directory: Path to the directory to scan
-        pattern: Glob pattern for matching files (default: **/*.py)
+        pattern: Glob pattern for matching files (default: **/*.py) - DEPRECATED, use include_patterns
+        include_patterns: Glob patterns for files to include
+        exclude_patterns: Glob patterns for files to exclude
+        use_default_excludes: Whether to apply default exclude patterns (default: True)
 
     Returns:
         EnvVarChecker with aggregated results
@@ -19,8 +28,13 @@ def scan_directory(directory: str, pattern: str = "**/*.py") -> EnvVarChecker:
     dir_path = validate_path(directory)
     checker = EnvVarChecker(base_path=str(dir_path))
 
-    # Use common file collection
-    python_files = collect_python_files(dir_path)
+    # Use common file collection with filtering
+    python_files = collect_python_files(
+        dir_path,
+        include_patterns=include_patterns,
+        exclude_patterns=exclude_patterns,
+        use_default_excludes=use_default_excludes,
+    )
     for file_path in python_files:
         checker.check_file(str(file_path))
 

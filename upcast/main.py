@@ -59,6 +59,11 @@ def scan_env_vars(  # noqa: C901
             click.echo(result_str)
 
     try:
+        # Prepare filtering parameters
+        include_patterns = list(include) if include else None
+        exclude_patterns = list(exclude) if exclude else None
+        use_default_excludes = not no_default_excludes
+
         # Separate files and directories
         all_files = []
         for p in path:
@@ -66,8 +71,13 @@ def scan_env_vars(  # noqa: C901
             if p_obj.is_file():
                 all_files.append(str(p))
             elif p_obj.is_dir():
-                # Scan directory for Python files
-                checker = scan_directory(str(p))
+                # Scan directory for Python files with filtering
+                checker = scan_directory(
+                    str(p),
+                    include_patterns=include_patterns,
+                    exclude_patterns=exclude_patterns,
+                    use_default_excludes=use_default_excludes,
+                )
                 results = checker.get_results()
                 if verbose:
                     click.echo(f"Found {len(results)} environment variables", err=True)
