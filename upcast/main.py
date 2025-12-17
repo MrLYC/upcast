@@ -6,6 +6,7 @@ import click
 from upcast.django_model_scanner import scan_django_models
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml
+from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
 
 
 @click.group()
@@ -113,6 +114,41 @@ def analyze_django_models(output: Optional[str], verbose: bool, path: str) -> No
             click.echo("Analysis complete!", err=True)
 
     except FileNotFoundError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command()
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.argument("path", type=click.Path(exists=True))
+def scan_prometheus_metrics_cmd(output: Optional[str], verbose: bool, path: str) -> None:
+    """Scan Python files for Prometheus metrics usage.
+
+    PATH can be a Python file or directory containing Prometheus metrics.
+    Results are aggregated by metric name and exported to YAML format.
+    """
+    try:
+        result = scan_prometheus_metrics(path, output=output, verbose=verbose)
+
+        # If no output file specified, print to stdout
+        if not output and result:
+            click.echo(result)
+
+        if verbose:
+            click.echo("Scan complete!", err=True)
+
+    except FileNotFoundError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except ValueError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
     except Exception as e:

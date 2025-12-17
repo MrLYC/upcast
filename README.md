@@ -103,3 +103,89 @@ API_KEY:
 - **Multiple Output Formats**: YAML (human-readable) or JSON (machine-readable)
 
 **Type Inference Rules:**
+
+### scan-prometheus-metrics
+
+**New in this version!** Scan Python files for Prometheus metrics usage with comprehensive metadata extraction. This command uses astroid for semantic analysis and provides detailed information about all Prometheus metrics defined in your project.
+
+```bash
+upcast scan-prometheus-metrics /path/to/your/python/project/
+```
+
+Scan specific files:
+
+```bash
+upcast scan-prometheus-metrics metrics.py
+```
+
+Output to a file:
+
+```bash
+upcast scan-prometheus-metrics /path/to/your/python/project/ -o metrics.yaml
+```
+
+Enable verbose output:
+
+```bash
+upcast scan-prometheus-metrics /path/to/your/python/project/ -v
+```
+
+**Output Format:**
+
+The command generates YAML output with aggregated information by metric name:
+
+```yaml
+http_requests_total:
+  type: counter
+  help: HTTP 请求总数
+  labels:
+    - method
+    - path
+    - status
+  namespace: myapp
+  subsystem: api
+  usages:
+    - location: api/metrics.py:15
+      pattern: instantiation
+      statement: http_requests = Counter('http_requests_total', 'HTTP 请求总数', ['method', 'path', 'status'])
+
+request_duration_seconds:
+  type: histogram
+  help: Request duration in seconds
+  labels:
+    - endpoint
+  buckets:
+    - 0.1
+    - 0.5
+    - 1.0
+    - 5.0
+  usages:
+    - location: middleware/metrics.py:23
+      pattern: instantiation
+      statement: duration_hist = Histogram('request_duration_seconds', 'Request duration in seconds', ['endpoint'], buckets=[0.1, 0.5, 1.0, 5.0])
+```
+
+**Features:**
+
+- **Multiple Metric Types**: Detects Counter, Gauge, Histogram, and Summary metrics
+- **Complete Metadata Extraction**:
+  - Metric name and help text
+  - Label names
+  - Namespace and subsystem (for metric name prefixing)
+  - Unit suffix
+  - Histogram buckets
+  - Custom collector detection
+- **Multiple Pattern Support**:
+  - Direct instantiation: `Counter('name', 'help', ['labels'])`
+  - Decorator patterns: `@counter.count_exceptions()`
+  - Custom collectors: `GaugeMetricFamily` in `collect()` methods
+- **Aggregation by Metric**: Shows all usages of each metric across your codebase
+- **Import Style Support**: Works with both `from prometheus_client import Counter` and `import prometheus_client`
+- **YAML Output**: Human-readable format with proper Unicode support
+
+**Use Cases:**
+
+- Document all Prometheus metrics in your application
+- Identify duplicate or conflicting metric definitions
+- Generate metrics documentation for monitoring teams
+- Validate metric naming conventions and labeling patterns
