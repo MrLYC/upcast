@@ -10,30 +10,30 @@ TBD - created by archiving change reimplement-django-scanner. Update Purpose aft
 
 The system SHALL accurately detect Django model classes through semantic AST analysis using type inference.
 
-#### Scenario: Direct Model inheritance
+#### Scenario: Empty model filtering
 
-- **WHEN** a class directly inherits from `models.Model`
-- **THEN** the system SHALL identify it as a Django model
-- **AND** include it in the analysis output
+- **WHEN** a model has no fields and no relationships
+- **AND** is not abstract (`meta.abstract != True`)
+- **AND** is not a proxy model (`meta.proxy != True`)
+- **THEN** the system SHALL return `None` for this model
+- **AND** exclude it from the output
+- **AND** treat it as a parsing artifact or incomplete definition
 
-#### Scenario: Indirect Model inheritance
+#### Scenario: Proxy model preservation
 
-- **WHEN** a class inherits from another class that inherits from `models.Model`
-- **THEN** the system SHALL identify it as a Django model through ancestor analysis
-- **AND** track the inheritance chain
+- **WHEN** a model has `Meta.proxy = True`
+- **AND** has no fields or relationships
+- **THEN** the system SHALL include it in the output
+- **AND** preserve its metadata
+- **AND** recognize it as a valid model type
 
-#### Scenario: Aliased Model import
-
-- **WHEN** a class inherits from an aliased import of Django Model
-- **THEN** the system SHALL resolve the alias through type inference
-- **AND** correctly identify it as a Django model
-
-#### Scenario: Abstract model handling
+#### Scenario: Abstract model without fields
 
 - **WHEN** a model has `Meta.abstract = True`
-- **THEN** the system SHALL mark it as abstract
-- **AND** exclude it from table generation
-- **AND** make its fields available for inheritance merging
+- **AND** has no fields or relationships (yet)
+- **THEN** the system SHALL include it in the output
+- **AND** make it available for field inheritance
+- **AND** mark it clearly as abstract in the `meta` dictionary
 
 ### Requirement: Field Parsing
 
@@ -314,3 +314,28 @@ The system SHALL use `django_model_scanner` as the module name to accurately ref
 - **AND** the change SHALL be documented as a breaking change
 
 **Reason**: The previous name `django_scanner` was misleading as it suggests scanning all Django components, when the module specifically focuses on Django models. The new name `django_model_scanner` clearly indicates the module's scope and purpose.
+
+### Requirement: Field Type Resolution
+
+The system SHALL resolve field types to fully qualified module paths for unambiguous identification.
+
+#### Scenario: Qualified field access resolution
+
+- **WHEN** a field is accessed through module attribute like `models.CharField`
+- **THEN** the system SHALL infer the module's qualified name
+- **AND** combine it with the attribute name
+- **AND** return the full path (e.g., `django.db.models.CharField`)
+
+#### Scenario: Type inference through astroid
+
+- **WHEN** resolving field types
+- **THEN** the system SHALL use astroid's type inference capabilities
+- **AND** follow import chains to source modules
+- **AND** handle aliased imports correctly
+
+#### Scenario: Graceful degradation for unresolvable types
+
+- **WHEN** type inference fails or returns ambiguous results
+- **THEN** the system SHALL fall back to the short field name
+- **AND** still include the field in output
+- **AND** log a warning about incomplete type resolution
