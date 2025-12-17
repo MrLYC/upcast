@@ -116,7 +116,7 @@ def scan_django_models_command(
     exclude: tuple[str, ...],
     no_default_excludes: bool,
 ) -> None:
-    """Analyze Django models in Python files and export to YAML.
+    """Scan Python files for Django model definitions.
 
     PATH can be a Python file or directory containing Django models.
     """
