@@ -38,11 +38,14 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
         "qname": qname,
         "module": module_path,
         "bases": [],
-        "abstract": False,
         "fields": {},
         "relationships": {},
         "meta": {},
     }
+
+    # Extract docstring as description if available
+    if class_node.doc_node and class_node.doc_node.value:
+        result["description"] = class_node.doc_node.value.strip()
 
     # Extract base classes
     for base in class_node.bases:
@@ -52,7 +55,6 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
 
     # Parse Meta class
     result["meta"] = parse_meta_class(class_node)
-    result["abstract"] = result["meta"].get("abstract", False)
 
     # Parse fields
     for item in class_node.body:
@@ -76,11 +78,15 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
     # Keep the model if:
     # 1. It has fields or relationships, OR
     # 2. It's abstract (fields will be inherited by children), OR
-    # 3. It has Meta options
-    if result["fields"] or result["relationships"] or result["abstract"] or result["meta"]:
+    # 3. It's a proxy model (modifies behavior without new fields)
+    is_abstract = result["meta"].get("abstract", False)
+    is_proxy = result["meta"].get("proxy", False)
+    has_content = bool(result["fields"] or result["relationships"])
+
+    if has_content or is_abstract or is_proxy:
         return result
 
-    # Skip only empty non-abstract models without Meta
+    # Skip only empty non-abstract/non-proxy models
     return None
 
 
@@ -123,6 +129,71 @@ def parse_field(assign_node: nodes.Assign) -> Optional[tuple[str, str, dict[str,
         return field_name, field_type, options
 
 
+def _infer_qname_from_node(node: nodes.NodeNG) -> Optional[str]:
+    """Try to infer the qualified name from a node.
+
+    Args:
+        node: The node to infer from
+
+    Returns:
+        Qualified name or None if inference fails
+    """
+    try:
+        inferred_list = list(node.infer())
+        for inferred in inferred_list:
+            if hasattr(inferred, "qname"):
+                qname = inferred.qname()
+                if qname and "." in qname and not qname.startswith("builtins."):
+                    return qname
+    except Exception:  # noqa: S110
+        pass
+    return None
+
+
+def _extract_field_type_from_attribute(call_func: nodes.Attribute) -> Optional[str]:
+    """Extract field type from an Attribute node (e.g., models.CharField).
+
+    Args:
+        call_func: The Attribute node
+
+    Returns:
+        Field type string or None
+    """
+    attr_name = call_func.attrname
+
+    # Try to infer the full qualified name
+    qname = _infer_qname_from_node(call_func)
+    if qname:
+        return qname
+
+    # Fallback: construct from expr.name + attr_name
+    if hasattr(call_func, "expr") and isinstance(call_func.expr, nodes.Name):
+        return f"{call_func.expr.name}.{attr_name}"
+
+    # Final fallback to short name
+    return attr_name
+
+
+def _extract_field_type_from_name(call_func: nodes.Name) -> Optional[str]:
+    """Extract field type from a Name node (e.g., CharField).
+
+    Args:
+        call_func: The Name node
+
+    Returns:
+        Field type string or None
+    """
+    field_name = call_func.name
+
+    # Try to infer the full qualified name
+    qname = _infer_qname_from_node(call_func)
+    if qname:
+        return qname
+
+    # Fallback to short name
+    return field_name
+
+
 def _extract_field_type(call: nodes.Call) -> Optional[str]:
     """Extract the field type from a field call node.
 
@@ -130,15 +201,13 @@ def _extract_field_type(call: nodes.Call) -> Optional[str]:
         call: The Call node representing the field instantiation
 
     Returns:
-        Field type string (e.g., "CharField") or None
+        Field type string with full module path (e.g., "django.db.models.CharField") or None
     """
     try:
         if isinstance(call.func, nodes.Attribute):
-            # Pattern: models.CharField - return just the field name
-            return call.func.attrname
+            return _extract_field_type_from_attribute(call.func)
         elif isinstance(call.func, nodes.Name):
-            # Pattern: CharField (direct import)
-            return call.func.name
+            return _extract_field_type_from_name(call.func)
     except Exception:  # noqa: S110
         pass
     return None
@@ -211,6 +280,167 @@ def parse_meta_class(class_node: nodes.ClassDef) -> dict[str, Any]:
     return meta_options
 
 
+def _parse_constraint_list(list_node: nodes.List) -> list[dict[str, Any]]:
+    """Parse constraints from a list node.
+
+    Args:
+        list_node: The List node containing constraints
+
+    Returns:
+        List of constraint dictionaries
+    """
+    constraints = []
+    for item in list_node.elts:
+        constraint = _parse_single_constraint(item)
+        if constraint:
+            constraints.append(constraint)
+    return constraints
+
+
+def _parse_constraints(value_node: nodes.NodeNG) -> list[dict[str, Any]]:
+    """Parse Django model constraints from Meta.constraints.
+
+    Args:
+        value_node: The value node of the constraints assignment
+
+    Returns:
+        List of constraint dictionaries with 'type', 'fields', and 'name'
+    """
+    try:
+        # Handle list of constraints
+        if isinstance(value_node, nodes.List):
+            return _parse_constraint_list(value_node)
+
+        # Handle variable reference - try to infer the value
+        if isinstance(value_node, nodes.Name):
+            try:
+                inferred_list = list(value_node.infer())
+                for inferred in inferred_list:
+                    if isinstance(inferred, nodes.List):
+                        return _parse_constraint_list(inferred)
+            except Exception:  # noqa: S110
+                pass
+    except Exception:  # noqa: S110
+        pass
+
+    return []
+
+
+def _parse_single_constraint(node: nodes.NodeNG) -> Optional[dict[str, Any]]:
+    """Parse a single constraint from a Call node.
+
+    Args:
+        node: The constraint Call node
+
+    Returns:
+        Dictionary with constraint information or None
+    """
+    if not isinstance(node, nodes.Call):
+        return None
+
+    constraint_info: dict[str, Any] = {}
+
+    try:
+        # Get constraint type (e.g., UniqueConstraint, CheckConstraint)
+        if isinstance(node.func, nodes.Attribute):
+            constraint_info["type"] = node.func.attrname
+        elif isinstance(node.func, nodes.Name):
+            constraint_info["type"] = node.func.name
+        else:
+            return None
+
+        # Extract fields and name from keyword arguments
+        for keyword in node.keywords:
+            if keyword.arg == "fields":
+                # Parse fields list
+                fields = _extract_constraint_fields(keyword.value)
+                if fields:
+                    constraint_info["fields"] = fields
+            elif keyword.arg == "name":
+                # Parse name string
+                name = _extract_constraint_name(keyword.value)
+                if name:
+                    constraint_info["name"] = name
+
+        return constraint_info if constraint_info.get("type") else None
+    except Exception:
+        return None
+
+
+def _extract_string_list_from_list_node(list_node: nodes.List) -> Optional[list[str]]:
+    """Extract string values from a list node.
+
+    Args:
+        list_node: The List node
+
+    Returns:
+        List of string values or None if empty
+    """
+    fields = []
+    for elt in list_node.elts:
+        if isinstance(elt, nodes.Const) and isinstance(elt.value, str):
+            fields.append(elt.value)
+    return fields if fields else None
+
+
+def _extract_constraint_fields(node: nodes.NodeNG) -> Optional[list[str]]:
+    """Extract field names from constraint fields argument.
+
+    Args:
+        node: The node representing the fields argument
+
+    Returns:
+        List of field name strings or None
+    """
+    try:
+        # Handle list literal
+        if isinstance(node, nodes.List):
+            return _extract_string_list_from_list_node(node)
+
+        # Handle variable reference - try to infer
+        if isinstance(node, nodes.Name):
+            try:
+                inferred_list = list(node.infer())
+                for inferred in inferred_list:
+                    if isinstance(inferred, nodes.List):
+                        return _extract_string_list_from_list_node(inferred)
+            except Exception:  # noqa: S110
+                pass
+    except Exception:  # noqa: S110
+        pass
+
+    return None
+
+
+def _extract_constraint_name(node: nodes.NodeNG) -> Optional[str]:
+    """Extract constraint name from name argument.
+
+    Args:
+        node: The node representing the name argument
+
+    Returns:
+        Constraint name string or None
+    """
+    try:
+        # Handle string literal
+        if isinstance(node, nodes.Const) and isinstance(node.value, str):
+            return node.value
+
+        # Handle variable reference - try to infer
+        elif isinstance(node, nodes.Name):
+            try:
+                inferred_list = list(node.infer())
+                for inferred in inferred_list:
+                    if isinstance(inferred, nodes.Const) and isinstance(inferred.value, str):
+                        return inferred.value
+            except Exception:  # noqa: S110
+                pass
+    except Exception:  # noqa: S110
+        pass
+
+    return None
+
+
 def get_meta_option(assign_node: nodes.Assign) -> Any:
     """Extract the value of a Meta class option.
 
@@ -221,6 +451,14 @@ def get_meta_option(assign_node: nodes.Assign) -> Any:
         The option value (literal or string representation)
     """
     try:
+        # Check if this is a constraints assignment
+        if (
+            assign_node.targets
+            and isinstance(assign_node.targets[0], nodes.AssignName)
+            and assign_node.targets[0].name == "constraints"
+        ):
+            return _parse_constraints(assign_node.value)
+
         return infer_literal_value(assign_node.value)
     except Exception:
         return None
@@ -317,7 +555,7 @@ def merge_abstract_fields(model: dict[str, Any], all_models: dict[str, dict[str,
             return
 
         # Only merge from abstract models
-        if not base_model.get("abstract", False):
+        if not base_model.get("meta", {}).get("abstract", False):
             return
 
         # Recursively merge grandparent fields first
@@ -335,8 +573,9 @@ def merge_abstract_fields(model: dict[str, Any], all_models: dict[str, dict[str,
                 model["relationships"][rel_name] = rel_info.copy()
 
         # Merge Meta options (model's own Meta takes precedence)
+        # Skip 'abstract' flag as it should not be inherited
         for meta_key, meta_value in base_model.get("meta", {}).items():
-            if meta_key not in model["meta"]:
+            if meta_key not in model["meta"] and meta_key != "abstract":
                 model["meta"][meta_key] = meta_value
 
     # Merge from all base classes

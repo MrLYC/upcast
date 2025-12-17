@@ -77,7 +77,6 @@ def _format_single_model(model: dict[str, Any]) -> dict[str, Any]:
     """
     output: dict[str, Any] = {
         "module": model.get("module", ""),
-        "abstract": model.get("abstract", False),
     }
 
     # Add base classes
@@ -85,12 +84,10 @@ def _format_single_model(model: dict[str, Any]) -> dict[str, Any]:
     if bases:
         output["bases"] = bases
 
-    # Add Meta options (excluding abstract which is already at top level)
+    # Add Meta options (keep abstract in meta, don't move to top level)
     meta = model.get("meta", {})
     if meta:
-        meta_output = {k: v for k, v in meta.items() if k != "abstract"}
-        if meta_output:
-            output["meta"] = meta_output
+        output["meta"] = meta
 
     # Add fields
     fields = model.get("fields", {})
