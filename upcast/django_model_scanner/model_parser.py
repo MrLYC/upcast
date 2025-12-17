@@ -1,10 +1,31 @@
 """Django model field and metadata parser."""
 
+import inspect
 from typing import Any, Optional
 
 from astroid import nodes
 
-from upcast.django_model_scanner.ast_utils import infer_literal_value, is_django_field, safe_as_string
+from upcast.common.ast_utils import (
+    get_qualified_name as common_get_qualified_name,
+)
+from upcast.common.ast_utils import (
+    infer_value_with_fallback,
+)
+from upcast.django_model_scanner.ast_utils import is_django_field, safe_as_string
+
+
+# Local inference for backward compatibility
+def infer_literal_value(node: nodes.NodeNG) -> Any:
+    """Extract literal value from node using common utilities.
+
+    Args:
+        node: AST node to infer
+
+    Returns:
+        Inferred value (with backticks if inference failed)
+    """
+    value, _ = infer_value_with_fallback(node)
+    return value
 
 
 def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any] | None:
@@ -45,7 +66,8 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
 
     # Extract docstring as description if available
     if class_node.doc_node and class_node.doc_node.value:
-        result["description"] = class_node.doc_node.value.strip()
+        # Use inspect.cleandoc to remove leading/trailing whitespace and normalize indentation
+        result["description"] = inspect.cleandoc(class_node.doc_node.value)
 
     # Extract base classes
     for base in class_node.bases:
@@ -141,10 +163,10 @@ def _infer_qname_from_node(node: nodes.NodeNG) -> Optional[str]:
     try:
         inferred_list = list(node.infer())
         for inferred in inferred_list:
-            if hasattr(inferred, "qname"):
-                qname = inferred.qname()
-                if qname and "." in qname and not qname.startswith("builtins."):
-                    return qname
+            # Use common get_qualified_name for consistency
+            qname, success = common_get_qualified_name(inferred)
+            if success and qname and "." in qname and not qname.startswith("builtins."):
+                return qname
     except Exception:  # noqa: S110
         pass
     return None

@@ -4,31 +4,9 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+from upcast.common.file_utils import collect_python_files, validate_path
 from upcast.prometheus_metrics_scanner.checker import PrometheusMetricsChecker
 from upcast.prometheus_metrics_scanner.export import export_to_yaml, export_to_yaml_string
-
-
-def _validate_path(path_str: str) -> Path:
-    """Validate and return input path.
-
-    Args:
-        path_str: Path string to validate
-
-    Returns:
-        Validated Path object
-
-    Raises:
-        FileNotFoundError: If path doesn't exist
-        ValueError: If path is neither file nor directory
-    """
-    input_path = Path(path_str)
-    if not input_path.exists():
-        raise FileNotFoundError(f"Path not found: {path_str}")
-
-    if not (input_path.is_file() or input_path.is_dir()):
-        raise ValueError(f"Path must be a file or directory: {path_str}")
-
-    return input_path
 
 
 def _process_files(python_files: list[Path], base_path: Path, verbose: bool) -> dict:
@@ -60,7 +38,14 @@ def _process_files(python_files: list[Path], base_path: Path, verbose: bool) -> 
     return checker.get_metrics()
 
 
-def scan_prometheus_metrics(path: str, output: Optional[str] = None, verbose: bool = False) -> str:
+def scan_prometheus_metrics(
+    path: str,
+    output: Optional[str] = None,
+    verbose: bool = False,
+    include_patterns: Optional[list[str]] = None,
+    exclude_patterns: Optional[list[str]] = None,
+    use_default_excludes: bool = True,
+) -> str:
     """Scan Prometheus metrics in Python files or directories.
 
     Args:
@@ -75,9 +60,14 @@ def scan_prometheus_metrics(path: str, output: Optional[str] = None, verbose: bo
         FileNotFoundError: If the input path doesn't exist
         ValueError: If the path is neither a file nor directory
     """
-    input_path = _validate_path(path)
+    input_path = validate_path(path)
 
-    python_files = _collect_python_files(input_path)
+    python_files = collect_python_files(
+        input_path,
+        include_patterns=include_patterns,
+        exclude_patterns=exclude_patterns,
+        use_default_excludes=use_default_excludes,
+    )
 
     if not python_files:
         if verbose:
@@ -97,41 +87,3 @@ def scan_prometheus_metrics(path: str, output: Optional[str] = None, verbose: bo
         return ""
 
     return export_to_yaml_string(metrics)
-
-
-def _collect_python_files(path: Path) -> list[Path]:
-    """Collect Python files from a path.
-
-    Args:
-        path: File or directory path
-
-    Returns:
-        List of Python file paths
-    """
-    if path.is_file():
-        if path.suffix == ".py":
-            return [path]
-        return []
-
-    # Recursively find all .py files, excluding common directories
-    exclude_dirs = {
-        "venv",
-        ".venv",
-        "env",
-        "build",
-        "dist",
-        ".eggs",
-        "__pycache__",
-        ".pytest_cache",
-        ".tox",
-        ".git",
-    }
-
-    python_files = []
-    for py_file in path.rglob("*.py"):
-        # Check if file is in an excluded directory
-        if any(excluded in py_file.parts for excluded in exclude_dirs):
-            continue
-        python_files.append(py_file)
-
-    return python_files

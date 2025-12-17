@@ -4,6 +4,14 @@ from typing import Any, Optional, Union
 
 from astroid import nodes
 
+from upcast.common.ast_utils import (
+    infer_type_with_fallback,
+    infer_value_with_fallback,
+)
+from upcast.common.ast_utils import (
+    safe_as_string as common_safe_as_string,
+)
+
 
 def is_env_var_call(node: Union[nodes.Call, nodes.NodeNG]) -> bool:  # noqa: C901
     """Check if a Call node represents an environment variable access pattern.
@@ -70,7 +78,7 @@ def is_env_var_call(node: Union[nodes.Call, nodes.NodeNG]) -> bool:  # noqa: C90
     return False
 
 
-def infer_type_from_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Optional[str]:  # noqa: C901
+def infer_type_from_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Optional[str]:
     """Infer Python type from an AST value node.
 
     Args:
@@ -82,39 +90,14 @@ def infer_type_from_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Opti
     if isinstance(node, list):
         return None
 
-    try:
-        # Try direct Const node
-        if isinstance(node, nodes.Const):
-            value = node.value
-            if isinstance(value, bool):
-                return "bool"
-            elif isinstance(value, int):
-                return "int"
-            elif isinstance(value, float):
-                return "float"
-            elif isinstance(value, str):
-                return "str"
-            elif value is None:
-                return None
+    # Use common inference with fallback
+    type_name, success = infer_type_with_fallback(node)
 
-        # Try astroid inference
-        inferred_list = list(node.infer())
-        if inferred_list and len(inferred_list) == 1:
-            inferred = inferred_list[0]
-            if isinstance(inferred, nodes.Const):
-                value = inferred.value
-                if isinstance(value, bool):
-                    return "bool"
-                elif isinstance(value, int):
-                    return "int"
-                elif isinstance(value, float):
-                    return "float"
-                elif isinstance(value, str):
-                    return "str"
-    except Exception:  # noqa: S110
-        pass
+    # Return None for "unknown" type or "None" type
+    if not success or type_name in ("unknown", "None"):
+        return None
 
-    return None
+    return type_name
 
 
 def infer_literal_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Any:
@@ -124,35 +107,16 @@ def infer_literal_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Any:
         node: An astroid node representing a literal or constant
 
     Returns:
-        Python literal value or string representation as fallback
+        Python literal value or string representation with backticks on failure
     """
     if isinstance(node, list):
         return ""
 
-    try:
-        # Try to infer the value
-        inferred_list = list(node.infer())
+    # Use common inference with fallback
+    value, success = infer_value_with_fallback(node)
 
-        # Skip if inference failed or returned multiple values
-        if not inferred_list or len(inferred_list) != 1:
-            return safe_as_string(node)
-
-        inferred_value = inferred_list[0]
-
-        # Handle Uninferable nodes
-        if inferred_value.__class__.__name__ in ("Uninferable", "UninferableBase"):
-            return safe_as_string(node)
-
-        # Handle Const nodes (strings, numbers, booleans, None)
-        if isinstance(inferred_value, nodes.Const):
-            return inferred_value.value
-
-        # For other types, fall back to string
-        return safe_as_string(node)
-
-    except Exception:
-        # On any error, fall back to string representation
-        return safe_as_string(node)
+    # Return value (will be wrapped in backticks if inference failed)
+    return value
 
 
 def resolve_string_concat(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Optional[str]:
@@ -188,12 +152,6 @@ def safe_as_string(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> str:
         node: Astroid node to convert
 
     Returns:
-        String representation, or empty string on failure
+        String representation
     """
-    if isinstance(node, list):
-        return ""
-
-    try:
-        return node.as_string()
-    except Exception:
-        return ""
+    return common_safe_as_string(node)

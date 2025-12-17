@@ -1,9 +1,7 @@
 """YAML/JSON output formatting for environment variable results."""
 
-import json
-
-import yaml
-
+from upcast.common.export import export_to_json as common_export_json
+from upcast.common.export import export_to_yaml_string as common_export_yaml
 from upcast.env_var_scanner.env_var_parser import EnvVarInfo
 
 
@@ -14,11 +12,11 @@ def export_to_yaml(env_vars: dict[str, EnvVarInfo]) -> str:
         env_vars: Dictionary of environment variable information
 
     Returns:
-        YAML string representation
+        YAML string representation (sorted)
     """
     output = {}
 
-    for name, info in sorted(env_vars.items()):
+    for name, info in env_vars.items():
         output[name] = {
             "types": info.types,
             "defaults": info.defaults,
@@ -27,12 +25,13 @@ def export_to_yaml(env_vars: dict[str, EnvVarInfo]) -> str:
                     "location": usage.location,
                     "statement": usage.statement,
                 }
-                for usage in sorted(info.usages, key=lambda u: u.location)
+                for usage in info.usages
             ],
             "required": info.required,
         }
 
-    return yaml.dump(output, default_flow_style=False, sort_keys=False)
+    # Use common export with sorting
+    return common_export_yaml(output)
 
 
 def export_to_json(env_vars: dict[str, EnvVarInfo]) -> str:
@@ -42,11 +41,11 @@ def export_to_json(env_vars: dict[str, EnvVarInfo]) -> str:
         env_vars: Dictionary of environment variable information
 
     Returns:
-        JSON string representation
+        JSON string representation (sorted)
     """
     output = {}
 
-    for name, info in sorted(env_vars.items()):
+    for name, info in env_vars.items():
         output[name] = {
             "types": info.types,
             "defaults": info.defaults,
@@ -55,9 +54,10 @@ def export_to_json(env_vars: dict[str, EnvVarInfo]) -> str:
                     "location": usage.location,
                     "statement": usage.statement,
                 }
-                for usage in sorted(info.usages, key=lambda u: u.location)
+                for usage in info.usages
             ],
             "required": info.required,
         }
 
-    return json.dumps(output, indent=2)
+    # Use common export with sorting
+    return common_export_json(output)

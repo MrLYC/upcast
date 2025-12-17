@@ -319,7 +319,8 @@ class TestExtractGetattrDefault:
 
         for node in module.nodes_of_class(nodes.Call):
             if isinstance(node.func, nodes.Name) and node.func.name == "getattr":
-                assert extract_getattr_default(node) == "'default'"
+                # Now returns the actual value, not string representation
+                assert extract_getattr_default(node) == "default"
 
     def test_extract_none_default(self, tmp_path: Path) -> None:
         """Test extracting None default value."""
@@ -338,7 +339,8 @@ class TestExtractGetattrDefault:
 
         for node in module.nodes_of_class(nodes.Call):
             if isinstance(node.func, nodes.Name) and node.func.name == "getattr":
-                assert extract_getattr_default(node) == "None"
+                # Now returns None value, not string "None"
+                assert extract_getattr_default(node) is None
 
     def test_no_default(self, tmp_path: Path) -> None:
         """Test getattr without default value."""

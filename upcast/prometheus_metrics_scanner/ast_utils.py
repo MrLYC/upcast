@@ -4,6 +4,8 @@ from typing import Optional
 
 from astroid import nodes
 
+from upcast.common.ast_utils import infer_value_with_fallback
+
 # Prometheus metric class qualified names
 PROMETHEUS_METRIC_CLASSES = {
     "prometheus_client.Counter",
@@ -111,18 +113,9 @@ def extract_metric_name(call: nodes.Call) -> Optional[str]:
             if isinstance(name_arg, nodes.Const) and isinstance(name_arg.value, str):
                 return name_arg.value
 
-            # Try to infer constant value
-            try:
-                inferred_list = list(name_arg.infer())
-                if len(inferred_list) == 1:
-                    inferred = inferred_list[0]
-                    if isinstance(inferred, nodes.Const) and isinstance(inferred.value, str):
-                        return inferred.value
-            except Exception:  # noqa: S110
-                pass
-
-            # Fall back to string representation
-            return name_arg.as_string()
+            # Use common inference with fallback
+            inferred_value, success = infer_value_with_fallback(name_arg)
+            return inferred_value
     except Exception:  # noqa: S110
         pass
 
@@ -145,15 +138,10 @@ def extract_help_text(call: nodes.Call) -> Optional[str]:
             if isinstance(help_arg, nodes.Const) and isinstance(help_arg.value, str):
                 return help_arg.value
 
-            # Try to infer constant value
-            try:
-                inferred_list = list(help_arg.infer())
-                if len(inferred_list) == 1:
-                    inferred = inferred_list[0]
-                    if isinstance(inferred, nodes.Const) and isinstance(inferred.value, str):
-                        return inferred.value
-            except Exception:  # noqa: S110
-                pass
+            # Use common inference with fallback
+            inferred_value, success = infer_value_with_fallback(help_arg)
+            if success and isinstance(inferred_value, str):
+                return inferred_value
     except Exception:  # noqa: S110
         pass
 

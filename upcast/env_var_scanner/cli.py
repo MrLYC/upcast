@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from upcast.common.file_utils import collect_python_files, validate_path
 from upcast.env_var_scanner.checker import EnvVarChecker
 
 
@@ -15,12 +16,13 @@ def scan_directory(directory: str, pattern: str = "**/*.py") -> EnvVarChecker:
     Returns:
         EnvVarChecker with aggregated results
     """
-    dir_path = Path(directory).resolve()
+    dir_path = validate_path(directory)
     checker = EnvVarChecker(base_path=str(dir_path))
 
-    for file_path in dir_path.glob(pattern):
-        if file_path.is_file():
-            checker.check_file(str(file_path))
+    # Use common file collection
+    python_files = collect_python_files(dir_path)
+    for file_path in python_files:
+        checker.check_file(str(file_path))
 
     return checker
 

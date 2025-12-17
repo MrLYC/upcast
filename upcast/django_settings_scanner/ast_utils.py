@@ -5,6 +5,8 @@ from typing import Any
 import astroid
 from astroid import nodes
 
+from upcast.common.ast_utils import infer_value_with_fallback
+
 
 def _check_inferred_types(node: nodes.Name) -> bool:
     """Check if inferred types match django.conf.settings.
@@ -37,20 +39,24 @@ def _check_import_source(node: nodes.Name) -> bool:
     Returns:
         True if imported from django.conf
     """
-    if node.name != "settings":
-        return False
-
     try:
         # Get the module that contains this node
         module = node.root()
         if isinstance(module, nodes.Module):
-            # Check imports
+            # Check imports for both direct and aliased imports
             for import_node in module.nodes_of_class(nodes.ImportFrom):
-                if import_node.modname == "django.conf" and any(
-                    name == "settings" or (isinstance(name, tuple) and name[0] == "settings")
-                    for name in import_node.names
-                ):
-                    return True
+                if import_node.modname == "django.conf":
+                    for name_info in import_node.names:
+                        # Handle both tuple (name, alias) and plain string
+                        if isinstance(name_info, tuple):
+                            imported_name, alias = name_info
+                            # Check if this is settings imported with an alias
+                            if imported_name == "settings" and (
+                                alias == node.name or alias is None and node.name == "settings"
+                            ):
+                                return True
+                        elif name_info == "settings" and node.name == "settings":
+                            return True
     except Exception:  # noqa: S110
         pass
     return False
@@ -177,7 +183,7 @@ def extract_getattr_default(node: nodes.Call) -> Any:
         node: The getattr Call node
 
     Returns:
-        The default value, or None if not present
+        The default value (with backticks if inference failed), or None if not present
     """
     if not isinstance(node, nodes.Call):
         return None
@@ -185,9 +191,8 @@ def extract_getattr_default(node: nodes.Call) -> Any:
     # getattr takes 2 or 3 arguments: getattr(obj, name[, default])
     if len(node.args) >= 3:
         default_arg = node.args[2]
-        if isinstance(default_arg, nodes.Const):
-            return default_arg.value
-        # Complex default expression
-        return "<complex>"
+        # Use common inference with fallback
+        value, success = infer_value_with_fallback(default_arg)
+        return value
 
     return None

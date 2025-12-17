@@ -6,11 +6,19 @@ from typing import Any, Optional
 
 from astroid import MANAGER, nodes
 
+from upcast.common.file_utils import collect_python_files, validate_path
 from upcast.django_model_scanner.checker import DjangoModelChecker
 from upcast.django_model_scanner.export import export_to_yaml, export_to_yaml_string
 
 
-def scan_django_models(path: str, output: Optional[str] = None, verbose: bool = False) -> str:  # noqa: C901
+def scan_django_models(  # noqa: C901
+    path: str,
+    output: Optional[str] = None,
+    verbose: bool = False,
+    include_patterns: Optional[list[str]] = None,
+    exclude_patterns: Optional[list[str]] = None,
+    use_default_excludes: bool = True,
+) -> str:
     """Scan Django models in a Python file or directory.
 
     Args:
@@ -25,16 +33,16 @@ def scan_django_models(path: str, output: Optional[str] = None, verbose: bool = 
         FileNotFoundError: If the input path doesn't exist
         ValueError: If the path is neither a file nor directory
     """
-    # Validate input path
-    input_path = Path(path)
-    if not input_path.exists():
-        raise FileNotFoundError(f"Path not found: {path}")
+    # Validate and normalize input path
+    input_path = validate_path(path)
 
-    if not (input_path.is_file() or input_path.is_dir()):
-        raise ValueError(f"Path must be a file or directory: {path}")
-
-    # Collect Python files to scan
-    python_files = _collect_python_files(input_path)
+    # Collect Python files to scan using common utilities
+    python_files = collect_python_files(
+        input_path,
+        include_patterns=include_patterns,
+        exclude_patterns=exclude_patterns,
+        use_default_excludes=use_default_excludes,
+    )
 
     if not python_files:
         if verbose:
@@ -79,24 +87,6 @@ def scan_django_models(path: str, output: Optional[str] = None, verbose: bool = 
         return ""
     else:
         return export_to_yaml_string(models)
-
-
-def _collect_python_files(path: Path) -> list[Path]:
-    """Collect Python files from a path.
-
-    Args:
-        path: File or directory path
-
-    Returns:
-        List of Python file paths
-    """
-    if path.is_file():
-        if path.suffix == ".py":
-            return [path]
-        return []
-
-    # Recursively find all .py files
-    return list(path.rglob("*.py"))
 
 
 def _find_project_root(start_path: Path, verbose: bool = False) -> str:

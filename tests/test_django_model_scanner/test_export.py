@@ -53,6 +53,41 @@ class TestFormatModelOutput:
 
         assert "bases" in result["myapp.models.TestModel"]
 
+    def test_format_includes_description(self) -> None:
+        """Test that formatted output includes description field from docstring."""
+        model_data = {
+            "name": "TestModel",
+            "module": "myapp.models",
+            "description": "This is a test model for user data.",
+            "abstract": False,
+            "bases": ["django.db.models.base.Model"],
+            "fields": {},
+            "relationships": {},
+            "meta": {},
+        }
+
+        result = format_model_output({"myapp.models.TestModel": model_data})
+
+        assert "description" in result["myapp.models.TestModel"]
+        assert result["myapp.models.TestModel"]["description"] == "This is a test model for user data."
+
+    def test_format_without_description(self) -> None:
+        """Test that models without docstring don't have description field."""
+        model_data = {
+            "name": "TestModel",
+            "module": "myapp.models",
+            "abstract": False,
+            "bases": ["django.db.models.base.Model"],
+            "fields": {},
+            "relationships": {},
+            "meta": {},
+        }
+
+        result = format_model_output({"myapp.models.TestModel": model_data})
+
+        # Description should not be in output if not present in model_data
+        assert "description" not in result["myapp.models.TestModel"]
+
 
 class TestExportToYamlString:
     """Test export_to_yaml_string function."""

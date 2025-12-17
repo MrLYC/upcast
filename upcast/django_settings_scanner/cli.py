@@ -4,64 +4,9 @@ from pathlib import Path
 
 import click
 
+from upcast.common.file_utils import collect_python_files, validate_path
 from upcast.django_settings_scanner.checker import DjangoSettingsChecker
 from upcast.django_settings_scanner.export import export_to_yaml, export_to_yaml_string
-
-
-def _validate_path(path: str) -> Path:
-    """Validate that the input path exists.
-
-    Args:
-        path: Path to validate
-
-    Returns:
-        Path object
-
-    Raises:
-        click.ClickException: If path does not exist
-    """
-    p = Path(path)
-    if not p.exists():
-        raise click.ClickException(f"Path does not exist: {path}")
-    return p
-
-
-def _collect_python_files(path: Path) -> list[Path]:
-    """Recursively collect Python files, excluding common directories.
-
-    Args:
-        path: Root path to search
-
-    Returns:
-        List of Python file paths
-    """
-    if path.is_file():
-        return [path] if path.suffix == ".py" else []
-
-    # Directories to exclude
-    exclude_dirs = {
-        "venv",
-        "env",
-        ".venv",
-        "virtualenv",
-        "site-packages",
-        "__pycache__",
-        "build",
-        "dist",
-        ".egg-info",
-        ".tox",
-        ".pytest_cache",
-        "node_modules",
-    }
-
-    python_files = []
-    for item in path.rglob("*.py"):
-        # Check if any parent directory should be excluded
-        if any(part in exclude_dirs for part in item.parts):
-            continue
-        python_files.append(item)
-
-    return python_files
 
 
 def _process_files(checker: DjangoSettingsChecker, files: list[Path], verbose: bool) -> None:
@@ -81,7 +26,14 @@ def _process_files(checker: DjangoSettingsChecker, files: list[Path], verbose: b
             click.echo(f"Error scanning {file_path}: {e!s}", err=True)
 
 
-def scan_django_settings(path: str, output: str | None = None, verbose: bool = False) -> dict:
+def scan_django_settings(
+    path: str,
+    output: str | None = None,
+    verbose: bool = False,
+    include_patterns: list[str] | None = None,
+    exclude_patterns: list[str] | None = None,
+    use_default_excludes: bool = True,
+) -> dict:
     """Scan Django project for settings usage.
 
     Args:
@@ -92,8 +44,11 @@ def scan_django_settings(path: str, output: str | None = None, verbose: bool = F
     Returns:
         Dictionary of settings variables and their usages
     """
-    # Validate path
-    root_path = _validate_path(path)
+    try:
+        # Validate path using common utilities
+        root_path = validate_path(path)
+    except (FileNotFoundError, ValueError) as e:
+        raise click.ClickException(str(e)) from e
 
     # Determine base path for relative path calculation
     base_path = root_path if root_path.is_dir() else root_path.parent
@@ -101,10 +56,15 @@ def scan_django_settings(path: str, output: str | None = None, verbose: bool = F
     # Initialize checker
     checker = DjangoSettingsChecker(str(base_path))
 
-    # Collect Python files
+    # Collect Python files using common utilities
     if verbose:
         click.echo(f"Collecting Python files from {root_path}...")
-    python_files = _collect_python_files(root_path)
+    python_files = collect_python_files(
+        root_path,
+        include_patterns=include_patterns,
+        exclude_patterns=exclude_patterns,
+        use_default_excludes=use_default_excludes,
+    )
 
     if not python_files:
         click.echo("No Python files found.")

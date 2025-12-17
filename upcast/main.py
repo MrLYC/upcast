@@ -24,12 +24,18 @@ def main():
     default="yaml",
     help="Output format (yaml or json)",
 )
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True), nargs=-1, required=True)
 def scan_env_vars(  # noqa: C901
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
     path: tuple[str, ...],
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
 ) -> None:
     """Scan Python files for environment variable usage.
 
@@ -95,17 +101,34 @@ def scan_env_vars(  # noqa: C901
         sys.exit(1)
 
 
-@main.command()
+@main.command(name="scan-django-models")
 @click.option("-o", "--output", default=None, type=click.Path())
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def analyze_django_models(output: Optional[str], verbose: bool, path: str) -> None:
+def scan_django_models_command(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
     """Analyze Django models in Python files and export to YAML.
 
     PATH can be a Python file or directory containing Django models.
     """
     try:
-        result = scan_django_models(path, output=output, verbose=verbose)
+        result = scan_django_models(
+            path,
+            output=output,
+            verbose=verbose,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            use_default_excludes=not no_default_excludes,
+        )
 
         # If no output file specified, print to stdout
         if not output and result:
@@ -126,18 +149,35 @@ def analyze_django_models(output: Optional[str], verbose: bool, path: str) -> No
         sys.exit(1)
 
 
-@main.command()
+@main.command(name="scan-prometheus-metrics")
 @click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def scan_prometheus_metrics_cmd(output: Optional[str], verbose: bool, path: str) -> None:
+def scan_prometheus_metrics_command(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
     """Scan Python files for Prometheus metrics usage.
 
     PATH can be a Python file or directory containing Prometheus metrics.
     Results are aggregated by metric name and exported to YAML format.
     """
     try:
-        result = scan_prometheus_metrics(path, output=output, verbose=verbose)
+        result = scan_prometheus_metrics(
+            path,
+            output=output,
+            verbose=verbose,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            use_default_excludes=not no_default_excludes,
+        )
 
         # If no output file specified, print to stdout
         if not output and result:
@@ -161,18 +201,35 @@ def scan_prometheus_metrics_cmd(output: Optional[str], verbose: bool, path: str)
         sys.exit(1)
 
 
-@main.command()
+@main.command(name="scan-django-settings")
 @click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def scan_django_settings_cmd(output: Optional[str], verbose: bool, path: str) -> None:
+def scan_django_settings_command(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
     """Scan Django project for settings usage.
 
     PATH can be a Python file or directory containing Django code.
     Results are aggregated by settings variable name and exported to YAML format.
     """
     try:
-        scan_django_settings(path, output=output, verbose=verbose)
+        scan_django_settings(
+            path,
+            output=output,
+            verbose=verbose,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            use_default_excludes=not no_default_excludes,
+        )
 
         if verbose:
             click.echo("Scan complete!", err=True)
@@ -187,6 +244,103 @@ def scan_django_settings_cmd(output: Optional[str], verbose: bool, path: str) ->
 
             traceback.print_exc()
         sys.exit(1)
+
+
+# Deprecated command aliases with warnings
+@main.command(name="analyze-django-models", hidden=True)
+@click.option("-o", "--output", default=None, type=click.Path())
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True))
+def analyze_django_models_deprecated(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """DEPRECATED: Use 'scan-django-models' instead."""
+    click.echo(
+        "Warning: 'analyze-django-models' is deprecated. Use 'scan-django-models' instead.",
+        err=True,
+    )
+    ctx = click.get_current_context()
+    ctx.invoke(
+        scan_django_models_command,
+        output=output,
+        verbose=verbose,
+        path=path,
+        include=include,
+        exclude=exclude,
+        no_default_excludes=no_default_excludes,
+    )
+
+
+@main.command(name="scan-prometheus-metrics-cmd", hidden=True)
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True))
+def scan_prometheus_metrics_cmd_deprecated(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """DEPRECATED: Use 'scan-prometheus-metrics' instead."""
+    click.echo(
+        "Warning: 'scan-prometheus-metrics-cmd' is deprecated. Use 'scan-prometheus-metrics' instead.",
+        err=True,
+    )
+    ctx = click.get_current_context()
+    ctx.invoke(
+        scan_prometheus_metrics_command,
+        output=output,
+        verbose=verbose,
+        path=path,
+        include=include,
+        exclude=exclude,
+        no_default_excludes=no_default_excludes,
+    )
+
+
+@main.command(name="scan-django-settings-cmd", hidden=True)
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True))
+def scan_django_settings_cmd_deprecated(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """DEPRECATED: Use 'scan-django-settings' instead."""
+    click.echo(
+        "Warning: 'scan-django-settings-cmd' is deprecated. Use 'scan-django-settings' instead.",
+        err=True,
+    )
+    ctx = click.get_current_context()
+    ctx.invoke(
+        scan_django_settings_command,
+        output=output,
+        verbose=verbose,
+        path=path,
+        include=include,
+        exclude=exclude,
+        no_default_excludes=no_default_excludes,
+    )
 
 
 if __name__ == "__main__":

@@ -1,10 +1,9 @@
 """YAML export functions."""
 
-from pathlib import Path
 from typing import Any
 
-import yaml
-
+from upcast.common.export import export_to_yaml as common_export_yaml
+from upcast.common.export import export_to_yaml_string as common_export_yaml_string
 from upcast.prometheus_metrics_scanner.metrics_parser import MetricInfo
 
 
@@ -65,20 +64,7 @@ def export_to_yaml(metrics: dict[str, MetricInfo], output_path: str) -> None:
         output_path: Path to output file
     """
     output = format_metric_output(metrics)
-
-    # Create parent directories if needed
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-
-    # Write YAML file
-    with Path(output_path).open("w", encoding="utf-8") as f:
-        yaml.dump(
-            output,
-            f,
-            default_flow_style=False,
-            allow_unicode=True,
-            sort_keys=False,
-            indent=2,
-        )
+    common_export_yaml(output, output_path)
 
 
 def export_to_yaml_string(metrics: dict[str, MetricInfo]) -> str:
@@ -91,11 +77,4 @@ def export_to_yaml_string(metrics: dict[str, MetricInfo]) -> str:
         YAML formatted string
     """
     output = format_metric_output(metrics)
-
-    return yaml.dump(
-        output,
-        default_flow_style=False,
-        allow_unicode=True,
-        sort_keys=False,
-        indent=2,
-    )
+    return common_export_yaml_string(output)

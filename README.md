@@ -20,6 +20,12 @@ pip install upcast
 
 ## Usage
 
+All scanner commands support file filtering options for precise control over which files to analyze:
+
+- `--include PATTERN`: Include files matching glob pattern (can be used multiple times)
+- `--exclude PATTERN`: Exclude files matching glob pattern (can be used multiple times)
+- `--no-default-excludes`: Disable default exclusion of common directories (venv/, build/, dist/, etc.)
+
 ### scan-env-vars
 
 **New in this version!** Scan Python files for environment variable usage with advanced type inference and aggregation. This command uses astroid for semantic analysis and provides comprehensive information about environment variables used in your project.
@@ -50,6 +56,19 @@ Enable verbose output:
 
 ```bash
 upcast scan-env-vars /path/to/your/python/project/ -v
+```
+
+Filter files to scan:
+
+```bash
+# Only scan files in app/ directory
+upcast scan-env-vars /path/to/project/ --include "app/**"
+
+# Exclude test files
+upcast scan-env-vars /path/to/project/ --exclude "tests/**" --exclude "**/*_test.py"
+
+# Scan everything including normally excluded directories
+upcast scan-env-vars /path/to/project/ --no-default-excludes
 ```
 
 **Output Format:**
@@ -104,6 +123,88 @@ API_KEY:
 
 **Type Inference Rules:**
 
+### scan-django-models
+
+Scan Django models in Python files and extract comprehensive model information including fields, relationships, and metadata.
+
+```bash
+upcast scan-django-models /path/to/your/django/project/
+```
+
+Output to a file:
+
+```bash
+upcast scan-django-models /path/to/your/django/project/ -o models.yaml
+```
+
+Filter files:
+
+```bash
+# Only scan app models
+upcast scan-django-models /path/to/project/ --include "apps/**/models.py"
+
+# Exclude migrations
+upcast scan-django-models /path/to/project/ --exclude "migrations/**"
+```
+
+**Output Format:**
+
+```yaml
+app.models.User:
+  module: app.models
+  bases:
+    - models.Model
+  fields:
+    username:
+      type: models.CharField
+      max_length: 150
+      unique: true
+    email:
+      type: models.EmailField
+    created_at:
+      type: models.DateTimeField
+      auto_now_add: true
+```
+
+### scan-django-settings
+
+Scan Django project for settings variable usage and identify all configuration references.
+
+```bash
+upcast scan-django-settings /path/to/your/django/project/
+```
+
+Output to a file:
+
+```bash
+upcast scan-django-settings /path/to/your/django/project/ -o settings.yaml
+```
+
+Filter files:
+
+```bash
+# Only scan specific apps
+upcast scan-django-settings /path/to/project/ --include "core/**" --include "api/**"
+```
+
+**Output Format:**
+
+```yaml
+DEBUG:
+  count: 5
+  locations:
+    - file: app/views.py
+      line: 15
+      column: 8
+      code: settings.DEBUG
+      pattern: attribute_access
+    - file: middleware/security.py
+      line: 23
+      column: 12
+      code: getattr(settings, 'DEBUG', False)
+      pattern: getattr
+```
+
 ### scan-prometheus-metrics
 
 **New in this version!** Scan Python files for Prometheus metrics usage with comprehensive metadata extraction. This command uses astroid for semantic analysis and provides detailed information about all Prometheus metrics defined in your project.
@@ -128,6 +229,16 @@ Enable verbose output:
 
 ```bash
 upcast scan-prometheus-metrics /path/to/your/python/project/ -v
+```
+
+Filter files:
+
+```bash
+# Only scan metrics files
+upcast scan-prometheus-metrics /path/to/project/ --include "**/*metrics.py"
+
+# Exclude test files
+upcast scan-prometheus-metrics /path/to/project/ --exclude "tests/**"
 ```
 
 **Output Format:**
@@ -189,3 +300,42 @@ request_duration_seconds:
 - Identify duplicate or conflicting metric definitions
 - Generate metrics documentation for monitoring teams
 - Validate metric naming conventions and labeling patterns
+
+## Architecture
+
+### Common Utilities
+
+The project uses a shared utilities package (`upcast.common`) to eliminate code duplication and ensure consistency across all scanners:
+
+- **file_utils**: File discovery, path validation, and package root detection
+- **patterns**: Glob pattern matching with configurable excludes (venv/, **pycache**, build/, etc.)
+- **ast_utils**: Unified AST inference with explicit fallback markers for debugging
+- **export**: Recursive sorting and consistent YAML/JSON export
+
+This architecture provides:
+
+- ~300+ fewer lines of duplicate code
+- Consistent behavior across all scanners
+- Better error messages with fallback markers (backticks for failed inference)
+- Unified file filtering support
+
+## Features
+
+- **Static Analysis**: No code execution required - uses AST and semantic analysis
+- **Multiple Scanners**: Environment variables, Django models/settings, Prometheus metrics
+- **Advanced Type Inference**: Detects types from various patterns and conventions
+- **File Filtering**: Powerful glob-based include/exclude patterns
+- **Aggregated Output**: Results grouped by variable/model/metric name
+- **Multiple Formats**: YAML (human-readable) and JSON (machine-readable)
+- **Verbose Mode**: Detailed logging for debugging
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+
+## Migration Guide
+
+If you're using older command names, they still work but are deprecated:
+
+- `analyze-django-models` → Use `scan-django-models` instead
+- `scan-prometheus-metrics-cmd` → Use `scan-prometheus-metrics` instead
+- `scan-django-settings-cmd` → Use `scan-django-settings` instead
+
+The old commands will show a deprecation warning.

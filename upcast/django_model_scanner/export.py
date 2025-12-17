@@ -2,7 +2,8 @@
 
 from typing import Any
 
-import yaml
+from upcast.common.export import export_to_yaml as common_export_yaml
+from upcast.common.export import export_to_yaml_string as common_export_yaml_string
 
 
 def export_to_yaml(models: dict[str, dict[str, Any]], output_path: str) -> None:
@@ -15,19 +16,8 @@ def export_to_yaml(models: dict[str, dict[str, Any]], output_path: str) -> None:
     # Format models for output
     formatted_models = format_model_output(models)
 
-    # Write to YAML file
-    from pathlib import Path
-
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        yaml.safe_dump(
-            formatted_models,
-            f,
-            default_flow_style=False,
-            sort_keys=False,
-            allow_unicode=True,
-            indent=2,
-        )
+    # Use common export with sorting
+    common_export_yaml(formatted_models, output_path)
 
 
 def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
@@ -37,18 +27,13 @@ def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
         models: Dictionary of model data keyed by qualified name
 
     Returns:
-        YAML formatted string
+        YAML formatted string (sorted)
     """
     # Format models for output
     formatted_models = format_model_output(models)
 
-    return yaml.safe_dump(
-        formatted_models,
-        default_flow_style=False,
-        sort_keys=False,
-        allow_unicode=True,
-        indent=2,
-    )
+    # Use common export with sorting
+    return common_export_yaml_string(formatted_models)
 
 
 def format_model_output(models: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -78,6 +63,11 @@ def _format_single_model(model: dict[str, Any]) -> dict[str, Any]:
     output: dict[str, Any] = {
         "module": model.get("module", ""),
     }
+
+    # Add description from docstring if available
+    description = model.get("description")
+    if description:
+        output["description"] = description
 
     # Add base classes
     bases = model.get("bases", [])

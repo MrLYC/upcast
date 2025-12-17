@@ -8,7 +8,6 @@ import yaml
 
 from upcast.django_model_scanner.checker import DjangoModelChecker
 from upcast.django_model_scanner.cli import (
-    _collect_python_files,
     _find_project_root,
     _scan_file,
     scan_django_models,
@@ -60,13 +59,10 @@ class TestFindProjectRoot:
         result = _find_project_root(test_file, verbose=False)
         # It should find src/ by going up from package_dir
         assert result == str(src_dir)
-        subdir = tmp_path / "subdir"
-        subdir.mkdir()
-        (subdir / "file3.py").write_text("# test")
 
-        result = _collect_python_files(tmp_path)
-        assert len(result) == 3
-        assert all(f.suffix == ".py" for f in result)
+
+# Removed _collect_python_files test - now using common.file_utils.collect_python_files
+# which is tested in tests/test_common/test_file_utils.py
 
 
 class TestScanFile:
