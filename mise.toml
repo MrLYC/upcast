@@ -1,0 +1,5 @@
+[env]
+_.path = ["./.venv/bin"]
+
+[tools]
+python = "3.11.14"
