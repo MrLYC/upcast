@@ -2,70 +2,70 @@
 
 ## Phase 1: Foundation Setup
 
-- [ ] Create module directory structure `upcast/django_settings_scanner/`
-- [ ] Create `__init__.py` with public API export
-- [ ] Create `ast_utils.py` with function stubs
-- [ ] Create `settings_parser.py` with dataclass definitions
-- [ ] Create empty `checker.py`, `export.py`, `cli.py`
+- [x] Create module directory structure `upcast/django_settings_scanner/`
+- [x] Create `__init__.py` with public API export
+- [x] Create `ast_utils.py` with function stubs
+- [x] Create `settings_parser.py` with dataclass definitions
+- [x] Create empty `checker.py`, `export.py`, `cli.py`
 
 ## Phase 2: Pattern Detection (ast_utils.py)
 
-- [ ] Implement `is_django_settings(node)` - validate settings origin from django.conf
-- [ ] Implement `is_settings_attribute_access(node)` - detect `settings.KEY`
-- [ ] Implement `is_settings_getattr_call(node)` - detect `getattr(settings, "KEY")`
-- [ ] Implement `is_settings_hasattr_call(node)` - detect `hasattr(settings, "KEY")`
-- [ ] Implement `extract_setting_name(node)` - extract variable name from any pattern
-- [ ] Implement `extract_getattr_default(node)` - extract default value from getattr
-- [ ] Add docstrings and type hints to all functions
+- [x] Implement `is_django_settings(node)` - validate settings origin from django.conf
+- [x] Implement `is_settings_attribute_access(node)` - detect `settings.KEY`
+- [x] Implement `is_settings_getattr_call(node)` - detect `getattr(settings, "KEY")`
+- [x] Implement `is_settings_hasattr_call(node)` - detect `hasattr(settings, "KEY")`
+- [x] Implement `extract_setting_name(node)` - extract variable name from any pattern
+- [x] Implement `extract_getattr_default(node)` - extract default value from getattr
+- [x] Add docstrings and type hints to all functions
 
 ## Phase 3: Data Structures (settings_parser.py)
 
-- [ ] Define `SettingsUsage` dataclass with file, line, column, pattern, code fields
-- [ ] Define `SettingsVariable` dataclass with name, count, locations fields
-- [ ] Implement `parse_settings_attribute(node)` - parse attribute access
-- [ ] Implement `parse_settings_getattr(node)` - parse getattr call
-- [ ] Implement `parse_settings_hasattr(node)` - parse hasattr call
-- [ ] Implement `parse_settings_usage(node)` - unified parsing function
-- [ ] Add helper to extract source code snippet from AST node
+- [x] Define `SettingsUsage` dataclass with file, line, column, pattern, code fields
+- [x] Define `SettingsVariable` dataclass with name, count, locations fields
+- [x] Implement `parse_settings_attribute(node)` - parse attribute access
+- [x] Implement `parse_settings_getattr(node)` - parse getattr call
+- [x] Implement `parse_settings_hasattr(node)` - parse hasattr call
+- [x] Implement `parse_settings_usage(node)` - unified parsing function
+- [x] Add helper to extract source code snippet from AST node
 
 ## Phase 4: AST Visitor (checker.py)
 
-- [ ] Create `DjangoSettingsChecker` class extending astroid NodeVisitor
-- [ ] Implement `__init__(base_path)` - initialize settings dict
-- [ ] Implement `visit_Attribute(node)` - handle attribute access patterns
-- [ ] Implement `visit_Call(node)` - handle getattr/hasattr patterns
-- [ ] Implement `_register_usage(variable_name, usage)` - aggregate by variable
-- [ ] Implement `check_file(file_path)` - parse and visit file
-- [ ] Add error handling for parse failures
+- [x] Create `DjangoSettingsChecker` class extending astroid NodeVisitor
+- [x] Implement `__init__(base_path)` - initialize settings dict
+- [x] Implement `visit_Attribute(node)` - handle attribute access patterns
+- [x] Implement `visit_Call(node)` - handle getattr/hasattr patterns
+- [x] Implement `_register_usage(variable_name, usage)` - aggregate by variable
+- [x] Implement `check_file(file_path)` - parse and visit file
+- [x] Add error handling for parse failures
 
 ## Phase 5: YAML Export (export.py)
 
-- [ ] Implement `format_settings_output(settings_dict)` - convert to YAML structure
-- [ ] Sort variables alphabetically in output
-- [ ] Sort locations by (file, line) within each variable
-- [ ] Implement `export_to_yaml(settings_dict, output_path)` - write to file
-- [ ] Implement `export_to_yaml_string(settings_dict)` - return YAML string
-- [ ] Configure YAML writer: UTF-8, 2-space indent, block style
-- [ ] Add validation for output path creation
+- [x] Implement `format_settings_output(settings_dict)` - convert to YAML structure
+- [x] Sort variables alphabetically in output
+- [x] Sort locations by (file, line) within each variable
+- [x] Implement `export_to_yaml(settings_dict, output_path)` - write to file
+- [x] Implement `export_to_yaml_string(settings_dict)` - return YAML string
+- [x] Configure YAML writer: UTF-8, 2-space indent, block style
+- [x] Add validation for output path creation
 
 ## Phase 6: CLI Interface (cli.py)
 
-- [ ] Implement `scan_django_settings(path, output, verbose)` - main entry point
-- [ ] Implement `_validate_path(path)` - check if path exists
-- [ ] Implement `_collect_python_files(path)` - recursive file discovery
-- [ ] Filter out venv/, build/, **pycache**/ directories
-- [ ] Implement progress reporting with click.echo
-- [ ] Implement `_process_files(checker, files, verbose)` - scan files with progress
-- [ ] Add error handling for file access failures
-- [ ] Add summary output (N settings found in M files)
+- [x] Implement `scan_django_settings(path, output, verbose)` - main entry point
+- [x] Implement `_validate_path(path)` - check if path exists
+- [x] Implement `_collect_python_files(path)` - recursive file discovery
+- [x] Filter out venv/, build/, **pycache**/ directories
+- [x] Implement progress reporting with click.echo
+- [x] Implement `_process_files(checker, files, verbose)` - scan files with progress
+- [x] Add error handling for file access failures
+- [x] Add summary output (N settings found in M files)
 
 ## Phase 7: Main CLI Integration
 
-- [ ] Add import in `upcast/main.py`: `from upcast.django_settings_scanner import scan_django_settings`
-- [ ] Create `@main.command()` decorator for `scan_django_settings_cmd`
-- [ ] Add click arguments: `path` (required), `-o/--output` (optional), `-v/--verbose` (flag)
-- [ ] Wire up CLI command to call `scan_django_settings()`
-- [ ] Test CLI command: `uv run upcast scan-django-settings --help`
+- [x] Add import in `upcast/main.py`: `from upcast.django_settings_scanner import scan_django_settings`
+- [x] Create `@main.command()` decorator for `scan_django_settings_cmd`
+- [x] Add click arguments: `path` (required), `-o/--output` (optional), `-v/--verbose` (flag)
+- [x] Wire up CLI command to call `scan_django_settings()`
+- [x] Test CLI command: `uv run upcast scan-django-settings --help`
 
 ## Phase 8: Unit Tests - AST Utils
 
@@ -121,19 +121,19 @@
 
 ## Phase 13: Test Fixtures
 
-- [ ] Create `tests/test_django_settings_scanner/fixtures/simple_settings.py`
+- [x] Create `tests/test_django_settings_scanner/fixtures/simple_settings.py`
   - Basic `settings.KEY` patterns
   - Multiple variables
-- [ ] Create `fixtures/getattr_patterns.py`
+- [x] Create `fixtures/getattr_patterns.py`
   - `getattr(settings, "KEY")` with and without defaults
   - `hasattr(settings, "KEY")`
-- [ ] Create `fixtures/aliased_imports.py`
+- [x] Create `fixtures/aliased_imports.py`
   - `from django.conf import settings as config`
   - `import django.conf as conf; conf.settings.KEY`
-- [ ] Create `fixtures/non_django_settings.py`
+- [x] Create `fixtures/non_django_settings.py`
   - Local `settings = {}` object (should NOT be detected)
   - `from myapp.settings import KEY` (should NOT be detected)
-- [ ] Create `fixtures/mixed_settings.py`
+- [x] Create `fixtures/mixed_settings.py`
   - Both Django and non-Django settings in same file
   - Verify only Django settings detected
 
@@ -141,10 +141,10 @@
 
 - [ ] Run full test suite: `uv run pytest tests/test_django_settings_scanner/`
 - [ ] Verify all tests pass (target: 45+ tests)
-- [ ] Run linting: `uv run ruff check upcast/django_settings_scanner/`
-- [ ] Fix any linting errors
-- [ ] Test CLI command manually on fixtures directory
-- [ ] Verify output YAML is valid and readable
+- [x] Run linting: `uv run ruff check upcast/django_settings_scanner/`
+- [x] Fix any linting errors
+- [x] Test CLI command manually on fixtures directory
+- [x] Verify output YAML is valid and readable
 
 ## Phase 15: Documentation
 
