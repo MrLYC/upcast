@@ -10,35 +10,13 @@ TBD - created by archiving change refactor-scanner-architecture. Update Purpose 
 
 The system SHALL use a consistent naming pattern for all scanner commands following the `scan-*` convention.
 
-#### Scenario: Standardize to scan prefix
+#### Scenario: Add scan-django-urls command
 
-- **WHEN** users run scanner commands
-- **THEN** all commands SHALL use the `scan-*` pattern:
-  - `scan-env-vars` (unchanged)
-  - `scan-django-models` (renamed from `analyze-django-models`)
-  - `scan-django-settings` (renamed from `scan-django-settings-cmd`)
-  - `scan-prometheus-metrics` (renamed from `scan-prometheus-metrics-cmd`)
+- **WHEN** users need to scan Django URL patterns
+- **THEN** the system SHALL provide `scan-django-urls` command
+- **AND** follow the same `scan-*` naming convention as other scanners
 
-**DIFF**: Renamed commands for consistency
-
-#### Scenario: Deprecated command aliases
-
-- **WHEN** users run old command names
-- **THEN** the system SHALL execute the command successfully
-- **AND** print a deprecation warning to stderr
-- **AND** show the new command name in the warning
-
-**DIFF**: Added backward compatibility with deprecation
-
-#### Scenario: Deprecation warning format
-
-- **WHEN** showing deprecation warnings
-- **THEN** the message SHALL follow format:
-  ```
-  Warning: 'analyze-django-models' is deprecated and will be removed in version X.Y. Use 'scan-django-models' instead.
-  ```
-
-**DIFF**: Specified deprecation message format
+**DIFF**: Added new scanner command for Django URLs
 
 ### Requirement: File Pattern Filtering
 
