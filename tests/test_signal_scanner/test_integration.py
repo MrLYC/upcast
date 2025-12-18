@@ -104,14 +104,16 @@ def test_handler_context_extraction():
     django_signals = results["django"]
 
     # Check module-level function
-    handlers = django_signals["model_signals"]["post_save"]
-    module_handler = next(h for h in handlers if h["handler"] == "order_created")
+    signal_data = django_signals["model_signals"]["post_save"]
+    receivers = signal_data["receivers"]
+    module_handler = next(h for h in receivers if h["handler"] == "order_created")
     assert "context" in module_handler
     assert module_handler["context"]["type"] == "function"
 
     # Check method in class
-    handlers = django_signals["model_signals"]["pre_save"]
-    method_handler = next(h for h in handlers if h["handler"] == "on_user_save")
+    signal_data = django_signals["model_signals"]["pre_save"]
+    receivers = signal_data["receivers"]
+    method_handler = next(h for h in receivers if h["handler"] == "on_user_save")
     assert "context" in method_handler
     assert method_handler["context"]["type"] == "method"
     assert method_handler["context"]["class"] == "SignalHandlers"
@@ -126,8 +128,9 @@ def test_signal_aggregation():
     django_signals = results["django"]
 
     # post_save should have multiple handlers
-    post_save_handlers = django_signals["model_signals"]["post_save"]
-    assert len(post_save_handlers) >= 2  # order_created + save_handler
+    post_save_data = django_signals["model_signals"]["post_save"]
+    post_save_receivers = post_save_data["receivers"]
+    assert len(post_save_receivers) >= 2  # order_created + save_handler
 
 
 def test_sender_extraction():
@@ -139,8 +142,9 @@ def test_sender_extraction():
     django_signals = results["django"]
 
     # Check handler with sender
-    handlers = django_signals["model_signals"]["post_save"]
-    handler_with_sender = next(h for h in handlers if h["handler"] == "order_created")
+    signal_data = django_signals["model_signals"]["post_save"]
+    receivers = signal_data["receivers"]
+    handler_with_sender = next(h for h in receivers if h["handler"] == "order_created")
     assert "sender" in handler_with_sender
     assert handler_with_sender["sender"] == "Order"
 
@@ -153,11 +157,11 @@ def test_summary_statistics():
 
     summary = checker.get_summary()
 
-    assert "django_handlers" in summary
-    assert summary["django_handlers"] > 0
+    assert "django_receivers" in summary
+    assert summary["django_receivers"] > 0
 
-    assert "celery_handlers" in summary
-    assert summary["celery_handlers"] > 0
+    assert "celery_receivers" in summary
+    assert summary["celery_receivers"] > 0
 
 
 def test_empty_file():

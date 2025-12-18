@@ -1,11 +1,24 @@
 """Parsing functions for signal patterns."""
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
+
+
+@dataclass
+class SignalUsage:
+    """Represents a single usage of a signal (send or receive)."""
+
+    file: str  # Relative path from project root
+    line: int  # Line number (1-based)
+    column: int  # Column number (0-based)
+    pattern: str  # Usage pattern type
+    code: str  # Source code snippet
+    sender: str | None = None  # Sender if specified
 
 
 def _get_scope_context(node: nodes.NodeNG) -> dict[str, Any]:
@@ -473,3 +486,111 @@ def categorize_celery_signal(signal_name: str) -> str:
         return "beat_signals"
     else:
         return "other_signals"
+
+
+def _is_signal_send_call(
+    node: nodes.Call,
+    django_imports: set[str],
+    celery_imports: set[str],
+    custom_signals: dict[str, Any],
+    known_signal_names: set[str],
+) -> tuple[str, str] | None:
+    """Check if a Call node is a signal send.
+
+    Validates that the object calling .send() is a known signal to avoid
+    false positives like mail.send(), message.send(), etc.
+
+    Args:
+        node: The Call AST node
+        django_imports: Django signal names from imports
+        celery_imports: Celery signal names from imports
+        custom_signals: Custom signal definitions
+        known_signal_names: Signal names extracted from receivers
+
+    Returns:
+        (signal_name, method_type) tuple or None
+        method_type is "send" or "send_robust"
+        Returns None if not a valid signal send
+    """
+    # Must be method call (attribute access)
+    if not isinstance(node.func, nodes.Attribute):
+        return None
+
+    # Extract method name
+    method = node.func.attrname
+    if method not in ("send", "send_robust"):
+        return None
+
+    # Extract signal name from node.func.expr
+    signal_name = _extract_signal_name_from_call(node)
+    if not signal_name:
+        return None
+
+    # Validate against known signals whitelist
+    if (
+        signal_name not in django_imports
+        and signal_name not in celery_imports
+        and signal_name not in custom_signals
+        and signal_name not in known_signal_names
+    ):
+        # Not a known signal - likely mail.send(), etc.
+        return None
+
+    return (signal_name, method)
+
+
+def parse_signal_send(
+    node: nodes.Call,
+    django_imports: set[str],
+    celery_imports: set[str],
+    custom_signals: dict[str, Any],
+    known_signal_names: set[str],
+    root_path: str | None,
+    file_path: str,
+) -> tuple[str, SignalUsage] | None:
+    """Parse signal.send() or signal.send_robust() call.
+
+    Args:
+        node: Call node
+        django_imports: Django signal names
+        celery_imports: Celery signal names
+        custom_signals: Custom signals dict
+        known_signal_names: Signals with receivers
+        root_path: Project root path
+        file_path: Current file path
+
+    Returns:
+        (signal_name, SignalUsage) tuple or None
+    """
+    # Validate this is a signal send
+    result = _is_signal_send_call(node, django_imports, celery_imports, custom_signals, known_signal_names)
+    if not result:
+        return None
+
+    signal_name, method_type = result
+
+    # Extract sender parameter
+    sender = None
+    if node.keywords:
+        for keyword in node.keywords:
+            if keyword.arg == "sender":
+                value = keyword.value
+                if isinstance(value, nodes.Name):
+                    sender = value.name
+                elif isinstance(value, nodes.Const):
+                    sender = value.value if isinstance(value.value, str) else safe_as_string(value)
+                else:
+                    sender = safe_as_string(value)
+
+    # Create SignalUsage
+    pattern = "send_robust_method" if method_type == "send_robust" else "send_method"
+    usage = SignalUsage(
+        file=_get_relative_path(file_path, root_path),
+        line=node.lineno,
+        column=node.col_offset,
+        pattern=pattern,
+        code=_extract_code_snippet(node),
+        sender=sender,
+    )
+
+    return (signal_name, usage)

@@ -100,13 +100,15 @@ def test_scan_output_yaml_format(tmp_path):
         assert "model_signals" in data["django"]
         model_signals = data["django"]["model_signals"]
         assert isinstance(model_signals, dict)
-        # Check signal has handlers list
-        for _signal_name, handlers in model_signals.items():
-            assert isinstance(handlers, list)
-            for handler in handlers:
-                assert "handler" in handler
-                assert "file" in handler
-                assert "line" in handler
+        # Check signal has correct structure with receivers, senders, usages
+        for _signal_name, signal_data in model_signals.items():
+            assert isinstance(signal_data, dict)
+            assert "receivers" in signal_data
+            assert isinstance(signal_data["receivers"], list)
+            for receiver in signal_data["receivers"]:
+                assert "handler" in receiver
+                assert "file" in receiver
+                assert "line" in receiver
 
 
 def test_scan_no_signals_found(tmp_path):

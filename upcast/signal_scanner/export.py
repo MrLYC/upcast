@@ -29,27 +29,34 @@ def format_signal_output(results: dict[str, Any]) -> dict[str, Any]:  # noqa: C9
 
             category_output: dict[str, Any] = {}
 
-            for signal_name, handlers in signals.items():
-                # Format handlers
-                formatted_handlers = []
-                for handler in handlers:
-                    handler_entry: dict[str, Any] = {
-                        "handler": handler["handler"],
-                        "file": handler["file"],
-                        "line": handler["line"],
-                    }
+            for signal_name, signal_data in signals.items():
+                # Handle new structure: {receivers: [], senders: [], usages: []}
+                if isinstance(signal_data, dict) and "receivers" in signal_data:
+                    # Format the nested structure
+                    formatted_signal: dict[str, Any] = {}
 
-                    # Add sender if present
-                    if "sender" in handler:
-                        handler_entry["sender"] = handler["sender"]
+                    # Format receivers
+                    if "receivers" in signal_data:
+                        formatted_receivers = []
+                        for handler in signal_data["receivers"]:
+                            handler_entry: dict[str, Any] = {
+                                "handler": handler["handler"],
+                                "file": handler["file"],
+                                "line": handler["line"],
+                            }
+                            # Add sender if present
+                            if "sender" in handler:
+                                handler_entry["sender"] = handler["sender"]
+                            # Add context if present
+                            if "context" in handler:
+                                handler_entry["context"] = handler["context"]
+                            formatted_receivers.append(handler_entry)
+                        formatted_signal["receivers"] = formatted_receivers
 
-                    # Add context if present
-                    if "context" in handler:
-                        handler_entry["context"] = handler["context"]
-
-                    formatted_handlers.append(handler_entry)
-
-                category_output[signal_name] = formatted_handlers
+                    category_output[signal_name] = formatted_signal
+                else:
+                    # Shouldn't happen, but handle gracefully
+                    category_output[signal_name] = {"receivers": []}
 
             if category_output:
                 django_output[category] = category_output
@@ -64,23 +71,31 @@ def format_signal_output(results: dict[str, Any]) -> dict[str, Any]:  # noqa: C9
         for category, signals in results["celery"].items():
             category_output: dict[str, Any] = {}
 
-            for signal_name, handlers in signals.items():
-                # Format handlers
-                formatted_handlers = []
-                for handler in handlers:
-                    handler_entry: dict[str, Any] = {
-                        "handler": handler["handler"],
-                        "file": handler["file"],
-                        "line": handler["line"],
-                    }
+            for signal_name, signal_data in signals.items():
+                # Handle new structure: {receivers: [], senders: [], usages: []}
+                if isinstance(signal_data, dict) and "receivers" in signal_data:
+                    # Format the nested structure
+                    formatted_signal: dict[str, Any] = {}
 
-                    # Add context if present
-                    if "context" in handler:
-                        handler_entry["context"] = handler["context"]
+                    # Format receivers
+                    if "receivers" in signal_data:
+                        formatted_receivers = []
+                        for handler in signal_data["receivers"]:
+                            handler_entry: dict[str, Any] = {
+                                "handler": handler["handler"],
+                                "file": handler["file"],
+                                "line": handler["line"],
+                            }
+                            # Add context if present
+                            if "context" in handler:
+                                handler_entry["context"] = handler["context"]
+                            formatted_receivers.append(handler_entry)
+                        formatted_signal["receivers"] = formatted_receivers
 
-                    formatted_handlers.append(handler_entry)
-
-                category_output[signal_name] = formatted_handlers
+                    category_output[signal_name] = formatted_signal
+                else:
+                    # Shouldn't happen, but handle gracefully
+                    category_output[signal_name] = {"receivers": []}
 
             if category_output:
                 celery_output[category] = category_output
