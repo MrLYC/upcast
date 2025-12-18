@@ -1,6 +1,6 @@
 [project]
 name = "upcast"
-version = "0.2.3"
+version = "1.0.0"
 description = "AST tools"
 authors = [{ name = "MrLYC", email = "github@m.mrlyc.com" }]
 readme = "README.md"
