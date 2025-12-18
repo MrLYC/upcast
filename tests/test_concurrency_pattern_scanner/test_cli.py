@@ -7,7 +7,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 
-from upcast.concurrency_scanner.cli import scan_concurrency
+from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 
 
 @pytest.fixture
@@ -24,7 +24,7 @@ def fixtures_dir():
 
 def test_scan_current_directory(runner, fixtures_dir):
     """Test scanning current directory."""
-    result = runner.invoke(scan_concurrency, [str(fixtures_dir)])
+    result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir)])
 
     assert result.exit_code == 0
     # Output should contain YAML with concurrency_patterns
@@ -37,7 +37,7 @@ def test_scan_with_output_file(runner, fixtures_dir):
         output_file = f.name
 
     try:
-        result = runner.invoke(scan_concurrency, [str(fixtures_dir), "-o", output_file])
+        result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir), "-o", output_file])
 
         assert result.exit_code == 0
 
@@ -52,7 +52,7 @@ def test_scan_with_output_file(runner, fixtures_dir):
 
 def test_scan_with_verbose(runner, fixtures_dir):
     """Test scanning with verbose output."""
-    result = runner.invoke(scan_concurrency, [str(fixtures_dir), "-v"])
+    result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir), "-v"])
 
     assert result.exit_code == 0
     # Verbose output should show scanning info
@@ -61,7 +61,7 @@ def test_scan_with_verbose(runner, fixtures_dir):
 
 def test_scan_with_include_pattern(runner, fixtures_dir):
     """Test scanning with include pattern."""
-    result = runner.invoke(scan_concurrency, [str(fixtures_dir), "--include", "**/asyncio_*.py"])
+    result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir), "--include", "**/asyncio_*.py"])
 
     assert result.exit_code == 0
     # Should only scan asyncio files
@@ -71,7 +71,7 @@ def test_scan_with_include_pattern(runner, fixtures_dir):
 
 def test_scan_with_exclude_pattern(runner, fixtures_dir):
     """Test scanning with exclude pattern."""
-    result = runner.invoke(scan_concurrency, [str(fixtures_dir), "--exclude", "**/threading_*.py"])
+    result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir), "--exclude", "**/threading_*.py"])
 
     assert result.exit_code == 0
     # Should exclude threading files
@@ -82,7 +82,7 @@ def test_scan_with_exclude_pattern(runner, fixtures_dir):
 def test_scan_single_file(runner, fixtures_dir):
     """Test scanning a single file."""
     asyncio_file = fixtures_dir / "asyncio_patterns.py"
-    result = runner.invoke(scan_concurrency, [str(asyncio_file)])
+    result = runner.invoke(scan_concurrency_patterns, [str(asyncio_file)])
 
     assert result.exit_code == 0
     output_data = yaml.safe_load(result.output)
@@ -93,7 +93,7 @@ def test_scan_single_file(runner, fixtures_dir):
 
 def test_scan_nonexistent_path(runner):
     """Test scanning nonexistent path."""
-    result = runner.invoke(scan_concurrency, ["/nonexistent/path"])
+    result = runner.invoke(scan_concurrency_patterns, ["/nonexistent/path"])
 
     assert result.exit_code != 0  # Should fail (exit code can be 1 or 2)
     assert "does not exist" in result.output
@@ -102,7 +102,7 @@ def test_scan_nonexistent_path(runner):
 def test_scan_with_multiple_include(runner, fixtures_dir):
     """Test scanning with multiple include patterns."""
     result = runner.invoke(
-        scan_concurrency,
+        scan_concurrency_patterns,
         [
             str(fixtures_dir),
             "--include",
@@ -120,7 +120,7 @@ def test_scan_with_multiple_include(runner, fixtures_dir):
 def test_scan_empty_directory(runner):
     """Test scanning empty directory."""
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = runner.invoke(scan_concurrency, [tmpdir])
+        result = runner.invoke(scan_concurrency_patterns, [tmpdir])
 
         # Should exit with error (no Python files)
         assert result.exit_code == 1
@@ -129,7 +129,7 @@ def test_scan_empty_directory(runner):
 
 def test_scan_output_format(runner, fixtures_dir):
     """Test that output is valid YAML."""
-    result = runner.invoke(scan_concurrency, [str(fixtures_dir)])
+    result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir)])
 
     assert result.exit_code == 0
 
@@ -149,7 +149,7 @@ def test_verbose_with_output_file(runner, fixtures_dir):
         output_file = f.name
 
     try:
-        result = runner.invoke(scan_concurrency, [str(fixtures_dir), "-o", output_file, "-v"])
+        result = runner.invoke(scan_concurrency_patterns, [str(fixtures_dir), "-o", output_file, "-v"])
 
         assert result.exit_code == 0
         # Verbose output should show scanning info

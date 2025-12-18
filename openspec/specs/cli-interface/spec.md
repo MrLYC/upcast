@@ -10,15 +10,15 @@ TBD - created by archiving change refactor-scanner-architecture. Update Purpose 
 
 The system SHALL use a consistent naming pattern for all scanner commands following the `scan-*` convention.
 
-#### Scenario: Add scan-concurrency command
+#### Scenario: Add scan-concurrency-patterns command
 
 - **WHEN** user needs to scan for Python concurrency patterns
-- **THEN** the system SHALL provide `scan-concurrency` command
+- **THEN** the system SHALL provide `scan-concurrency-patterns` command
 - **AND** accept path argument (file or directory) as first positional argument
 - **AND** support standard options: `-o/--output`, `-v/--verbose`, `--include`, `--exclude`
 - **AND** follow the same CLI patterns as other scanner commands
 
-**DIFF**: New scan-concurrency command for detecting asyncio, threading, and multiprocessing patterns
+**DIFF**: New scan-concurrency-patterns command for detecting asyncio, threading, and multiprocessing patterns
 
 ### Requirement: File Pattern Filtering
 

@@ -1,12 +1,12 @@
-"""CLI interface for concurrency scanner."""
+"""CLI interface for concurrency pattern scanner."""
 
 import sys
 from pathlib import Path
 
 import click
 
-from upcast.concurrency_scanner.checker import ConcurrencyChecker
-from upcast.concurrency_scanner.export import export_to_yaml, format_concurrency_output
+from upcast.concurrency_pattern_scanner.checker import ConcurrencyChecker
+from upcast.concurrency_pattern_scanner.export import export_to_yaml, format_concurrency_output
 
 
 @click.command()
@@ -23,7 +23,7 @@ from upcast.concurrency_scanner.export import export_to_yaml, format_concurrency
     multiple=True,
     help="File patterns to exclude (can be specified multiple times)",
 )
-def scan_concurrency(
+def scan_concurrency_patterns(
     path: str,
     output: str | None,
     verbose: bool,
@@ -147,4 +147,4 @@ def _print_summary(patterns: dict) -> None:
 
 
 if __name__ == "__main__":
-    scan_concurrency()
+    scan_concurrency_patterns()

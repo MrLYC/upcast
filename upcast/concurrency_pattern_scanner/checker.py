@@ -5,7 +5,7 @@ from typing import Any
 
 from astroid import MANAGER, nodes
 
-from upcast.concurrency_scanner.pattern_parser import (
+from upcast.concurrency_pattern_scanner.pattern_parser import (
     parse_async_context_manager,
     parse_async_function,
     parse_asyncio_create_task,

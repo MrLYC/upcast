@@ -1,4 +1,4 @@
-# concurrency-scanner Specification
+# concurrency-pattern-scanner Specification
 
 ## Purpose
 
@@ -286,12 +286,12 @@ The system SHALL generate structured YAML output grouped by concurrency category
 
 ### Requirement: CLI Integration
 
-The system SHALL provide a `scan-concurrency` command integrated with the main CLI.
+The system SHALL provide a `scan-concurrency-patterns` command integrated with the main CLI.
 
-#### Scenario: Add scan-concurrency command
+#### Scenario: Add scan-concurrency-patterns command
 
-- **WHEN** user needs to scan for concurrency patterns
-- **THEN** the system SHALL provide `scan-concurrency` command
+- **WHEN** user needs to scan for Python concurrency patterns
+- **THEN** the system SHALL provide `scan-concurrency-patterns` command
 - **AND** accept a path argument (file or directory)
 - **AND** follow standard CLI patterns from other scanners
 
@@ -299,7 +299,7 @@ The system SHALL provide a `scan-concurrency` command integrated with the main C
 
 #### Scenario: Support standard CLI options
 
-- **WHEN** running scan-concurrency
+- **WHEN** running scan-concurrency-patterns
 - **THEN** the system SHALL support `-o/--output` for file output
 - **AND** support `-v/--verbose` for debug information
 - **AND** support `--include` and `--exclude` for file filtering

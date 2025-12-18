@@ -1,10 +1,10 @@
-"""Integration tests for concurrency scanner."""
+"""Integration tests for concurrency pattern scanner."""
 
 from pathlib import Path
 
 import pytest
 
-from upcast.concurrency_scanner.checker import ConcurrencyChecker
+from upcast.concurrency_pattern_scanner.checker import ConcurrencyChecker
 
 
 @pytest.fixture

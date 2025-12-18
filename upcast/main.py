@@ -3,7 +3,7 @@ from typing import Optional
 
 import click
 
-from upcast.concurrency_scanner.cli import scan_concurrency
+from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
@@ -308,7 +308,7 @@ def scan_django_settings_cmd(
         sys.exit(1)
 
 
-@main.command(name="scan-concurrency")
+@main.command(name="scan-concurrency-patterns")
 @click.argument("path", type=click.Path(exists=True), required=False, default=".")
 @click.option("-o", "--output", type=click.Path(), help="Output YAML file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
@@ -322,7 +322,7 @@ def scan_django_settings_cmd(
     multiple=True,
     help="File patterns to exclude (can be specified multiple times)",
 )
-def scan_concurrency_cmd(
+def scan_concurrency_patterns_cmd(
     path: str,
     output: Optional[str],
     verbose: bool,
@@ -340,27 +340,27 @@ def scan_concurrency_cmd(
 
         \b
         # Scan current directory
-        upcast scan-concurrency
+        upcast scan-concurrency-patterns
 
         \b
         # Scan specific directory with verbose output
-        upcast scan-concurrency ./src -v
+        upcast scan-concurrency-patterns ./src -v
 
         \b
         # Save results to file
-        upcast scan-concurrency ./src -o concurrency.yaml
+        upcast scan-concurrency-patterns ./src -o concurrency.yaml
 
         \b
         # Include only specific files
-        upcast scan-concurrency ./src --include "**/*_async.py"
+        upcast scan-concurrency-patterns ./src --include "**/*_async.py"
 
         \b
         # Exclude test files
-        upcast scan-concurrency ./src --exclude "**/test_*.py"
+        upcast scan-concurrency-patterns ./src --exclude "**/test_*.py"
     """
     try:
-        # Call scan_concurrency directly using its context
-        ctx = click.Context(scan_concurrency)
+        # Call scan_concurrency_patterns directly using its context
+        ctx = click.Context(scan_concurrency_patterns)
         ctx.params = {
             "path": path,
             "output": output,
@@ -368,7 +368,7 @@ def scan_concurrency_cmd(
             "include": include,
             "exclude": exclude,
         }
-        scan_concurrency.invoke(ctx)
+        scan_concurrency_patterns.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
