@@ -5,6 +5,7 @@ import click
 
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
+from upcast.django_url_scanner import scan_django_urls
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
@@ -200,6 +201,55 @@ def scan_prometheus_metrics_cmd(
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
     except ValueError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-django-urls")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True))
+def scan_django_urls_cmd(
+    output: Optional[str],
+    verbose: bool,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Python files for Django URL pattern definitions.
+
+    PATH can be a Python file or directory containing Django URL configurations.
+    Results are grouped by module and exported to YAML format.
+    """
+    try:
+        result = scan_django_urls(
+            path,
+            output=output,
+            verbose=verbose,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            use_default_excludes=not no_default_excludes,
+        )
+
+        # If no output file specified, print to stdout
+        if not output and result:
+            click.echo(result)
+
+        if verbose:
+            click.echo("Scan complete!", err=True)
+
+    except FileNotFoundError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
     except Exception as e:
