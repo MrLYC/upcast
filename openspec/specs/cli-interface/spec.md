@@ -44,43 +44,32 @@ The system SHALL use a consistent naming pattern for all scanner commands follow
 
 The system SHALL support flexible file filtering via include and exclude patterns for all scan commands.
 
-#### Scenario: Include pattern option
+#### Scenario: env-var-scanner respects include patterns
 
-- **WHEN** user specifies `--include` option
+- **WHEN** user specifies `--include` option for `scan-env-vars` command
 - **THEN** the system SHALL only scan files matching the pattern
-- **AND** support glob patterns (e.g., `*.py`, `**/models/*.py`)
-- **AND** allow multiple `--include` options
-- **AND** default to `**/*.py` if not specified
+- **AND** pass the pattern to underlying scanner functions
+- **AND** use `collect_python_files()` with filtering enabled
 
-**DIFF**: New requirement for file filtering
+**DIFF**: Fixed bug where include patterns were ignored by scan-env-vars
 
-#### Scenario: Exclude pattern option
+#### Scenario: env-var-scanner respects exclude patterns
 
-- **WHEN** user specifies `--exclude` option
+- **WHEN** user specifies `--exclude` option for `scan-env-vars` command
 - **THEN** the system SHALL skip files matching the pattern
-- **AND** support glob patterns
-- **AND** allow multiple `--exclude` options
-- **AND** apply default excludes (venv/, **pycache**/, etc.)
+- **AND** pass the pattern to underlying scanner functions
+- **AND** apply exclusions during file collection
 
-**DIFF**: New requirement for exclusion patterns
+**DIFF**: Fixed bug where exclude patterns were ignored by scan-env-vars
 
-#### Scenario: Disable default excludes
+#### Scenario: env-var-scanner respects no-default-excludes flag
 
-- **WHEN** user specifies `--no-default-excludes` flag
+- **WHEN** user specifies `--no-default-excludes` flag for `scan-env-vars` command
 - **THEN** the system SHALL not apply default exclude patterns
-- **AND** only apply user-specified `--exclude` patterns
+- **AND** pass this setting to `collect_python_files()`
+- **AND** scan all Python files including those in venv/, **pycache**/, etc.
 
-**DIFF**: New flag for override behavior
-
-#### Scenario: Pattern precedence
-
-- **WHEN** both include and exclude patterns are specified
-- **THEN** the system SHALL:
-  1. Apply include patterns first
-  2. Apply exclude patterns second (exclude wins)
-  3. Log filtering decisions in verbose mode
-
-**DIFF**: Specified pattern application order
+**DIFF**: Fixed bug where no-default-excludes flag was ignored by scan-env-vars
 
 ### Requirement: Consistent Option Naming
 

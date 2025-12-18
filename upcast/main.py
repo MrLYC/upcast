@@ -15,7 +15,7 @@ def main():
     pass
 
 
-@main.command()
+@main.command(name="scan-env-vars")
 @click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
@@ -28,7 +28,7 @@ def main():
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True), nargs=-1, required=True)
-def scan_env_vars(  # noqa: C901
+def scan_env_vars_cmd(  # noqa: C901
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
@@ -118,7 +118,7 @@ def scan_env_vars(  # noqa: C901
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def scan_django_models_command(
+def scan_django_models_cmd(
     output: Optional[str],
     verbose: bool,
     path: str,
@@ -166,7 +166,7 @@ def scan_django_models_command(
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def scan_prometheus_metrics_command(
+def scan_prometheus_metrics_cmd(
     output: Optional[str],
     verbose: bool,
     path: str,
@@ -218,7 +218,7 @@ def scan_prometheus_metrics_command(
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True))
-def scan_django_settings_command(
+def scan_django_settings_cmd(
     output: Optional[str],
     verbose: bool,
     path: str,
@@ -254,103 +254,6 @@ def scan_django_settings_command(
 
             traceback.print_exc()
         sys.exit(1)
-
-
-# Deprecated command aliases with warnings
-@main.command(name="analyze-django-models", hidden=True)
-@click.option("-o", "--output", default=None, type=click.Path())
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option("--include", multiple=True, help="Glob patterns for files to include")
-@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
-@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
-@click.argument("path", type=click.Path(exists=True))
-def analyze_django_models_deprecated(
-    output: Optional[str],
-    verbose: bool,
-    path: str,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    no_default_excludes: bool,
-) -> None:
-    """DEPRECATED: Use 'scan-django-models' instead."""
-    click.echo(
-        "Warning: 'analyze-django-models' is deprecated. Use 'scan-django-models' instead.",
-        err=True,
-    )
-    ctx = click.get_current_context()
-    ctx.invoke(
-        scan_django_models_command,
-        output=output,
-        verbose=verbose,
-        path=path,
-        include=include,
-        exclude=exclude,
-        no_default_excludes=no_default_excludes,
-    )
-
-
-@main.command(name="scan-prometheus-metrics-cmd", hidden=True)
-@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option("--include", multiple=True, help="Glob patterns for files to include")
-@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
-@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
-@click.argument("path", type=click.Path(exists=True))
-def scan_prometheus_metrics_cmd_deprecated(
-    output: Optional[str],
-    verbose: bool,
-    path: str,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    no_default_excludes: bool,
-) -> None:
-    """DEPRECATED: Use 'scan-prometheus-metrics' instead."""
-    click.echo(
-        "Warning: 'scan-prometheus-metrics-cmd' is deprecated. Use 'scan-prometheus-metrics' instead.",
-        err=True,
-    )
-    ctx = click.get_current_context()
-    ctx.invoke(
-        scan_prometheus_metrics_command,
-        output=output,
-        verbose=verbose,
-        path=path,
-        include=include,
-        exclude=exclude,
-        no_default_excludes=no_default_excludes,
-    )
-
-
-@main.command(name="scan-django-settings-cmd", hidden=True)
-@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option("--include", multiple=True, help="Glob patterns for files to include")
-@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
-@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
-@click.argument("path", type=click.Path(exists=True))
-def scan_django_settings_cmd_deprecated(
-    output: Optional[str],
-    verbose: bool,
-    path: str,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    no_default_excludes: bool,
-) -> None:
-    """DEPRECATED: Use 'scan-django-settings' instead."""
-    click.echo(
-        "Warning: 'scan-django-settings-cmd' is deprecated. Use 'scan-django-settings' instead.",
-        err=True,
-    )
-    ctx = click.get_current_context()
-    ctx.invoke(
-        scan_django_settings_command,
-        output=output,
-        verbose=verbose,
-        path=path,
-        include=include,
-        exclude=exclude,
-        no_default_excludes=no_default_excludes,
-    )
 
 
 if __name__ == "__main__":

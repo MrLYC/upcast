@@ -354,44 +354,32 @@ The system SHALL support JSON output format as an alternative to YAML.
 
 The system SHALL provide a command-line interface for scanning projects and files.
 
-#### Scenario: Scan directory
+#### Scenario: CLI respects include patterns
 
-- **WHEN** user runs `upcast scan-env-vars /path/to/project`
-- **THEN** the system SHALL recursively scan all Python files
-- **AND** output aggregated results to stdout
+- **WHEN** user runs `upcast scan-env-vars <path> --include "*/settings.py"`
+- **THEN** the system SHALL only scan files matching the include pattern
+- **AND** pass the pattern to `scan_directory()` function
+- **AND** use `collect_python_files()` with filtering enabled
 
-#### Scenario: Scan specific file
+**DIFF**: Fixed bug where --include option was accepted but ignored
 
-- **WHEN** user runs `upcast scan-env-vars /path/to/file.py`
-- **THEN** the system SHALL scan only that file
-- **AND** output results to stdout
+#### Scenario: CLI respects exclude patterns
 
-#### Scenario: Output to file
+- **WHEN** user runs `upcast scan-env-vars <path> --exclude "*/tests/*.py"`
+- **THEN** the system SHALL skip files matching the exclude pattern
+- **AND** pass the pattern to `scan_directory()` function
+- **AND** apply exclusions during file collection
 
-- **WHEN** user runs `upcast scan-env-vars <path> -o output.yaml`
-- **THEN** the system SHALL write results to output.yaml
-- **AND** create parent directories if needed
-- **AND** report success
+**DIFF**: Fixed bug where --exclude option was accepted but ignored
 
-#### Scenario: Verbose mode
+#### Scenario: CLI respects no-default-excludes flag
 
-- **WHEN** user runs with `-v` or `--verbose` flag
-- **THEN** the system SHALL output detailed logging to stderr
-- **AND** include parsing progress
-- **AND** include warnings for unresolved patterns
+- **WHEN** user runs `upcast scan-env-vars <path> --no-default-excludes`
+- **THEN** the system SHALL not apply default exclude patterns (venv/, **pycache**/, etc.)
+- **AND** pass `use_default_excludes=False` to file collection utilities
+- **AND** scan all Python files including those normally excluded
 
-#### Scenario: Format selection
-
-- **WHEN** user runs with `--format json` or `--format yaml`
-- **THEN** the system SHALL output in the specified format
-- **AND** default to YAML if not specified
-
-#### Scenario: Error handling
-
-- **WHEN** scanning encounters a syntax error in a file
-- **THEN** the system SHALL log warning to stderr
-- **AND** continue scanning other files
-- **AND** include partial results
+**DIFF**: Fixed bug where --no-default-excludes flag was accepted but ignored
 
 ### Requirement: AST Utilities
 
@@ -529,3 +517,27 @@ The system SHALL include comprehensive unit tests covering all core functionalit
   - `test_cli.py`
   - `test_export.py`
 - **AND** use pytest fixtures for common test setup
+
+### Requirement: File Filtering Support
+
+The system SHALL support file filtering in scanner functions to enable CLI filtering features.
+
+#### Scenario: scan_directory accepts filtering parameters
+
+- **WHEN** calling `scan_directory()` function
+- **THEN** the function SHALL accept optional parameters:
+  - `include_patterns: list[str] | None` - Glob patterns for files to include
+  - `exclude_patterns: list[str] | None` - Glob patterns for files to exclude
+  - `use_default_excludes: bool` - Whether to apply default exclusions (default: True)
+- **AND** pass these parameters to `collect_python_files()` utility
+
+**DIFF**: Added filtering parameters to scan_directory function signature
+
+#### Scenario: Filtering is applied during file collection
+
+- **WHEN** filtering parameters are provided to `scan_directory()`
+- **THEN** the function SHALL use `collect_python_files()` with the filtering options
+- **AND** only scan files that match the filtering criteria
+- **AND** respect pattern precedence (exclude wins over include)
+
+**DIFF**: Filtering is now applied before scanning, enabling CLI filtering features
