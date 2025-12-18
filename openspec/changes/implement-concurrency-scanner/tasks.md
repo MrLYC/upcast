@@ -2,183 +2,183 @@
 
 ## 1. Create Module Structure
 
-- [ ] Create `upcast/concurrency_scanner/` directory
-- [ ] Create `__init__.py` with public API exports
-- [ ] Create `checker.py` for AST visitor
-- [ ] Create `pattern_parser.py` for pattern detection logic
-- [ ] Create `export.py` for YAML formatting
-- [ ] Create `cli.py` for scanning orchestration
+- [x] Create `upcast/concurrency_scanner/` directory
+- [x] Create `__init__.py` with public API exports
+- [x] Create `checker.py` for AST visitor
+- [x] Create `pattern_parser.py` for pattern detection logic
+- [x] Create `export.py` for YAML formatting
+- [x] Create `cli.py` for scanning orchestration
 
 ## 2. Implement Core Checker
 
-- [ ] Implement `ConcurrencyChecker` class with AST visitor pattern
-- [ ] Add `visit_module()` method to traverse AST nodes
-- [ ] Set up pattern collection dictionaries grouped by type
-- [ ] Implement context tracking (current file, function, class)
-- [ ] Add error handling for parse failures
+- [x] Implement `ConcurrencyChecker` class with AST visitor pattern
+- [x] Add `visit_module()` method to traverse AST nodes
+- [x] Set up pattern collection dictionaries grouped by type
+- [x] Implement context tracking (current file, function, class)
+- [x] Add error handling for parse failures
 
 ## 3. Implement Asyncio Pattern Detection
 
-- [ ] Detect `async def` function definitions (`parse_async_function`)
-- [ ] Detect `await` expressions (`parse_await_expression`)
-- [ ] Detect `asyncio.gather()` calls (`parse_asyncio_gather`)
-- [ ] Detect `asyncio.create_task()` calls (`parse_asyncio_create_task`)
-- [ ] Detect `async with` context managers (`parse_async_context_manager`)
-- [ ] Extract function/class context for each pattern
-- [ ] Handle both `asyncio.X` and `from asyncio import X` forms
+- [x] Detect `async def` function definitions (`parse_async_function`)
+- [x] Detect `await` expressions (`parse_await_expression`)
+- [x] Detect `asyncio.gather()` calls (`parse_asyncio_gather`)
+- [x] Detect `asyncio.create_task()` calls (`parse_asyncio_create_task`)
+- [x] Detect `async with` context managers (`parse_async_context_manager`)
+- [x] Extract function/class context for each pattern
+- [x] Handle both `asyncio.X` and `from asyncio import X` forms
 
 ## 4. Implement Threading Pattern Detection
 
-- [ ] Detect `threading.Thread()` instantiation (`parse_thread_creation`)
-- [ ] Detect `ThreadPoolExecutor()` creation (`parse_thread_pool_executor`)
-- [ ] Extract `max_workers` parameter when present
-- [ ] Track executor variable names for later resolution
+- [x] Detect `threading.Thread()` instantiation (`parse_thread_creation`)
+- [x] Detect `ThreadPoolExecutor()` creation (`parse_thread_pool_executor`)
+- [x] Extract `max_workers` parameter when present
+- [x] Track executor variable names for later resolution
 - [ ] Detect `thread_pool.submit()` calls (`parse_thread_pool_submit`)
-- [ ] Handle both direct instantiation and `with` context manager forms
+- [x] Handle both direct instantiation and `with` context manager forms
 
 ## 5. Implement Multiprocessing Pattern Detection
 
-- [ ] Detect `multiprocessing.Process()` instantiation (`parse_process_creation`)
-- [ ] Detect `ProcessPoolExecutor()` creation (`parse_process_pool_executor`)
-- [ ] Extract `max_workers` parameter when present
-- [ ] Track executor variable names for later resolution
+- [x] Detect `multiprocessing.Process()` instantiation (`parse_process_creation`)
+- [x] Detect `ProcessPoolExecutor()` creation (`parse_process_pool_executor`)
+- [x] Extract `max_workers` parameter when present
+- [x] Track executor variable names for later resolution
 - [ ] Detect `process_pool.submit()` calls (`parse_process_pool_submit`)
 
 ## 6. Implement Executor Bridge Detection
 
-- [ ] Detect `loop.run_in_executor()` calls (`parse_run_in_executor`)
-- [ ] Resolve executor variable to determine type (Thread vs Process)
-- [ ] Extract target function/callable reference
-- [ ] Handle both explicit loop references and `asyncio.get_running_loop()`
-- [ ] Mark unresolved executors as `<unknown-executor>`
+- [x] Detect `loop.run_in_executor()` calls (`parse_run_in_executor`)
+- [x] Resolve executor variable to determine type (Thread vs Process)
+- [x] Extract target function/callable reference
+- [x] Handle both explicit loop references and `asyncio.get_running_loop()`
+- [x] Mark unresolved executors as `<unknown-executor>`
 
 ## 7. Implement Context Extraction
 
-- [ ] Extract file path (relative to project root)
-- [ ] Extract line numbers for each pattern
-- [ ] Extract enclosing function name using `scope()`
-- [ ] Extract enclosing class name (if any)
-- [ ] Extract module path
-- [ ] Handle nested functions and classes correctly
+- [x] Extract file path (relative to project root)
+- [x] Extract line numbers for each pattern
+- [x] Extract enclosing function name using `scope()`
+- [x] Extract enclosing class name (if any)
+- [x] Extract module path
+- [x] Handle nested functions and classes correctly
 
 ## 8. Implement Executor Resolution
 
-- [ ] First pass: Collect all executor definitions (ThreadPoolExecutor, ProcessPoolExecutor)
-- [ ] Build executor name-to-type mapping
-- [ ] Second pass: Resolve `run_in_executor` calls using mapping
-- [ ] Handle module-level vs function-level executor definitions
-- [ ] Mark unresolved references appropriately
+- [x] First pass: Collect all executor definitions (ThreadPoolExecutor, ProcessPoolExecutor)
+- [x] Build executor name-to-type mapping
+- [x] Second pass: Resolve `run_in_executor` calls using mapping
+- [x] Handle module-level vs function-level executor definitions
+- [x] Mark unresolved references appropriately
 
 ## 9. Implement Pattern Details Extraction
 
-- [ ] Extract code snippet for each pattern (limited length)
-- [ ] Simplify complex comprehensions in display
-- [ ] Extract API call names (e.g., "asyncio.gather")
-- [ ] Extract executor types for run_in_executor
-- [ ] Format details string for readability
+- [x] Extract code snippet for each pattern (limited length)
+- [x] Simplify complex comprehensions in display
+- [x] Extract API call names (e.g., "asyncio.gather")
+- [x] Extract executor types for run_in_executor
+- [x] Format details string for readability
 
 ## 10. Implement YAML Export
 
-- [ ] Create `format_concurrency_output()` function
-- [ ] Group patterns by concurrency type (asyncio, threading, multiprocessing)
-- [ ] Sub-group by pattern type (gather, executor, etc.)
-- [ ] Format each pattern with file, line, function, details
-- [ ] Use common export utilities for YAML generation
-- [ ] Sort output for consistency
+- [x] Create `format_concurrency_output()` function
+- [x] Group patterns by concurrency type (asyncio, threading, multiprocessing)
+- [x] Sub-group by pattern type (gather, executor, etc.)
+- [x] Format each pattern with file, line, function, details
+- [x] Use common export utilities for YAML generation
+- [x] Sort output for consistency
 
 ## 11. Implement CLI Integration
 
-- [ ] Create `scan_concurrency()` function in `cli.py`
-- [ ] Support path argument (file or directory)
-- [ ] Add `-o/--output` option for output file
-- [ ] Add `-v/--verbose` option for debug output
-- [ ] Add `--include` and `--exclude` pattern options
+- [x] Create `scan_concurrency()` function in `cli.py`
+- [x] Support path argument (file or directory)
+- [x] Add `-o/--output` option for output file
+- [x] Add `-v/--verbose` option for debug output
+- [x] Add `--include` and `--exclude` pattern options
 - [ ] Add `--no-default-excludes` flag
-- [ ] Integrate with common file collection utilities
-- [ ] Return YAML string or write to file
+- [x] Integrate with common file collection utilities
+- [x] Return YAML string or write to file
 
 ## 12. Add Main CLI Command
 
-- [ ] Add `scan-concurrency` command to `upcast/main.py`
-- [ ] Wire up command-line options
-- [ ] Add help text and examples
-- [ ] Test command invocation
+- [x] Add `scan-concurrency` command to `upcast/main.py`
+- [x] Wire up command-line options
+- [x] Add help text and examples
+- [x] Test command invocation
 
 ## 13. Create Test Fixtures
 
-- [ ] Create `tests/test_concurrency_scanner/fixtures/` directory
-- [ ] Create `asyncio_patterns.py` with asyncio examples
-- [ ] Create `threading_patterns.py` with threading examples
-- [ ] Create `multiprocessing_patterns.py` with multiprocessing examples
-- [ ] Create `mixed_patterns.py` with multiple pattern types
-- [ ] Create `complex_patterns.py` with edge cases
-- [ ] Create `executor_bridge.py` with run_in_executor examples
+- [x] Create `tests/test_concurrency_scanner/fixtures/` directory
+- [x] Create `asyncio_patterns.py` with asyncio examples
+- [x] Create `threading_patterns.py` with threading examples
+- [x] Create `multiprocessing_patterns.py` with multiprocessing examples
+- [x] Create `mixed_patterns.py` with multiple pattern types
+- [x] Create `complex_patterns.py` with edge cases
+- [x] Create `executor_bridge.py` with run_in_executor examples
 
 ## 14. Write Unit Tests
 
-- [ ] Test `parse_async_function()` with various async def patterns
-- [ ] Test `parse_await_expression()` with different await contexts
-- [ ] Test `parse_asyncio_gather()` with different argument forms
-- [ ] Test `parse_asyncio_create_task()` detection
-- [ ] Test `parse_thread_pool_executor()` with max_workers extraction
-- [ ] Test `parse_process_pool_executor()` detection
-- [ ] Test `parse_run_in_executor()` with executor resolution
-- [ ] Test context extraction (file, line, function, class)
-- [ ] Test executor resolution mapping
-- [ ] Test edge cases (nested, conditional, dynamic)
+- [x] Test `parse_async_function()` with various async def patterns
+- [x] Test `parse_await_expression()` with different await contexts
+- [x] Test `parse_asyncio_gather()` with different argument forms
+- [x] Test `parse_asyncio_create_task()` detection
+- [x] Test `parse_thread_pool_executor()` with max_workers extraction
+- [x] Test `parse_process_pool_executor()` detection
+- [x] Test `parse_run_in_executor()` with executor resolution
+- [x] Test context extraction (file, line, function, class)
+- [x] Test executor resolution mapping
+- [x] Test edge cases (nested, conditional, dynamic)
 
 ## 15. Write Integration Tests
 
-- [ ] Test scanning `asyncio_patterns.py` fixture
-- [ ] Test scanning `threading_patterns.py` fixture
-- [ ] Test scanning `multiprocessing_patterns.py` fixture
-- [ ] Test scanning `mixed_patterns.py` fixture
-- [ ] Test scanning directory with multiple files
-- [ ] Test YAML output format and structure
-- [ ] Test pattern grouping by type
-- [ ] Test include/exclude patterns
-- [ ] Test verbose output
+- [x] Test scanning `asyncio_patterns.py` fixture
+- [x] Test scanning `threading_patterns.py` fixture
+- [x] Test scanning `multiprocessing_patterns.py` fixture
+- [x] Test scanning `mixed_patterns.py` fixture
+- [x] Test scanning directory with multiple files
+- [x] Test YAML output format and structure
+- [x] Test pattern grouping by type
+- [x] Test include/exclude patterns
+- [x] Test verbose output
 
 ## 16. Write CLI Tests
 
-- [ ] Test `scan-concurrency` command help
-- [ ] Test scanning single file
-- [ ] Test scanning directory
-- [ ] Test output to file with `-o` option
-- [ ] Test verbose mode with `-v`
-- [ ] Test include patterns with `--include`
-- [ ] Test exclude patterns with `--exclude`
-- [ ] Test nonexistent path handling
+- [x] Test `scan-concurrency` command help
+- [x] Test scanning single file
+- [x] Test scanning directory
+- [x] Test output to file with `-o` option
+- [x] Test verbose mode with `-v`
+- [x] Test include patterns with `--include`
+- [x] Test exclude patterns with `--exclude`
+- [x] Test nonexistent path handling
 
 ## 17. Add Error Handling Tests
 
-- [ ] Test handling of parse errors
-- [ ] Test handling of missing files
-- [ ] Test handling of unresolved executors
-- [ ] Test handling of invalid pattern syntax
-- [ ] Test graceful degradation
+- [x] Test handling of parse errors
+- [x] Test handling of missing files
+- [x] Test handling of unresolved executors
+- [x] Test handling of invalid pattern syntax
+- [x] Test graceful degradation
 
 ## 18. Documentation
 
-- [ ] Add docstrings to all public functions
-- [ ] Document pattern detection logic
-- [ ] Document YAML output format
-- [ ] Add usage examples to CLI help
-- [ ] Document limitations and edge cases
-- [ ] Update README if needed
+- [x] Add docstrings to all public functions
+- [x] Document pattern detection logic
+- [x] Document YAML output format
+- [x] Add usage examples to CLI help
+- [x] Document limitations and edge cases
+- [x] Update README if needed
 
 ## 19. Validate and Polish
 
-- [ ] Run all tests (ensure 100% pass rate)
-- [ ] Check code style with ruff
-- [ ] Verify CLI integration
-- [ ] Test on real project samples
-- [ ] Validate YAML output format
-- [ ] Review and improve error messages
+- [x] Run all tests (ensure 100% pass rate)
+- [x] Check code style with ruff
+- [x] Verify CLI integration
+- [x] Test on real project samples
+- [x] Validate YAML output format
+- [x] Review and improve error messages
 
 ## 20. Update OpenSpec
 
-- [ ] Run `openspec validate implement-concurrency-scanner --strict`
-- [ ] Address any validation issues
-- [ ] Ensure all requirements have scenarios
-- [ ] Ensure all tasks map to requirements
+- [x] Run `openspec validate implement-concurrency-scanner --strict`
+- [x] Address any validation issues
+- [x] Ensure all requirements have scenarios
+- [x] Ensure all tasks map to requirements

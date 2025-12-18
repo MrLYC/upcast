@@ -3,6 +3,7 @@ from typing import Optional
 
 import click
 
+from upcast.concurrency_scanner.cli import scan_concurrency
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
@@ -297,6 +298,77 @@ def scan_django_settings_cmd(
     except FileNotFoundError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-concurrency")
+@click.argument("path", type=click.Path(exists=True), required=False, default=".")
+@click.option("-o", "--output", type=click.Path(), help="Output YAML file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+def scan_concurrency_cmd(
+    path: str,
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+) -> None:
+    """Scan Python code for concurrency patterns.
+
+    Detects asyncio, threading, and multiprocessing patterns in Python files.
+    Results are grouped by concurrency type and exported to YAML format.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan current directory
+        upcast scan-concurrency
+
+        \b
+        # Scan specific directory with verbose output
+        upcast scan-concurrency ./src -v
+
+        \b
+        # Save results to file
+        upcast scan-concurrency ./src -o concurrency.yaml
+
+        \b
+        # Include only specific files
+        upcast scan-concurrency ./src --include "**/*_async.py"
+
+        \b
+        # Exclude test files
+        upcast scan-concurrency ./src --exclude "**/test_*.py"
+    """
+    try:
+        # Call scan_concurrency directly using its context
+        ctx = click.Context(scan_concurrency)
+        ctx.params = {
+            "path": path,
+            "output": output,
+            "verbose": verbose,
+            "include": include,
+            "exclude": exclude,
+        }
+        scan_concurrency.invoke(ctx)
+
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         if verbose:
