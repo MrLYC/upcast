@@ -6,11 +6,26 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/mrlyc/upcast)](https://img.shields.io/github/commit-activity/m/mrlyc/upcast)
 [![License](https://img.shields.io/github/license/mrlyc/upcast)](https://img.shields.io/github/license/mrlyc/upcast)
 
-This project provides a series of tools to analyze Python projects. It does not actually execute code but only uses
-static analysis methods. Therefore, it has a more universal application scenario.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 11 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
-- **Documentation** <https://mrlyc.github.io/upcast/>
+- **Documentation**: <https://mrlyc.github.io/upcast/>
+
+## Quick Start
+
+```bash
+# Install
+pip install upcast
+
+# Scan environment variables
+upcast scan-env-vars /path/to/project
+
+# Analyze Django models
+upcast scan-django-models /path/to/django/project
+
+# Find blocking operations
+upcast scan-blocking-operations /path/to/project -o blocking.yaml
+```
 
 ## Installation
 
@@ -18,136 +33,41 @@ static analysis methods. Therefore, it has a more universal application scenario
 pip install upcast
 ```
 
-## Usage
+## Common Options
 
-All scanner commands support file filtering options for precise control over which files to analyze:
-
-- `--include PATTERN`: Include files matching glob pattern (can be used multiple times)
-- `--exclude PATTERN`: Exclude files matching glob pattern (can be used multiple times)
-- `--no-default-excludes`: Disable default exclusion of common directories (venv/, build/, dist/, etc.)
-
-### scan-env-vars
-
-**New in this version!** Scan Python files for environment variable usage with advanced type inference and aggregation. This command uses astroid for semantic analysis and provides comprehensive information about environment variables used in your project.
+All scanner commands support powerful file filtering options:
 
 ```bash
-upcast scan-env-vars /path/to/your/python/project/
+# Include specific patterns
+upcast scan-env-vars . --include "app/**" --include "core/**"
+
+# Exclude patterns
+upcast scan-env-vars . --exclude "tests/**" --exclude "migrations/**"
+
+# Disable default excludes (venv/, build/, dist/, etc.)
+upcast scan-env-vars . --no-default-excludes
+
+# Combine options
+upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 ```
 
-Scan specific files:
+**Other common options:**
 
-```bash
-upcast scan-env-vars file1.py file2.py
-```
+- `-o, --output FILE`: Save results to file instead of stdout
+- `--format FORMAT`: Choose output format (`yaml` or `json`)
+- `-v, --verbose`: Enable detailed logging
 
-Output to a file:
-
-```bash
-upcast scan-env-vars /path/to/your/python/project/ -o env-vars.yaml
-```
-
-JSON output format:
-
-```bash
-upcast scan-env-vars /path/to/your/python/project/ --format json -o env-vars.json
-```
-
-Enable verbose output:
-
-```bash
-upcast scan-env-vars /path/to/your/python/project/ -v
-```
-
-Filter files to scan:
-
-```bash
-# Only scan files in app/ directory
-upcast scan-env-vars /path/to/project/ --include "app/**"
-
-# Exclude test files
-upcast scan-env-vars /path/to/project/ --exclude "tests/**" --exclude "**/*_test.py"
-
-# Scan everything including normally excluded directories
-upcast scan-env-vars /path/to/project/ --no-default-excludes
-```
-
-**Output Format:**
-
-The command generates YAML (or JSON) output with aggregated information by environment variable name:
-
-```yaml
-DATABASE_URL:
-  types:
-    - str
-  defaults:
-    - postgresql://localhost/db
-  usages:
-    - location: config/settings.py:15
-      statement: os.getenv('DATABASE_URL', 'postgresql://localhost/db')
-      type: str
-      default: postgresql://localhost/db
-      required: false
-    - location: config/database.py:8
-      statement: env.str('DATABASE_URL')
-      type: str
-      default: null
-      required: true
-  required: true
-
-API_KEY:
-  types: []
-  defaults: []
-  usages:
-    - location: api/client.py:23
-      statement: os.environ['API_KEY']
-      type: null
-      default: null
-      required: true
-  required: true
-```
-
-**Features:**
-
-- **Advanced Type Inference**: Detects types from:
-  - Explicit type conversions: `int(os.getenv('PORT'))`
-  - Default value literals: `os.getenv('DEBUG', False)`
-  - Django-environ typed methods: `env.int('WORKERS')`
-  - `or` expressions: `env('DEBUG') or False`
-- **Multiple Pattern Support**:
-  - Standard library: `os.getenv()`, `os.environ[]`, `os.environ.get()`
-  - Django-environ: `env()`, `env.str()`, `env.int()`, `env.bool()`, etc.
-  - Aliased imports: `from os import getenv`
-- **Aggregation by Variable**: Shows all usages of each variable across your codebase
-- **Required Detection**: Identifies which variables are required vs optional
-- **Multiple Output Formats**: YAML (human-readable) or JSON (machine-readable)
-
-**Type Inference Rules:**
+## Django Scanners
 
 ### scan-django-models
 
-Scan Django models in Python files and extract comprehensive model information including fields, relationships, and metadata.
+Analyze Django model definitions, extracting fields, relationships, and metadata.
 
 ```bash
-upcast scan-django-models /path/to/your/django/project/
+upcast scan-django-models /path/to/django/project
 ```
 
-Output to a file:
-
-```bash
-upcast scan-django-models /path/to/your/django/project/ -o models.yaml
-```
-
-Filter files:
-
-```bash
-# Only scan app models
-upcast scan-django-models /path/to/project/ --include "apps/**/models.py"
-
-# Exclude migrations
-upcast scan-django-models /path/to/project/ --exclude "migrations/**"
-```
-
-**Output Format:**
+**Output example:**
 
 ```yaml
 app.models.User:
@@ -164,30 +84,28 @@ app.models.User:
     created_at:
       type: models.DateTimeField
       auto_now_add: true
+  relationships:
+    - type: ForeignKey
+      to: Group
+      field: group
 ```
+
+**Key features:**
+
+- Detects all Django model classes
+- Extracts field types and parameters
+- Identifies relationships (ForeignKey, ManyToMany, OneToOne)
+- Captures model metadata and options
 
 ### scan-django-settings
 
-Scan Django project for settings variable usage and identify all configuration references.
+Find all references to Django settings variables throughout your codebase.
 
 ```bash
-upcast scan-django-settings /path/to/your/django/project/
+upcast scan-django-settings /path/to/django/project
 ```
 
-Output to a file:
-
-```bash
-upcast scan-django-settings /path/to/your/django/project/ -o settings.yaml
-```
-
-Filter files:
-
-```bash
-# Only scan specific apps
-upcast scan-django-settings /path/to/project/ --include "core/**" --include "api/**"
-```
-
-**Output Format:**
+**Output example:**
 
 ```yaml
 DEBUG:
@@ -205,50 +123,301 @@ DEBUG:
       pattern: getattr
 ```
 
+**Key features:**
+
+- Detects `settings.VARIABLE` access patterns
+- Finds `getattr(settings, ...)` calls
+- Tracks `from django.conf import settings` imports
+- Aggregates usage counts per setting
+
+### scan-django-urls
+
+Scan Django URL configurations and extract route patterns.
+
+```bash
+upcast scan-django-urls /path/to/django/project
+```
+
+**Output example:**
+
+```yaml
+/api/users/:
+  pattern: api/users/
+  view: users.views.UserListView
+  name: user-list
+  methods:
+    - GET
+    - POST
+  file: api/urls.py
+  line: 15
+
+/api/users/<int:pk>/:
+  pattern: api/users/<int:pk>/
+  view: users.views.UserDetailView
+  name: user-detail
+  methods:
+    - GET
+    - PUT
+    - DELETE
+  file: api/urls.py
+  line: 16
+```
+
+**Key features:**
+
+- Extracts URL patterns from `urlpatterns`
+- Identifies view functions and classes
+- Captures route names
+- Detects path converters (`<int:id>`, `<slug:slug>`)
+
+### scan-signals
+
+Discover Django and Celery signal definitions and handlers.
+
+```bash
+upcast scan-signals /path/to/project
+```
+
+**Output example:**
+
+```yaml
+post_save:
+  type: django.signal
+  receivers:
+    - handler: users.signals.create_profile
+      sender: User
+      file: users/signals.py
+      line: 25
+    - handler: notifications.signals.send_welcome_email
+      sender: User
+      file: notifications/signals.py
+      line: 42
+
+task_success:
+  type: celery.signal
+  receivers:
+    - handler: monitoring.handlers.log_task_success
+      file: monitoring/handlers.py
+      line: 15
+```
+
+**Key features:**
+
+- Detects Django signals (pre_save, post_save, etc.)
+- Finds Celery task signals
+- Identifies signal receivers and senders
+- Tracks decorator-based connections (`@receiver`)
+
+## Code Analysis Scanners
+
+### scan-concurrency-patterns
+
+Identify concurrency patterns including async/await, threading, and multiprocessing.
+
+```bash
+upcast scan-concurrency-patterns /path/to/project
+```
+
+**Output example:**
+
+```yaml
+async_functions:
+  - name: fetch_data
+    file: api/client.py
+    line: 45
+    uses_await: true
+    calls:
+      - asyncio.gather
+      - aiohttp.get
+
+thread_usage:
+  - pattern: threading.Thread
+    file: workers/processor.py
+    line: 78
+    target: process_batch
+    daemon: true
+
+multiprocessing:
+  - pattern: multiprocessing.Pool
+    file: tasks/parallel.py
+    line: 123
+    workers: 4
+```
+
+**Key features:**
+
+- Detects async/await patterns
+- Identifies threading usage
+- Finds multiprocessing constructs
+- Tracks asyncio operations
+- Flags potential concurrency issues
+
+### scan-blocking-operations
+
+Find blocking operations that may cause performance issues in async code.
+
+```bash
+upcast scan-blocking-operations /path/to/project
+```
+
+**Output example:**
+
+```yaml
+summary:
+  total_operations: 8
+  by_category:
+    time_based: 3
+    synchronization: 2
+    subprocess: 3
+  files_analyzed: 5
+
+operations:
+  time_based:
+    - location: api/handlers.py:45:8
+      type: time_based.sleep
+      statement: time.sleep(5)
+      duration: 5
+      async_context: true
+      function: async_handler
+
+  synchronization:
+    - location: cache/manager.py:67:12
+      type: synchronization.lock_acquire
+      statement: lock.acquire(timeout=10)
+      timeout: 10
+      async_context: true
+
+  subprocess:
+    - location: scripts/runner.py:23:15
+      type: subprocess.run
+      statement: subprocess.run(['ls', '-la'], timeout=30)
+      timeout: 30
+```
+
+**Key features:**
+
+- Detects `time.sleep()` in async functions
+- Finds blocking lock operations
+- Identifies subprocess calls without async wrappers
+- Detects Django ORM `select_for_update()`
+- Flags anti-patterns in async code
+
+### scan-unit-tests
+
+Analyze unit test files and extract test information.
+
+```bash
+upcast scan-unit-tests /path/to/tests
+```
+
+**Output example:**
+
+```yaml
+tests/test_users.py:
+  framework: pytest
+  test_count: 15
+  tests:
+    - name: test_create_user
+      line: 45
+      type: function
+      async: false
+      fixtures:
+        - db
+        - user_factory
+    - name: test_update_user_email
+      line: 67
+      type: function
+      async: false
+      markers:
+        - slow
+        - integration
+
+tests/test_api.py:
+  framework: unittest
+  test_count: 8
+  classes:
+    - name: UserAPITestCase
+      line: 12
+      tests:
+        - test_get_user
+        - test_create_user
+        - test_delete_user
+```
+
+**Key features:**
+
+- Detects pytest and unittest tests
+- Extracts test function/method names
+- Identifies async tests
+- Captures fixtures and markers
+- Counts tests per file
+
+## Infrastructure Scanners
+
+### scan-env-vars
+
+Scan for environment variable usage with advanced type inference.
+
+```bash
+upcast scan-env-vars /path/to/project
+```
+
+**Output example:**
+
+```yaml
+DATABASE_URL:
+  types:
+    - str
+  defaults:
+    - postgresql://localhost/db
+  usages:
+    - location: config/settings.py:15
+      statement: os.getenv('DATABASE_URL', 'postgresql://localhost/db')
+      type: str
+      default: postgresql://localhost/db
+      required: false
+    - location: config/database.py:8
+      statement: env.str('DATABASE_URL')
+      type: str
+      required: true
+  required: true
+
+API_TIMEOUT:
+  types:
+    - int
+  defaults:
+    - 30
+  usages:
+    - location: api/client.py:23
+      statement: int(os.getenv('API_TIMEOUT', '30'))
+      type: int
+      default: 30
+      required: false
+  required: false
+```
+
+**Key features:**
+
+- Advanced type inference from default values and conversions
+- Detects `os.getenv()`, `os.environ[]`, `os.environ.get()`
+- Supports django-environ patterns (`env.int()`, `env.bool()`)
+- Identifies required vs optional variables
+- Aggregates all usages per variable
+
 ### scan-prometheus-metrics
 
-**New in this version!** Scan Python files for Prometheus metrics usage with comprehensive metadata extraction. This command uses astroid for semantic analysis and provides detailed information about all Prometheus metrics defined in your project.
+Extract Prometheus metrics definitions with full metadata.
 
 ```bash
-upcast scan-prometheus-metrics /path/to/your/python/project/
+upcast scan-prometheus-metrics /path/to/project
 ```
 
-Scan specific files:
-
-```bash
-upcast scan-prometheus-metrics metrics.py
-```
-
-Output to a file:
-
-```bash
-upcast scan-prometheus-metrics /path/to/your/python/project/ -o metrics.yaml
-```
-
-Enable verbose output:
-
-```bash
-upcast scan-prometheus-metrics /path/to/your/python/project/ -v
-```
-
-Filter files:
-
-```bash
-# Only scan metrics files
-upcast scan-prometheus-metrics /path/to/project/ --include "**/*metrics.py"
-
-# Exclude test files
-upcast scan-prometheus-metrics /path/to/project/ --exclude "tests/**"
-```
-
-**Output Format:**
-
-The command generates YAML output with aggregated information by metric name:
+**Output example:**
 
 ```yaml
 http_requests_total:
   type: counter
-  help: HTTP 请求总数
+  help: Total HTTP requests
   labels:
     - method
     - path
@@ -258,7 +427,7 @@ http_requests_total:
   usages:
     - location: api/metrics.py:15
       pattern: instantiation
-      statement: http_requests = Counter('http_requests_total', 'HTTP 请求总数', ['method', 'path', 'status'])
+      statement: Counter('http_requests_total', 'Total HTTP requests', ['method', 'path', 'status'])
 
 request_duration_seconds:
   type: histogram
@@ -273,69 +442,135 @@ request_duration_seconds:
   usages:
     - location: middleware/metrics.py:23
       pattern: instantiation
-      statement: duration_hist = Histogram('request_duration_seconds', 'Request duration in seconds', ['endpoint'], buckets=[0.1, 0.5, 1.0, 5.0])
+      statement: Histogram('request_duration_seconds', ...)
 ```
 
-**Features:**
+**Key features:**
 
-- **Multiple Metric Types**: Detects Counter, Gauge, Histogram, and Summary metrics
-- **Complete Metadata Extraction**:
-  - Metric name and help text
-  - Label names
-  - Namespace and subsystem (for metric name prefixing)
-  - Unit suffix
-  - Histogram buckets
-  - Custom collector detection
-- **Multiple Pattern Support**:
-  - Direct instantiation: `Counter('name', 'help', ['labels'])`
-  - Decorator patterns: `@counter.count_exceptions()`
-  - Custom collectors: `GaugeMetricFamily` in `collect()` methods
-- **Aggregation by Metric**: Shows all usages of each metric across your codebase
-- **Import Style Support**: Works with both `from prometheus_client import Counter` and `import prometheus_client`
-- **YAML Output**: Human-readable format with proper Unicode support
+- Detects Counter, Gauge, Histogram, Summary
+- Extracts metric names, help text, and labels
+- Captures namespace and subsystem
+- Identifies histogram buckets
+- Supports decorator patterns
 
-**Use Cases:**
+## HTTP & Exception Scanners
 
-- Document all Prometheus metrics in your application
-- Identify duplicate or conflicting metric definitions
-- Generate metrics documentation for monitoring teams
-- Validate metric naming conventions and labeling patterns
+### scan-http-requests
+
+Find HTTP and API requests throughout your codebase.
+
+```bash
+upcast scan-http-requests /path/to/project
+```
+
+**Output example:**
+
+```yaml
+requests:
+  - location: api/client.py:45
+    method: GET
+    library: requests
+    statement: requests.get('https://api.example.com/users')
+    url: https://api.example.com/users
+    has_timeout: false
+
+  - location: services/http.py:67
+    method: POST
+    library: httpx
+    statement: httpx.post(url, json=data, timeout=30)
+    has_timeout: true
+    timeout: 30
+
+  - location: tasks/fetch.py:23
+    method: GET
+    library: urllib
+    statement: urllib.request.urlopen(url)
+    has_timeout: false
+```
+
+**Key features:**
+
+- Detects `requests`, `httpx`, `urllib`, `aiohttp`
+- Extracts HTTP methods (GET, POST, PUT, DELETE)
+- Identifies URLs when possible
+- Checks for timeout configuration
+- Flags missing timeout warnings
+
+### scan-exception-handlers
+
+Analyze exception handling patterns in your code.
+
+```bash
+upcast scan-exception-handlers /path/to/project
+```
+
+**Output example:**
+
+```yaml
+handlers:
+  - location: api/views.py:45
+    type: try-except
+    exceptions:
+      - ValueError
+      - KeyError
+    has_bare_except: false
+    reraises: false
+
+  - location: services/processor.py:78
+    type: try-except
+    exceptions:
+      - Exception
+    has_bare_except: false
+    reraises: true
+    logs_error: true
+
+  - location: legacy/old_code.py:123
+    type: try-except
+    has_bare_except: true
+    warning: Bare except clause detected
+```
+
+**Key features:**
+
+- Detects try-except blocks
+- Identifies caught exception types
+- Flags bare except clauses (anti-pattern)
+- Checks for error logging
+- Detects exception re-raising
 
 ## Architecture
 
 ### Common Utilities
 
-The project uses a shared utilities package (`upcast.common`) to eliminate code duplication and ensure consistency across all scanners:
+Upcast uses a shared utilities package (`upcast.common`) for consistency:
 
-- **file_utils**: File discovery, path validation, and package root detection
-- **patterns**: Glob pattern matching with configurable excludes (venv/, **pycache**, build/, etc.)
-- **ast_utils**: Unified AST inference with explicit fallback markers for debugging
-- **export**: Recursive sorting and consistent YAML/JSON export
+- **file_utils**: File discovery, path validation, package root detection
+- **patterns**: Glob pattern matching with configurable excludes
+- **ast_utils**: Unified AST analysis with astroid
+- **export**: Consistent YAML/JSON output formatting
 
-This architecture provides:
+Benefits:
 
-- ~300+ fewer lines of duplicate code
-- Consistent behavior across all scanners
-- Better error messages with fallback markers (backticks for failed inference)
-- Unified file filtering support
+- 300+ fewer lines of duplicate code
+- Consistent behavior across scanners
+- Better error messages
+- Unified file filtering
 
-## Features
+## Key Features
 
-- **Static Analysis**: No code execution required - uses AST and semantic analysis
-- **Multiple Scanners**: Environment variables, Django models/settings, Prometheus metrics
-- **Advanced Type Inference**: Detects types from various patterns and conventions
-- **File Filtering**: Powerful glob-based include/exclude patterns
-- **Aggregated Output**: Results grouped by variable/model/metric name
-- **Multiple Formats**: YAML (human-readable) and JSON (machine-readable)
-- **Verbose Mode**: Detailed logging for debugging
+- **Static Analysis**: No code execution - safe for any codebase
+- **11 Specialized Scanners**: Comprehensive project analysis
+- **Advanced Type Inference**: Smart detection of types and patterns
+- **Powerful File Filtering**: Glob-based include/exclude patterns
+- **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
+- **Aggregated Results**: Group findings by variable/model/metric name
 - **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Well-Tested**: Comprehensive test suite with high coverage
 
-## Migration Guide
+## Contributing
 
-If you're using older command names, they still work but are deprecated:
+Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-- `analyze-django-models` → Use `scan-django-models` instead
-- `scan-prometheus-metrics-cmd` → Use `scan-prometheus-metrics` instead
-- `scan-django-settings-cmd` → Use `scan-django-settings` instead
+## License
 
-The old commands will show a deprecation warning.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
