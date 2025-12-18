@@ -10,13 +10,15 @@ TBD - created by archiving change refactor-scanner-architecture. Update Purpose 
 
 The system SHALL use a consistent naming pattern for all scanner commands following the `scan-*` convention.
 
-#### Scenario: Add scan-django-urls command
+#### Scenario: Add scan-concurrency command
 
-- **WHEN** users need to scan Django URL patterns
-- **THEN** the system SHALL provide `scan-django-urls` command
-- **AND** follow the same `scan-*` naming convention as other scanners
+- **WHEN** user needs to scan for Python concurrency patterns
+- **THEN** the system SHALL provide `scan-concurrency` command
+- **AND** accept path argument (file or directory) as first positional argument
+- **AND** support standard options: `-o/--output`, `-v/--verbose`, `--include`, `--exclude`
+- **AND** follow the same CLI patterns as other scanner commands
 
-**DIFF**: Added new scanner command for Django URLs
+**DIFF**: New scan-concurrency command for detecting asyncio, threading, and multiprocessing patterns
 
 ### Requirement: File Pattern Filtering
 
