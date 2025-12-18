@@ -10,6 +10,7 @@ from upcast.django_url_scanner import scan_django_urls
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml
 from upcast.exception_handler_scanner.cli import scan_exception_handlers
+from upcast.http_request_scanner.cli import scan_http_requests
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
 from upcast.signal_scanner.cli import scan_signals
 
@@ -521,6 +522,91 @@ def scan_exception_handlers_cmd(
             "exclude": exclude,
         }
         scan_exception_handlers.invoke(ctx)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-http-requests")
+@click.argument("path", type=click.Path(exists=True), required=False, default=".")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["yaml", "json"]),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+def scan_http_requests_cmd(
+    path: str,
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    output_format: str,
+) -> None:
+    """Scan Python code for HTTP/API requests.
+
+    Detects requests made via requests, httpx, aiohttp, urllib3, urllib.request,
+    and http.client libraries. Results are grouped by URL with detailed usage
+    information and exported to YAML or JSON format.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan current directory
+        upcast scan-http-requests
+
+        \b
+        # Scan specific directory with verbose output
+        upcast scan-http-requests ./src -v
+
+        \b
+        # Save results to file
+        upcast scan-http-requests ./src -o requests.yaml
+
+        \b
+        # Output as JSON
+        upcast scan-http-requests ./src --format json
+
+        \b
+        # Include only API client files
+        upcast scan-http-requests ./src --include "*/api/*.py"
+
+        \b
+        # Exclude test files
+        upcast scan-http-requests ./src --exclude "**/test_*.py"
+    """
+    try:
+        # Call scan_http_requests directly using its context
+        ctx = click.Context(scan_http_requests)
+        ctx.params = {
+            "path": path,
+            "output": output,
+            "verbose": verbose,
+            "include": include,
+            "exclude": exclude,
+            "output_format": output_format,
+        }
+        scan_http_requests.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
