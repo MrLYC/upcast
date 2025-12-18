@@ -24,7 +24,7 @@
   - [ ] Count assert statements (pytest, unittest)
   - [ ] Extract imports and usage references
 - [ ] 3.3 Implement `checker.py` with UnitTestChecker AST visitor
-  - [ ] Detect pytest test functions (starts with test_)
+  - [ ] Detect pytest test functions (starts with test\_)
   - [ ] Detect unittest TestCase methods
   - [ ] Track imports and resolve module references
   - [ ] Match used symbols against root_modules

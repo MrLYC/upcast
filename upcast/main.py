@@ -13,6 +13,7 @@ from upcast.exception_handler_scanner.cli import scan_exception_handlers
 from upcast.http_request_scanner.cli import scan_http_requests
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
 from upcast.signal_scanner.cli import scan_signals
+from upcast.unit_test_scanner.cli import scan_unit_tests
 
 
 @click.group()
@@ -522,6 +523,114 @@ def scan_exception_handlers_cmd(
             "exclude": exclude,
         }
         scan_exception_handlers.invoke(ctx)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-unit-tests")
+@click.argument("path", type=click.Path(exists=True), required=False, default=".")
+@click.option(
+    "-r",
+    "--root-modules",
+    multiple=True,
+    help="Root modules to match (can be specified multiple times, default: collect all imports)",
+)
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+@click.option(
+    "--no-default-excludes",
+    is_flag=True,
+    help="Disable default exclusions (venv, migrations, etc.)",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["yaml", "json"]),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+def scan_unit_tests_cmd(
+    path: str,
+    root_modules: tuple[str, ...],
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+    output_format: str,
+) -> None:
+    """Scan Python code for unit tests.
+
+    Detects pytest and unittest test functions, calculates MD5 hashes,
+    counts assertions, and resolves test targets based on root modules.
+    Results are exported to YAML or JSON format with relative file paths.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan tests directory (collect all imports)
+        upcast scan-unit-tests ./tests
+
+        \b
+        # Scan with specific root module
+        upcast scan-unit-tests ./tests --root-modules app
+
+        \b
+        # Scan with multiple root modules
+        upcast scan-unit-tests ./tests -r app -r mylib -r utils -v
+
+        \b
+        # Save results to file
+        upcast scan-unit-tests ./tests --root-modules app -o tests.yaml
+
+        \b
+        # Output as JSON
+        upcast scan-unit-tests ./tests --root-modules app --format json
+
+        \b
+        # Include only specific test files
+        upcast scan-unit-tests ./tests --root-modules app --include "test_*.py"
+
+        \b
+        # Exclude integration tests
+        upcast scan-unit-tests ./tests --root-modules app --exclude "**/integration/**"
+    """
+    try:
+        # Convert root_modules tuple to list (None if empty)
+        root_modules_list = list(root_modules) if root_modules else None
+
+        # Call scan_unit_tests
+        scan_unit_tests(
+            path=path,
+            root_modules=root_modules_list,
+            output=output,
+            output_format=output_format,
+            include=list(include) if include else None,
+            exclude=list(exclude) if exclude else None,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+
+        if verbose:
+            click.echo("Scan complete!", err=True)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
