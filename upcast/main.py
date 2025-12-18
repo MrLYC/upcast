@@ -3,6 +3,7 @@ from typing import Optional
 
 import click
 
+from upcast.blocking_operation_scanner.cli import scan_blocking_operations
 from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
@@ -631,6 +632,103 @@ def scan_unit_tests_cmd(
 
         if verbose:
             click.echo("Scan complete!", err=True)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-blocking-operations")
+@click.argument("path", type=click.Path(exists=True), required=False, nargs=-1)
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+@click.option(
+    "--no-default-excludes",
+    is_flag=True,
+    help="Disable default exclusions (venv, migrations, etc.)",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["yaml", "json"]),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+def scan_blocking_operations_cmd(
+    path: tuple[str, ...],
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+    output_format: str,
+) -> None:
+    """Scan Python code for blocking operations.
+
+    Detects blocking operations that may cause performance issues:
+    - time.sleep() calls
+    - Django ORM select_for_update()
+    - threading.Lock().acquire()
+    - subprocess.run(), Popen.wait(), Popen.communicate()
+
+    PATH: One or more directories or files to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan current directory
+        upcast scan-blocking-operations
+
+        \b
+        # Scan specific directory with verbose output
+        upcast scan-blocking-operations ./src -v
+
+        \b
+        # Save results to file
+        upcast scan-blocking-operations ./src -o blocking.yaml
+
+        \b
+        # Output as JSON
+        upcast scan-blocking-operations ./src --format json
+
+        \b
+        # Include only specific files
+        upcast scan-blocking-operations ./src --include "**/*.py"
+
+        \b
+        # Exclude test files
+        upcast scan-blocking-operations ./src --exclude "**/test_*.py"
+    """
+    try:
+        # Default to current directory if no path provided
+        paths_to_scan = path if path else (".",)
+
+        # Call scan_blocking_operations
+        ctx = click.Context(scan_blocking_operations)
+        ctx.params = {
+            "path": paths_to_scan,
+            "output": output,
+            "output_format": output_format,
+            "include": include,
+            "exclude": exclude,
+            "no_default_excludes": no_default_excludes,
+            "verbose": verbose,
+        }
+        scan_blocking_operations.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
