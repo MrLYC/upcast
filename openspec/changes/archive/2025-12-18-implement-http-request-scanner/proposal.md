@@ -4,6 +4,91 @@
 
 Implement a new scanner module `http_request_scanner` to detect and analyze external HTTP/API request patterns in Python codebases, outputting structured documentation of HTTP calls made via popular libraries (requests, httpx, aiohttp, urllib, urllib3, http.client) with details about URLs, methods, parameters, headers, and usage locations.
 
+## What Changes
+
+### Implementation Completed
+
+**New Scanner Module**: `upcast/http_request_scanner/`
+
+Implemented a complete HTTP request scanner module following the established scanner pattern:
+
+- **request_parser.py**: Core logic for detecting and extracting HTTP request information from AST nodes
+
+  - Type inference-based library detection using astroid (prevents false positives)
+  - Support for 6 major HTTP libraries: requests, httpx, aiohttp, urllib3, urllib.request, http.client
+  - URL extraction with smart handling of f-strings, .format() method, and string concatenation
+  - Dynamic URL resolution with `...` placeholder for unresolvable parts
+  - HTTP method detection (GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS)
+  - Parameter extraction (query params, headers, JSON body, form data, timeout)
+  - Session-based vs one-off request detection
+
+- **checker.py**: AST visitor implementing HttpRequestChecker
+
+  - Traverses Python AST using astroid
+  - Detects Call nodes matching HTTP library patterns
+  - Extracts location, statement, and request details
+  - Groups results by URL
+
+- **export.py**: Output formatting
+
+  - YAML and JSON export formats
+  - Groups requests by URL with aggregated usage information
+  - Generates summary statistics (total requests, unique URLs, libraries used, etc.)
+
+- **cli.py**: Command-line interface
+
+  - `scan_http_requests()` entry point
+  - Path validation and file collection
+  - Integration with export formats
+
+- **ast_utils.py**: AST utilities specific to HTTP request parsing
+  - Helper functions for extracting format string templates
+  - Import tracking for handling aliases
+  - Type inference helpers
+
+**CLI Integration**:
+
+- Added `scan-http-requests` command to `upcast/main.py`
+- Command supports path argument, output format (yaml/json), and output file options
+
+**Test Coverage**:
+
+- `tests/test_http_request_scanner/`: Comprehensive test suite
+  - `test_request_parser.py`: Core parsing logic tests
+  - `test_checker.py`: AST visitor tests
+  - `test_cli.py`: CLI integration tests
+  - `test_export.py`: Export format tests
+  - `test_ast_utils.py`: Utility function tests
+  - Test fixtures covering all supported libraries and edge cases
+  - False positive prevention tests (dict/class named "requests", etc.)
+
+**Key Implementation Decisions**:
+
+1. **Type Inference for Library Detection**: Uses astroid to infer actual types instead of name-based detection, preventing false positives from user-defined variables/classes named "requests"
+
+2. **Smart URL Extraction**:
+
+   - Static strings: captured as-is
+   - f-strings: resolved when possible, use `...` for unresolvable variables
+   - .format() method: extract string template, replace `{}` with `...`
+   - Concatenation: show known parts with `...` for dynamic parts
+   - Function parameters: skipped entirely (no static information)
+
+3. **Session Detection**: Tracks whether requests use session objects or are one-off calls
+
+4. **Output Grouping**: Results grouped by URL with all usage locations and their context
+
+**Specs Updated**:
+
+- Created `openspec/specs/http-request-scanner/spec.md` with complete requirements
+- Updated `openspec/specs/cli-interface/spec.md` to document new command
+
+**Test Results**:
+
+- ✅ 377 tests passing (32 HTTP scanner tests + existing tests)
+- ✅ 85%+ code coverage achieved
+- ✅ All ruff checks passing (PEP8 compliant, complexity within limits)
+
 ## Why
 
 Understanding external API dependencies is crucial for application maintenance, security auditing, and migration planning. Teams need:
