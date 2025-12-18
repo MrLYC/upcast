@@ -4,19 +4,19 @@
 
 ### Phase 1: Foundation (Core Infrastructure)
 
-- [ ] **Create module structure**: Create `upcast/http_request_scanner/` directory with `__init__.py`, `cli.py`, `checker.py`, `request_parser.py`, `export.py`
+- [x] **Create module structure**: Create `upcast/http_request_scanner/` directory with `__init__.py`, `cli.py`, `checker.py`, `request_parser.py`, `export.py`
 
   - Establishes basic module layout following project conventions
   - Defines public API exports in `__init__.py`
   - Reuses common utilities from `upcast.common`
 
-- [ ] **Define data structures**: Create dataclass in `request_parser.py`:
+- [x] **Define data structures**: Create dataclass in `request_parser.py`:
 
   - `HttpRequest`: location, statement, library, url, method, params, headers, json_body, data, timeout, session_based, is_async
   - Use dataclass following patterns from other scanners
   - Include proper type hints for all fields
 
-- [ ] **Create test structure**: Set up `tests/test_http_request_scanner/` with:
+- [x] **Create test structure**: Set up `tests/test_http_request_scanner/` with:
 
   - `__init__.py`
   - `test_request_parser.py` (tests for parsing logic)
@@ -26,7 +26,7 @@
   - `test_integration.py` (end-to-end tests)
   - `fixtures/` directory
 
-- [ ] **Create test fixtures**: Add to `fixtures/`:
+- [x] **Create test fixtures**: Add to `fixtures/`:
   - `requests_patterns.py`: requests library usage patterns
   - `httpx_patterns.py`: httpx sync/async patterns
   - `aiohttp_patterns.py`: aiohttp async patterns
@@ -37,27 +37,27 @@
 
 ### Phase 2: requests Library Support
 
-- [ ] **Implement requests detection**: Add to `request_parser.py`:
+- [x] **Implement requests detection**: Add to `request_parser.py`:
 
   - `detect_requests_call(node: nodes.Call) -> bool`: Identify requests library calls
   - Handle `requests.get`, `requests.post`, etc.
   - Handle `session.get`, `session.post` (Session methods)
   - Handle imported functions: `from requests import get`
 
-- [ ] **Extract URL from requests calls**: Add helper:
+- [x] **Extract URL from requests calls**: Add helper:
 
   - `extract_url_from_requests(node: nodes.Call) -> str`: Parse first positional arg or `url=` kwarg
   - Use `infer_literal_value()` from common.ast_utils
   - Handle f-strings and string concatenation
   - Fall back to backtick-wrapped expression if unresolvable
 
-- [ ] **Extract method from requests calls**: Add helper:
+- [x] **Extract method from requests calls**: Add helper:
 
   - `extract_method_from_requests(node: nodes.Call) -> str`: Determine method from function name
   - Map `requests.get` → "GET", `requests.post` → "POST", etc.
   - Handle session methods the same way
 
-- [ ] **Extract parameters from requests calls**: Add helpers:
+- [x] **Extract parameters from requests calls**: Add helpers:
 
   - `extract_params_kwarg(node: nodes.Call) -> dict`: Parse `params=` kwarg
   - `extract_headers_kwarg(node: nodes.Call) -> dict`: Parse `headers=` kwarg
@@ -66,13 +66,13 @@
   - `extract_timeout_kwarg(node: nodes.Call) -> int | float | None`: Parse `timeout=` kwarg
   - Use astroid inference to resolve dict literals
 
-- [ ] **Detect session-based requests calls**: Add helper:
+- [x] **Detect session-based requests calls**: Add helper:
 
   - `is_requests_session_call(node: nodes.Call) -> bool`: Check if called via requests.Session()
   - Infer type of base object in attribute access
   - Check if type is `requests.Session` or `requests.sessions.Session`
 
-- [ ] **Test requests library support**: Write tests in `test_request_parser.py`
+- [x] **Test requests library support**: Write tests in `test_request_parser.py`
   - Test simple GET/POST detection
   - Test URL extraction (literal strings)
   - Test parameter extraction (params, headers, json, data, timeout)
@@ -82,7 +82,7 @@
 
 ### Phase 3: httpx Library Support
 
-- [ ] **Implement httpx detection**: Add to `request_parser.py`:
+- [x] **Implement httpx detection**: Add to `request_parser.py`:
 
   - `detect_httpx_call(node: nodes.Call) -> bool`: Identify httpx library calls
   - Handle `httpx.get`, `httpx.post`, etc.
@@ -90,24 +90,24 @@
   - Handle async client methods
   - Handle imported functions
 
-- [ ] **Extract httpx parameters**: Reuse requests extraction functions:
+- [x] **Extract httpx parameters**: Reuse requests extraction functions:
 
   - httpx has compatible API with requests
   - Use same functions: `extract_params_kwarg`, `extract_headers_kwarg`, etc.
   - Only difference: async detection
 
-- [ ] **Detect async httpx calls**: Add helper:
+- [x] **Detect async httpx calls**: Add helper:
 
   - `is_async_httpx_call(node: nodes.Call) -> bool`: Check if inside async function
   - Traverse up AST to find enclosing FunctionDef
   - Check if FunctionDef has `is_async` flag
 
-- [ ] **Detect httpx client-based calls**: Add helper:
+- [x] **Detect httpx client-based calls**: Add helper:
 
   - `is_httpx_client_call(node: nodes.Call) -> bool`: Check if called via Client/AsyncClient
   - Similar to session detection for requests
 
-- [ ] **Test httpx library support**: Extend `test_request_parser.py`
+- [x] **Test httpx library support**: Extend `test_request_parser.py`
   - Test sync httpx detection
   - Test async httpx detection
   - Test client-based detection
@@ -116,29 +116,29 @@
 
 ### Phase 4: aiohttp Library Support
 
-- [ ] **Implement aiohttp detection**: Add to `request_parser.py`:
+- [x] **Implement aiohttp detection**: Add to `request_parser.py`:
 
   - `detect_aiohttp_call(node: nodes.Call) -> bool`: Identify aiohttp library calls
   - Handle `session.get`, `session.post` where session is ClientSession
   - Must be inside async function (aiohttp is async-only)
 
-- [ ] **Extract URL from aiohttp calls**: Add helper:
+- [x] **Extract URL from aiohttp calls**: Add helper:
 
   - `extract_url_from_aiohttp(node: nodes.Call) -> str`: Parse first positional arg
   - Same as requests (first arg or `url=` kwarg)
 
-- [ ] **Extract method from aiohttp calls**: Add helper:
+- [x] **Extract method from aiohttp calls**: Add helper:
 
   - `extract_method_from_aiohttp(node: nodes.Call) -> str`: From method name
   - Map `session.get` → "GET", etc.
 
-- [ ] **Extract aiohttp parameters**: Add specific helpers if needed:
+- [x] **Extract aiohttp parameters**: Add specific helpers if needed:
 
   - Most parameters compatible with requests API
   - Special handling for `timeout` (can be aiohttp.ClientTimeout object)
   - For simplicity, extract as numeric value if possible
 
-- [ ] **Test aiohttp library support**: Extend `test_request_parser.py`
+- [x] **Test aiohttp library support**: Extend `test_request_parser.py`
   - Test async ClientSession detection
   - Test URL and method extraction
   - Test parameter extraction
@@ -147,25 +147,25 @@
 
 ### Phase 5: urllib3 Library Support
 
-- [ ] **Implement urllib3 detection**: Add to `request_parser.py`:
+- [x] **Implement urllib3 detection**: Add to `request_parser.py`:
 
   - `detect_urllib3_call(node: nodes.Call) -> bool`: Identify urllib3 calls
   - Handle `http.request(method, url)` where http is PoolManager
   - Check for attribute access pattern: `something.request(...)`
 
-- [ ] **Extract URL and method from urllib3**: Add helpers:
+- [x] **Extract URL and method from urllib3**: Add helpers:
 
   - `extract_url_from_urllib3(node: nodes.Call) -> str`: Second positional arg
   - `extract_method_from_urllib3(node: nodes.Call) -> str`: First positional arg
   - Note: Order is reversed from requests (method first, URL second)
 
-- [ ] **Extract urllib3 parameters**: Add helpers:
+- [x] **Extract urllib3 parameters**: Add helpers:
 
   - `extract_fields_kwarg(node: nodes.Call) -> dict`: Parse `fields=` kwarg (query params)
   - Reuse `extract_headers_kwarg` (same name)
   - Parse `body=` kwarg as data
 
-- [ ] **Test urllib3 library support**: Extend `test_request_parser.py`
+- [x] **Test urllib3 library support**: Extend `test_request_parser.py`
   - Test PoolManager.request() detection
   - Test method and URL extraction (reversed order)
   - Test fields and headers extraction
@@ -173,19 +173,19 @@
 
 ### Phase 6: urllib.request and http.client Support
 
-- [ ] **Implement urllib.request detection**: Add to `request_parser.py`:
+- [x] **Implement urllib.request detection**: Add to `request_parser.py`:
 
   - `detect_urlopen_call(node: nodes.Call) -> bool`: Identify urlopen calls
   - Handle `urlopen(url)` and `urlopen(Request(...))`
   - Parse URL from Request object if used
 
-- [ ] **Extract URL from urllib.request**: Add helper:
+- [x] **Extract URL from urllib.request**: Add helper:
 
   - `extract_url_from_urlopen(node: nodes.Call) -> str`: Parse first arg
   - If arg is Request object, recursively parse Request constructor
   - If arg is string, return directly
 
-- [ ] **Implement http.client detection**: Add to `request_parser.py`:
+- [x] **Implement http.client detection**: Add to `request_parser.py`:
 
   - `detect_http_client_call(node: nodes.Call) -> bool`: Identify conn.request() calls
   - Need to track HTTPConnection/HTTPSConnection instances
@@ -193,7 +193,7 @@
   - Extract path from request() call
   - Reconstruct full URL
 
-- [ ] **Extract URL from http.client**: Add helper:
+- [x] **Extract URL from http.client**: Add helper:
 
   - `extract_url_from_http_client(node: nodes.Call) -> str`: Reconstruct URL
   - Track connection object: `conn = http.client.HTTPSConnection("example.com")`
@@ -201,7 +201,7 @@
   - Combine: `https://example.com/path` or `http://example.com/path`
   - This requires tracking assignments (more complex)
 
-- [ ] **Test urllib.request and http.client support**: Extend `test_request_parser.py`
+- [x] **Test urllib.request and http.client support**: Extend `test_request_parser.py`
   - Test urlopen detection with direct URL
   - Test urlopen with Request object
   - Test http.client connection + request pattern
@@ -210,7 +210,7 @@
 
 ### Phase 7: URL Resolution and Inference
 
-- [ ] **Implement URL inference**: Add to `request_parser.py`:
+- [x] **Implement URL inference**: Add to `request_parser.py`:
 
   - `resolve_url(node: nodes.NodeNG) -> str`: Resolve URL using astroid inference
   - Handle string literals (direct return)
@@ -219,13 +219,13 @@
   - Handle .format() calls
   - Use `common.ast_utils.infer_literal_value()` with fallback
 
-- [ ] **Handle dynamic URLs**: Add fallback logic:
+- [x] **Handle dynamic URLs**: Add fallback logic:
 
   - When inference fails, wrap in backticks: `` `expression` ``
   - Follow common.ast_utils pattern for unresolvable values
   - Include original AST string representation
 
-- [ ] **Test URL resolution**: Write tests in `test_request_parser.py`
+- [x] **Test URL resolution**: Write tests in `test_request_parser.py`
   - Test static string URLs
   - Test f-string URLs with constants
   - Test concatenation with constants
@@ -236,7 +236,7 @@
 
 ### Phase 8: Checker Layer (Aggregation)
 
-- [ ] **Implement HttpRequestChecker**: Create `checker.py` with:
+- [x] **Implement HttpRequestChecker**: Create `checker.py` with:
 
   - `__init__(self, base_path: Path)`: Initialize with requests dict
   - `visit_call(self, node: nodes.Call) -> None`: Check each call node
@@ -244,14 +244,14 @@
   - `get_requests_by_url(self) -> dict[str, list[HttpRequest]]`: Return grouped requests
   - `get_summary(self) -> dict`: Calculate statistics
 
-- [ ] **Implement call detection logic**: In `visit_call`:
+- [x] **Implement call detection logic**: In `visit_call`:
 
   - Try each library's detection function
   - If match found, extract full HttpRequest
   - Add to self.requests dict grouped by URL
   - Handle multiple libraries in same file
 
-- [ ] **Implement summary statistics**: Add to `get_summary`:
+- [x] **Implement summary statistics**: Add to `get_summary`:
 
   - Count total_requests
   - Count unique_urls (len of dict keys)
@@ -260,7 +260,7 @@
   - Count requests_without_timeout
   - Count async_requests
 
-- [ ] **Test checker aggregation**: Write `test_checker.py`
+- [x] **Test checker aggregation**: Write `test_checker.py`
   - Test single-file processing for each library
   - Test multi-file aggregation
   - Test grouping by URL
@@ -270,21 +270,21 @@
 
 ### Phase 9: Export Layer (Output Formatting)
 
-- [ ] **Implement YAML export functions**: Create `export.py` with:
+- [x] **Implement YAML export functions**: Create `export.py` with:
 
   - `format_request_output(requests_by_url: dict) -> dict`: Convert to output structure
   - `format_single_usage(request: HttpRequest) -> dict`: Format one usage entry
   - Use `common.export.export_to_yaml` and `export_to_json`
   - Follow formatting standards (2-space indent, UTF-8)
 
-- [ ] **Implement output structure**: Format as:
+- [x] **Implement output structure**: Format as:
 
   - Top level: Dict with URLs as keys
   - Each URL entry: `method`, `library`, `usages` list
   - Each usage: `location`, `statement`, `method`, `params`, `headers`, `json_body`, `data`, `timeout`, `session_based`
   - Add `summary` section at top level
 
-- [ ] **Handle optional fields**: Format rules:
+- [x] **Handle optional fields**: Format rules:
 
   - `json_body`: null if not present
   - `data`: null if not present
@@ -292,7 +292,7 @@
   - `params`: empty dict {} if none
   - `headers`: empty dict {} if none
 
-- [ ] **Test YAML export**: Write `test_export.py`
+- [x] **Test YAML export**: Write `test_export.py`
   - Test output structure matches spec examples
   - Test all required and optional fields
   - Test null handling for optional fields
@@ -302,7 +302,7 @@
 
 ### Phase 10: CLI Layer (Integration)
 
-- [ ] **Implement CLI entry point**: Create `cli.py` with:
+- [x] **Implement CLI entry point**: Create `cli.py` with:
 
   - `scan_http_requests(path, output, verbose, include, exclude, format)`: Main function
   - Use `common.file_utils.validate_path()` and `collect_python_files()`
@@ -310,7 +310,7 @@
   - Call export functions
   - Error handling and verbose logging
 
-- [ ] **Add Click command decorator**: Add CLI decorators:
+- [x] **Add Click command decorator**: Add CLI decorators:
 
   - `@click.command()`
   - Path argument with default="."
@@ -321,7 +321,7 @@
   - `--format` option for yaml/json (default=yaml)
   - Follow CLI patterns from other scanners
 
-- [ ] **Test CLI functions**: Write `test_cli.py`
+- [x] **Test CLI functions**: Write `test_cli.py`
   - Test directory scanning
   - Test single file scanning
   - Test output to stdout vs file
@@ -334,7 +334,7 @@
 
 ### Phase 11: Integration Tests
 
-- [ ] **Write end-to-end tests**: Create `test_integration.py`
+- [x] **Write end-to-end tests**: Create `test_integration.py`
 
   - Test full scan of fixtures directory
   - Test output correctness for each library
@@ -343,35 +343,35 @@
   - Test CLI integration with real fixtures
   - Verify complete workflow
 
-- [ ] **Test mixed library scenarios**: Add tests for:
+- [x] **Test mixed library scenarios**: Add tests for:
 
   - Multiple libraries in same file
   - Same URL accessed via different libraries
   - Same URL with different methods
   - Dynamic vs static URL resolution
 
-- [ ] **Verify test coverage**: Run coverage analysis
+- [x] **Verify test coverage**: Run coverage analysis
   - `uv run pytest tests/test_http_request_scanner/ --cov=upcast.http_request_scanner --cov-report=term-missing`
   - Ensure 85%+ coverage
   - Add tests for any uncovered code paths
 
 ### Phase 12: Integration & Documentation
 
-- [ ] **Add CLI integration to main**: Update `upcast/main.py`
+- [x] **Add CLI integration to main**: Update `upcast/main.py`
 
   - Register `scan-http-requests` command
   - Wire up to `scan_http_requests()` function
   - Add command docstring with examples
   - Follow pattern from other scanner commands
 
-- [ ] **Create CLI interface spec delta**: Add `openspec/changes/implement-http-request-scanner/specs/cli-interface/spec.md`
+- [x] **Create CLI interface spec delta**: Add `openspec/changes/implement-http-request-scanner/specs/cli-interface/spec.md`
 
   - Document scan-http-requests command
   - Specify all CLI options
   - Add scenarios for common use cases
   - Mark as ADDED requirement
 
-- [ ] **Create http-request-scanner spec**: Add `openspec/changes/implement-http-request-scanner/specs/http-request-scanner/spec.md`
+- [x] **Create http-request-scanner spec**: Add `openspec/changes/implement-http-request-scanner/specs/http-request-scanner/spec.md`
 
   - Document all requirements
   - Add scenarios for each library
@@ -379,20 +379,20 @@
   - Document output format
   - Include examples
 
-- [ ] **Run full test suite**: Execute all tests
+- [x] **Run full test suite**: Execute all tests
 
   - `uv run pytest tests/test_http_request_scanner/ -v`
   - `uv run pytest` (ensure no regressions)
   - Fix any failing tests
 
-- [ ] **Validate code quality**: Ensure compliance
+- [x] **Validate code quality**: Ensure compliance
 
   - Run `uv run ruff check upcast/http_request_scanner/`
   - Fix any linting issues
   - Run pre-commit hooks
   - Verify PEP8 compliance
 
-- [ ] **Update README**: Document new scanner capability
+- [x] **Update README**: Document new scanner capability
   - Add usage examples for CLI
   - Show sample output YAML
   - Explain supported libraries
