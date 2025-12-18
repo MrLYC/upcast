@@ -34,7 +34,7 @@ Repository = "https://github.com/mrlyc/upcast"
 Documentation = "https://mrlyc.github.io/upcast/"
 
 [tool.uv]
-index-url = "https://mirrors.jlu.edu.cn/pypi/web/simple"
+index-url = "https://mirrors.aliyun.com/pypi/simple"
 
 [build-system]
 requires = ["hatchling"]
