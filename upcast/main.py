@@ -9,6 +9,7 @@ from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml
+from upcast.exception_handler_scanner.cli import scan_exception_handlers
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
 from upcast.signal_scanner.cli import scan_signals
 
@@ -448,6 +449,78 @@ def scan_signals_cmd(
             "no_default_excludes": no_default_excludes,
         }
         scan_signals.invoke(ctx)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-exception-handlers")
+@click.argument("path", type=click.Path(exists=True), required=False, default=".")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+def scan_exception_handlers_cmd(
+    path: str,
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+) -> None:
+    """Scan Python code for exception handling patterns.
+
+    Detects try/except/else/finally blocks and analyzes exception types,
+    logging practices, and control flow patterns. Results are exported
+    to YAML format with detailed statistics.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan current directory
+        upcast scan-exception-handlers
+
+        \b
+        # Scan specific directory with verbose output
+        upcast scan-exception-handlers ./src -v
+
+        \b
+        # Save results to file
+        upcast scan-exception-handlers ./src -o handlers.yaml
+
+        \b
+        # Include only specific files
+        upcast scan-exception-handlers ./src --include "**/*.py"
+
+        \b
+        # Exclude test files
+        upcast scan-exception-handlers ./src --exclude "**/test_*.py"
+    """
+    try:
+        # Call scan_exception_handlers directly using its context
+        ctx = click.Context(scan_exception_handlers)
+        ctx.params = {
+            "path": path,
+            "output": output,
+            "verbose": verbose,
+            "include": include,
+            "exclude": exclude,
+        }
+        scan_exception_handlers.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
