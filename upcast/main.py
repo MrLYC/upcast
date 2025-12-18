@@ -10,6 +10,7 @@ from upcast.django_url_scanner import scan_django_urls
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
+from upcast.signal_scanner.cli import scan_signals
 
 
 @click.group()
@@ -368,6 +369,85 @@ def scan_concurrency_cmd(
             "exclude": exclude,
         }
         scan_concurrency.invoke(ctx)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-signals")
+@click.argument("path", type=click.Path(exists=True), required=False, default=".")
+@click.option("-o", "--output", type=click.Path(), help="Output YAML file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--include",
+    multiple=True,
+    help="File patterns to include (can be specified multiple times)",
+)
+@click.option(
+    "--exclude",
+    multiple=True,
+    help="File patterns to exclude (can be specified multiple times)",
+)
+@click.option(
+    "--no-default-excludes",
+    is_flag=True,
+    help="Disable default exclusions (venv, migrations, etc.)",
+)
+def scan_signals_cmd(
+    path: str,
+    output: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for Django and Celery signal usage.
+
+    Detects signal handlers, custom signal definitions, and signal registrations
+    in Python codebases using Django and Celery. Results are grouped by framework
+    (django/celery) and signal type, exported to YAML format.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan current directory
+        upcast scan-signals
+
+        \b
+        # Scan specific directory with verbose output
+        upcast scan-signals ./src -v
+
+        \b
+        # Save results to file
+        upcast scan-signals ./src -o signals.yaml
+
+        \b
+        # Include only signal files
+        upcast scan-signals ./src --include "**/signals/**"
+
+        \b
+        # Exclude test files
+        upcast scan-signals ./src --exclude "**/tests/**"
+    """
+    try:
+        # Call scan_signals directly using its context
+        ctx = click.Context(scan_signals)
+        ctx.params = {
+            "path": path,
+            "output": output,
+            "verbose": verbose,
+            "include": include,
+            "exclude": exclude,
+            "no_default_excludes": no_default_excludes,
+        }
+        scan_signals.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
