@@ -6,6 +6,7 @@ import astroid
 from astroid import nodes
 
 from upcast.common.ast_utils import infer_value_with_fallback
+from upcast.django_settings_scanner.definition_parser import is_uppercase_identifier
 
 
 def _check_inferred_types(node: nodes.Name) -> bool:
@@ -52,7 +53,7 @@ def _check_import_source(node: nodes.Name) -> bool:
                             imported_name, alias = name_info
                             # Check if this is settings imported with an alias
                             if imported_name == "settings" and (
-                                alias == node.name or alias is None and node.name == "settings"
+                                alias == node.name or (alias is None and node.name == "settings")
                             ):
                                 return True
                         elif name_info == "settings" and node.name == "settings":
@@ -163,13 +164,19 @@ def extract_setting_name(node: nodes.NodeNG) -> str | None:
     """
     # Pattern 1: Attribute access (settings.KEY)
     if isinstance(node, nodes.Attribute):
-        return node.attrname
+        # Only return uppercase attributes (Django settings convention)
+        if is_uppercase_identifier(node.attrname):
+            return node.attrname
+        return None
 
     # Pattern 2 & 3: getattr/hasattr calls
     if isinstance(node, nodes.Call) and len(node.args) >= 2:
         key_arg = node.args[1]
         if isinstance(key_arg, nodes.Const) and isinstance(key_arg.value, str):
-            return key_arg.value
+            # Only return uppercase setting names
+            if is_uppercase_identifier(key_arg.value):
+                return key_arg.value
+            return None
         # Dynamic key (cannot resolve statically)
         return "DYNAMIC"
 
@@ -192,7 +199,48 @@ def extract_getattr_default(node: nodes.Call) -> Any:
     if len(node.args) >= 3:
         default_arg = node.args[2]
         # Use common inference with fallback
-        value, success = infer_value_with_fallback(default_arg)
+        value, _success = infer_value_with_fallback(default_arg)
         return value
 
     return None
+
+
+def resolve_relative_import(current_module: str, import_level: int, import_module: str | None) -> str:
+    """Resolve a relative import to an absolute module path.
+
+    Args:
+        current_module: Current module path (e.g., "myproject.settings.dev")
+        import_level: Number of dots in relative import (1 for ".", 2 for "..", etc.)
+        import_module: Module name after dots (e.g., "base" in "from .base import *")
+
+    Returns:
+        Absolute module path
+
+    Examples:
+        >>> resolve_relative_import("myproject.settings.dev", 1, "base")
+        "myproject.settings.base"
+        >>> resolve_relative_import("myproject.settings.dev", 2, "config")
+        "myproject.config"
+        >>> resolve_relative_import("myproject.settings.dev", 1, None)
+        "myproject.settings"
+    """
+    # Split current module into parts
+    parts = current_module.split(".")
+
+    # import_level indicates how many levels up to go
+    # Level 1 = current package (remove module name, keep package)
+    # Level 2 = parent package (remove module name + 1 level)
+    # etc.
+
+    # We need to go up import_level levels from current position
+    # Current module is at depth len(parts), we go up import_level
+    levels_to_keep = len(parts) - import_level
+
+    # Too many levels up - just return what we can
+    base_parts = [] if levels_to_keep < 0 else parts[:levels_to_keep]
+
+    # Add the import module name if provided
+    if import_module:
+        base_parts.append(import_module)
+
+    return ".".join(base_parts) if base_parts else import_module or ""

@@ -298,6 +298,60 @@ class TestExtractSettingName:
             if isinstance(node.func, nodes.Name) and node.func.name == "getattr":
                 assert extract_setting_name(node) == "DYNAMIC"
 
+    def test_filter_lowercase_attribute(self, tmp_path: Path) -> None:
+        """Test that lowercase attributes are filtered out."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent(
+                """
+                from django.conf import settings
+
+                # These should be filtered out (lowercase)
+                settings.configure()
+                value1 = settings.configured
+
+                # These should be captured (uppercase)
+                value2 = settings.DEBUG
+                """
+            )
+        )
+
+        module = MANAGER.ast_from_file(str(test_file), modname="test")
+
+        for node in module.nodes_of_class(nodes.Attribute):
+            if node.attrname == "configure" or node.attrname == "configured":
+                assert extract_setting_name(node) is None
+            elif node.attrname == "DEBUG":
+                assert extract_setting_name(node) == "DEBUG"
+
+    def test_filter_lowercase_getattr(self, tmp_path: Path) -> None:
+        """Test that lowercase names in getattr are filtered out."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent(
+                """
+                from django.conf import settings
+
+                # Should be filtered out (lowercase)
+                value1 = getattr(settings, 'configured')
+
+                # Should be captured (uppercase)
+                value2 = getattr(settings, 'DEBUG')
+                """
+            )
+        )
+
+        module = MANAGER.ast_from_file(str(test_file), modname="test")
+
+        for node in module.nodes_of_class(nodes.Call):
+            if isinstance(node.func, nodes.Name) and node.func.name == "getattr" and len(node.args) >= 2:
+                key_arg = node.args[1]
+                if isinstance(key_arg, nodes.Const):
+                    if key_arg.value == "configured":
+                        assert extract_setting_name(node) is None
+                    elif key_arg.value == "DEBUG":
+                        assert extract_setting_name(node) == "DEBUG"
+
 
 class TestExtractGetattrDefault:
     """Test extract_getattr_default function."""

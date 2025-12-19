@@ -11,7 +11,13 @@ from upcast.django_settings_scanner.ast_utils import (
     is_settings_getattr_call,
     is_settings_hasattr_call,
 )
+from upcast.django_settings_scanner.definition_parser import (
+    is_settings_module,
+    mark_overrides,
+    parse_settings_module,
+)
 from upcast.django_settings_scanner.settings_parser import (
+    SettingsModule,
     SettingsUsage,
     SettingsVariable,
     parse_settings_usage,
@@ -29,6 +35,7 @@ class DjangoSettingsChecker:
         """
         self.base_path = Path(base_path)
         self.settings: dict[str, SettingsVariable] = {}
+        self.definitions: dict[str, SettingsModule] = {}
         self.current_file: str = ""
 
     def _visit_node(self, node: nodes.NodeNG) -> None:
@@ -87,3 +94,50 @@ class DjangoSettingsChecker:
         except Exception as e:
             # Log error but continue with other files
             print(f"Error parsing {file_path}: {e!s}")
+
+    def scan_definitions(self, base_path: str) -> None:
+        """Scan for settings modules in the project and parse their definitions.
+
+        Args:
+            base_path: Project root path to scan for settings modules
+        """
+        base = Path(base_path)
+
+        # Find all Python files in settings/ or config/ directories
+        for py_file in base.rglob("*.py"):
+            file_path = str(py_file)
+
+            # Check if this is a settings module
+            if not is_settings_module(file_path):
+                continue
+
+            try:
+                # Parse the settings module
+                settings_module = parse_settings_module(file_path, base_path)
+                self.definitions[settings_module.module_path] = settings_module
+            except Exception as e:
+                # Log error but continue with other files
+                print(f"Error parsing settings module {file_path}: {e!s}")
+
+        # After parsing all modules, mark overrides
+        for module_path in self.definitions:
+            mark_overrides(self.definitions, module_path)
+
+    def get_definitions_by_module(self) -> dict[str, SettingsModule]:
+        """Return all parsed settings definitions organized by module.
+
+        Returns:
+            Dictionary mapping module paths to SettingsModule objects
+        """
+        return self.definitions
+
+    def get_all_defined_settings(self) -> set[str]:
+        """Return unique setting names across all modules.
+
+        Returns:
+            Set of all setting names defined in any module
+        """
+        all_settings = set()
+        for module in self.definitions.values():
+            all_settings.update(module.definitions.keys())
+        return all_settings

@@ -273,21 +273,74 @@ def scan_django_urls_cmd(
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.option("--definitions-only", is_flag=True, help="Only scan and output settings definitions")
+@click.option("--usages-only", is_flag=True, help="Only scan and output settings usages (default)")
+@click.option("--combined", "combined_output", is_flag=True, help="Output both definitions and usages")
+@click.option("--no-usages", is_flag=True, help="Skip usage scanning (only scan definitions, faster)")
+@click.option("--no-definitions", is_flag=True, help="Skip definition scanning (only scan usages, default behavior)")
 @click.argument("path", type=click.Path(exists=True))
-def scan_django_settings_cmd(
+def scan_django_settings_cmd(  # noqa: C901
     output: Optional[str],
     verbose: bool,
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    definitions_only: bool,
+    usages_only: bool,
+    combined_output: bool,
+    no_usages: bool,
+    no_definitions: bool,
 ) -> None:
-    """Scan Django project for settings usage.
+    """Scan Django project for settings usage and/or definitions.
 
     PATH can be a Python file or directory containing Django code.
     Results are aggregated by settings variable name and exported to YAML format.
+
+    Output modes:
+
+    - Default: Scan and output both definitions and usages (combined mode)
+
+    - --definitions-only: Scan and output only settings definitions
+
+    - --usages-only: Scan and output only settings usages
+
+    - --combined: Explicitly request combined output (same as default)
+
+    - --no-usages: Skip usage scanning (only scan definitions)
+
+    - --no-definitions: Skip definition scanning (only scan usages)
     """
     try:
+        # Determine what to scan
+        # Default: scan both definitions and usages (combined mode)
+        scan_defs = True
+        scan_uses = True
+
+        if definitions_only:
+            scan_defs = True
+            scan_uses = False
+        elif usages_only:
+            scan_defs = False
+            scan_uses = True
+        elif no_usages:
+            scan_defs = True
+            scan_uses = False
+        elif no_definitions:
+            scan_defs = False
+            scan_uses = True
+        # else: keep default (both True)
+
+        # Determine output mode
+        output_mode = "auto"
+        if definitions_only:
+            output_mode = "definitions"
+        elif usages_only:
+            output_mode = "usages"
+        else:
+            # Default or explicit combined
+            output_mode = "combined"
+
         scan_django_settings(
             path,
             output=output,
@@ -295,6 +348,9 @@ def scan_django_settings_cmd(
             include_patterns=list(include) if include else None,
             exclude_patterns=list(exclude) if exclude else None,
             use_default_excludes=not no_default_excludes,
+            scan_definitions=scan_defs,
+            scan_usages=scan_uses,
+            output_mode=output_mode,
         )
 
         if verbose:

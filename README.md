@@ -99,13 +99,27 @@ app.models.User:
 
 ### scan-django-settings
 
-Find all references to Django settings variables throughout your codebase.
+Find all references to Django settings variables and extract settings definitions from your Django project.
+
+**Basic usage (scan usages only):**
 
 ```bash
 upcast scan-django-settings /path/to/django/project
 ```
 
-**Output example:**
+**Scan definitions only:**
+
+```bash
+upcast scan-django-settings --definitions-only /path/to/django/project
+```
+
+**Scan both definitions and usages:**
+
+```bash
+upcast scan-django-settings --combined /path/to/django/project
+```
+
+**Output example (usages):**
 
 ```yaml
 DEBUG:
@@ -123,12 +137,82 @@ DEBUG:
       pattern: getattr
 ```
 
+**Output example (definitions):**
+
+```yaml
+definitions:
+  settings.base:
+    DEBUG:
+      value: true
+      line: 10
+      type: bool
+    SECRET_KEY:
+      value: "base-secret-key"
+      line: 11
+      type: string
+    INSTALLED_APPS:
+      value: ["django.contrib.admin", "django.contrib.auth"]
+      line: 15
+      type: list
+    __star_imports__:
+      - settings.common
+
+  settings.dev:
+    DEBUG:
+      value: false
+      line: 5
+      type: bool
+      overrides: settings.base
+    DEV_MODE:
+      value: true
+      line: 6
+      type: bool
+```
+
+**Output example (combined):**
+
+```yaml
+definitions:
+  settings.base:
+    DEBUG:
+      value: true
+      line: 10
+      type: bool
+
+usages:
+  DEBUG:
+    count: 5
+    locations:
+      - file: app/views.py
+        line: 15
+```
+
 **Key features:**
 
-- Detects `settings.VARIABLE` access patterns
-- Finds `getattr(settings, ...)` calls
-- Tracks `from django.conf import settings` imports
-- Aggregates usage counts per setting
+- **Usage scanning:**
+
+  - Detects `settings.VARIABLE` access patterns
+  - Finds `getattr(settings, ...)` calls
+  - Tracks `from django.conf import settings` imports
+  - Aggregates usage counts per setting
+
+- **Definition scanning:**
+  - Scans settings modules in `settings/` or `config/` directories
+  - Extracts setting values with type inference
+  - Detects inheritance via `from .base import *`
+  - Tracks which settings override base settings
+  - Supports dynamic imports (`importlib.import_module`)
+  - Dynamic values wrapped in backticks (e.g., `` `os.environ.get('KEY')` ``)
+
+**CLI options:**
+
+- `--definitions-only`: Scan and output only settings definitions
+- `--usages-only`: Scan and output only settings usages (default behavior)
+- `--combined`: Scan and output both definitions and usages
+- `--no-usages`: Skip usage scanning (faster when only definitions needed)
+- `--no-definitions`: Skip definition scanning (default behavior)
+- `-o, --output FILE`: Write results to YAML file
+- `-v, --verbose`: Enable verbose output
 
 ### scan-django-urls
 
