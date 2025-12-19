@@ -171,10 +171,10 @@ class TestFileFiltering:
         )
 
         # Should find only app/ settings usage
-        assert "DEBUG" in result
+        assert "DEBUG" in result["usages"]
         # Check that the usage is only from app/views.py
-        assert len(result["DEBUG"].locations) == 1
-        assert "app/views.py" in result["DEBUG"].locations[0].file
+        assert len(result["usages"]["DEBUG"].locations) == 1
+        assert "app/views.py" in result["usages"]["DEBUG"].locations[0].file
 
     def test_django_settings_include_pattern(self, test_workspace):
         """Test include pattern in Django settings scanner."""
@@ -185,9 +185,9 @@ class TestFileFiltering:
         )
 
         # Should find only app/ settings usage
-        assert "DEBUG" in result
-        assert len(result["DEBUG"].locations) == 1
-        assert "app/views.py" in result["DEBUG"].locations[0].file
+        assert "DEBUG" in result["usages"]
+        assert len(result["usages"]["DEBUG"].locations) == 1
+        assert "app/views.py" in result["usages"]["DEBUG"].locations[0].file
 
     def test_multiple_exclude_patterns(self, test_workspace):
         """Test multiple exclude patterns."""
