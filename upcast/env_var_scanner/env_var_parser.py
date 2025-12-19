@@ -1,7 +1,7 @@
 """Core parsing logic for environment variable patterns."""
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Optional
 
 from astroid import nodes
 
@@ -22,7 +22,7 @@ class EnvVarUsage:
     location: str  # Format: "file.py:line"
     statement: str
     type: Optional[str] = None
-    default: Optional[str] = None
+    default: Optional[Any] = None
     required: bool = False
     node: Optional[nodes.NodeNG] = field(default=None, repr=False)
 
@@ -33,7 +33,7 @@ class EnvVarInfo:
 
     name: str
     types: list[str] = field(default_factory=list)
-    defaults: list[str] = field(default_factory=list)
+    defaults: list[Any] = field(default_factory=list)
     usages: list[EnvVarUsage] = field(default_factory=list)
     required: bool = False  # True if ANY usage is required
 
@@ -44,8 +44,18 @@ class EnvVarInfo:
         if usage.type and usage.type not in self.types:
             self.types.append(usage.type)
 
-        if usage.default and usage.default not in self.defaults:
-            self.defaults.append(usage.default)
+        # Add default if present (including None) and not a dynamic expression
+        # Skip backtick-wrapped dynamic expressions
+        is_dynamic = isinstance(usage.default, str) and usage.default.startswith("`") and usage.default.endswith("`")
+        if not is_dynamic:
+            # Use identity and type checking for precise duplicate detection
+            # This ensures False != 0, True != 1, etc.
+            already_present = any(
+                default is usage.default or (default == usage.default and type(default) is type(usage.default))
+                for default in self.defaults
+            )
+            if not already_present:
+                self.defaults.append(usage.default)
 
         if usage.required:
             self.required = True
@@ -100,7 +110,7 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
         # os.getenv(KEY, default) - not required
         if len(node.args) > 1:
             default_node = node.args[1]
-            default = str(infer_literal_value(default_node))
+            default = infer_literal_value(default_node)
             var_type = infer_type_from_value(default_node)
         else:
             var_type = "str"  # Default type for getenv without conversion
@@ -110,7 +120,7 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
     elif "environ.get" in func_str:
         if len(node.args) > 1:
             default_node = node.args[1]
-            default = str(infer_literal_value(default_node))
+            default = infer_literal_value(default_node)
             var_type = infer_type_from_value(default_node)
         else:
             var_type = "str"
@@ -129,12 +139,12 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
         if node.keywords:
             for keyword in node.keywords:
                 if keyword.arg == "default":
-                    default = str(infer_literal_value(keyword.value))
+                    default = infer_literal_value(keyword.value)
                     if not var_type:
                         var_type = infer_type_from_value(keyword.value)
         elif len(node.args) > 1:
             default_node = node.args[1]
-            default = str(infer_literal_value(default_node))
+            default = infer_literal_value(default_node)
             if not var_type:
                 var_type = infer_type_from_value(default_node)
 
@@ -146,11 +156,11 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
         if node.keywords:
             for keyword in node.keywords:
                 if keyword.arg == "default":
-                    default = str(infer_literal_value(keyword.value))
+                    default = infer_literal_value(keyword.value)
                     var_type = infer_type_from_value(keyword.value)
         elif len(node.args) > 1:
             default_node = node.args[1]
-            default = str(infer_literal_value(default_node))
+            default = infer_literal_value(default_node)
             var_type = infer_type_from_value(default_node)
 
         required = default is None
@@ -167,7 +177,7 @@ def parse_env_var_usage(node: nodes.Call, file_path: str) -> Optional[EnvVarUsag
         # Find the default value (right operand)
         for value in parent.values:
             if value != node:
-                default = str(infer_literal_value(value))
+                default = infer_literal_value(value)
                 var_type = infer_type_from_value(value)
                 required = False
                 break

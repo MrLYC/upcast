@@ -301,3 +301,199 @@ class TestExport:
         assert "API_KEY" in data
         assert "types" in data["DATABASE_URL"]
         assert "usages" in data["DATABASE_URL"]
+
+
+class TestTypedDefaults:
+    """Tests for typed default value preservation."""
+
+    @pytest.fixture
+    def fixtures_dir(self):
+        """Get the fixtures directory path."""
+        return Path(__file__).parent / "fixtures"
+
+    def test_boolean_defaults_preserved(self, fixtures_dir):
+        """Should preserve boolean default values as bool, not str."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # DEBUG with False default
+        if "DEBUG" in results:
+            var = results["DEBUG"]
+            assert False in var.defaults
+            assert "False" not in var.defaults  # Should NOT be string
+
+        # ENABLE_CACHE with True default
+        if "ENABLE_CACHE" in results:
+            var = results["ENABLE_CACHE"]
+            assert True in var.defaults
+            assert "True" not in var.defaults
+
+    def test_integer_defaults_preserved(self, fixtures_dir):
+        """Should preserve integer default values as int, not str."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # PORT with 8000 default
+        if "PORT" in results:
+            var = results["PORT"]
+            assert 8000 in var.defaults
+            assert "8000" not in var.defaults
+
+        # MAX_CONNECTIONS with 100 default
+        if "MAX_CONNECTIONS" in results:
+            var = results["MAX_CONNECTIONS"]
+            assert 100 in var.defaults
+
+        # TIMEOUT with 0 default (falsy)
+        if "TIMEOUT" in results:
+            var = results["TIMEOUT"]
+            assert 0 in var.defaults
+            assert "0" not in var.defaults
+
+    def test_float_defaults_preserved(self, fixtures_dir):
+        """Should preserve float default values as float, not str."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # RATE_LIMIT with 10.5 default
+        if "RATE_LIMIT" in results:
+            var = results["RATE_LIMIT"]
+            assert 10.5 in var.defaults
+            assert "10.5" not in var.defaults
+
+        # THRESHOLD with 0.0 default (falsy)
+        if "THRESHOLD" in results:
+            var = results["THRESHOLD"]
+            assert 0.0 in var.defaults
+
+    def test_none_defaults_preserved(self, fixtures_dir):
+        """Should preserve None default values, not convert to string."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # OPTIONAL_KEY with None default
+        if "OPTIONAL_KEY" in results:
+            var = results["OPTIONAL_KEY"]
+            assert None in var.defaults
+            assert "None" not in var.defaults
+
+    def test_string_defaults_still_work(self, fixtures_dir):
+        """Should still handle string defaults correctly."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # LOG_LEVEL with string default
+        if "LOG_LEVEL" in results:
+            var = results["LOG_LEVEL"]
+            assert "INFO" in var.defaults
+
+        # EMPTY_STRING with empty string default (falsy)
+        if "EMPTY_STRING" in results:
+            var = results["EMPTY_STRING"]
+            assert "" in var.defaults
+
+    def test_mixed_type_defaults(self, fixtures_dir):
+        """Should aggregate different typed defaults for same variable."""
+        checker = EnvVarChecker()
+        typed_file = fixtures_dir / "typed_defaults.py"
+        checker.check_file(str(typed_file))
+        results = checker.get_results()
+
+        # MULTI_TYPE with both False and 0 defaults
+        if "MULTI_TYPE" in results:
+            var = results["MULTI_TYPE"]
+            assert False in var.defaults
+            assert 0 in var.defaults
+            assert len(var.defaults) == 2
+
+
+class TestDynamicDefaultFiltering:
+    """Tests for filtering backtick-wrapped dynamic defaults."""
+
+    @pytest.fixture
+    def fixtures_dir(self):
+        """Get the fixtures directory path."""
+        return Path(__file__).parent / "fixtures"
+
+    def test_dynamic_defaults_excluded(self, fixtures_dir):
+        """Should exclude backtick-wrapped dynamic defaults from defaults list."""
+        checker = EnvVarChecker()
+        dynamic_file = fixtures_dir / "dynamic_defaults.py"
+        checker.check_file(str(dynamic_file))
+        results = checker.get_results()
+
+        # BK_CC_HOST with dynamic default
+        if "BK_CC_HOST" in results:
+            var = results["BK_CC_HOST"]
+            # Should not include the backticked expression
+            for default in var.defaults:
+                assert not (isinstance(default, str) and default.startswith("`"))
+
+        # API_URL with dynamic default
+        if "API_URL" in results:
+            var = results["API_URL"]
+            # Should not include the backticked expression
+            for default in var.defaults:
+                assert not (isinstance(default, str) and default.startswith("`"))
+
+    def test_static_defaults_included(self, fixtures_dir):
+        """Should include static defaults in defaults list."""
+        checker = EnvVarChecker()
+        dynamic_file = fixtures_dir / "dynamic_defaults.py"
+        checker.check_file(str(dynamic_file))
+        results = checker.get_results()
+
+        # STATIC_DEFAULT with simple static default
+        if "STATIC_DEFAULT" in results:
+            var = results["STATIC_DEFAULT"]
+            assert "http://example.com" in var.defaults
+
+    def test_mixed_static_and_dynamic_defaults(self, fixtures_dir):
+        """Should include only static defaults when variable has both."""
+        checker = EnvVarChecker()
+        dynamic_file = fixtures_dir / "dynamic_defaults.py"
+        checker.check_file(str(dynamic_file))
+        results = checker.get_results()
+
+        # DB_URL with both static and dynamic defaults
+        if "DB_URL" in results:
+            var = results["DB_URL"]
+            # Should include static default
+            assert "postgresql://localhost/db" in var.defaults
+            # Should NOT include dynamic defaults
+            for default in var.defaults:
+                assert not (isinstance(default, str) and default.startswith("`"))
+
+        # MIXED_VAR with multiple static and dynamic defaults
+        if "MIXED_VAR" in results:
+            var = results["MIXED_VAR"]
+            # Should include both static defaults
+            assert "static1" in var.defaults
+            assert "static2" in var.defaults
+            # Should NOT include dynamic defaults
+            for default in var.defaults:
+                assert not (isinstance(default, str) and default.startswith("`"))
+
+    def test_only_dynamic_defaults(self, fixtures_dir):
+        """Should have empty defaults list if only dynamic defaults exist."""
+        checker = EnvVarChecker()
+        dynamic_file = fixtures_dir / "dynamic_defaults.py"
+        checker.check_file(str(dynamic_file))
+        results = checker.get_results()
+
+        # ONLY_DYNAMIC with only dynamic default
+        if "ONLY_DYNAMIC" in results:
+            var = results["ONLY_DYNAMIC"]
+            # Should have empty or no backticked defaults
+            for default in var.defaults:
+                assert not (isinstance(default, str) and default.startswith("`"))

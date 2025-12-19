@@ -113,7 +113,7 @@ def infer_literal_value(node: Union[nodes.NodeNG, list[nodes.NodeNG]]) -> Any:
         return ""
 
     # Use common inference with fallback
-    value, success = infer_value_with_fallback(node)
+    value, _ = infer_value_with_fallback(node)
 
     # Return value (will be wrapped in backticks if inference failed)
     return value
