@@ -138,44 +138,71 @@ The system SHALL infer types from multiple sources with priority ordering.
 
 ### Requirement: Default Value Extraction
 
-The system SHALL extract and aggregate default values using astroid literal inference.
+The system SHALL extract and aggregate default values using astroid literal inference, preserve actual Python types, and exclude dynamic expressions from the aggregated defaults list.
 
-#### Scenario: Simple literal default
+#### Scenario: Boolean default preservation
 
-- **WHEN** code uses `os.getenv('VAR', 'value')`
-- **THEN** the system SHALL extract default as the literal string `'value'`
-- **AND** preserve quotes and formatting
+- **WHEN** code uses `os.getenv('DEBUG', False)` with a boolean default
+- **THEN** the system SHALL record the default as boolean `False` (not string `'False'`)
+- **AND** include it in the `defaults` list as a boolean value
+- **AND** the YAML output SHALL render it as `false` (not `'False'`)
 
-#### Scenario: Numeric literal default
+#### Scenario: Integer default preservation
 
-- **WHEN** code uses `os.getenv('VAR', 123)` or `env.int('VAR', 456)`
-- **THEN** the system SHALL extract default as the numeric literal
-- **AND** store without quotes: `123`, `456`
+- **WHEN** code uses `os.getenv('PORT', 8000)` with an integer default
+- **THEN** the system SHALL record the default as integer `8000` (not string `'8000'`)
+- **AND** include it in the `defaults` list as an integer value
+- **AND** the YAML output SHALL render it as `8000` (not `'8000'`)
 
-#### Scenario: Boolean literal default
+#### Scenario: Float default preservation
 
-- **WHEN** code uses `env.bool('VAR', False)`
-- **THEN** the system SHALL extract default as `False`
-- **AND** preserve Python boolean representation
+- **WHEN** code uses `os.getenv('TIMEOUT', 3.14)` with a float default
+- **THEN** the system SHALL record the default as float `3.14` (not string `'3.14'`)
+- **AND** include it in the `defaults` list as a float value
 
-#### Scenario: Constant expression evaluation
+#### Scenario: String default preservation
 
-- **WHEN** code uses `os.getenv('VAR', PREFIX + '_VALUE')` where PREFIX is a constant
-- **THEN** the system SHALL use astroid inference to evaluate the expression
-- **AND** extract the resolved literal value
+- **WHEN** code uses `os.getenv('API_URL', 'http://localhost')` with a string default
+- **THEN** the system SHALL record the default as string (unchanged)
+- **AND** include it in the `defaults` list as a string value
 
-#### Scenario: Multiple defaults aggregation
+#### Scenario: None default preservation
 
-- **WHEN** a variable has different defaults in different locations
-  - **EXAMPLE**: `os.getenv('VAR', 'a')` and `os.getenv('VAR', 'b')`
-- **THEN** the system SHALL collect all unique defaults
-- **AND** output as a list: `['a', 'b']`
+- **WHEN** code uses `os.getenv('OPTIONAL_KEY', None)` with None default
+- **THEN** the system SHALL record the default as `None` (not string `'None'`)
+- **AND** include it in the `defaults` list as null/None
+- **AND** the YAML output SHALL render it as `null` (not `'None'`)
 
-#### Scenario: Unevaluated expression fallback
+#### Scenario: Exclude dynamic expression defaults
 
-- **WHEN** an expression cannot be evaluated (dynamic value)
-- **THEN** the system SHALL fall back to `.as_string()` representation
-- **AND** include it as-is in the output
+- **WHEN** code uses `os.getenv('VAR1', os.getenv('VAR2', ''))` where the default is another getenv call
+- **THEN** the system SHALL wrap the default expression in backticks as `` `os.getenv('VAR2', '')` ``
+- **AND** SHALL NOT include this backtick-wrapped value in the aggregated `defaults` list
+- **AND** the full statement SHALL remain available in `usages[].statement`
+- **REASON**: Dynamic expressions are not useful as "default values" and are redundant with usage statements
+
+#### Scenario: Exclude uninferrable defaults
+
+- **WHEN** code uses `os.getenv('VAR', some_function())` where the default cannot be inferred
+- **THEN** the system SHALL wrap the default expression in backticks
+- **AND** SHALL NOT include it in the aggregated `defaults` list
+- **AND** the expression SHALL be available in the individual usage's `default` field for inspection
+
+#### Scenario: Mixed defaults handling
+
+- **WHEN** a variable has multiple usages with different defaults:
+  - Usage 1: `os.getenv('VAR', 'static')`
+  - Usage 2: `os.getenv('VAR', os.getenv('OTHER', ''))`
+- **THEN** the `defaults` list SHALL include only `'static'` (the static value)
+- **AND** SHALL NOT include the backtick-wrapped dynamic expression
+- **AND** both statements SHALL be preserved in their respective usage entries
+
+#### Scenario: Empty defaults list for all-dynamic
+
+- **WHEN** all usages of a variable have dynamic/uninferrable defaults
+- **THEN** the aggregated `defaults` list SHALL be empty `[]`
+- **AND** the YAML output SHALL show `defaults: []`
+- **AND** users can inspect individual `usages[].default` fields for the expressions
 
 ### Requirement: Variable Name Resolution
 

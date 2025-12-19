@@ -2,9 +2,9 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Default Value Handling
+### Requirement: Default Value Extraction
 
-The system SHALL preserve actual Python types for default values and exclude dynamic expressions from the aggregated defaults list.
+The system SHALL extract and aggregate default values using astroid literal inference, preserve actual Python types, and exclude dynamic expressions from the aggregated defaults list.
 
 #### Scenario: Boolean default preservation
 
