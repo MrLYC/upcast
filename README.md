@@ -264,41 +264,60 @@ upcast scan-django-urls /path/to/django/project
 Discover Django and Celery signal definitions and handlers.
 
 ```bash
+# Basic usage
 upcast scan-signals /path/to/project
+
+# Save to file (supports JSON and YAML)
+upcast scan-signals /path/to/project -o signals.yaml
+upcast scan-signals /path/to/project -o signals.json --format json
+
+# Filter signal files
+upcast scan-signals /path/to/project --include "**/signals/**"
 ```
 
-**Output example:**
+**Output format:**
 
 ```yaml
-signals:
-  - signal: django.db.models.signals.post_save
+metadata:
+  root_path: /path/to/project
+  scanner_name: signal
+summary:
+  total_count: 5
+  files_scanned: 3
+  django_receivers: 4
+  celery_receivers: 1
+  custom_signals_defined: 2
+  unused_custom_signals: 0
+results:
+  - signal: post_save
     type: django
     category: model_signals
     receivers:
-      - handler: users.signals.create_profile
-        sender: User
+      - handler: create_profile
         file: users/signals.py
         line: 25
-      - handler: notifications.signals.send_welcome_email
         sender: User
-        file: notifications/signals.py
-        line: 42
-
-  - signal: celery.signals.task_success
-    type: celery
-    category: task_signals
+        context:
+          type: function
+  - signal: user_logged_in
+    type: django
+    category: custom_signals
     receivers:
-      - handler: monitoring.handlers.log_task_success
-        file: monitoring/handlers.py
-        line: 15
+      - handler: log_login
+        file: auth/handlers.py
+        line: 42
+    status: active
 ```
 
 **Key features:**
 
-- Detects Django signals (pre_save, post_save, etc.)
-- Finds Celery task signals
-- Identifies signal receivers and senders
-- Tracks decorator-based connections (`@receiver`)
+- Detects Django signals (pre_save, post_save, m2m_changed, etc.)
+- Finds Celery task signals (task_success, task_failure, etc.)
+- Identifies custom signal definitions
+- Tracks signal receivers and senders
+- Supports decorator-based connections (`@receiver`)
+- Detects unused custom signals
+- Provides comprehensive statistics in summary
 
 ## Code Analysis Scanners
 

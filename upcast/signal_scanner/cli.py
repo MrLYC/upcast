@@ -1,6 +1,12 @@
-"""CLI interface for signal scanner."""
+"""CLI interface for signal scanner.
+
+.. deprecated::
+    This CLI interface is deprecated. Use the main ``upcast`` CLI instead:
+    ``upcast scan-signals`` for the new implementation.
+"""
 
 import sys
+import warnings
 from pathlib import Path
 
 import click
@@ -52,6 +58,15 @@ def scan_signals(
         upcast scan-signals . -o signals.yaml --verbose
         upcast scan-signals /project --exclude "**/tests/**"
     """
+    # Issue deprecation warning
+    warnings.warn(
+        "This CLI function is deprecated. "
+        "Use 'upcast scan-signals' command instead. "
+        "The old implementation will be removed in a future release.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     scan_path = Path(path).resolve()
 
     if not scan_path.exists():

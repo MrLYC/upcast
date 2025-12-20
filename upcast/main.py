@@ -14,7 +14,6 @@ from upcast.env_var_scanner.export import export_to_json, export_to_yaml
 from upcast.exception_handler_scanner.cli import scan_exception_handlers
 from upcast.http_request_scanner.cli import scan_http_requests
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
-from upcast.signal_scanner.cli import scan_signals
 from upcast.unit_test_scanner.cli import scan_unit_tests
 
 
@@ -446,7 +445,13 @@ def scan_concurrency_patterns_cmd(
 
 @main.command(name="scan-signals")
 @click.argument("path", type=click.Path(exists=True), required=False, default=".")
-@click.option("-o", "--output", type=click.Path(), help="Output YAML file path")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--include",
@@ -466,6 +471,7 @@ def scan_concurrency_patterns_cmd(
 def scan_signals_cmd(
     path: str,
     output: Optional[str],
+    format: str,  # noqa: A002
     verbose: bool,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
@@ -473,9 +479,9 @@ def scan_signals_cmd(
 ) -> None:
     """Scan for Django and Celery signal usage.
 
-    Detects signal handlers, custom signal definitions, and signal registrations
+    Detects signal handlers, custom signal definitions, and signal sends
     in Python codebases using Django and Celery. Results are grouped by framework
-    (django/celery) and signal type, exported to YAML format.
+    (django/celery) and signal type, exported to YAML or JSON format.
 
     PATH: Directory or file to scan (defaults to current directory)
 
@@ -490,8 +496,12 @@ def scan_signals_cmd(
         upcast scan-signals ./src -v
 
         \b
-        # Save results to file
+        # Save results to YAML file
         upcast scan-signals ./src -o signals.yaml
+
+        \b
+        # Save results to JSON file
+        upcast scan-signals ./src -o signals.json --format json
 
         \b
         # Include only signal files
@@ -502,17 +512,28 @@ def scan_signals_cmd(
         upcast scan-signals ./src --exclude "**/tests/**"
     """
     try:
-        # Call scan_signals directly using its context
-        ctx = click.Context(scan_signals)
-        ctx.params = {
-            "path": path,
-            "output": output,
-            "verbose": verbose,
-            "include": include,
-            "exclude": exclude,
-            "no_default_excludes": no_default_excludes,
-        }
-        scan_signals.invoke(ctx)
+        # Import new scanner
+        from upcast.common.cli import run_scanner_cli
+        from upcast.scanners.signal import SignalScanner
+
+        # Create scanner
+        scanner = SignalScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+
+        # Run scanner with common CLI logic
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
