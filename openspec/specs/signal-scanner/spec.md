@@ -1,6 +1,10 @@
-# signal-scanner Specification Delta
+# signal-scanner Specification
 
-## ADDED Requirements
+## Purpose
+
+TBD - created by archiving change improve-scanner-output-quality. Update Purpose after archive.
+
+## Requirements
 
 ### Requirement: Signal Output Format Standardization
 

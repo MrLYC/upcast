@@ -1,6 +1,6 @@
 # http-request-scanner Specification Delta
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: URL Placeholder Normalization
 

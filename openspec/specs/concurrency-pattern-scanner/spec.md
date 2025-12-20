@@ -8,54 +8,25 @@ TBD - created by archiving change implement-concurrency-scanner. Update Purpose 
 
 ### Requirement: Asyncio Pattern Detection
 
-The system SHALL detect asyncio-based concurrency patterns including async functions, await expressions, and asyncio API calls.
+The system SHALL detect asyncio.create_task() patterns and extract meaningful coroutine information.
 
-#### Scenario: Detect async function definitions
+#### Scenario: Skip unknown coroutines
 
-- **WHEN** scanning a Python file containing `async def` functions
-- **THEN** the system SHALL identify each async function definition
-- **AND** extract the function name, file path, and line number
-- **AND** categorize it under `asyncio.async_functions`
+- **WHEN** analyzing an `asyncio.create_task()` call
+- **AND** the coroutine argument cannot be resolved to a specific function
+- **THEN** the system SHALL skip this detection entirely
+- **AND** NOT output a record with `coroutine: "unknown"`
+- **AND** maintain output cleanliness by excluding low-value results
 
-**DIFF**: New requirement for detecting asyncio coroutines
+**Rationale**: Outputting `coroutine: "unknown"` provides no actionable information and clutters results. Better to skip these entries.
 
-#### Scenario: Detect await expressions
+#### Scenario: Successful coroutine detection
 
-- **WHEN** scanning async functions
-- **THEN** the system SHALL identify `await` expressions
-- **AND** extract the awaited expression details
-- **AND** record the enclosing function context
-- **AND** categorize under `asyncio.await_expressions`
-
-**DIFF**: Detect await usage patterns
-
-#### Scenario: Detect asyncio.gather patterns
-
-- **WHEN** scanning for concurrent execution patterns
-- **THEN** the system SHALL identify `asyncio.gather()` calls
-- **AND** extract the list of concurrent tasks
-- **AND** handle both `asyncio.gather` and `from asyncio import gather` forms
-- **AND** categorize under `asyncio.gather_patterns`
-
-**DIFF**: Detect gather-based concurrent execution
-
-#### Scenario: Detect asyncio.create_task patterns
-
-- **WHEN** scanning for task creation
-- **THEN** the system SHALL identify `asyncio.create_task()` calls
-- **AND** extract the coroutine being scheduled
-- **AND** categorize under `asyncio.task_creation`
-
-**DIFF**: Detect task-based concurrency
-
-#### Scenario: Detect async context managers
-
-- **WHEN** scanning for async resource management
-- **THEN** the system SHALL identify `async with` statements
-- **AND** extract the async context manager expression
-- **AND** categorize under `asyncio.async_context_managers`
-
-**DIFF**: Detect async with patterns
+- **WHEN** analyzing an `asyncio.create_task()` call
+- **AND** the coroutine argument can be resolved to a specific function
+- **THEN** the system SHALL output a complete pattern record
+- **AND** include the resolved coroutine name
+- **AND** provide file/line location information
 
 ### Requirement: Threading Pattern Detection
 

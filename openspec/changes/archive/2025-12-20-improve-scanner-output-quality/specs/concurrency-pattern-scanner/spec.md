@@ -2,7 +2,7 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Asyncio Task Pattern Detection
+### Requirement: Asyncio Pattern Detection
 
 The system SHALL detect asyncio.create_task() patterns and extract meaningful coroutine information.
 

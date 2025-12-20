@@ -1,6 +1,6 @@
 # exception-handler-scanner Specification Delta
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Exception Handler Location Information
 

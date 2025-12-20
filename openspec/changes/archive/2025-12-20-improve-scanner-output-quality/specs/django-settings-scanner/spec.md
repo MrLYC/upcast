@@ -1,6 +1,6 @@
 # django-settings-scanner Specification Delta
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Settings Usage Context Extraction
 
