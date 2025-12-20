@@ -32,7 +32,8 @@ class HttpRequest:
 def _normalize_url_placeholders(url: str) -> str:
     """Normalize URL by merging consecutive ellipsis placeholders.
 
-    Replaces patterns like '... + ...' or '... + ... + ...' with a single '...'.
+    Replaces patterns like '... + ...' or '......' with a single '...'.
+    Preserves '.../...' as the '/' is a meaningful path separator.
 
     Args:
         url: URL string potentially containing consecutive ellipsis
@@ -40,11 +41,18 @@ def _normalize_url_placeholders(url: str) -> str:
     Returns:
         Normalized URL with merged placeholders
     """
-    # Pattern matches: ... (+ ...)+ with optional whitespace
+    # Pattern 1: Merge '... + ...' (with explicit plus operator)
     # Handles: '... + ...' -> '...'
     #          '... + ... + ...' -> '...'
-    #          '... + ... + ... + ...' -> '...'
-    return re.sub(r"\.\.\.(\s*\+\s*\.\.\.)+", "...", url)
+    url = re.sub(r"\.\.\.(\s*\+\s*\.\.\.)+", "...", url)
+
+    # Pattern 2: Merge 6+ consecutive dots (from direct concatenation like f"{a}{b}{c}")
+    # Handles: '......' -> '...'
+    #          '.........' -> '...'
+    # Note: Do NOT merge '.../...' as '/' is a meaningful separator
+    url = re.sub(r"\.{6,}", "...", url)
+
+    return url
 
 
 def _is_http_method(method_name: str) -> bool:
@@ -495,6 +503,9 @@ def extract_url(node: nodes.Call) -> str:
     # Special case: single variable URL (Name node)
     if isinstance(url_node, nodes.Name):
         url = _extract_url_from_name_node(url_node)
+        # Normalize if URL contains ellipsis
+        if url and "..." in url:
+            url = _normalize_url_placeholders(url)
         # If completely unresolvable, return None to skip this request
         return url
 
