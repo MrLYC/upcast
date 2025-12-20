@@ -5,6 +5,7 @@ import click
 
 from upcast.blocking_operation_scanner.cli import scan_blocking_operations
 from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
+from upcast.cyclomatic_complexity_scanner.cli import scan_complexity
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
@@ -20,6 +21,10 @@ from upcast.unit_test_scanner.cli import scan_unit_tests
 @click.group()
 def main():
     pass
+
+
+# Register scan-complexity command
+main.add_command(scan_complexity)
 
 
 @main.command(name="scan-env-vars")

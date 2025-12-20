@@ -6,7 +6,7 @@
 [![Commit activity](https://img.shields.io/github/commit-activity/m/mrlyc/upcast)](https://img.shields.io/github/commit-activity/m/mrlyc/upcast)
 [![License](https://img.shields.io/github/license/mrlyc/upcast)](https://img.shields.io/github/license/mrlyc/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 11 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 12 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, code complexity, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -25,6 +25,9 @@ upcast scan-django-models /path/to/django/project
 
 # Find blocking operations
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
+
+# Check cyclomatic complexity
+upcast scan-complexity /path/to/project --threshold 15
 ```
 
 ## Installation
@@ -622,6 +625,83 @@ handlers:
 - Checks for error logging
 - Detects exception re-raising
 
+## Code Quality Scanners
+
+### scan-complexity
+
+Analyze cyclomatic complexity to identify functions that may need refactoring.
+
+```bash
+upcast scan-complexity /path/to/project
+```
+
+**Output example:**
+
+```yaml
+summary:
+  high_complexity_count: 12
+  files_analyzed: 28
+  by_severity:
+    warning: 7 # 11-15
+    high_risk: 4 # 16-20
+    critical: 1 # >20
+
+modules:
+  app/services/user.py:
+    - name: process_user_registration
+      line: 45
+      end_line: 98
+      complexity: 14
+      severity: warning
+      description: "Validate user registration with multiple checks"
+      signature: "def process_user_registration(data: dict, strict: bool = True) -> Result:"
+      comment_lines: 8
+      code_lines: 54
+      code: |
+        def process_user_registration(data: dict, strict: bool = True) -> Result:
+            """Validate user registration with multiple checks."""
+            # Check required fields
+            if not data.get('email'):
+                return Result.error('Email required')
+            ...
+```
+
+**Usage options:**
+
+```bash
+# Scan with default threshold (11)
+upcast scan-complexity /path/to/project
+
+# Custom threshold
+upcast scan-complexity . --threshold 15
+
+# Include test files (excluded by default)
+upcast scan-complexity . --include-tests
+
+# Save to file
+upcast scan-complexity . -o complexity-report.yaml
+
+# JSON format
+upcast scan-complexity . --format json
+```
+
+**Severity levels:**
+
+- **healthy** (≤5): Very simple, minimal maintenance
+- **acceptable** (6-10): Reasonable complexity
+- **warning** (11-15): Refactoring recommended
+- **high_risk** (16-20): Significant maintenance cost
+- **critical** (>20): Design issues likely
+
+**Key features:**
+
+- **Accurate Calculation**: Counts decision points (if/elif, loops, except, boolean operators)
+- **Code Extraction**: Full function source code included
+- **Comment Statistics**: Uses Python tokenize for accurate comment counting
+- **Test Exclusion**: Automatically excludes test files (configurable)
+- **Detailed Metadata**: Function signature, docstring, line numbers
+- **Actionable Output**: Sorted by severity with clear recommendations
+
 ## Architecture
 
 ### Common Utilities
@@ -640,7 +720,7 @@ Benefits:
 - Better error messages
 - Unified file filtering
 
-## Key Features
+## Ke2 Features
 
 - **Static Analysis**: No code execution - safe for any codebase
 - **11 Specialized Scanners**: Comprehensive project analysis
