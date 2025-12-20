@@ -11,21 +11,21 @@ from upcast.common.file_utils import collect_python_files, find_package_root, va
 from upcast.common.patterns import DEFAULT_EXCLUDES, match_patterns, should_exclude
 
 __all__ = [
-    # File utilities
-    "validate_path",
-    "collect_python_files",
-    "find_package_root",
-    # Pattern matching
-    "match_patterns",
-    "should_exclude",
     "DEFAULT_EXCLUDES",
-    # AST utilities
-    "infer_value_with_fallback",
-    "infer_type_with_fallback",
-    "get_qualified_name",
-    "safe_as_string",
+    "collect_python_files",
+    "export_to_json",
     # Export utilities
     "export_to_yaml",
-    "export_to_json",
+    "find_package_root",
+    "get_qualified_name",
+    "infer_type_with_fallback",
+    # AST utilities
+    "infer_value_with_fallback",
+    # Pattern matching
+    "match_patterns",
+    "safe_as_string",
+    "should_exclude",
     "sort_dict_recursive",
+    # File utilities
+    "validate_path",
 ]

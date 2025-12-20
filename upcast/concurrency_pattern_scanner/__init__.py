@@ -7,4 +7,4 @@ including asyncio, threading, and multiprocessing usage.
 from upcast.concurrency_pattern_scanner.checker import ConcurrencyChecker
 from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 
-__all__ = ["scan_concurrency_patterns", "ConcurrencyChecker"]
+__all__ = ["ConcurrencyChecker", "scan_concurrency_patterns"]

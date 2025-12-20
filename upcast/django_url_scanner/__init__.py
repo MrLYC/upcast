@@ -9,4 +9,4 @@ from upcast.django_url_scanner.checker import UrlPatternChecker
 from upcast.django_url_scanner.cli import scan_django_urls
 from upcast.django_url_scanner.router_parser import parse_router_registrations
 
-__all__ = ["scan_django_urls", "UrlPatternChecker", "parse_router_registrations"]
+__all__ = ["UrlPatternChecker", "parse_router_registrations", "scan_django_urls"]

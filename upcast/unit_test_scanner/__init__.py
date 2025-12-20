@@ -3,4 +3,4 @@
 from upcast.unit_test_scanner.cli import scan_unit_tests
 from upcast.unit_test_scanner.test_parser import TargetModule, UnitTestInfo
 
-__all__ = ["scan_unit_tests", "UnitTestInfo", "TargetModule"]
+__all__ = ["TargetModule", "UnitTestInfo", "scan_unit_tests"]

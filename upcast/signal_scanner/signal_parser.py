@@ -356,11 +356,8 @@ def parse_custom_signal_definition(  # noqa: C901
     func = assign_node.value.func
     is_signal_call = False
 
-    if (
-        isinstance(func, nodes.Name)
-        and func.name == "Signal"
-        or isinstance(func, nodes.Attribute)
-        and func.attrname == "Signal"
+    if (isinstance(func, nodes.Name) and func.name == "Signal") or (
+        isinstance(func, nodes.Attribute) and func.attrname == "Signal"
     ):
         is_signal_call = True
 

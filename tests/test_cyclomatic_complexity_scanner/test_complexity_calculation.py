@@ -260,9 +260,9 @@ class TestComplexFixtures:
         for func in functions:
             if func.name in expected:
                 complexity = calculate_complexity(func)
-                assert (
-                    complexity == expected[func.name]
-                ), f"{func.name}: expected {expected[func.name]}, got {complexity}"
+                assert complexity == expected[func.name], (
+                    f"{func.name}: expected {expected[func.name]}, got {complexity}"
+                )
 
     def test_complex_fixture_complexities(self, complex_fixture_path):
         """Test expected complexities from complex.py fixture."""
@@ -285,6 +285,6 @@ class TestComplexFixtures:
         for func in functions:
             if func.name in expected_min:
                 complexity = calculate_complexity(func)
-                assert (
-                    complexity >= expected_min[func.name]
-                ), f"{func.name}: expected at least {expected_min[func.name]}, got {complexity}"
+                assert complexity >= expected_min[func.name], (
+                    f"{func.name}: expected at least {expected_min[func.name]}, got {complexity}"
+                )

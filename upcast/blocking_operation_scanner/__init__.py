@@ -7,7 +7,7 @@ from upcast.blocking_operation_scanner.operation_parser import (
 )
 
 __all__ = [
-    "BlockingOperationChecker",
     "BlockingOperation",
+    "BlockingOperationChecker",
     "OperationType",
 ]
