@@ -146,3 +146,67 @@ class TestMultilineSignature:
         assert result.is_async
         assert "\n" not in result.signature
         assert "async def async_complex" in result.signature
+
+    def test_signature_skips_decorators(self):
+        """Test that decorators are not included in signatures."""
+        source = dedent(
+            '''
+            class MyClass:
+                @classmethod
+                def class_method(
+                    cls,
+                    param1: str,
+                    param2: int
+                ) -> dict:
+                    """Class method with decorator."""
+                    if param1:
+                        return {"result": param2}
+                    return {}
+        '''
+        )
+
+        module = parse(source)
+        func_node = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
+
+        checker = ComplexityChecker(threshold=1)
+        result = checker._extract_function_metadata(func_node, parent_class="MyClass")
+
+        assert result is not None
+        assert result.name == "class_method"
+        assert "\n" not in result.signature
+        # Signature should not start with decorator
+        assert not result.signature.startswith("@")
+        assert result.signature.startswith("def class_method")
+        assert "cls" in result.signature
+        assert "param1: str" in result.signature
+        assert "param2: int" in result.signature
+        assert "@classmethod" not in result.signature
+
+    def test_signature_skips_multiple_decorators(self):
+        """Test that multiple decorators are all skipped."""
+        source = dedent(
+            '''
+            @decorator1
+            @decorator2
+            @decorator3
+            def decorated_function(x: int, y: str) -> bool:
+                """Multiple decorators."""
+                if x > 0:
+                    return True
+                return False
+        '''
+        )
+
+        module = parse(source)
+        func_node = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
+
+        checker = ComplexityChecker(threshold=1)
+        result = checker._extract_function_metadata(func_node)
+
+        assert result is not None
+        assert "\n" not in result.signature
+        assert not result.signature.startswith("@")
+        assert result.signature.startswith("def decorated_function")
+        assert "@decorator1" not in result.signature
+        assert "@decorator2" not in result.signature
+        assert "@decorator3" not in result.signature

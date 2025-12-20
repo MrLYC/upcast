@@ -106,12 +106,15 @@ class ComplexityChecker:
                 if doc:
                     description = doc.split("\n")[0].strip()
 
-            # Build signature (merge multi-line signatures into one line)
+            # Build signature (merge multi-line signatures into one line, skip decorators)
             lines = node.as_string().split("\n")
             signature_lines = []
             for line in lines:
                 stripped = line.strip()
                 if stripped:
+                    # Skip decorator lines (start with @)
+                    if stripped.startswith("@"):
+                        continue
                     signature_lines.append(stripped)
                     if ":" in stripped:  # Found end of signature
                         break
