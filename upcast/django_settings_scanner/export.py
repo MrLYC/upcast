@@ -1,8 +1,28 @@
 """YAML export for Django settings usage."""
 
+from typing import Any
+
 from upcast.common.export import export_to_yaml as common_export_yaml
 from upcast.common.export import export_to_yaml_string as common_export_yaml_string
 from upcast.django_settings_scanner.settings_parser import SettingsModule, SettingsVariable
+
+
+def _calculate_summary(settings_dict: dict[str, SettingsVariable]) -> dict[str, Any]:
+    """Calculate summary statistics for settings.
+
+    Args:
+        settings_dict: Dictionary of settings variables
+
+    Returns:
+        Summary dictionary with statistics
+    """
+    total_settings = len(settings_dict)
+    total_usages = sum(var.count for var in settings_dict.values())
+
+    return {
+        "total_settings": total_settings,
+        "total_usages": total_usages,
+    }
 
 
 def format_settings_output(settings_dict: dict[str, SettingsVariable]) -> dict:
@@ -47,7 +67,13 @@ def export_to_yaml(settings_dict: dict[str, SettingsVariable], output_path: str)
         settings_dict: Dictionary of settings variables
         output_path: Path to output YAML file
     """
-    output = format_settings_output(settings_dict)
+    summary = _calculate_summary(settings_dict)
+    settings_output = format_settings_output(settings_dict)
+
+    output = {
+        "summary": summary,
+        "settings": settings_output,
+    }
 
     # Use common export with sorting
     common_export_yaml(output, output_path)
@@ -62,7 +88,13 @@ def export_to_yaml_string(settings_dict: dict[str, SettingsVariable]) -> str:
     Returns:
         YAML formatted string (sorted)
     """
-    output = format_settings_output(settings_dict)
+    summary = _calculate_summary(settings_dict)
+    settings_output = format_settings_output(settings_dict)
+
+    output = {
+        "summary": summary,
+        "settings": settings_output,
+    }
 
     # Use common export with sorting
     return common_export_yaml_string(output)
@@ -170,7 +202,14 @@ def export_usages_only(settings_dict: dict[str, SettingsVariable], output_path: 
         settings_dict: Dictionary of settings variables
         output_path: Path to output YAML file
     """
-    output = format_settings_output(settings_dict)
+    summary = _calculate_summary(settings_dict)
+    settings_output = format_settings_output(settings_dict)
+
+    output = {
+        "summary": summary,
+        "settings": settings_output,
+    }
+
     common_export_yaml(output, output_path)
 
 

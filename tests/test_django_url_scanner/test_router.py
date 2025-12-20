@@ -15,10 +15,14 @@ class TestDrfRouterParsing:
         yaml_output = scan_django_urls(fixture_path)
         result = yaml.safe_load(yaml_output)
 
+        # Check for summary and url_modules
+        assert "summary" in result
+        assert "url_modules" in result
+
         # Should have one module
-        assert len(result) == 1
-        module_name = next(iter(result.keys()))
-        patterns = result[module_name]["urlpatterns"]
+        assert len(result["url_modules"]) == 1
+        module_name = next(iter(result["url_modules"].keys()))
+        patterns = result["url_modules"][module_name]["urlpatterns"]
 
         # Find router registrations
         router_patterns = [p for p in patterns if p.get("type") == "router_registration"]
@@ -70,9 +74,13 @@ urlpatterns = [
         yaml_output = scan_django_urls(str(test_file))
         result = yaml.safe_load(yaml_output)
 
+        # Check for summary and url_modules
+        assert "summary" in result
+        assert "url_modules" in result
+
         # Should still have the module
-        assert len(result) == 1
-        patterns = next(iter(result.values()))["urlpatterns"]
+        assert len(result["url_modules"]) == 1
+        patterns = next(iter(result["url_modules"].values()))["urlpatterns"]
 
         # Should fall back to include since no registrations found
         include_pattern = next((p for p in patterns if p.get("type") == "include"), None)

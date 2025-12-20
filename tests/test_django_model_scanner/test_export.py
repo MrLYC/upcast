@@ -113,7 +113,9 @@ class TestExportToYamlString:
 
         # Should be valid YAML
         parsed = yaml.safe_load(result)
-        assert "myapp.models.TestModel" in parsed
+        assert "summary" in parsed
+        assert "models" in parsed
+        assert "myapp.models.TestModel" in parsed["models"]
 
 
 class TestExportToYaml:
@@ -142,7 +144,9 @@ class TestExportToYaml:
         # Should contain valid YAML
         with open(output_file) as f:
             parsed = yaml.safe_load(f)
-        assert "myapp.models.TestModel" in parsed
+        assert "summary" in parsed
+        assert "models" in parsed
+        assert "myapp.models.TestModel" in parsed["models"]
 
     def test_export_creates_directories(self, tmp_path: Path) -> None:
         """Test that export creates parent directories."""

@@ -6,6 +6,24 @@ from upcast.common.export import export_to_yaml as common_export_yaml
 from upcast.common.export import export_to_yaml_string as common_export_yaml_string
 
 
+def _calculate_summary(url_modules: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Calculate summary statistics for URL patterns.
+
+    Args:
+        url_modules: Dictionary mapping module paths to lists of URL patterns
+
+    Returns:
+        Summary dictionary with statistics
+    """
+    total_modules = len(url_modules)
+    total_patterns = sum(len(patterns) for patterns in url_modules.values())
+
+    return {
+        "total_modules": total_modules,
+        "total_patterns": total_patterns,
+    }
+
+
 def export_to_yaml(url_modules: dict[str, list[dict[str, Any]]], output_path: str) -> None:
     """Export URL patterns to a YAML file.
 
@@ -13,11 +31,20 @@ def export_to_yaml(url_modules: dict[str, list[dict[str, Any]]], output_path: st
         url_modules: Dictionary mapping module paths to lists of URL patterns
         output_path: Path to the output YAML file
     """
+    # Calculate summary
+    summary = _calculate_summary(url_modules)
+
     # Format for output
     formatted = format_url_output(url_modules)
 
+    # Build output with summary first
+    output = {
+        "summary": summary,
+        "url_modules": formatted,
+    }
+
     # Use common export with sorting
-    common_export_yaml(formatted, output_path)
+    common_export_yaml(output, output_path)
 
 
 def export_to_yaml_string(url_modules: dict[str, list[dict[str, Any]]]) -> str:
@@ -29,11 +56,20 @@ def export_to_yaml_string(url_modules: dict[str, list[dict[str, Any]]]) -> str:
     Returns:
         YAML formatted string (sorted)
     """
+    # Calculate summary
+    summary = _calculate_summary(url_modules)
+
     # Format for output
     formatted = format_url_output(url_modules)
 
+    # Build output with summary first
+    output = {
+        "summary": summary,
+        "url_modules": formatted,
+    }
+
     # Use common export with sorting
-    return common_export_yaml_string(formatted)
+    return common_export_yaml_string(output)
 
 
 def format_url_output(url_modules: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:

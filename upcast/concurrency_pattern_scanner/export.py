@@ -5,6 +5,30 @@ from typing import Any
 import yaml
 
 
+def _calculate_summary(patterns: dict[str, dict[str, list[dict[str, Any]]]]) -> dict[str, Any]:
+    """Calculate summary statistics for concurrency patterns.
+
+    Args:
+        patterns: Dictionary of patterns grouped by category and type
+
+    Returns:
+        Summary dictionary with statistics
+    """
+    total_patterns = 0
+    by_category: dict[str, int] = {}
+
+    for category, pattern_types in patterns.items():
+        category_count = sum(len(usages) for usages in pattern_types.values())
+        if category_count > 0:
+            by_category[category] = category_count
+            total_patterns += category_count
+
+    return {
+        "total_patterns": total_patterns,
+        "by_category": by_category,
+    }
+
+
 def format_concurrency_output(patterns: dict[str, dict[str, list[dict[str, Any]]]]) -> str:
     """Format concurrency patterns as YAML output.
 
@@ -14,6 +38,9 @@ def format_concurrency_output(patterns: dict[str, dict[str, list[dict[str, Any]]
     Returns:
         YAML formatted string
     """
+    # Calculate summary
+    summary = _calculate_summary(patterns)
+
     # Filter out empty categories
     filtered = {
         category: pattern_types
@@ -22,10 +49,16 @@ def format_concurrency_output(patterns: dict[str, dict[str, list[dict[str, Any]]
     }
 
     if not filtered:
-        return "concurrency_patterns: {}\n"
-
-    # Build output structure
-    output = {"concurrency_patterns": filtered}
+        output = {
+            "summary": {"total_patterns": 0, "by_category": {}},
+            "concurrency_patterns": {},
+        }
+    else:
+        # Build output structure with summary first
+        output = {
+            "summary": summary,
+            "concurrency_patterns": filtered,
+        }
 
     # Use safe_dump with custom settings for readability
     yaml_str = yaml.safe_dump(

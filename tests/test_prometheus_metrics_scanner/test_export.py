@@ -109,8 +109,10 @@ class TestExportToYaml:
             with output_path.open() as f:
                 data = yaml.safe_load(f)
 
-            assert "test_counter" in data
-            assert "test_metrics_gauge" in data
+            assert "summary" in data
+            assert "metrics" in data
+            assert "test_counter" in data["metrics"]
+            assert "test_metrics_gauge" in data["metrics"]
 
     def test_create_parent_directories(self, sample_metrics):
         """Test that parent directories are created."""
@@ -134,8 +136,10 @@ class TestExportToYamlString:
 
         # Verify it's valid YAML
         data = yaml.safe_load(yaml_str)
-        assert "test_counter" in data
-        assert "test_metrics_gauge" in data
+        assert "summary" in data
+        assert "metrics" in data
+        assert "test_counter" in data["metrics"]
+        assert "test_metrics_gauge" in data["metrics"]
 
     def test_utf8_support(self, sample_metrics):
         """Test UTF-8 character support."""

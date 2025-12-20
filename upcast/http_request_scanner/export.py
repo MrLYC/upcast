@@ -13,7 +13,7 @@ def format_request_output(requests_by_url: dict[str, list[HttpRequest]], summary
     Returns:
         Formatted dictionary ready for export
     """
-    output = {"summary": summary}
+    requests_dict = {}
 
     # Sort URLs alphabetically
     for url in sorted(requests_by_url.keys()):
@@ -28,13 +28,16 @@ def format_request_output(requests_by_url: dict[str, list[HttpRequest]], summary
         # Sort usages by location
         sorted_requests = sorted(requests, key=lambda r: r.location)
 
-        output[url] = {
+        requests_dict[url] = {
             "method": primary_method,
             "library": primary_library,
             "usages": [format_single_usage(req) for req in sorted_requests],
         }
 
-    return output
+    return {
+        "summary": summary,
+        "requests": requests_dict,
+    }
 
 
 def format_single_usage(request: HttpRequest) -> dict:

@@ -297,10 +297,12 @@ class TestExport:
         json_str = export_to_json(sample_results)
         data = json.loads(json_str)
 
-        assert "DATABASE_URL" in data
-        assert "API_KEY" in data
-        assert "types" in data["DATABASE_URL"]
-        assert "usages" in data["DATABASE_URL"]
+        assert "summary" in data
+        assert "env_vars" in data
+        assert "DATABASE_URL" in data["env_vars"]
+        assert "API_KEY" in data["env_vars"]
+        assert "types" in data["env_vars"]["DATABASE_URL"]
+        assert "usages" in data["env_vars"]["DATABASE_URL"]
 
 
 class TestTypedDefaults:

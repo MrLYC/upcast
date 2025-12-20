@@ -64,10 +64,11 @@ def test_format_request_output_single_url():
 
     assert "summary" in result
     assert result["summary"] == summary
-    assert "https://api.example.com/users" in result
-    assert result["https://api.example.com/users"]["method"] == "GET"
-    assert result["https://api.example.com/users"]["library"] == "requests"
-    assert len(result["https://api.example.com/users"]["usages"]) == 1
+    assert "requests" in result
+    assert "https://api.example.com/users" in result["requests"]
+    assert result["requests"]["https://api.example.com/users"]["method"] == "GET"
+    assert result["requests"]["https://api.example.com/users"]["library"] == "requests"
+    assert len(result["requests"]["https://api.example.com/users"]["usages"]) == 1
 
 
 def test_format_request_output_multiple_urls():
@@ -114,9 +115,11 @@ def test_format_request_output_multiple_urls():
 
     result = format_request_output(requests_by_url, summary)
 
-    assert len(result) == 3  # 2 URLs + summary
-    assert "https://api.example.com/users" in result
-    assert "https://api.example.com/posts" in result
+    assert "summary" in result
+    assert "requests" in result
+    assert len(result["requests"]) == 2  # 2 URLs
+    assert "https://api.example.com/users" in result["requests"]
+    assert "https://api.example.com/posts" in result["requests"]
 
 
 def test_format_request_output_same_url_multiple_usages():
@@ -161,9 +164,9 @@ def test_format_request_output_same_url_multiple_usages():
 
     result = format_request_output(requests_by_url, summary)
 
-    assert len(result["https://api.example.com/data"]["usages"]) == 2
+    assert len(result["requests"]["https://api.example.com/data"]["usages"]) == 2
     # Primary method should be GET (first in list, or most common)
-    assert result["https://api.example.com/data"]["method"] in ["GET", "POST"]
+    assert result["requests"]["https://api.example.com/data"]["method"] in ["GET", "POST"]
 
 
 def test_format_request_output_mixed_libraries():
@@ -209,9 +212,9 @@ def test_format_request_output_mixed_libraries():
     result = format_request_output(requests_by_url, summary)
 
     # Should have both usages
-    assert len(result["https://example.com"]["usages"]) == 2
+    assert len(result["requests"]["https://example.com"]["usages"]) == 2
     # Primary library should be one of them
-    assert result["https://example.com"]["library"] in ["requests", "httpx"]
+    assert result["requests"]["https://example.com"]["library"] in ["requests", "httpx"]
 
 
 def test_format_request_output_sorted_urls():
@@ -231,8 +234,8 @@ def test_format_request_output_sorted_urls():
 
     result = format_request_output(requests_by_url, summary)
 
-    # Extract keys (excluding 'summary')
-    url_keys = [k for k in result if k != "summary"]
+    # Extract keys from requests (excluding 'summary')
+    url_keys = list(result["requests"].keys())
     # Check they are sorted
     assert url_keys == sorted(url_keys)
     requests_by_url = {
@@ -252,7 +255,7 @@ def test_format_request_output_sorted_urls():
 
     result = format_request_output(requests_by_url, summary)
 
-    usages = result["https://example.com"]["usages"]
+    usages = result["requests"]["https://example.com"]["usages"]
     locations = [u["location"] for u in usages]
     # Check they are sorted
     assert locations == sorted(locations)

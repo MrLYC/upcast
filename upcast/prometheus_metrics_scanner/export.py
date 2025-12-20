@@ -7,6 +7,27 @@ from upcast.common.export import export_to_yaml_string as common_export_yaml_str
 from upcast.prometheus_metrics_scanner.metrics_parser import MetricInfo
 
 
+def _calculate_summary(metrics: dict[str, MetricInfo]) -> dict[str, Any]:
+    """Calculate summary statistics for metrics.
+
+    Args:
+        metrics: Dictionary of metric names to MetricInfo
+
+    Returns:
+        Summary dictionary with statistics
+    """
+    total_metrics = len(metrics)
+    by_type: dict[str, int] = {}
+
+    for metric in metrics.values():
+        by_type[metric.type] = by_type.get(metric.type, 0) + 1
+
+    return {
+        "total_metrics": total_metrics,
+        "by_type": by_type,
+    }
+
+
 def format_metric_output(metrics: dict[str, MetricInfo]) -> dict[str, Any]:
     """Convert MetricInfo dict to output structure.
 
@@ -63,7 +84,14 @@ def export_to_yaml(metrics: dict[str, MetricInfo], output_path: str) -> None:
         metrics: Dictionary of metric names to MetricInfo
         output_path: Path to output file
     """
-    output = format_metric_output(metrics)
+    summary = _calculate_summary(metrics)
+    metrics_output = format_metric_output(metrics)
+
+    output = {
+        "summary": summary,
+        "metrics": metrics_output,
+    }
+
     common_export_yaml(output, output_path)
 
 
@@ -76,5 +104,12 @@ def export_to_yaml_string(metrics: dict[str, MetricInfo]) -> str:
     Returns:
         YAML formatted string
     """
-    output = format_metric_output(metrics)
+    summary = _calculate_summary(metrics)
+    metrics_output = format_metric_output(metrics)
+
+    output = {
+        "summary": summary,
+        "metrics": metrics_output,
+    }
+
     return common_export_yaml_string(output)

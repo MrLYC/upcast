@@ -6,6 +6,30 @@ from upcast.common.export import export_to_yaml as common_export_yaml
 from upcast.common.export import export_to_yaml_string as common_export_yaml_string
 
 
+def _calculate_summary(models: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Calculate summary statistics for Django models.
+
+    Args:
+        models: Dictionary of model data keyed by qualified name
+
+    Returns:
+        Summary dictionary with statistics
+    """
+    total_models = len(models)
+    total_fields = 0
+    total_relationships = 0
+
+    for model in models.values():
+        total_fields += len(model.get("fields", {}))
+        total_relationships += len(model.get("relationships", {}))
+
+    return {
+        "total_models": total_models,
+        "total_fields": total_fields,
+        "total_relationships": total_relationships,
+    }
+
+
 def export_to_yaml(models: dict[str, dict[str, Any]], output_path: str) -> None:
     """Export models to a YAML file.
 
@@ -13,11 +37,20 @@ def export_to_yaml(models: dict[str, dict[str, Any]], output_path: str) -> None:
         models: Dictionary of model data keyed by qualified name
         output_path: Path to the output YAML file
     """
+    # Calculate summary
+    summary = _calculate_summary(models)
+
     # Format models for output
     formatted_models = format_model_output(models)
 
+    # Build output with summary first
+    output = {
+        "summary": summary,
+        "models": formatted_models,
+    }
+
     # Use common export with sorting
-    common_export_yaml(formatted_models, output_path)
+    common_export_yaml(output, output_path)
 
 
 def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
@@ -29,11 +62,20 @@ def export_to_yaml_string(models: dict[str, dict[str, Any]]) -> str:
     Returns:
         YAML formatted string (sorted)
     """
+    # Calculate summary
+    summary = _calculate_summary(models)
+
     # Format models for output
     formatted_models = format_model_output(models)
 
+    # Build output with summary first
+    output = {
+        "summary": summary,
+        "models": formatted_models,
+    }
+
     # Use common export with sorting
-    return common_export_yaml_string(formatted_models)
+    return common_export_yaml_string(output)
 
 
 def format_model_output(models: dict[str, dict[str, Any]]) -> dict[str, Any]:

@@ -27,11 +27,15 @@ class TestUrlPatternChecker:
 
         data = yaml.safe_load(result)
 
+        # Check for summary
+        assert "summary" in data
+        assert "url_modules" in data
+
         # Find the module (could be simple_urls or fixtures.simple_urls)
         module_data = None
-        for key in data:
+        for key in data["url_modules"]:
             if "simple_urls" in key:
-                module_data = data[key]
+                module_data = data["url_modules"][key]
                 break
 
         assert module_data is not None
@@ -63,11 +67,15 @@ class TestUrlPatternChecker:
 
         data = yaml.safe_load(result)
 
+        # Check for summary and url_modules
+        assert "summary" in data
+        assert "url_modules" in data
+
         # Find the module
         module_data = None
-        for key in data:
+        for key in data["url_modules"]:
             if "complex_urls" in key:
-                module_data = data[key]
+                module_data = data["url_modules"][key]
                 break
 
         assert module_data is not None
@@ -112,11 +120,15 @@ class TestUrlPatternChecker:
 
         data = yaml.safe_load(result)
 
+        # Check for summary and url_modules
+        assert "summary" in data
+        assert "url_modules" in data
+
         # Find the module
         module_data = None
-        for key in data:
+        for key in data["url_modules"]:
             if "dynamic_urls" in key:
-                module_data = data[key]
+                module_data = data["url_modules"][key]
                 break
 
         assert module_data is not None
@@ -139,8 +151,12 @@ class TestUrlPatternChecker:
 
         data = yaml.safe_load(result)
 
+        # Check for summary and url_modules
+        assert "summary" in data
+        assert "url_modules" in data
+
         # Should find multiple modules
-        assert len(data) >= 2
+        assert len(data["url_modules"]) >= 2
 
     def test_output_yaml_format(self, fixtures_dir, tmp_path):
         """Test YAML output format."""

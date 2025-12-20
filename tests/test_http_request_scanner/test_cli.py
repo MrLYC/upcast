@@ -16,17 +16,20 @@ def test_scan_http_requests_basic():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a simple test file
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 import requests
 requests.get('https://api.example.com/users')
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [tmpdir])
 
         assert result.exit_code == 0
         # Parse YAML output
         output = yaml.safe_load(result.output)
-        assert "https://api.example.com/users" in output
+        assert "requests" in output
+        assert "https://api.example.com/users" in output["requests"]
 
 
 def test_scan_http_requests_output_file():
@@ -36,10 +39,12 @@ def test_scan_http_requests_output_file():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a test file
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 import requests
 requests.get('https://api.example.com/data')
-""")
+"""
+        )
 
         # Output file
         output_file = Path(tmpdir) / "output.yaml"
@@ -52,7 +57,8 @@ requests.get('https://api.example.com/data')
         # Check output file content
         with output_file.open() as f:
             output = yaml.safe_load(f)
-        assert "https://api.example.com/data" in output
+        assert "requests" in output
+        assert "https://api.example.com/data" in output["requests"]
 
 
 def test_scan_http_requests_json_format():
@@ -61,10 +67,12 @@ def test_scan_http_requests_json_format():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 import requests
 requests.get('https://example.com')
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [tmpdir, "--format", "json"])
 
@@ -73,7 +81,8 @@ requests.get('https://example.com')
         import json
 
         output = json.loads(result.output)
-        assert "https://example.com" in output
+        assert "requests" in output
+        assert "https://example.com" in output["requests"]
 
 
 def test_scan_http_requests_verbose():
@@ -82,10 +91,12 @@ def test_scan_http_requests_verbose():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 import requests
 requests.get('https://example.com')
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [tmpdir, "-v"])
 
@@ -100,16 +111,19 @@ def test_scan_http_requests_single_file():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 import requests
 requests.get('https://api.example.com/users')
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [str(test_file)])
 
         assert result.exit_code == 0
         output = yaml.safe_load(result.output)
-        assert "https://api.example.com/users" in output
+        assert "requests" in output
+        assert "https://api.example.com/users" in output["requests"]
 
 
 def test_scan_http_requests_no_requests():
@@ -118,10 +132,12 @@ def test_scan_http_requests_no_requests():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 def hello():
     return "Hello, World!"
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [tmpdir])
 
@@ -139,21 +155,26 @@ def test_scan_http_requests_multiple_files():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create multiple test files
         file1 = Path(tmpdir) / "file1.py"
-        file1.write_text("""
+        file1.write_text(
+            """
 import requests
 requests.get('https://api.example.com/users')
-""")
+"""
+        )
 
         file2 = Path(tmpdir) / "file2.py"
-        file2.write_text("""
+        file2.write_text(
+            """
 import requests
 requests.post('https://api.example.com/login', json={'user': 'admin'})
-""")
+"""
+        )
 
         result = runner.invoke(scan_http_requests, [tmpdir])
 
         assert result.exit_code == 0
         output = yaml.safe_load(result.output)
-        assert "https://api.example.com/users" in output
-        assert "https://api.example.com/login" in output
+        assert "requests" in output
+        assert "https://api.example.com/users" in output["requests"]
+        assert "https://api.example.com/login" in output["requests"]
         assert output["summary"]["total_requests"] == 2
