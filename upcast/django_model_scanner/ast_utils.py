@@ -107,7 +107,7 @@ def _check_inferred_base(base: nodes.NodeNG) -> bool:
                 return True
             # Check if it has qname attribute (ClassDef, Module, etc.)
             if hasattr(inferred, "qname"):
-                qname = inferred.qname()  # type: ignore[attr-defined]
+                qname = inferred.qname()
                 if "django.db.models" in qname:
                     return True
     except Exception:  # noqa: S110

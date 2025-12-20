@@ -151,12 +151,14 @@ None - this is a straightforward configuration and documentation fix.
    - [x] No ruff deprecation warnings
    - [x] Unit tests run successfully for Python 3.9, 3.10, 3.11, 3.12
    - [x] Coverage reports upload correctly
+   - [x] mypy type checking passes
 
 2. **Local Development**:
 
    - [x] `make check` passes locally
    - [x] `make test` passes locally (617 tests)
    - [x] `uv run pre-commit run --all-files` passes
+   - [x] `uv run mypy` passes
 
 3. **Documentation**:
 
