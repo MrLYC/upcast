@@ -26,8 +26,16 @@
   - [ ] Extract signature as string
   - [ ] Extract first line of docstring
   - [ ] Set `is_async` and `is_method` flags
+  - [ ] Extract complete function source code
+  - [ ] Count comment lines (lines starting with `#`)
+  - [ ] Calculate total code lines (end_line - line + 1)
 - [ ] Create `ComplexityResult` dataclass:
   - [ ] Fields: name, line, end_line, complexity, description, signature, is_async, is_method, class_name
+  - [ ] Add: code (full source), comment_lines, code_lines
+- [ ] Add helper functions to `upcast/common/code_utils.py`:
+  - [ ] `extract_function_code(node: nodes.FunctionDef) -> str` - uses `node.as_string()`
+  - [ ] `count_comment_lines(source_code: str) -> int` - uses `tokenize` module
+  - [ ] `get_code_lines(node: nodes.FunctionDef) -> int` - calculate from line range
 - [ ] Parse full file and return list of results
 
 ### Task 1.3: Implement Severity Assignment
@@ -48,6 +56,26 @@
 - [ ] Add unit tests for various thresholds
 
 ## Phase 2: File Handling and CLI
+
+### Task 2.0: Implement Common Code Utilities
+
+- [ ] Create `upcast/common/code_utils.py` if not exists
+- [ ] Implement `extract_function_code(node: nodes.FunctionDef) -> str`:
+  - [ ] Use `node.as_string()` to get complete source
+  - [ ] Handle errors gracefully
+- [ ] Implement `count_comment_lines(source_code: str) -> int`:
+  - [ ] Use Python's `tokenize` module
+  - [ ] Count lines with COMMENT tokens
+  - [ ] Use set to avoid counting same line multiple times
+  - [ ] Handle tokenization errors
+- [ ] Implement `get_code_lines(node: nodes.FunctionDef) -> int`:
+  - [ ] Calculate `end_lineno - lineno + 1`
+  - [ ] Handle missing end_lineno
+- [ ] Add unit tests for code utilities:
+  - [ ] Test with simple function
+  - [ ] Test with comments in strings
+  - [ ] Test with multi-line strings
+  - [ ] Test with decorators
 
 ### Task 2.1: Implement Test File Exclusion
 

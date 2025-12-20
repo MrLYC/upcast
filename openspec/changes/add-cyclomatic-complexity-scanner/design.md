@@ -67,6 +67,62 @@ M = 1 + number of decision points
 
 **Note:** `else` without additional conditions does not add complexity (it's the alternative path of the preceding `if`).
 
+### Code Extraction and Comment Counting
+
+**Extract Function Source (using astroid):**
+
+```python
+def extract_function_code(node: nodes.FunctionDef) -> str:
+    """Extract complete function source code using astroid.
+
+    Args:
+        node: Astroid FunctionDef node
+
+    Returns:
+        Complete function source code including decorators
+    """
+    return node.as_string()
+```
+
+**Count Comment Lines (using tokenize module):**
+
+```python
+import tokenize
+import io
+
+def count_comment_lines(source_code: str) -> int:
+    """Count comment lines using Python's tokenize module.
+
+    This is more accurate than string matching as it properly handles:
+    - Comments inside strings
+    - Multi-line strings vs actual comments
+    - Different comment styles
+
+    Args:
+        source_code: Function source code
+
+    Returns:
+        Number of comment lines (lines with # comments)
+    """
+    comment_count = 0
+    try:
+        tokens = tokenize.generate_tokens(io.StringIO(source_code).readline)
+        comment_lines = set()
+
+        for token in tokens:
+            if token.type == tokenize.COMMENT:
+                comment_lines.add(token.start[0])
+
+        comment_count = len(comment_lines)
+    except tokenize.TokenError:
+        # Fallback to 0 if tokenization fails
+        pass
+
+    return comment_count
+```
+
+**Note:** These utilities will be abstracted to `upcast/common/code_utils.py` for reuse across scanners.
+
 ### Implementation Using AST Visitor
 
 ```python

@@ -27,17 +27,45 @@ modules:
   app/services/user.py:
     - name: process_user_registration
       line: 45
+      end_line: 78
       complexity: 16
       severity: high_risk
       description: "Handle user registration with validation and email"
-      code: "def process_user_registration(user_data: dict, ..."
+      signature: "def process_user_registration(user_data: dict, strict: bool = True) -> Result:"
+      comment_lines: 8
+      code_lines: 34
+      code: |
+        def process_user_registration(user_data: dict, strict: bool = True) -> Result:
+            """Handle user registration with validation and email."""
+            if not user_data:
+                raise ValueError("User data required")
+
+            # Validate email format
+            if "email" not in user_data:
+                return Result.error("Email required")
+            ...
   app/utils/parser.py:
     - name: parse_complex_input
       line: 89
+      end_line: 135
       complexity: 23
       severity: critical
       description: "Parse and validate complex nested input"
-      code: "def parse_complex_input(data, options=None, ..."
+      signature: "def parse_complex_input(data, options=None, strict=False):"
+      comment_lines: 12
+      code_lines: 47
+      code: |
+        def parse_complex_input(data, options=None, strict=False):
+            """Parse and validate complex nested input."""
+            if not data:
+                return None
+
+            # Multiple nested conditions and loops
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    if key.startswith('_'):
+                        continue
+            ...
 ```
 
 ## Why
@@ -85,6 +113,8 @@ Follow the established scanner pattern used by other Upcast scanners:
    - Orchestrate file scanning
    - Apply threshold filtering
    - Aggregate results by module
+   - Use common utilities for source code extraction
+   - Use tokenize-based comment counting for accuracy
 
 3. **CLI Module** (`cli.py`):
 

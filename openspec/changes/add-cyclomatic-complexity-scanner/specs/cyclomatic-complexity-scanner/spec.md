@@ -162,6 +162,47 @@ The system SHALL exclude test files by default to focus on production code.
 - **AND** custom exclusions SHALL be additional
 - **AND** `--no-default-excludes` SHALL disable test exclusions
 
+### Requirement: Source Code Extraction
+
+The system SHALL extract the complete source code for each high-complexity function.
+
+#### Scenario: Extract full function code
+
+- **WHEN** analyzing a high-complexity function
+- **THEN** the system SHALL extract the complete source code from def to end
+- **INCLUDING**: decorators, docstring, all code lines, comments
+- **AND** preserve original indentation and formatting
+
+#### Scenario: Count total code lines
+
+- **WHEN** extracting function code
+- **THEN** the system SHALL count total lines (code + comments + blank)
+- **AND** report as `code_lines` field
+- **EXAMPLE**: Function spanning lines 45-98 has code_lines = 54
+
+#### Scenario: Count comment lines
+
+- **WHEN** analyzing function body
+- **THEN** the system SHALL use Python's `tokenize` module to identify COMMENT tokens
+- **AND** count unique line numbers containing comments
+- **AND** NOT count docstrings as comments
+- **AND** correctly handle comments inside strings (not counted)
+- **AND** report as `comment_lines` field
+- **EXAMPLE**: Function with 8 comment lines has comment_lines = 8
+
+#### Scenario: Handle multi-line strings
+
+- **WHEN** function contains multi-line strings that aren't docstrings
+- **THEN** treat them as code, NOT comments
+- **AND** tokenize module correctly distinguishes comments from strings
+
+#### Scenario: Handle comments in strings
+
+- **WHEN** function contains `#` characters inside string literals
+- **THEN** those SHALL NOT be counted as comments
+- **AND** only actual Python comment tokens are counted
+- **EXAMPLE**: `message = "Use # for comments"  # This is a comment` counts as 1 comment line
+
 ### Requirement: Metadata Extraction
 
 The system SHALL extract comprehensive metadata for each high-complexity function.
@@ -276,6 +317,12 @@ The system SHALL export results in structured YAML format for human readability.
         is_async: bool
         is_method: bool
         class_name: str | null
+        comment_lines: N
+        code_lines: M
+        code: |
+          def function_name(...):
+              # Function implementation
+              ...
   ```
 
 #### Scenario: YAML formatting
