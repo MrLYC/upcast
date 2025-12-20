@@ -1,7 +1,7 @@
 """Signal scanner for detecting Django and Celery signal patterns.
 
 .. deprecated::
-    This module is deprecated. Use :mod:`upcast.scanners.signal` instead.
+    This module is deprecated. Use :mod:`upcast.scanners.signals` instead.
     The old implementation will be removed in a future release.
 """
 
@@ -16,7 +16,7 @@ __all__ = ["SignalChecker", "SignalUsage", "scan_signals"]
 # Issue deprecation warning when module is imported
 warnings.warn(
     "upcast.signal_scanner is deprecated. "
-    "Use upcast.scanners.signal instead. "
+    "Use upcast.scanners.signals instead. "
     "The old implementation will be removed in a future release.",
     DeprecationWarning,
     stacklevel=2,

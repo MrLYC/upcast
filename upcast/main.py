@@ -514,7 +514,7 @@ def scan_signals_cmd(
     try:
         # Import new scanner
         from upcast.common.cli import run_scanner_cli
-        from upcast.scanners.signal import SignalScanner
+        from upcast.scanners.signals import SignalScanner
 
         # Create scanner
         scanner = SignalScanner(

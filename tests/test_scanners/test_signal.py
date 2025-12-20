@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from upcast.scanners.signal import (
+from upcast.scanners.signals import (
     SignalInfo,
     SignalOutput,
     SignalScanner,
@@ -243,14 +243,16 @@ class TestSignalScannerIntegration:
         """Test scanner detects Django signal patterns."""
         # Create a file with Django signal
         signals_file = tmp_path / "signals.py"
-        signals_file.write_text("""
+        signals_file.write_text(
+            """
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 @receiver(post_save, sender=User)
 def handle_user_save(sender, instance, **kwargs):
     pass
-""")
+"""
+        )
 
         scanner = SignalScanner()
         output = scanner.scan(tmp_path)
