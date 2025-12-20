@@ -54,7 +54,9 @@ def format_handler_output(handlers: list[ExceptionHandler], summary: dict) -> di
             }
 
         formatted_handlers.append({
-            "location": handler.location,
+            "file": handler.file,
+            "lineno": handler.lineno,
+            "end_lineno": handler.end_lineno,
             "try_lines": handler.try_lines,
             "except_clauses": formatted_clauses,
             "else_clause": else_clause,

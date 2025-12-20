@@ -270,24 +270,27 @@ upcast scan-signals /path/to/project
 **Output example:**
 
 ```yaml
-post_save:
-  type: django.signal
-  receivers:
-    - handler: users.signals.create_profile
-      sender: User
-      file: users/signals.py
-      line: 25
-    - handler: notifications.signals.send_welcome_email
-      sender: User
-      file: notifications/signals.py
-      line: 42
+signals:
+  - signal: django.db.models.signals.post_save
+    type: django
+    category: model_signals
+    receivers:
+      - handler: users.signals.create_profile
+        sender: User
+        file: users/signals.py
+        line: 25
+      - handler: notifications.signals.send_welcome_email
+        sender: User
+        file: notifications/signals.py
+        line: 42
 
-task_success:
-  type: celery.signal
-  receivers:
-    - handler: monitoring.handlers.log_task_success
-      file: monitoring/handlers.py
-      line: 15
+  - signal: celery.signals.task_success
+    type: celery
+    category: task_signals
+    receivers:
+      - handler: monitoring.handlers.log_task_success
+        file: monitoring/handlers.py
+        line: 15
 ```
 
 **Key features:**
@@ -597,7 +600,9 @@ upcast scan-exception-handlers /path/to/project
 
 ```yaml
 handlers:
-  - location: api/views.py:45
+  - file: api/views.py
+    lineno: 45
+    end_lineno: 52
     type: try-except
     exceptions:
       - ValueError
@@ -605,7 +610,9 @@ handlers:
     has_bare_except: false
     reraises: false
 
-  - location: services/processor.py:78
+  - file: services/processor.py
+    lineno: 78
+    end_lineno: 85
     type: try-except
     exceptions:
       - Exception
@@ -613,7 +620,9 @@ handlers:
     reraises: true
     logs_error: true
 
-  - location: legacy/old_code.py:123
+  - file: legacy/old_code.py
+    lineno: 123
+    end_lineno: 127
     type: try-except
     has_bare_except: true
     warning: Bare except clause detected

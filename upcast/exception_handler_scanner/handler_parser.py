@@ -39,10 +39,9 @@ class ExceptionClause:
 class ExceptionHandler:
     """Information about a complete try/except block."""
 
-    location: str
     file: str
-    start_line: int
-    end_line: int
+    lineno: int
+    end_lineno: int
     try_lines: int
     except_clauses: list[ExceptionClause] = field(default_factory=list)
     else_clause: BlockInfo | None = None
@@ -285,13 +284,10 @@ def parse_try_block(node: nodes.Try, file_path: str) -> ExceptionHandler:
     else_clause = parse_else_clause(node)
     finally_clause = parse_finally_clause(node)
 
-    location = f"{file_path}:{node.lineno}-{end_line}"
-
     return ExceptionHandler(
-        location=location,
         file=file_path,
-        start_line=node.lineno,
-        end_line=end_line,
+        lineno=node.lineno,
+        end_lineno=end_line,
         try_lines=try_lines,
         except_clauses=except_clauses,
         else_clause=else_clause,

@@ -42,7 +42,9 @@ def test_format_handler_fields():
     # Check first handler structure
     if output["exception_handlers"]:
         handler = output["exception_handlers"][0]
-        assert "location" in handler
+        assert "file" in handler
+        assert "lineno" in handler
+        assert "end_lineno" in handler
         assert "try_lines" in handler
         assert "except_clauses" in handler
         assert "else_clause" in handler

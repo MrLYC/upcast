@@ -7,103 +7,79 @@ import yaml
 
 
 def format_signal_output(results: dict[str, Any]) -> dict[str, Any]:  # noqa: C901
-    """Format signal results for YAML export.
+    """Format signal results for YAML export using flat list structure.
 
     Args:
         results: Raw results from SignalChecker
 
     Returns:
-        Formatted dictionary ready for YAML export
+        Formatted dictionary with flat list of signals
     """
-    output: dict[str, Any] = {}
+    signals_list = []
 
-    # Format Django signals
+    # Process Django signals
     if "django" in results:
-        django_output: dict[str, Any] = {}
-
         for category, signals in results["django"].items():
             if category == "unused_custom_signals":
-                # Special handling for unused signals
-                django_output[category] = signals
+                # Handle unused signals separately
+                for signal_def in signals:
+                    signals_list.append({
+                        "signal": signal_def.get("name", "unknown"),
+                        "type": "django",
+                        "category": "unused_custom_signals",
+                        "file": signal_def.get("file", ""),
+                        "line": signal_def.get("line", 0),
+                        "status": "unused",
+                    })
                 continue
 
-            category_output: dict[str, Any] = {}
-
+            # Process regular signals
             for signal_name, signal_data in signals.items():
-                # Handle new structure: {receivers: [], senders: [], usages: []}
                 if isinstance(signal_data, dict) and "receivers" in signal_data:
-                    # Format the nested structure
-                    formatted_signal: dict[str, Any] = {}
+                    receivers = []
+                    for handler in signal_data["receivers"]:
+                        handler_entry = {
+                            "handler": handler["handler"],
+                            "file": handler["file"],
+                            "line": handler["line"],
+                        }
+                        if "sender" in handler:
+                            handler_entry["sender"] = handler["sender"]
+                        if "context" in handler:
+                            handler_entry["context"] = handler["context"]
+                        receivers.append(handler_entry)
 
-                    # Format receivers
-                    if "receivers" in signal_data:
-                        formatted_receivers = []
-                        for handler in signal_data["receivers"]:
-                            handler_entry: dict[str, Any] = {
-                                "handler": handler["handler"],
-                                "file": handler["file"],
-                                "line": handler["line"],
-                            }
-                            # Add sender if present
-                            if "sender" in handler:
-                                handler_entry["sender"] = handler["sender"]
-                            # Add context if present
-                            if "context" in handler:
-                                handler_entry["context"] = handler["context"]
-                            formatted_receivers.append(handler_entry)
-                        formatted_signal["receivers"] = formatted_receivers
+                    signals_list.append({
+                        "signal": signal_name,
+                        "type": "django",
+                        "category": category,
+                        "receivers": receivers,
+                    })
 
-                    category_output[signal_name] = formatted_signal
-                else:
-                    # Shouldn't happen, but handle gracefully
-                    category_output[signal_name] = {"receivers": []}
-
-            if category_output:
-                django_output[category] = category_output
-
-        if django_output:
-            output["django"] = django_output
-
-    # Format Celery signals
+    # Process Celery signals
     if "celery" in results:
-        celery_output: dict[str, Any] = {}
-
         for category, signals in results["celery"].items():
-            category_output: dict[str, Any] = {}
-
             for signal_name, signal_data in signals.items():
-                # Handle new structure: {receivers: [], senders: [], usages: []}
                 if isinstance(signal_data, dict) and "receivers" in signal_data:
-                    # Format the nested structure
-                    formatted_signal: dict[str, Any] = {}
+                    receivers = []
+                    for handler in signal_data["receivers"]:
+                        handler_entry = {
+                            "handler": handler["handler"],
+                            "file": handler["file"],
+                            "line": handler["line"],
+                        }
+                        if "context" in handler:
+                            handler_entry["context"] = handler["context"]
+                        receivers.append(handler_entry)
 
-                    # Format receivers
-                    if "receivers" in signal_data:
-                        formatted_receivers = []
-                        for handler in signal_data["receivers"]:
-                            handler_entry: dict[str, Any] = {
-                                "handler": handler["handler"],
-                                "file": handler["file"],
-                                "line": handler["line"],
-                            }
-                            # Add context if present
-                            if "context" in handler:
-                                handler_entry["context"] = handler["context"]
-                            formatted_receivers.append(handler_entry)
-                        formatted_signal["receivers"] = formatted_receivers
+                    signals_list.append({
+                        "signal": signal_name,
+                        "type": "celery",
+                        "category": category,
+                        "receivers": receivers,
+                    })
 
-                    category_output[signal_name] = formatted_signal
-                else:
-                    # Shouldn't happen, but handle gracefully
-                    category_output[signal_name] = {"receivers": []}
-
-            if category_output:
-                celery_output[category] = category_output
-
-        if celery_output:
-            output["celery"] = celery_output
-
-    return output
+    return {"signals": signals_list}
 
 
 def export_to_yaml(results: dict[str, Any], output_path: str) -> None:

@@ -1,6 +1,7 @@
 """HTTP request parsing and extraction logic."""
 
 import logging
+import re
 from dataclasses import dataclass, field
 
 from astroid import nodes
@@ -26,6 +27,24 @@ class HttpRequest:
     timeout: int | float | None = None  # Timeout value
     session_based: bool = False  # Whether called via session
     is_async: bool = False  # Whether using async/await
+
+
+def _normalize_url_placeholders(url: str) -> str:
+    """Normalize URL by merging consecutive ellipsis placeholders.
+
+    Replaces patterns like '... + ...' or '... + ... + ...' with a single '...'.
+
+    Args:
+        url: URL string potentially containing consecutive ellipsis
+
+    Returns:
+        Normalized URL with merged placeholders
+    """
+    # Pattern matches: ... (+ ...)+ with optional whitespace
+    # Handles: '... + ...' -> '...'
+    #          '... + ... + ...' -> '...'
+    #          '... + ... + ... + ...' -> '...'
+    return re.sub(r"\.\.\.(\s*\+\s*\.\.\.)+", "...", url)
 
 
 def _is_http_method(method_name: str) -> bool:
@@ -481,6 +500,10 @@ def extract_url(node: nodes.Call) -> str:
 
     # Extract URL with variable placeholder support
     url = _extract_url_from_node(url_node)
+
+    # Normalize consecutive ellipsis placeholders
+    if url and "..." in url:
+        url = _normalize_url_placeholders(url)
 
     # Return url (may be None if completely unresolvable, causing request to be skipped)
     return url

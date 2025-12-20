@@ -114,7 +114,7 @@ def extract_metric_name(call: nodes.Call) -> Optional[str]:
                 return name_arg.value
 
             # Use common inference with fallback
-            inferred_value, success = infer_value_with_fallback(name_arg)
+            inferred_value, _success = infer_value_with_fallback(name_arg)
             return inferred_value
     except Exception:  # noqa: S110
         pass

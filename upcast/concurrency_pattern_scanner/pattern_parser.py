@@ -93,7 +93,7 @@ def parse_asyncio_gather(node: nodes.Call, file_path: str) -> dict[str, Any]:
     }
 
 
-def parse_asyncio_create_task(node: nodes.Call, file_path: str) -> dict[str, Any]:
+def parse_asyncio_create_task(node: nodes.Call, file_path: str) -> dict[str, Any] | None:
     """Parse asyncio.create_task() call.
 
     Args:
@@ -101,9 +101,14 @@ def parse_asyncio_create_task(node: nodes.Call, file_path: str) -> dict[str, Any
         file_path: File path
 
     Returns:
-        Pattern dictionary
+        Pattern dictionary, or None if coroutine cannot be determined
     """
     coroutine = _get_expression_str(node.args[0]) if node.args else "unknown"
+
+    # Skip if coroutine cannot be determined
+    if coroutine == "unknown":
+        return None
+
     scope_info = _get_scope_info(node)
 
     return {

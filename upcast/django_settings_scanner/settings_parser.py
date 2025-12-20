@@ -66,13 +66,34 @@ class SettingsModule:
 def _extract_source_code_snippet(node: nodes.NodeNG) -> str:
     """Extract source code snippet from an AST node.
 
+    Walks up the AST to find the containing statement and extracts its source code,
+    providing better context than just the node itself.
+
     Args:
         node: The AST node
 
     Returns:
-        Source code string
+        Source code string of the containing statement
     """
     try:
+        # Walk up AST to find containing statement
+        current = node
+        while current.parent:
+            # Check if parent is a statement type
+            if isinstance(
+                current.parent,
+                (
+                    nodes.Assign,
+                    nodes.AugAssign,
+                    nodes.Expr,
+                    nodes.Return,
+                    nodes.If,
+                ),
+            ):
+                return current.parent.as_string()
+            current = current.parent
+
+        # Fallback to original node if no statement found
         return node.as_string()
     except Exception:
         return "<unknown>"

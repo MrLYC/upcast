@@ -95,20 +95,33 @@ def test_scan_output_yaml_format(tmp_path):
 
     with output_file.open() as f:
         data = yaml.safe_load(f)
-        assert "django" in data
-        # Check hierarchical structure
-        assert "model_signals" in data["django"]
-        model_signals = data["django"]["model_signals"]
-        assert isinstance(model_signals, dict)
-        # Check signal has correct structure with receivers, senders, usages
-        for _signal_name, signal_data in model_signals.items():
-            assert isinstance(signal_data, dict)
-            assert "receivers" in signal_data
-            assert isinstance(signal_data["receivers"], list)
-            for receiver in signal_data["receivers"]:
+        # New flat list structure
+        assert "signals" in data
+        signals_list = data["signals"]
+        assert isinstance(signals_list, list)
+        assert len(signals_list) > 0
+
+        # Check signal structure
+        for signal in signals_list:
+            assert "signal" in signal
+            assert "type" in signal
+            assert "category" in signal
+            assert "receivers" in signal
+            assert isinstance(signal["receivers"], list)
+
+            # Check receiver structure
+            for receiver in signal["receivers"]:
                 assert "handler" in receiver
                 assert "file" in receiver
                 assert "line" in receiver
+
+        # Verify we have Django signals
+        django_signals = [s for s in signals_list if s["type"] == "django"]
+        assert len(django_signals) > 0
+
+        # Verify we have model_signals category
+        model_signals = [s for s in django_signals if s["category"] == "model_signals"]
+        assert len(model_signals) > 0
 
 
 def test_scan_no_signals_found(tmp_path):

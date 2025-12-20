@@ -101,7 +101,7 @@ class TestInferValueWithFallback:
         code = "x = [1, unknown_var, 3]"
         module = astroid.parse(code)
         assign = module.body[0]
-        value, success = infer_value_with_fallback(assign.value)
+        value, _success = infer_value_with_fallback(assign.value)
         # List is partially inferable
         assert isinstance(value, list)
         assert value[0] == 1
