@@ -7,7 +7,7 @@ import pytest
 import yaml
 
 from upcast.common.export import export_scanner_output
-from upcast.common.models import ScannerOutput, ScannerSummary
+from upcast.models.base import ScannerOutput, ScannerSummary
 
 
 class TestExportScannerOutput:

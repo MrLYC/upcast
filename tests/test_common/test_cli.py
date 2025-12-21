@@ -13,7 +13,7 @@ from upcast.common.cli import (
     run_scanner_cli,
     validate_scanner_arguments,
 )
-from upcast.common.models import ScannerOutput, ScannerSummary
+from upcast.models.base import ScannerOutput, ScannerSummary
 
 
 class TestAddScannerArguments:

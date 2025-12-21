@@ -14,8 +14,8 @@ import click
 
 from upcast.common.export import export_to_json, export_to_yaml, export_to_yaml_string
 from upcast.common.file_utils import collect_python_files
-from upcast.common.models import ScannerOutput
 from upcast.common.scanner_base import BaseScanner
+from upcast.models.base import ScannerOutput
 
 
 def add_scanner_arguments(func):

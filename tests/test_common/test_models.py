@@ -5,7 +5,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from upcast.common.models import ScannerOutput, ScannerSummary
+from upcast.models.base import ScannerOutput, ScannerSummary
 
 
 class TestScannerSummary:

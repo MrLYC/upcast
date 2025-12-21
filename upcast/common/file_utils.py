@@ -92,3 +92,57 @@ def collect_python_files(
         python_files.append(py_file)
 
     return sorted(python_files)
+
+
+def get_relative_path_str(file_path: Path, base_path: Path) -> str:
+    """Get relative path as string, with fallback to absolute if not relative.
+
+    Args:
+        file_path: File path (absolute or relative)
+        base_path: Base directory path
+
+    Returns:
+        Relative path string if file is under base_path, otherwise absolute path string
+
+    Examples:
+        >>> get_relative_path_str(Path("/project/src/app.py"), Path("/project"))
+        'src/app.py'
+        >>> get_relative_path_str(Path("/other/file.py"), Path("/project"))
+        '/other/file.py'
+    """
+    try:
+        return str(file_path.relative_to(base_path))
+    except ValueError:
+        # If file_path is not relative to base_path, return absolute path
+        return str(file_path)
+
+
+def is_test_file(file_path: Path) -> bool:
+    """Check if a file is a test file based on common naming patterns.
+
+    Args:
+        file_path: Path to check
+
+    Returns:
+        True if file matches test file patterns
+
+    Examples:
+        >>> is_test_file(Path("tests/test_app.py"))
+        True
+        >>> is_test_file(Path("src/app.py"))
+        False
+        >>> is_test_file(Path("app_test.py"))
+        True
+    """
+    # Common test file patterns
+    test_patterns = [
+        "tests/**",
+        "**/tests/**",
+        "test_*.py",
+        "*_test.py",
+        "**/test_*.py",
+        "**/*_test.py",
+    ]
+
+    # Check if path matches any test pattern
+    return any(file_path.match(pattern) for pattern in test_patterns)

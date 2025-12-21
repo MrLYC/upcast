@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from upcast.common.models import ScannerOutput, ScannerSummary
 from upcast.common.scanner_base import BaseScanner
+from upcast.models.base import ScannerOutput, ScannerSummary
 
 
 class ConcreteTestScanner(BaseScanner[ScannerOutput[list[str]]]):
@@ -191,3 +191,68 @@ class TestBaseScanner:
             assert output.summary.total_count == 2
             assert output.summary.files_scanned == 2
             assert len(output.results) == 2
+
+
+class TestParseFile:
+    """Test parse_file method."""
+
+    def test_parses_valid_python_file(self):
+        """Test that parse_file successfully parses valid Python code."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "test.py"
+            test_file.write_text("x = 42\ndef foo(): pass")
+
+            scanner = ConcreteTestScanner()
+            module = scanner.parse_file(test_file)
+
+            assert module is not None
+            assert len(module.body) == 2
+
+    def test_returns_none_for_nonexistent_file(self):
+        """Test that parse_file returns None for nonexistent file."""
+        scanner = ConcreteTestScanner()
+        module = scanner.parse_file(Path("/nonexistent/file.py"))
+        assert module is None
+
+    def test_returns_none_for_syntax_error(self):
+        """Test that parse_file returns None for file with syntax errors."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "bad.py"
+            test_file.write_text("def foo(\n")  # Invalid syntax
+
+            scanner = ConcreteTestScanner()
+            module = scanner.parse_file(test_file)
+            assert module is None
+
+    def test_returns_none_for_encoding_error(self):
+        """Test that parse_file returns None for encoding errors."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "bad_encoding.py"
+            # Write invalid UTF-8 bytes
+            test_file.write_bytes(b"\xff\xfe")
+
+            scanner = ConcreteTestScanner()
+            module = scanner.parse_file(test_file)
+            assert module is None
+
+    def test_verbose_mode_logs_errors(self):
+        """Test that verbose mode logs parsing errors."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "bad.py"
+            test_file.write_text("def foo(\n")
+
+            scanner = ConcreteTestScanner(verbose=True)
+            module = scanner.parse_file(test_file)
+            assert module is None  # Should still return None
+
+    def test_parses_empty_file(self):
+        """Test that parse_file handles empty files."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_file = Path(tmpdir) / "empty.py"
+            test_file.write_text("")
+
+            scanner = ConcreteTestScanner()
+            module = scanner.parse_file(test_file)
+
+            assert module is not None
+            assert len(module.body) == 0

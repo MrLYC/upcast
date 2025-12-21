@@ -4,7 +4,13 @@ from pathlib import Path
 
 import pytest
 
-from upcast.common.file_utils import collect_python_files, find_package_root, validate_path
+from upcast.common.file_utils import (
+    collect_python_files,
+    find_package_root,
+    get_relative_path_str,
+    is_test_file,
+    validate_path,
+)
 
 
 class TestValidatePath:
@@ -136,3 +142,55 @@ class TestCollectPythonFiles:
         result = collect_python_files(tmp_path)
         names = [f.name for f in result]
         assert names == ["a.py", "b.py", "c.py"]
+
+
+class TestGetRelativePathStr:
+    """Tests for get_relative_path_str function."""
+
+    def test_returns_relative_path_when_under_base(self, tmp_path: Path) -> None:
+        """Should return relative path when file is under base_path."""
+        file_path = tmp_path / "src" / "app.py"
+        relative = get_relative_path_str(file_path, tmp_path)
+        assert relative == "src/app.py"
+
+    def test_returns_absolute_path_when_not_relative(self, tmp_path: Path) -> None:
+        """Should return absolute path when file is not under base_path."""
+        other_path = Path("/other/location/file.py")
+        result = get_relative_path_str(other_path, tmp_path)
+        assert result == str(other_path)
+
+    def test_handles_same_path(self, tmp_path: Path) -> None:
+        """Should handle when file_path equals base_path."""
+        result = get_relative_path_str(tmp_path, tmp_path)
+        assert result == "."
+
+
+class TestIsTestFile:
+    """Tests for is_test_file function."""
+
+    def test_identifies_test_prefix(self) -> None:
+        """Should identify files with test_ prefix."""
+        assert is_test_file(Path("test_app.py"))
+        assert is_test_file(Path("src/test_utils.py"))
+
+    def test_identifies_test_suffix(self) -> None:
+        """Should identify files with _test suffix."""
+        assert is_test_file(Path("app_test.py"))
+        assert is_test_file(Path("src/utils_test.py"))
+
+    def test_identifies_tests_directory(self) -> None:
+        """Should identify files in tests/ directory."""
+        assert is_test_file(Path("tests/test_app.py"))
+        assert is_test_file(Path("tests/app.py"))
+        assert is_test_file(Path("src/tests/utils.py"))
+
+    def test_does_not_identify_regular_files(self) -> None:
+        """Should not identify regular files as test files."""
+        assert not is_test_file(Path("app.py"))
+        assert not is_test_file(Path("src/utils.py"))
+        assert not is_test_file(Path("models.py"))
+
+    def test_does_not_match_partial_names(self) -> None:
+        """Should not match files with 'test' in the middle."""
+        assert not is_test_file(Path("attest.py"))
+        assert not is_test_file(Path("contest.py"))
