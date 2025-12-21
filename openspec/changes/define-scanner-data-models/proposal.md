@@ -51,11 +51,11 @@
 4. **目录组织**:
    ```
    upcast/models/
-   ├── __init__.py          # 导出所有模型
-   ├── base.py              # 已有的 ScannerSummary, ScannerOutput(从 common/models.py 移动)
-   ├── blocking_ops.py      # BlockingOperationsScanOutput, BlockingOperationsSummary, etc.
-   ├── concurrency.py       # ConcurrencyPatternOutput, ConcurrencyPattern, etc.
-   ├── complexity.py        # ComplexityOutput, ComplexityResult, etc.
+   ├── __init__.py                # 导出所有模型
+   ├── base.py                    # 已有的 ScannerSummary, ScannerOutput(从 common/models.py 移动)
+   ├── blocking_operations.py     # BlockingOperationsScanOutput, BlockingOperationsSummary, etc.
+   ├── concurrency.py             # ConcurrencyPatternOutput, ConcurrencyPattern, etc.
+   ├── complexity.py              # ComplexityOutput, ComplexityResult, etc.
    ├── django_models.py     # DjangoModelOutput, DjangoModel, DjangoField, etc.
    ├── django_settings.py   # DjangoSettingsOutput, SettingsDefinition, SettingsUsage, etc.
    ├── django_urls.py       # DjangoUrlOutput, UrlPattern, etc.

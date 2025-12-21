@@ -29,7 +29,7 @@
 
 #### Task 2.1: Blocking Operations Models
 
-- [ ] 创建 `upcast/models/blocking_ops.py`
+- [ ] 创建 `upcast/models/blocking_operations.py`
 - [ ] 定义 `BlockingOperation(BaseModel)`
 - [ ] 定义 `BlockingOperationsSummary(ScannerSummary)`
 - [ ] 定义 `BlockingOperationsOutput(ScannerOutput[...])`
@@ -314,7 +314,7 @@
 - [ ] 所有字段都有类型注解和 `Field(description=...)`
 - [ ] `ruff check` 和 `mypy` 无错误
 - [ ] `from upcast.models import *` 成功
-- [ ] `from upcast.common.models import ScannerOutput` 仍然有效(向后兼容)
+- [ ] `upcast/common/models.py` 已删除,相关导入已更新
 - [ ] 所有现有测试通过 (701/701)
 - [ ] signals scanner 测试通过(验证模型移动后功能正常)
 

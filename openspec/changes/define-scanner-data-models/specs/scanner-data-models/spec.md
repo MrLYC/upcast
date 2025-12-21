@@ -95,14 +95,14 @@ assert isinstance(data, dict)
   - 额外字段: `by_category: dict[str, int]`
 - `BlockingOperationsOutput(ScannerOutput[dict[str, list[BlockingOperation]]])`: 完整输出
   - `results` 使用 `alias="operations"` 匹配现有输出
-- 位置: `upcast/models/blocking_ops.py`
+- 位置: `upcast/models/blocking_operations.py`
 
 **Priority**: HIGH
 
 **Validation**:
 
 ```python
-from upcast.models.blocking_ops import BlockingOperationsOutput
+from upcast.models.blocking_operations import BlockingOperationsOutput
 
 output = BlockingOperationsOutput(...)
 assert "operations" in output.to_dict()  # alias works
@@ -537,10 +537,10 @@ output.to_dict()  # {"operations": [...]}  # 输出使用 alias
 
 ```
 upcast/models/
-├── __init__.py           # 导出所有模型,150+ lines
-├── base.py               # 基础类,80 lines
-├── blocking_ops.py       # 50 lines
-├── concurrency.py        # 50 lines
+├── __init__.py                # 导出所有模型,150+ lines
+├── base.py                    # 基础类,80 lines
+├── blocking_operations.py     # 50 lines
+├── concurrency.py             # 50 lines
 ├── complexity.py         # 45 lines
 ├── django_models.py      # 90 lines
 ├── django_settings.py    # 150 lines (最复杂)
@@ -570,7 +570,7 @@ Total: ~1185 lines
 在 scanner 迁移时为每个模型添加单元测试:
 
 ```python
-# tests/test_models/test_blocking_ops.py
+# tests/test_models/test_blocking_operations.py
 def test_blocking_operations_output_creation():
     """Test creating BlockingOperationsOutput."""
     output = BlockingOperationsOutput(
@@ -596,7 +596,7 @@ def test_blocking_operations_output_to_dict():
 验证模型与实际 scanner 输出匹配:
 
 ```python
-def test_blocking_ops_model_matches_scanner_output():
+def test_blocking_operations_model_matches_scanner_output():
     """Verify model structure matches scanner output."""
     # Run scanner
     from upcast.blocking_operation_scanner.export import format_operations_output
@@ -616,7 +616,7 @@ def test_blocking_ops_model_matches_scanner_output():
 - [ ] All models inherit from `ScannerSummary` or `ScannerOutput`
 - [ ] All fields have type annotations and descriptions
 - [ ] `from upcast.models import *` succeeds
-- [ ] `from upcast.common.models import ScannerOutput` still works
+- [ ] `upcast/common/models.py` deleted and imports updated
 - [ ] `ruff check upcast/models/` passes
 - [ ] `mypy upcast/models/` passes
 - [ ] All existing tests pass (701/701)

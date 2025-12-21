@@ -13,7 +13,7 @@ upcast/
 ├── models/                          # 新建:集中的数据模型目录
 │   ├── __init__.py                 # 导出所有模型
 │   ├── base.py                     # 基础模型(从 common/models.py 移动)
-│   ├── blocking_ops.py             # 阻塞操作模型
+│   ├── blocking_operations.py      # 阻塞操作模型
 │   ├── concurrency.py              # 并发模式模型
 │   ├── complexity.py               # 复杂度模型
 │   ├── django_models.py            # Django 模型扫描模型
@@ -26,7 +26,8 @@ upcast/
 │   ├── signals.py                  # 信号模型(从 scanners/signals.py 提取)
 │   └── unit_tests.py               # 单元测试模型
 ├── common/
-│   └── models.py                   # 保留(向后兼容),但从 base.py 重新导出
+│   ├── export.py                   # 更新导入路径
+│   └── scanner_base.py             # 更新导入路径
 └── scanners/
     └── signals.py                  # 保留,但从 models/signals.py 导入模型
 ```
@@ -100,7 +101,7 @@ class ScannerOutput(BaseModel, Generic[T]):
 
 ### 2. Scanner-Specific Models
 
-#### 2.1 Blocking Operations (`upcast/models/blocking_ops.py`)
+#### 2.1 Blocking Operations (`upcast/models/blocking_operations.py`)
 
 基于 `upcast/blocking_operation_scanner/export.py` 的输出结构:
 
@@ -628,7 +629,7 @@ Usage:
 from upcast.models.base import ScannerSummary, ScannerOutput
 
 # Blocking operations
-from upcast.models.blocking_ops import (
+from upcast.models.blocking_operations import (
     BlockingOperation,
     BlockingOperationsSummary,
     BlockingOperationsOutput,
@@ -674,11 +675,11 @@ __all__ = [
 - 每个类和字段都应有清晰的 `description`
 - 对于复杂字段,在注释中说明数据结构
 
-### 4. 向后兼容
+### 4. 数据转换
 
 - 所有 Output 模型提供 `to_dict()` 方法
 - 使用 `model_dump(mode="python", exclude_none=True)` 生成 dict
-- 在 `upcast/common/models.py` 中从 `upcast/models/base` 重新导出,保持兼容
+- `upcast/common/models.py` 将被删除,所有导入改为 `upcast.models.base`
 
 ### 5. 迁移路径
 
