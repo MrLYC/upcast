@@ -3,16 +3,19 @@ from typing import Optional
 
 import click
 
-from upcast.blocking_operation_scanner.cli import scan_blocking_operations
 from upcast.common.cli import run_scanner_cli
-from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
 from upcast.exception_handler_scanner.cli import scan_exception_handlers
-from upcast.http_request_scanner.cli import scan_http_requests
-from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
-from upcast.scanners import ComplexityScanner, EnvVarScanner
+from upcast.scanners import (
+    BlockingOperationsScanner,
+    ComplexityScanner,
+    ConcurrencyScanner,
+    EnvVarScanner,
+    HttpRequestsScanner,
+    MetricsScanner,
+)
 from upcast.unit_test_scanner.cli import scan_unit_tests
 
 
@@ -121,6 +124,186 @@ def scan_env_vars_cmd(
         handle_scan_error(e, verbose=verbose)
 
 
+@main.command(name="scan-blocking-operations")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_blocking_operations_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for blocking operations (sleep, locks, subprocess, DB queries)."""
+    try:
+        scanner = BlockingOperationsScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-http-requests")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_http_requests_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for HTTP request patterns (requests, httpx, aiohttp)."""
+    try:
+        scanner = HttpRequestsScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-metrics")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_metrics_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for Prometheus metrics (Counter, Gauge, Histogram, Summary)."""
+    try:
+        scanner = MetricsScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-concurrency")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_concurrency_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for concurrency patterns (threading, multiprocessing, asyncio)."""
+    try:
+        scanner = ConcurrencyScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
 @main.command(name="scan-django-models")
 @click.option("-o", "--output", default=None, type=click.Path())
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
@@ -158,58 +341,6 @@ def scan_django_models_cmd(
             click.echo("Analysis complete!", err=True)
 
     except FileNotFoundError as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
-
-            traceback.print_exc()
-        sys.exit(1)
-
-
-@main.command(name="scan-prometheus-metrics")
-@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option("--include", multiple=True, help="Glob patterns for files to include")
-@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
-@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
-@click.argument("path", type=click.Path(exists=True))
-def scan_prometheus_metrics_cmd(
-    output: Optional[str],
-    verbose: bool,
-    path: str,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    no_default_excludes: bool,
-) -> None:
-    """Scan Python files for Prometheus metrics usage.
-
-    PATH can be a Python file or directory containing Prometheus metrics.
-    Results are aggregated by metric name and exported to YAML format.
-    """
-    try:
-        result = scan_prometheus_metrics(
-            path,
-            output=output,
-            verbose=verbose,
-            include_patterns=list(include) if include else None,
-            exclude_patterns=list(exclude) if exclude else None,
-            use_default_excludes=not no_default_excludes,
-        )
-
-        # If no output file specified, print to stdout
-        if not output and result:
-            click.echo(result)
-
-        if verbose:
-            click.echo("Scan complete!", err=True)
-
-    except FileNotFoundError as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
-    except ValueError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
     except Exception as e:
@@ -362,77 +493,6 @@ def scan_django_settings_cmd(  # noqa: C901
     except FileNotFoundError as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
-
-            traceback.print_exc()
-        sys.exit(1)
-
-
-@main.command(name="scan-concurrency-patterns")
-@click.argument("path", type=click.Path(exists=True), required=False, default=".")
-@click.option("-o", "--output", type=click.Path(), help="Output YAML file path")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option(
-    "--include",
-    multiple=True,
-    help="File patterns to include (can be specified multiple times)",
-)
-@click.option(
-    "--exclude",
-    multiple=True,
-    help="File patterns to exclude (can be specified multiple times)",
-)
-def scan_concurrency_patterns_cmd(
-    path: str,
-    output: Optional[str],
-    verbose: bool,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-) -> None:
-    """Scan Python code for concurrency patterns.
-
-    Detects asyncio, threading, and multiprocessing patterns in Python files.
-    Results are grouped by concurrency type and exported to YAML format.
-
-    PATH: Directory or file to scan (defaults to current directory)
-
-    Examples:
-
-        \b
-        # Scan current directory
-        upcast scan-concurrency-patterns
-
-        \b
-        # Scan specific directory with verbose output
-        upcast scan-concurrency-patterns ./src -v
-
-        \b
-        # Save results to file
-        upcast scan-concurrency-patterns ./src -o concurrency.yaml
-
-        \b
-        # Include only specific files
-        upcast scan-concurrency-patterns ./src --include "**/*_async.py"
-
-        \b
-        # Exclude test files
-        upcast scan-concurrency-patterns ./src --exclude "**/test_*.py"
-    """
-    try:
-        # Call scan_concurrency_patterns directly using its context
-        ctx = click.Context(scan_concurrency_patterns)
-        ctx.params = {
-            "path": path,
-            "output": output,
-            "verbose": verbose,
-            "include": include,
-            "exclude": exclude,
-        }
-        scan_concurrency_patterns.invoke(ctx)
-
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         if verbose:
@@ -713,188 +773,6 @@ def scan_unit_tests_cmd(
 
         if verbose:
             click.echo("Scan complete!", err=True)
-
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
-
-            traceback.print_exc()
-        sys.exit(1)
-
-
-@main.command(name="scan-blocking-operations")
-@click.argument("path", type=click.Path(exists=True), required=False, nargs=-1)
-@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option(
-    "--include",
-    multiple=True,
-    help="File patterns to include (can be specified multiple times)",
-)
-@click.option(
-    "--exclude",
-    multiple=True,
-    help="File patterns to exclude (can be specified multiple times)",
-)
-@click.option(
-    "--no-default-excludes",
-    is_flag=True,
-    help="Disable default exclusions (venv, migrations, etc.)",
-)
-@click.option(
-    "--format",
-    "output_format",
-    type=click.Choice(["yaml", "json"]),
-    default="yaml",
-    help="Output format (yaml or json)",
-)
-def scan_blocking_operations_cmd(
-    path: tuple[str, ...],
-    output: Optional[str],
-    verbose: bool,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    no_default_excludes: bool,
-    output_format: str,
-) -> None:
-    """Scan Python code for blocking operations.
-
-    Detects blocking operations that may cause performance issues:
-    - time.sleep() calls
-    - Django ORM select_for_update()
-    - threading.Lock().acquire()
-    - subprocess.run(), Popen.wait(), Popen.communicate()
-
-    PATH: One or more directories or files to scan (defaults to current directory)
-
-    Examples:
-
-        \b
-        # Scan current directory
-        upcast scan-blocking-operations
-
-        \b
-        # Scan specific directory with verbose output
-        upcast scan-blocking-operations ./src -v
-
-        \b
-        # Save results to file
-        upcast scan-blocking-operations ./src -o blocking.yaml
-
-        \b
-        # Output as JSON
-        upcast scan-blocking-operations ./src --format json
-
-        \b
-        # Include only specific files
-        upcast scan-blocking-operations ./src --include "**/*.py"
-
-        \b
-        # Exclude test files
-        upcast scan-blocking-operations ./src --exclude "**/test_*.py"
-    """
-    try:
-        # Default to current directory if no path provided
-        paths_to_scan = path if path else (".",)
-
-        # Call scan_blocking_operations
-        ctx = click.Context(scan_blocking_operations)
-        ctx.params = {
-            "path": paths_to_scan,
-            "output": output,
-            "output_format": output_format,
-            "include": include,
-            "exclude": exclude,
-            "no_default_excludes": no_default_excludes,
-            "verbose": verbose,
-        }
-        scan_blocking_operations.invoke(ctx)
-
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
-
-            traceback.print_exc()
-        sys.exit(1)
-
-
-@main.command(name="scan-http-requests")
-@click.argument("path", type=click.Path(exists=True), required=False, default=".")
-@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-@click.option(
-    "--include",
-    multiple=True,
-    help="File patterns to include (can be specified multiple times)",
-)
-@click.option(
-    "--exclude",
-    multiple=True,
-    help="File patterns to exclude (can be specified multiple times)",
-)
-@click.option(
-    "--format",
-    "output_format",
-    type=click.Choice(["yaml", "json"]),
-    default="yaml",
-    help="Output format (yaml or json)",
-)
-def scan_http_requests_cmd(
-    path: str,
-    output: Optional[str],
-    verbose: bool,
-    include: tuple[str, ...],
-    exclude: tuple[str, ...],
-    output_format: str,
-) -> None:
-    """Scan Python code for HTTP/API requests.
-
-    Detects requests made via requests, httpx, aiohttp, urllib3, urllib.request,
-    and http.client libraries. Results are grouped by URL with detailed usage
-    information and exported to YAML or JSON format.
-
-    PATH: Directory or file to scan (defaults to current directory)
-
-    Examples:
-
-        \b
-        # Scan current directory
-        upcast scan-http-requests
-
-        \b
-        # Scan specific directory with verbose output
-        upcast scan-http-requests ./src -v
-
-        \b
-        # Save results to file
-        upcast scan-http-requests ./src -o requests.yaml
-
-        \b
-        # Output as JSON
-        upcast scan-http-requests ./src --format json
-
-        \b
-        # Include only API client files
-        upcast scan-http-requests ./src --include "*/api/*.py"
-
-        \b
-        # Exclude test files
-        upcast scan-http-requests ./src --exclude "**/test_*.py"
-    """
-    try:
-        # Call scan_http_requests directly using its context
-        ctx = click.Context(scan_http_requests)
-        ctx.params = {
-            "path": path,
-            "output": output,
-            "verbose": verbose,
-            "include": include,
-            "exclude": exclude,
-            "output_format": output_format,
-        }
-        scan_http_requests.invoke(ctx)
 
     except Exception as e:
         click.echo(f"Error: {e}", err=True)

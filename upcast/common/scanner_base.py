@@ -66,9 +66,8 @@ class BaseScanner(ABC, Generic[T]):
         """
         ...
 
-    @abstractmethod
     def scan_file(self, file_path: Path) -> Any:
-        """Scan a single file.
+        """Scan a single file (optional, override if needed).
 
         Returns scanner-specific intermediate results. The exact return type
         varies by scanner implementation.
@@ -79,7 +78,7 @@ class BaseScanner(ABC, Generic[T]):
         Returns:
             Scanner-specific intermediate results
         """
-        ...
+        return None
 
     def get_files_to_scan(self, path: Path) -> list[Path]:
         """Get list of files to scan based on include/exclude patterns.
