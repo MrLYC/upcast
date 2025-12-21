@@ -4,16 +4,15 @@ from typing import Optional
 import click
 
 from upcast.blocking_operation_scanner.cli import scan_blocking_operations
+from upcast.common.cli import run_scanner_cli
 from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
-from upcast.cyclomatic_complexity_scanner.cli import scan_complexity
 from upcast.django_model_scanner import scan_django_models
 from upcast.django_settings_scanner import scan_django_settings
 from upcast.django_url_scanner import scan_django_urls
-from upcast.env_var_scanner.cli import scan_directory, scan_files
-from upcast.env_var_scanner.export import export_to_json, export_to_yaml
 from upcast.exception_handler_scanner.cli import scan_exception_handlers
 from upcast.http_request_scanner.cli import scan_http_requests
 from upcast.prometheus_metrics_scanner import scan_prometheus_metrics
+from upcast.scanners import ComplexityScanner, EnvVarScanner
 from upcast.unit_test_scanner.cli import scan_unit_tests
 
 
@@ -22,8 +21,55 @@ def main():
     pass
 
 
-# Register scan-complexity command
-main.add_command(scan_complexity)
+@main.command(name="scan-complexity")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--threshold", type=int, default=11, help="Minimum complexity to report (default: 11)")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_complexity_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    threshold: int,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Python files for high cyclomatic complexity.
+
+    Analyzes functions to identify code that may need refactoring.
+    """
+    try:
+        scanner = ComplexityScanner(
+            threshold=threshold,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
 
 
 @main.command(name="scan-env-vars")
@@ -38,88 +84,41 @@ main.add_command(scan_complexity)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
-@click.argument("path", type=click.Path(exists=True), nargs=-1, required=True)
-def scan_env_vars_cmd(  # noqa: C901
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_env_vars_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
-    path: tuple[str, ...],
+    path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
 ) -> None:
     """Scan Python files for environment variable usage.
 
-    PATH can be one or more Python files or directories.
+    PATH can be a Python file or directory.
     Results are aggregated by environment variable name.
     """
-    from pathlib import Path as PathLib
-
-    def _export_results(results: dict, output_format: str) -> str:
-        """Export results to the specified format."""
-        return export_to_json(results) if output_format.lower() == "json" else export_to_yaml(results)
-
-    def _write_output(result_str: str, output_path: Optional[str], verbose: bool) -> None:
-        """Write results to file or stdout."""
-        if output_path:
-            with open(output_path, "w") as f:
-                f.write(result_str)
-            if verbose:
-                click.echo(f"Results written to {output_path}", err=True)
-        else:
-            click.echo(result_str)
-
     try:
-        # Prepare filtering parameters
-        include_patterns = list(include) if include else None
-        exclude_patterns = list(exclude) if exclude else None
-        use_default_excludes = not no_default_excludes
-
-        # Separate files and directories
-        all_files = []
-        for p in path:
-            p_obj = PathLib(p)
-            if p_obj.is_file():
-                all_files.append(str(p))
-            elif p_obj.is_dir():
-                # Scan directory for Python files with filtering
-                checker = scan_directory(
-                    str(p),
-                    include_patterns=include_patterns,
-                    exclude_patterns=exclude_patterns,
-                    use_default_excludes=use_default_excludes,
-                )
-                results = checker.get_results()
-                if verbose:
-                    click.echo(f"Found {len(results)} environment variables", err=True)
-
-                result_str = _export_results(results, format)
-                _write_output(result_str, output, verbose)
-                return
-
-        # Scan specific files
-        if all_files:
-            checker = scan_files(all_files)
-            results = checker.get_results()
-            if verbose:
-                click.echo(f"Found {len(results)} environment variables", err=True)
-
-            result_str = _export_results(results, format)
-            _write_output(result_str, output, verbose)
-
-        if verbose:
-            click.echo("Scan complete!", err=True)
-
-    except FileNotFoundError as e:
-        click.echo(f"Error: {e}", err=True)
-        sys.exit(1)
+        scanner = EnvVarScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
     except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
+        from upcast.common.cli import handle_scan_error
 
-            traceback.print_exc()
-        sys.exit(1)
+        handle_scan_error(e, verbose=verbose)
 
 
 @main.command(name="scan-django-models")
