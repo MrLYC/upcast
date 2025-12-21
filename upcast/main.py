@@ -11,6 +11,8 @@ from upcast.scanners import (
     BlockingOperationsScanner,
     ComplexityScanner,
     ConcurrencyScanner,
+    DjangoModelScanner,
+    DjangoSettingsScanner,
     DjangoUrlScanner,
     EnvVarScanner,
     ExceptionHandlerScanner,
@@ -492,6 +494,70 @@ def scan_django_urls_new_cmd(
         handle_scan_error(e, verbose=verbose)
 
 
+@main.command(name="scan-django-models-new")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (default: yaml)",
+)
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
+@click.option("--include", multiple=True, help="File patterns to include (e.g., '**/models.py')")
+@click.option("--exclude", multiple=True, help="File patterns to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".")
+def scan_django_models_new_cmd(
+    path: str,
+    output: str | None,
+    output_format: str,
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Django model files for model definitions.
+
+    Extracts model classes, fields, relationships, and Meta options.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan for Django models
+        upcast scan-django-models-new ./myproject
+
+        \b
+        # Scan specific models.py file
+        upcast scan-django-models-new myapp/models.py
+
+        \b
+        # Save results to JSON file
+        upcast scan-django-models-new ./myproject --output models.json --format json
+    """
+
+    try:
+        scanner = DjangoModelScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=output_format,
+            verbose=verbose,
+        )
+
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
 @main.command(name="scan-django-models")
 @click.option("-o", "--output", default=None, type=click.Path())
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
@@ -886,6 +952,81 @@ def scan_unit_tests_cmd(
             no_default_excludes=no_default_excludes,
             verbose=verbose,
         )
+
+        if verbose:
+            click.echo("Scan complete!", err=True)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-django-settings-new")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option(
+    "--mode",
+    type=click.Choice(["usage", "definitions"], case_sensitive=False),
+    default="usage",
+    help="Scan mode: usage for settings usages, definitions for settings definitions",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_django_settings_new_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    mode: str,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Django code for settings definitions or usages (new implementation).
+
+    This command can scan for:
+    - Settings usages: where settings are accessed (settings.KEY, getattr, hasattr)
+    - Settings definitions: where settings are defined in settings modules
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan for settings usages
+        upcast scan-django-settings-new . --mode usage
+
+        \b
+        # Scan for settings definitions
+        upcast scan-django-settings-new . --mode definitions
+
+        \b
+        # Save results to file
+        upcast scan-django-settings-new . --mode usage -o settings_usage.yaml
+
+        \b
+        # Output as JSON
+        upcast scan-django-settings-new . --format json
+    """
+    try:
+        scanner = DjangoSettingsScanner(
+            scan_mode=mode,
+            verbose=verbose,
+        )
+        output_format_str = format
+        run_scanner_cli(scanner, path, output, output_format_str, include, exclude, no_default_excludes, verbose)
 
         if verbose:
             click.echo("Scan complete!", err=True)
