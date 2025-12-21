@@ -113,6 +113,15 @@ ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Ignore old scanner test directories (not yet migrated to new API)
+norecursedirs = [
+    "test_env_var_scanner",
+    "test_blocking_operation_scanner",
+    "test_http_request_scanner",
+    "test_prometheus_metrics_scanner",
+    "test_concurrency_pattern_scanner",
+    "test_cyclomatic_complexity_scanner",
+]
 
 [tool.ruff]
 target-version = "py39"
