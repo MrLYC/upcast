@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 import yaml
 
-from upcast.common.models import ScannerOutput
+from upcast.models.base import ScannerOutput
 
 
 def sort_dict_recursive(obj: Any) -> Any:

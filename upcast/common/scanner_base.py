@@ -8,8 +8,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Generic, TypeVar
 
-from upcast.common.models import ScannerOutput
 from upcast.common.patterns import match_patterns
+from upcast.models.base import ScannerOutput
 
 T = TypeVar("T", bound=ScannerOutput)
 

@@ -734,6 +734,59 @@ upcast scan-complexity . --format json
 
 ## Architecture
 
+### Data Models
+
+Starting from version 0.3.0, Upcast provides standardized Pydantic models for all scanner outputs in the `upcast.models` package. This enables type-safe data handling for both scanners and future analyzers.
+
+**Base Models:**
+
+```python
+from upcast.models import ScannerSummary, ScannerOutput
+
+# All scanners extend these base classes
+class MySummary(ScannerSummary):
+    # Scanner-specific summary fields
+    pass
+
+class MyOutput(ScannerOutput[ResultType]):
+    summary: MySummary
+    results: ResultType
+```
+
+**Available Models:**
+
+- **base**: `ScannerSummary`, `ScannerOutput` - Base classes for all scanners
+- **blocking_operations**: `BlockingOperation`, `BlockingOperationsSummary`, `BlockingOperationsOutput`
+- **concurrency**: `ConcurrencyUsage`, `ConcurrencyPatternSummary`, `ConcurrencyPatternOutput`
+- **complexity**: `ComplexityResult`, `ComplexitySummary`, `ComplexityOutput`
+- **django_models**: `DjangoField`, `DjangoModel`, `DjangoModelSummary`, `DjangoModelOutput`
+- **django_settings**: `SettingsUsage`, `SettingDefinition`, `DjangoSettingsSummary`, `DjangoSettings*Output`
+- **django_urls**: `UrlPattern`, `DjangoUrlSummary`, `DjangoUrlOutput`
+- **env_vars**: `EnvVarInfo`, `EnvVarSummary`, `EnvVarOutput`
+- **exceptions**: `ExceptionHandler`, `ExceptionHandlerSummary`, `ExceptionHandlerOutput`
+- **http_requests**: `HttpRequestInfo`, `HttpRequestSummary`, `HttpRequestOutput`
+- **metrics**: `MetricInfo`, `PrometheusMetricSummary`, `PrometheusMetricOutput`
+- **signals**: `SignalInfo`, `SignalSummary`, `SignalOutput`
+- **unit_tests**: `UnitTestInfo`, `UnitTestSummary`, `UnitTestOutput`
+
+**Usage Example:**
+
+```python
+from upcast.models import EnvVarOutput, EnvVarInfo
+from upcast.env_var_scanner import EnvironmentVariableScanner
+
+# Type-safe scanner output
+scanner = EnvironmentVariableScanner()
+output: EnvVarOutput = scanner.scan(project_path)
+
+# Access with full type hints
+for var_name, var_info in output.results.items():
+    var_info: EnvVarInfo
+    print(f"{var_name}: required={var_info.required}")
+    for location in var_info.locations:
+        print(f"  {location.file}:{location.line}")
+```
+
 ### Common Utilities
 
 Upcast uses a shared utilities package (`upcast.common`) for consistency:
