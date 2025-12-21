@@ -1,6 +1,6 @@
 # cli-interface Specification Delta
 
-## MODIFIED Requirements
+## NEW Requirements
 
 ### Requirement: Scanner Module Import Paths Updated
 

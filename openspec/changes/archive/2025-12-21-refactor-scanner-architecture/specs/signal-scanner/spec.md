@@ -1,6 +1,6 @@
 # signal-scanner Specification Delta
 
-## MODIFIED Requirements
+## NEW Requirements
 
 ### Requirement: Signal Scanner Module Location Updated
 

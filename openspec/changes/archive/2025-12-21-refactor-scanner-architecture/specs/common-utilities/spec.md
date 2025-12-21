@@ -111,7 +111,7 @@ The system SHALL provide reusable CLI utilities with standard arguments for all 
 
 ---
 
-## MODIFIED Requirements
+## NEW Requirements
 
 ### Requirement: Export Functions Consolidated to Common Module
 

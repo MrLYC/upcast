@@ -57,3 +57,58 @@ signals:
 **Rationale**: Nested dict structure differs from other scanners and makes iteration more complex. Flat list is easier to process programmatically and more consistent with project patterns.
 
 **Breaking Change**: Existing tools parsing signal-scanner output will need updates. The structure changes significantly from nested dicts to a flat list.
+
+### Requirement: Strongly Typed Signal Models
+
+The signal scanner SHALL use Pydantic models for all output components with proper type validation.
+
+#### Scenario: SignalInfo model validates signal data
+
+- **GIVEN** signal information from code analysis
+- **WHEN** creating SignalInfo instance
+- **THEN** the system SHALL validate required fields (name, type, file, line)
+- **AND** SHALL enforce type field values (built-in, custom)
+- **AND** SHALL reject invalid data
+
+#### Scenario: SignalReceiver model validates receiver data
+
+- **GIVEN** signal receiver information
+- **WHEN** creating SignalReceiver instance
+- **THEN** the system SHALL validate function, file, line fields
+- **AND** SHALL ensure line is positive integer
+
+#### Scenario: SignalSummary includes scanner-specific metrics
+
+- **GIVEN** signal scanning complete
+- **WHEN** creating SignalSummary
+- **THEN** summary SHALL include built_in_signals count
+- **AND** SHALL include custom_signals count
+- **AND** SHALL include total_receivers count
+- **AND** SHALL include base fields (total_count, files_scanned)
+
+---
+
+### Requirement: Signal Output Serialization Support
+
+The signal scanner output SHALL be serializable to JSON and YAML formats with round-trip compatibility.
+
+#### Scenario: Serialize to JSON
+
+- **GIVEN** a SignalOutput instance
+- **WHEN** calling output.to_json()
+- **THEN** the system SHALL produce valid JSON string
+- **AND** JSON SHALL contain summary, results, metadata
+
+#### Scenario: Deserialize from JSON
+
+- **GIVEN** JSON string from serialized SignalOutput
+- **WHEN** calling SignalOutput.model_validate_json(json_str)
+- **THEN** the system SHALL reconstruct SignalOutput instance
+- **AND** reconstructed output SHALL equal original
+
+#### Scenario: Serialize to dict for YAML
+
+- **GIVEN** a SignalOutput instance
+- **WHEN** calling output.to_dict()
+- **THEN** the system SHALL produce dict with proper structure
+- **AND** dict SHALL be YAML-serializable
