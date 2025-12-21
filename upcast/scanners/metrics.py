@@ -75,6 +75,10 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             help=help_text,
             labels=labels,
             usages=[usage],
+            namespace=None,
+            subsystem=None,
+            unit=None,
+            buckets=None,
         )
 
     def _get_metric_type(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
@@ -130,4 +134,5 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             files_scanned=len({u.location.split(":")[0] for m in metrics.values() for u in m.usages}),
             total_metrics=len(metrics),
             by_type=by_type,
+            scan_duration_ms=0,  # TODO: Add timing
         )

@@ -84,8 +84,8 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
 
             return ComplexityResult(
                 name=node.name,
-                line=node.lineno,
-                end_line=node.end_lineno or node.lineno,
+                line=node.lineno or 0,
+                end_line=node.end_lineno or node.lineno or 0,
                 complexity=complexity,
                 severity=severity,
                 message=message,
@@ -108,8 +108,9 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             complexity += 1
 
             # Count boolean operators in conditions
-            if hasattr(child, "test") and child.test:
-                complexity += self._count_bool_ops(child.test)
+            test_node = getattr(child, "test", None)
+            if test_node:
+                complexity += self._count_bool_ops(test_node)
 
         # Count comprehension if clauses
         for comp in node.nodes_of_class(nodes.Comprehension):
@@ -151,4 +152,5 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             files_scanned=len(modules),
             high_complexity_count=len(all_results),
             by_severity=by_severity,
+            scan_duration_ms=0,  # TODO: Add timing
         )

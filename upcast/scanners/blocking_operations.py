@@ -168,4 +168,5 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             total_count=total,
             files_scanned=files,
             by_category=by_category,
+            scan_duration_ms=0,  # TODO: Add timing
         )
