@@ -3,6 +3,7 @@
 from upcast.scanners.blocking_operations import BlockingOperationsScanner
 from upcast.scanners.complexity import ComplexityScanner
 from upcast.scanners.concurrency import ConcurrencyScanner
+from upcast.scanners.django_urls import DjangoUrlScanner
 from upcast.scanners.env_vars import EnvVarScanner
 from upcast.scanners.exceptions import ExceptionHandlerScanner
 from upcast.scanners.http_requests import HttpRequestsScanner
@@ -14,6 +15,7 @@ __all__ = [
     "BlockingOperationsScanner",
     "ComplexityScanner",
     "ConcurrencyScanner",
+    "DjangoUrlScanner",
     "EnvVarScanner",
     "ExceptionHandlerScanner",
     "HttpRequestsScanner",

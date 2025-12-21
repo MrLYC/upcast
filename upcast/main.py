@@ -11,6 +11,7 @@ from upcast.scanners import (
     BlockingOperationsScanner,
     ComplexityScanner,
     ConcurrencyScanner,
+    DjangoUrlScanner,
     EnvVarScanner,
     ExceptionHandlerScanner,
     HttpRequestsScanner,
@@ -408,6 +409,70 @@ def scan_unit_tests_new_cmd(
     try:
         scanner = UnitTestScanner(
             root_modules=list(root_modules) if root_modules else None,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=output_format,
+            verbose=verbose,
+        )
+
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-django-urls-new")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (default: yaml)",
+)
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
+@click.option("--include", multiple=True, help="File patterns to include (e.g., '**/urls.py')")
+@click.option("--exclude", multiple=True, help="File patterns to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".")
+def scan_django_urls_new_cmd(
+    path: str,
+    output: str | None,
+    output_format: str,
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Django URLconf files for URL patterns.
+
+    Detects path(), re_path(), include(), and DRF router registrations.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan for Django URLs
+        upcast scan-django-urls-new ./myproject
+
+        \b
+        # Scan specific urls.py file
+        upcast scan-django-urls-new myapp/urls.py
+
+        \b
+        # Save results to JSON file
+        upcast scan-django-urls-new ./myproject --output urls.json --format json
+    """
+
+    try:
+        scanner = DjangoUrlScanner(
             include_patterns=list(include) if include else None,
             exclude_patterns=list(exclude) if exclude else None,
             verbose=verbose,
