@@ -7683,7 +7683,7 @@ results:
         type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 2295
+  scan_duration_ms: 2066
   total_count: 167
   total_fields: 640
   total_models: 167

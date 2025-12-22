@@ -165,6 +165,6 @@ summary:
   files_scanned: 2368
   optional_count: 3
   required_count: 11
-  scan_duration_ms: 11501
+  scan_duration_ms: 12129
   total_count: 14
   total_env_vars: 14

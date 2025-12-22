@@ -1,0 +1,210 @@
+metadata: {}
+results:
+  asyncio: {}
+  celery: {}
+  multiprocessing:
+    process_creation:
+      - column: 16
+        file: apiserver/paasng/paas_wl/bk_app/cnative/specs/models/app_resource.py
+        function: create_app_resource
+        line: 221
+        pattern: process_creation
+        statement:
+          BkAppProcess(name=DEFAULT_PROCESS_NAME, command=command or [], args=args
+          or [], targetPort=target_port or None)
+      - class_name: Process
+        column: 18
+        details:
+          name: should-set-by-mapper
+        file: apiserver/paasng/paas_wl/bk_app/processes/kres_entities.py
+        function: from_release
+        line: 124
+        pattern: process_creation
+        statement:
+          "Process(app=release.app, name='should-set-by-mapper', type=type_,
+          version=release.version, replicas=get_structure(release.app).get(type_, 0),
+          runtime=Runtime(envs=envs, image=build.get_image(), command=build.get_entrypoint_for_proc(type_),
+          args=build.get_command_for_proc(type_, procfile[type_]), proc_command=procfile[type_],
+          image_pull_policy=config.runtime.get_image_pull_policy(), image_pull_secrets=[{'name':
+          make_image_pull_secret_name(wl_app=release.app)}]), schedule=Schedule(node_selector=get_full_node_selector(release.app,
+          config), tolerations=get_full_tolerations(release.app, config), cluster_name=get_cluster_by_app(release.app).name),
+          resources=Resources(**config.resource_requirements.get(type_, {})))"
+      - column: 12
+        file: apiserver/paasng/paas_wl/bk_app/processes/processes.py
+        function: condense_processes
+        line: 56
+        pattern: process_creation
+        statement:
+          PlainProcess(name=p.name, version=p.version, replicas=p.replicas,
+          type=p.type, command=p.runtime.proc_command, status=p.status, instances=[PlainInstance(name=inst.name,
+          version=inst.version, process_type=inst.process_type, state=inst.state, ready=inst.ready,
+          restart_count=inst.restart_count, image=inst.image) for inst in p.instances])
+      - class_name: ProcessesManifestConstructor
+        column: 29
+        file: apiserver/paasng/paasng/platform/bkapp_model/manifest.py
+        function: apply_to
+        line: 185
+        pattern: process_creation
+        statement:
+          Process(name=process_spec.name, command=command, args=args, replicas=process_spec.target_replicas,
+          target_port=process_spec.port, res_quota_plan=self.get_quota_plan(process_spec.plan_name),
+          autoscaling=process_spec.scaling_config, probes=process_spec.probes.render_port()
+          if process_spec.probes else None, services=[svc.render_port() for svc in process_spec.services]
+          if process_spec.services else None)
+      - class_name: ProcessesManifestConstructor
+        column: 29
+        file: apiserver/paasng/paasng/platform/bkapp_model/manifest.py
+        function: apply_to
+        line: 197
+        pattern: process_creation
+        statement: crd.BkAppProcess(**dict_to_camel(process_entity.dict()))
+      - column: 12
+        file: apiserver/paasng/paasng/platform/bkapp_model/views.py
+        line: 197
+        pattern: process_creation
+        statement:
+          Process(name=proc_spec['name'], command=proc_spec['command'], args=proc_spec['args'],
+          target_port=proc_spec.get('port', None), probes=proc_spec.get('probes', None),
+          services=proc_spec.get('services', None))
+      - column: 17
+        file: apiserver/paasng/paasng/platform/declarative/deployment/controller.py
+        line: 133
+        pattern: process_creation
+        statement: Process(name=p.name, proc_command=p.command)
+      - class_name: DeploymentDesc
+        column: 39
+        file: apiserver/paasng/paasng/platform/declarative/deployment/resources.py
+        function: use_procfile_procs_if_conflict
+        line: 120
+        pattern: process_creation
+        statement: Process(name=proc.name, proc_command=proc.command)
+      - column: 12
+        file: apiserver/paasng/paasng/platform/modules/manager.py
+        line: 283
+        pattern: process_creation
+        statement:
+          Process(name=proc_spec['name'], command=proc_spec['command'], args=proc_spec['args'],
+          target_port=proc_spec.get('port', None), probes=proc_spec.get('probes', None),
+          services=proc_spec.get('services', None))
+      - column: 12
+        file: apiserver/paasng/paasng/platform/modules/views.py
+        line: 618
+        pattern: process_creation
+        statement: Process(name=proc_name, proc_command=proc_command)
+      - column: 14
+        details:
+          name: should-set-by-mapper
+        file: apiserver/paasng/tests/paas_wl/bk_app/processes/test_controllers.py
+        function: make_process
+        line: 30
+        pattern: process_creation
+        statement:
+          Process(app=wl_app, name='should-set-by-mapper', version=1, replicas=1,
+          type=process_type, schedule=Schedule(cluster_name='', tolerations=[], node_selector={}),
+          runtime=Runtime(envs={}, image=process_type, command=[], args=[]))
+      - class_name: Test__sync_processes
+        column: 16
+        file: apiserver/paasng/tests/paasng/platform/bkapp_model/entities_syncer/test_processes.py
+        function: test_integrated
+        line: 43
+        pattern: process_creation
+        statement:
+          "Process(name=proc_web.name, replicas=1, command=['./start.sh'],
+          res_quota_plan='4C1G', target_port=30000, probes=ProbeSet(liveness=Probe(http_get=HTTPGetAction(port='${PORT}',
+          path='/healthz'), initial_delay_seconds=30, timeout_seconds=5, period_seconds=5,
+          success_threshold=1, failure_threshold=3), readiness=Probe(tcp_socket=TCPSocketAction(port=30000))),
+          services=[ProcService(name='web', target_port=30000, exposed_type={'name':
+          'bk/http'})])"
+      - class_name: Test__sync_processes
+        column: 16
+        details:
+          name: sleep
+        file: apiserver/paasng/tests/paasng/platform/bkapp_model/entities_syncer/test_processes.py
+        function: test_integrated
+        line: 62
+        pattern: process_creation
+        statement:
+          Process(name='sleep', replicas=1, command=['bash'], res_quota_plan='4C2G',
+          args=['-c', '100'], proc_command='sleep 100', autoscaling=AutoscalingConfig(min_replicas=2,
+          max_replicas=10, policy='default'))
+      - column: 16
+        details:
+          name: worker
+        file: apiserver/paasng/tests/paasng/platform/bkapp_model/test_manifest.py
+        function: blank_resource_with_processes
+        line: 94
+        pattern: process_creation
+        statement: crd.BkAppProcess(name='worker')
+      - column: 16
+        details:
+          name: web
+        file: apiserver/paasng/tests/paasng/platform/bkapp_model/test_manifest.py
+        function: blank_resource_with_processes
+        line: 95
+        pattern: process_creation
+        statement: crd.BkAppProcess(name='web')
+      - column: 11
+        details:
+          name: web
+        file: apiserver/paasng/tests/paasng/platform/engine/processes/conftest.py
+        function: process
+        line: 30
+        pattern: process_creation
+        statement:
+          PlainProcess(name='web', version=1, replicas=1, type='web', command='foo',
+          instances=[instance])
+      - column: 11
+        details:
+          name: web
+        file: apiserver/paasng/tests/paasng/platform/engine/processes/test_utils.py
+        function: process
+        line: 30
+        pattern: process_creation
+        statement:
+          PlainProcess(name='web', version=1, replicas=1, type='web', command='foo',
+          instances=[inst])
+      - class_name: Cluster
+        column: 24
+        details:
+          target: Sentinel
+        file: svc-rabbitmq/tasks/management/commands/worker.py
+        function: __init__
+        line: 115
+        pattern: process_creation
+        statement:
+          Process(target=Sentinel, args=(self.cluster_id, self.stop_event,
+          self.start_event, self.broker, self.timeout))
+  threading:
+    thread_creation:
+      - class_name: ParallelChainedGenerator
+        column: 19
+        details:
+          target: self._consume_gen
+        file: apiserver/paasng/paas_wl/bk_app/processes/watch.py
+        function: start
+        line: 185
+        pattern: thread_creation
+        statement: threading.Thread(target=self._consume_gen, args=(gen, ))
+      - class_name: TestBareGitRepoController
+        column: 12
+        details:
+          target: httpd.serve_forever
+        file: apiserver/paasng/tests/paasng/platform/sourcectl/test_bare_git.py
+        function: test_anonymize_url
+        line: 83
+        pattern: thread_creation
+        statement: threading.Thread(target=httpd.serve_forever)
+    thread_pool_executor:
+      - column: 17
+        file: apiserver/paasng/paasng/platform/smart_app/services/dispatch.py
+        function: dispatch_package_to_modules
+        line: 74
+        pattern: thread_pool_executor
+        statement: ThreadPoolExecutor()
+summary:
+  by_category:
+    multiprocessing: 18
+    threading: 3
+  files_scanned: 18
+  scan_duration_ms: 14151
+  total_count: 21

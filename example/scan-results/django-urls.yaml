@@ -3950,7 +3950,7 @@ results:
         type: re_path
 summary:
   files_scanned: 59
-  scan_duration_ms: 220
+  scan_duration_ms: 234
   total_count: 533
   total_modules: 59
   total_patterns: 533

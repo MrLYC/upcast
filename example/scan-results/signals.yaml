@@ -1,0 +1,807 @@
+metadata:
+  root_path: /Users/liuyicong/github/upcast/example/blueking-paas
+  scanner_name: signal
+results:
+  - category: model_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paas_wl/bk_app/applications/handlers.py
+        handler: on_app_created
+        line: 24
+        sender: WlApp
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paas_wl/infras/resources/generation/handlers.py
+        handler: set_default_version
+        line: 24
+        sender: WlApp
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: application_oauth_handler
+        line: 262
+        sender: OAuth2Client
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: market_config_update_handler
+        line: 305
+        sender: MarketConfig
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/bk_plugins/pluginscenter/handlers.py
+        handler: update_release_status_when_stage_status_change
+        line: 27
+        sender: PluginReleaseStage
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/audit/handlers.py
+        handler: on_app_operation_created
+        line: 57
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/audit/handlers.py
+        handler: on_model_post_save
+        line: 77
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: on_model_post_save
+        line: 110
+        sender: Deployment
+    senders: []
+    signal: post_save
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paas_wl/bk_app/cnative/specs/handlers.py
+        handler: on_custom_domain_updated
+        line: 30
+    senders: []
+    signal: cnative_custom_domain_updated
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paas_wl/bk_app/cnative/specs/handlers.py
+        handler: sync_default_entrances_for_cnative_module_switching
+        line: 36
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paas_wl/workloads/networking/entrance/handlers.py
+        handler: sync_default_entrances_for_module_switching
+        line: 31
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/market/handlers.py
+        handler: update_market_config_source_module
+        line: 24
+    senders: []
+    signal: application_default_module_switch
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/ci/handlers.py
+        handler: start_ci_job
+        line: 39
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: sync_release_record
+        line: 381
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/audit/handlers.py
+        handler: on_deploy_finished
+        line: 102
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/handlers.py
+        handler: create_rules_after_deploy
+        line: 32
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/monitoring/monitor/dashboards/handlers.py
+        handler: import_dashboard_after_deploy
+        line: 30
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/engine/handlers.py
+        handler: update_last_deployed_date
+        line: 76
+    senders: []
+    signal: post_appenv_deploy
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/paas_analysis/handlers.py
+        handler: on_release_created_callback
+        line: 28
+    senders: []
+    signal: on_release_created
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: update_console_members
+        line: 145
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/handlers.py
+        handler: update_notice_group
+        line: 40
+    senders: []
+    signal: application_member_updated
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: validate_app_code_uniquely
+        line: 176
+    senders: []
+    signal: prepare_use_application_code
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: validate_app_name_uniquely
+        line: 186
+    senders: []
+    signal: prepare_use_application_name
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: register_app_core_data
+        line: 201
+    senders: []
+    signal: before_finishing_application_creation
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: on_change_application_name
+        line: 226
+    senders: []
+    signal: prepare_change_application_name
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: offline_handler
+        line: 273
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: on_environment_offlined
+        line: 97
+    senders: []
+    signal: module_environment_offline_success
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: sync_logo
+        line: 407
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: extra_setup_logo
+        line: 124
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: duplicate_logo_to_extra_bucket
+        line: 135
+    senders: []
+    signal: application_logo_updated
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/bk_plugins/bk_plugins/handlers.py
+        handler: on_plugin_app_created
+        line: 34
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: initialize_application_members
+        line: 56
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: turn_on_bk_log_feature_for_app
+        line: 69
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: extra_setup_tasks
+        line: 75
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/applications/handlers.py
+        handler: update_app_counter
+        line: 82
+    senders: []
+    signal: post_create_application
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/bk_plugins/bk_plugins/handlers.py
+        handler: on_pre_deployment
+        line: 49
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/engine/handlers.py
+        handler: attach_all_phases
+        line: 60
+    senders: []
+    signal: pre_appenv_deploy
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/engine/handlers.py
+        handler: start_phase
+        line: 39
+    senders: []
+    signal: pre_phase_start
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/engine/handlers.py
+        handler: end_phase
+        line: 46
+    senders: []
+    signal: post_phase_end
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/engine/processes/handlers.py
+        handler: _on_processes_updated
+        line: 38
+    senders: []
+    signal: processes_updated
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/sourcectl/source_types.py
+        handler: reload_settings
+        line: 389
+    senders: []
+    signal: setting_changed
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
+        handler: on_product_create_or_updated
+        line: 108
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/management/commands/create_3rd_party_apps.py
+        line: 217
+        pattern: send_method
+        sender: product
+      - column: 0
+        file: apiserver/paasng/paasng/platform/declarative/application/controller.py
+        line: 277
+        pattern: send_method
+        sender: self.__class__
+      - column: 0
+        file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/product.py
+        line: 81
+        pattern: send_method
+        sender: self.__class__
+    signal: product_create_or_update_by_operator
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/misc/audit/handlers.py
+        handler: on_cnative_deploy_finished
+        line: 121
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/engine/deploy/bg_wait/wait_bkapp.py
+        line: 252
+        pattern: send_method
+    signal: post_cnative_env_deploy
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        file: apiserver/paasng/tests/api/test_applications.py
+        handler: turn_on_bk_log_feature_for_app
+        line: 65
+      - column: 0
+        file: apiserver/paasng/tests/conftest.py
+        handler: turn_on_bk_log_feature_for_app
+        line: 407
+      - column: 0
+        file: apiserver/paasng/tests/conftest.py
+        handler: turn_on_bk_log_feature_for_app
+        line: 412
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/utils.py
+        line: 144
+        pattern: send_method
+        sender: create_third_app
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 748
+        pattern: send_method
+        sender: self.__class__
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 873
+        pattern: send_method
+        sender: self.__class__
+      - column: 0
+        file: apiserver/paasng/paasng/platform/declarative/application/controller.py
+        line: 113
+        pattern: send_method
+        sender: self.__class__
+      - column: 0
+        file: apiserver/paasng/tests/utils/helpers.py
+        line: 180
+        pattern: send_method
+        sender: create_app
+      - column: 0
+        file: apiserver/paasng/tests/utils/helpers.py
+        line: 549
+        pattern: send_method
+        sender: create_app
+    signal: post_create_application
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 952
+        pattern: send_method
+        sender: application
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 972
+        pattern: send_method
+        sender: application
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 989
+        pattern: send_method
+        sender: application
+      - column: 0
+        file: apiserver/paasng/paasng/platform/applications/views.py
+        line: 1007
+        pattern: send_method
+        sender: application
+    signal: application_member_updated
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/declarative/application/controller.py
+        line: 234
+        pattern: send_method
+        sender: application
+      - column: 0
+        file: apiserver/paasng/paasng/platform/modules/views.py
+        line: 267
+        pattern: send_method
+        sender: application
+    signal: application_default_module_switch
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/declarative/application/controller.py
+        line: 267
+        pattern: send_method
+        sender: application
+    signal: application_logo_updated
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        file: apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py
+        handler: on_change_application_name
+        line: 31
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/declarative/application/fields.py
+        line: 59
+        pattern: send_method
+        sender: self.application
+    signal: prepare_change_application_name
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/evaluation/handlers.py
+        handler: on_environment_offline_succeed
+        line: 26
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/engine/deploy/archive/base.py
+        line: 119
+        pattern: send_method
+        sender: OfflineOperation
+    signal: module_environment_offline_success
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/engine/workflow/flow.py
+        line: 176
+        pattern: send_method
+    signal: post_phase_end
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/engine/workflow/flow.py
+        line: 193
+        pattern: send_method
+      - column: 0
+        file: apiserver/paasng/tests/paasng/platform/engine/test_handlers.py
+        line: 37
+        pattern: send_method
+    signal: post_appenv_deploy
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
+        line: 42
+        pattern: send_method
+        sender: self
+    signal: post_change_app_router
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
+        line: 55
+        pattern: send_method
+        sender: self
+    signal: rollback_change_app_router
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/platform/modules/handlers.py
+        handler: async_setup_module_log_model
+        line: 27
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/modules/manager.py
+        line: 370
+        pattern: send_method
+        sender: initialize_smart_module
+      - column: 0
+        file: apiserver/paasng/paasng/platform/modules/manager.py
+        line: 440
+        pattern: send_method
+        sender: initialize_module
+    signal: on_module_initialized
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/sourcectl/views.py
+        line: 103
+        pattern: send_method
+        sender: self
+    signal: empty_svn_accounts_fetched
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/sourcectl/views.py
+        line: 131
+        pattern: send_method
+        sender: self
+    signal: svn_account_updated
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers: []
+    senders:
+      - column: 0
+        file: apiserver/paasng/paasng/platform/sourcectl/views.py
+        line: 390
+        pattern: send_method
+        sender: self
+    signal: repo_updated
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        file: apiserver/paasng/tests/conftest.py
+        handler: register_app_core_data
+        line: 406
+      - column: 0
+        file: apiserver/paasng/tests/conftest.py
+        handler: register_app_core_data
+        line: 419
+    senders: []
+    signal: before_finishing_application_creation
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        context:
+          class: TestWaitForAllStopped
+          enclosing_function: test_broadcast
+          type: method
+        file: apiserver/paasng/tests/paasng/platform/engine/processes/test_wait.py
+        handler: _on_updated
+        line: 111
+    senders: []
+    signal: processes_updated
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        file: svc-rabbitmq/tasks/scheduler.py
+        handler: close_old_connections
+        line: 48
+    senders:
+      - column: 0
+        file: svc-rabbitmq/tasks/models.py
+        line: 177
+        pattern: send_method
+    signal: sig_task_pre_call
+    status: ""
+    type: django
+  - category: custom_signals
+    receivers:
+      - column: 0
+        file: svc-rabbitmq/tasks/scheduler.py
+        handler: close_old_connections
+        line: 49
+    senders:
+      - column: 0
+        file: svc-rabbitmq/tasks/models.py
+        line: 184
+        pattern: send_method
+    signal: sig_task_post_call
+    status: ""
+    type: django
+  - category: other_signals
+    receivers:
+      - column: 0
+        context:
+          class: null
+          enclosing_function: null
+          type: function
+        file: apiserver/paasng/paasng/celery.py
+        handler: config_loggers
+        line: 32
+    senders: []
+    signal: setup_logging
+    status: ""
+    type: celery
+summary:
+  celery_receivers: 1
+  celery_senders: 0
+  custom_signals_defined: 20
+  django_receivers: 54
+  django_senders: 31
+  files_scanned: 2368
+  scan_duration_ms: 11834
+  total_count: 39
+  unused_custom_signals: 0
