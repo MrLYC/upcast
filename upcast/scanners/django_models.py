@@ -51,6 +51,9 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             verbose=verbose,
         )
 
+        # Root path for module calculation (set during scan)
+        self.root_path: Path | None = None
+
     def scan(self, path: Path) -> DjangoModelOutput:
         """Scan path for Django models.
 
@@ -61,6 +64,10 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             DjangoModelOutput with all detected models
         """
         start_time = time.perf_counter()
+
+        # Store root path for module calculation
+        self.root_path = path if path.is_dir() else path.parent
+
         files = self.get_files_to_scan(path)
 
         # First pass: collect all models
@@ -106,10 +113,14 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             if not is_django_model(class_node):
                 continue
 
-            # Parse the model
-            model_data = parse_model(class_node)
+            # Parse the model with file context for module path calculation
+            model_data = parse_model(
+                class_node,
+                root_path=self.root_path,
+                file_path=file_path,
+            )
             if model_data:
-                qname = class_node.qname()
+                qname = model_data["qname"]  # Use qname from parsed data
                 models[qname] = model_data
 
         if self.verbose and models:

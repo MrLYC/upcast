@@ -5,6 +5,7 @@ and relationships. Extracted from django_model_scanner for reuse across scanners
 """
 
 import inspect
+from pathlib import Path
 from typing import Any, Optional
 
 from astroid import nodes
@@ -32,12 +33,56 @@ def infer_literal_value(node: nodes.NodeNG) -> Any:
     return value
 
 
-def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> dict[str, Any] | None:
+def _calculate_module_path(file_path: Path, root_path: Path) -> str:
+    """Calculate module path from file system structure.
+
+    Args:
+        file_path: Path to the Python file containing the model
+        root_path: Root path of the project being scanned
+
+    Returns:
+        Module path as dot-separated string
+
+    Examples:
+        >>> _calculate_module_path(Path("/project/app/models.py"), Path("/project"))
+        'app.models'
+        >>> _calculate_module_path(Path("/project/app/__init__.py"), Path("/project"))
+        'app'
+        >>> _calculate_module_path(Path("/project/app/models/base.py"), Path("/project"))
+        'app.models.base'
+    """
+    try:
+        # Get relative path from root to file
+        relative = file_path.relative_to(root_path)
+
+        # Handle __init__.py - use parent directory name
+        if relative.name == "__init__.py":
+            if len(relative.parts) == 1:
+                # Root __init__.py - no module name
+                return ""
+            parts = relative.parent.parts
+        else:
+            # Regular file - strip .py extension
+            parts = relative.with_suffix("").parts
+
+        # Join with dots to create module path
+        return ".".join(parts)
+    except (ValueError, AttributeError):
+        # If relative_to fails or paths are invalid, return empty
+        return ""
+
+
+def parse_model(
+    class_node: nodes.ClassDef,
+    root_path: Optional[str | Path] = None,
+    file_path: Optional[Path] = None,
+) -> dict[str, Any] | None:
     """Parse a Django model class and extract all information.
 
     Args:
         class_node: The model class definition node
-        root_path: Unused, kept for backward compatibility
+        root_path: Root path of the project (for module path calculation)
+        file_path: Path to the file containing this model (for module path calculation)
 
     Returns:
         Dictionary containing model information with keys:
@@ -50,13 +95,18 @@ def parse_model(class_node: nodes.ClassDef, root_path: Optional[str] = None) -> 
         - relationships: Dictionary of relationship field definitions
         - meta: Dictionary of Meta class options
     """
-    # Extract module path from qname
-    # qname format: "module.path.ClassName"
-    qname = class_node.qname()
-    qname_parts = qname.split(".")
-
-    # Module is everything except the last part (class name)
-    module_path = ".".join(qname_parts[:-1]) if len(qname_parts) > 1 else ""
+    # Calculate module path
+    if file_path and root_path:
+        # Convert root_path to Path if string
+        root_path_obj = Path(root_path) if isinstance(root_path, str) else root_path
+        module_path = _calculate_module_path(file_path, root_path_obj)
+        # Construct qname from module path and class name
+        qname = f"{module_path}.{class_node.name}" if module_path else class_node.name
+    else:
+        # Fallback to qname-based extraction (backward compatibility)
+        qname = class_node.qname()
+        qname_parts = qname.split(".")
+        module_path = ".".join(qname_parts[:-1]) if len(qname_parts) > 1 else ""
 
     result: dict[str, Any] = {
         "name": class_node.name,

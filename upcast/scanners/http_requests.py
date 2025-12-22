@@ -86,19 +86,120 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         return None, None
 
     def _extract_url(self, node: nodes.Call) -> str | None:
-        """Extract URL from request call."""
+        """Extract URL from request call with pattern normalization.
+
+        Tries to detect dynamic URL construction patterns first, then falls back
+        to literal inference. This ensures we normalize URLs even when astroid
+        can partially infer them.
+
+        Returns:
+            Literal URL string, normalized pattern, or None
+        """
+        # Try extracting from positional args
         if node.args:
-            url_value = safe_infer_value(node.args[0])
+            url_node = node.args[0]
+
+            # Check if it's a dynamic construction (prioritize pattern detection)
+            if self._is_dynamic_url(url_node):
+                pattern = self._normalize_url_pattern(url_node)
+                if pattern:
+                    return pattern
+
+            # Fall back to literal inference for static URLs
+            url_value = safe_infer_value(url_node)
             if isinstance(url_value, str):
                 return url_value
 
+        # Try extracting from keyword args
         for keyword in node.keywords or []:
             if keyword.arg == "url":
-                url_value = safe_infer_value(keyword.value)
+                url_node = keyword.value
+
+                # Check if it's a dynamic construction
+                if self._is_dynamic_url(url_node):
+                    pattern = self._normalize_url_pattern(url_node)
+                    if pattern:
+                        return pattern
+
+                # Fall back to literal inference
+                url_value = safe_infer_value(url_node)
                 if isinstance(url_value, str):
                     return url_value
 
         return None
+
+    def _is_dynamic_url(self, node: nodes.NodeNG) -> bool:
+        """Check if URL construction is dynamic.
+
+        Args:
+            node: AST node representing the URL expression
+
+        Returns:
+            True if the URL is dynamically constructed
+        """
+        # BinOp indicates concatenation or formatting
+        if isinstance(node, (nodes.BinOp, nodes.JoinedStr)):
+            return True
+
+        # .format() calls
+        if isinstance(node, nodes.Call) and isinstance(node.func, nodes.Attribute) and node.func.attrname == "format":
+            return True
+
+        # Variable/attribute references (not Const)
+        return isinstance(node, (nodes.Name, nodes.Attribute))
+
+    def _normalize_url_pattern(self, node: nodes.NodeNG) -> str | None:
+        """Normalize dynamic URL construction into a pattern.
+
+        Recognizes common URL construction patterns and normalizes them:
+        - String concatenation: base + path → "..."
+        - F-strings: f"{base}/api" → "..." or ".../..."
+        - Format strings: "{}/api".format(base) → "..."
+        - Query params: url + "?" + params → "...?..."
+
+        Args:
+            node: AST node representing the URL expression
+
+        Returns:
+            Normalized pattern string or None if unrecognizable
+        """
+        # Handle string concatenation (BinOp with '+')
+        if isinstance(node, nodes.BinOp) and node.op == "+":
+            if self._contains_query_indicator(node):
+                return "...?..."
+            return "..."
+
+        # Handle f-strings (JoinedStr)
+        if isinstance(node, nodes.JoinedStr):
+            node_str = safe_as_string(node)
+            if "?" in node_str or "params" in node_str.lower():
+                return "...?..."
+            if "/" in node_str:
+                return ".../..."
+            return "..."
+
+        # Handle .format() calls
+        if isinstance(node, nodes.Call) and isinstance(node.func, nodes.Attribute) and node.func.attrname == "format":
+            return "..."
+
+        # Handle % formatting
+        if isinstance(node, nodes.BinOp) and node.op == "%":
+            return "..."
+
+        return None
+
+    def _contains_query_indicator(self, node: nodes.NodeNG) -> bool:
+        """Check if node contains query parameter indicators.
+
+        Args:
+            node: AST node to check
+
+        Returns:
+            True if node likely constructs a URL with query params
+        """
+        node_str = safe_as_string(node)
+        query_indicators = ["?", "urlencode", "params=", "query="]
+        return any(indicator in node_str for indicator in query_indicators)
 
     def _extract_timeout(self, node: nodes.Call) -> float | int | None:
         """Extract timeout parameter."""
