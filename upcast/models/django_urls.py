@@ -41,8 +41,8 @@ class UrlPattern(BaseModel):
     viewset_name: str | None = Field(None, description="ViewSet class name")
     basename: str | None = Field(None, description="Router basename")
     router_type: str | None = Field(None, description="Router type")
-    is_partial: bool = Field(default=False, description="Pattern is incomplete")
-    is_conditional: bool = Field(default=False, description="Pattern is conditional")
+    is_partial: bool = Field(..., description="Pattern is incomplete")
+    is_conditional: bool = Field(..., description="Pattern is conditional")
     description: str | None = Field(None, description="Pattern description")
     note: str | None = Field(None, description="Note for dynamic patterns")
 
@@ -65,8 +65,8 @@ class DjangoUrlSummary(ScannerSummary):
         total_patterns: Total number of URL patterns
     """
 
-    total_modules: int = Field(ge=0, description="Number of URLconf modules")
-    total_patterns: int = Field(ge=0, description="Total URL patterns")
+    total_modules: int = Field(..., ge=0, description="Number of URLconf modules")
+    total_patterns: int = Field(..., ge=0, description="Total URL patterns")
 
 
 class DjangoUrlOutput(ScannerOutput[dict[str, UrlModule]]):

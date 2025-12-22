@@ -42,7 +42,7 @@ class MetricInfo(BaseModel):
     namespace: str | None = Field(None, description="Metric namespace")
     subsystem: str | None = Field(None, description="Metric subsystem")
     unit: str | None = Field(None, description="Metric unit")
-    custom_collector: bool = Field(default=False, description="Custom collector")
+    custom_collector: bool = Field(..., description="Custom collector")
     buckets: list[float] | None = Field(None, description="For Histogram")
     usages: list[MetricUsage] = Field(default_factory=list, description="Metric usages")
 
@@ -55,7 +55,7 @@ class PrometheusMetricSummary(ScannerSummary):
         by_type: Count by metric type
     """
 
-    total_metrics: int = Field(ge=0, description="Total metrics")
+    total_metrics: int = Field(..., ge=0, description="Total metrics")
     by_type: dict[str, int] = Field(default_factory=dict, description="Count by type")
 
 

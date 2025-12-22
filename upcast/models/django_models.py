@@ -74,9 +74,9 @@ class DjangoModelSummary(ScannerSummary):
         total_relationships: Total number of relationships
     """
 
-    total_models: int = Field(ge=0, description="Number of models")
-    total_fields: int = Field(ge=0, description="Total fields")
-    total_relationships: int = Field(ge=0, description="Total relationships")
+    total_models: int = Field(..., ge=0, description="Number of models")
+    total_fields: int = Field(..., ge=0, description="Total fields")
+    total_relationships: int = Field(..., ge=0, description="Total relationships")
 
 
 class DjangoModelOutput(ScannerOutput[dict[str, DjangoModel]]):

@@ -88,7 +88,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno or 0,
-                        column=node.col_offset or 0,
+                        column=node.col_offset,
                         category=category,
                         operation=func_name,
                         statement=safe_as_string(node),
@@ -110,7 +110,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno or 0,
-                        column=node.col_offset or 0,
+                        column=node.col_offset,
                         category="synchronization",
                         operation=f"{func_name} (context)",
                         statement=safe_as_string(node),

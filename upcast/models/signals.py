@@ -26,7 +26,7 @@ class SignalUsage(BaseModel):
 
     file: str = Field(..., description="Relative path from project root")
     line: int = Field(..., ge=1, description="Line number (1-based)")
-    column: int = Field(default=0, ge=0, description="Column number (0-based)")
+    column: int = Field(..., ge=0, description="Column number (0-based)")
     handler: str | None = Field(None, description="Handler function name")
     pattern: str | None = Field(None, description="Usage pattern type")
     code: str | None = Field(None, description="Source code snippet")
@@ -68,12 +68,12 @@ class SignalSummary(ScannerSummary):
         unused_custom_signals: Number of custom signals defined but not used
     """
 
-    django_receivers: int = Field(default=0, ge=0, description="Django signal receivers")
-    django_senders: int = Field(default=0, ge=0, description="Django signal sends")
-    celery_receivers: int = Field(default=0, ge=0, description="Celery signal receivers")
-    celery_senders: int = Field(default=0, ge=0, description="Celery signal sends")
-    custom_signals_defined: int = Field(default=0, ge=0, description="Custom signals defined")
-    unused_custom_signals: int = Field(default=0, ge=0, description="Unused custom signals")
+    django_receivers: int = Field(..., ge=0, description="Django signal receivers")
+    django_senders: int = Field(..., ge=0, description="Django signal sends")
+    celery_receivers: int = Field(..., ge=0, description="Celery signal receivers")
+    celery_senders: int = Field(..., ge=0, description="Celery signal sends")
+    custom_signals_defined: int = Field(..., ge=0, description="Custom signals defined")
+    unused_custom_signals: int = Field(..., ge=0, description="Unused custom signals")
 
 
 class SignalOutput(ScannerOutput[list[SignalInfo]]):

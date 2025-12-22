@@ -20,6 +20,8 @@ class TestHttpRequestModels:
             json_body=None,
             data=None,
             timeout=None,
+            session_based=False,
+            is_async=False,
         )
         assert usage.method == "GET"
 

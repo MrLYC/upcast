@@ -31,8 +31,8 @@ class HttpRequestUsage(BaseModel):
     json_body: dict[str, Any] | None = Field(None, description="JSON body")
     data: Any | None = Field(None, description="Form data")
     timeout: float | int | None = Field(None, description="Timeout")
-    session_based: bool = Field(default=False, description="Using session")
-    is_async: bool = Field(default=False, description="Async request")
+    session_based: bool = Field(..., description="Using session")
+    is_async: bool = Field(..., description="Async request")
 
 
 class HttpRequestInfo(BaseModel):
@@ -58,8 +58,8 @@ class HttpRequestSummary(ScannerSummary):
         by_library: Count by library
     """
 
-    total_requests: int = Field(ge=0, description="Total number of requests")
-    unique_urls: int = Field(ge=0, description="Number of unique URLs")
+    total_requests: int = Field(..., ge=0, description="Total number of requests")
+    unique_urls: int = Field(..., ge=0, description="Number of unique URLs")
     by_library: dict[str, int] = Field(default_factory=dict, description="Count by library")
 
 

@@ -18,7 +18,7 @@ class EnvVarLocation(BaseModel):
 
     file: str = Field(..., description="File path")
     line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(default=0, ge=0, description="Column number")
+    column: int = Field(..., ge=0, description="Column number")
     pattern: str = Field(..., description="Access pattern")
     code: str | None = Field(None, description="Code snippet")
 
@@ -48,9 +48,9 @@ class EnvVarSummary(ScannerSummary):
         optional_count: Number of optional variables
     """
 
-    total_env_vars: int = Field(ge=0, description="Total environment variables")
-    required_count: int = Field(ge=0, description="Required variables")
-    optional_count: int = Field(ge=0, description="Optional variables")
+    total_env_vars: int = Field(..., ge=0, description="Total environment variables")
+    required_count: int = Field(..., ge=0, description="Required variables")
+    optional_count: int = Field(..., ge=0, description="Optional variables")
 
 
 class EnvVarOutput(ScannerOutput[dict[str, EnvVarInfo]]):

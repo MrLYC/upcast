@@ -20,7 +20,7 @@ class SettingsLocation(BaseModel):
 
     file: str = Field(..., description="File path")
     line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(default=0, ge=0, description="Column number")
+    column: int = Field(..., ge=0, description="Column number")
     pattern: str = Field(..., description="Usage pattern")
     code: str | None = Field(None, description="Code snippet")
 
@@ -33,7 +33,7 @@ class SettingsUsage(BaseModel):
         locations: List of usage locations
     """
 
-    count: int = Field(ge=0, description="Number of usages")
+    count: int = Field(..., ge=0, description="Number of usages")
     locations: list[SettingsLocation] = Field(default_factory=list, description="Usage locations")
 
 
@@ -91,8 +91,8 @@ class DjangoSettingsSummary(ScannerSummary):
         total_usages: Total usage count
     """
 
-    total_settings: int = Field(ge=0, description="Number of unique settings")
-    total_usages: int = Field(ge=0, description="Total usage count")
+    total_settings: int = Field(..., ge=0, description="Number of unique settings")
+    total_usages: int = Field(..., ge=0, description="Total usage count")
 
 
 class DjangoSettingsUsageOutput(ScannerOutput[dict[str, SettingsUsage]]):

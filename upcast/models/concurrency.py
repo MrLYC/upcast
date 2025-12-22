@@ -21,7 +21,7 @@ class ConcurrencyUsage(BaseModel):
 
     file: str = Field(..., description="File path")
     line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(default=0, ge=0, description="Column number")
+    column: int = Field(..., ge=0, description="Column number")
     pattern: str = Field(..., description="Pattern type")
     statement: str | None = Field(None, description="Code statement")
     context: dict[str, Any] | None = Field(None, description="Additional context")

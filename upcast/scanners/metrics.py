@@ -78,6 +78,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             namespace=None,
             subsystem=None,
             unit=None,
+            custom_collector=False,
             buckets=None,
         )
 

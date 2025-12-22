@@ -33,7 +33,7 @@ class TestEnvVarLocationModel:
     def test_location_validates_line_number(self):
         """Test that line number must be >= 1."""
         with pytest.raises(ValidationError):
-            EnvVarLocation(file="test.py", line=0)
+            EnvVarLocation(file="test.py", line=0, column=0, pattern="test")
 
     def test_location_validates_column_number(self):
         """Test that column number must be >= 0."""
@@ -42,11 +42,11 @@ class TestEnvVarLocationModel:
 
     def test_location_with_optional_fields(self):
         """Test EnvVarLocation with only required fields."""
-        location = EnvVarLocation(file="test.py", line=1, pattern="test_pattern")
+        location = EnvVarLocation(file="test.py", line=1, column=0, pattern="test_pattern")
 
         assert location.file == "test.py"
         assert location.line == 1
-        assert location.column == 0  # default
+        assert location.column == 0
         assert location.pattern == "test_pattern"
         assert location.code is None
 
@@ -60,7 +60,7 @@ class TestEnvVarInfoModel:
             name="API_KEY",
             required=True,
             default_value=None,
-            locations=[EnvVarLocation(file="api.py", line=5, pattern="os.getenv('API_KEY')")],
+            locations=[EnvVarLocation(file="api.py", line=5, column=0, pattern="os.getenv('API_KEY')")],
         )
 
         assert info.name == "API_KEY"
@@ -74,7 +74,7 @@ class TestEnvVarInfoModel:
             name="DEBUG",
             required=False,
             default_value="False",
-            locations=[EnvVarLocation(file="settings.py", line=10, pattern="os.getenv('DEBUG')")],
+            locations=[EnvVarLocation(file="settings.py", line=10, column=0, pattern="os.getenv('DEBUG')")],
         )
 
         assert info.required is False
@@ -86,8 +86,8 @@ class TestEnvVarInfoModel:
             name="DATABASE_URL",
             required=True,
             locations=[
-                EnvVarLocation(file="db.py", line=10, pattern="os.environ['DATABASE_URL']"),
-                EnvVarLocation(file="migrations.py", line=20, pattern="os.getenv('DATABASE_URL')"),
+                EnvVarLocation(file="db.py", line=10, column=0, pattern="os.environ['DATABASE_URL']"),
+                EnvVarLocation(file="migrations.py", line=20, column=0, pattern="os.getenv('DATABASE_URL')"),
             ],
         )
 
@@ -166,13 +166,13 @@ class TestEnvVarOutputModel:
             "API_KEY": EnvVarInfo(
                 name="API_KEY",
                 required=True,
-                locations=[EnvVarLocation(file="api.py", line=10, pattern="os.getenv('API_KEY')")],
+                locations=[EnvVarLocation(file="api.py", line=10, column=0, pattern="os.getenv('API_KEY')")],
             ),
             "DEBUG": EnvVarInfo(
                 name="DEBUG",
                 required=False,
                 default_value="False",
-                locations=[EnvVarLocation(file="settings.py", line=20, pattern="os.getenv('DEBUG')")],
+                locations=[EnvVarLocation(file="settings.py", line=20, column=0, pattern="os.getenv('DEBUG')")],
             ),
         }
 

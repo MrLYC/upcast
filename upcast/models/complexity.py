@@ -43,7 +43,7 @@ class ComplexitySummary(ScannerSummary):
         by_severity: Count by severity level
     """
 
-    high_complexity_count: int = Field(ge=0, description="Functions above threshold")
+    high_complexity_count: int = Field(..., ge=0, description="Functions above threshold")
     by_severity: dict[str, int] = Field(default_factory=dict, description="Count by severity level")
 
 

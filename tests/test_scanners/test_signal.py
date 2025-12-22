@@ -35,6 +35,7 @@ class TestSignalUsageModel:
         usage = SignalUsage(
             file="app/signals.py",
             line=10,
+            column=0,
             code="@receiver(post_save, sender=User)",
             sender="User",
             context={"class": "SignalHandlers", "type": "method"},
@@ -46,7 +47,7 @@ class TestSignalUsageModel:
     def test_signal_usage_validates_line_number(self):
         """Test that line number must be >= 1."""
         with pytest.raises(ValidationError):
-            SignalUsage(file="test.py", line=0)
+            SignalUsage(file="test.py", line=0, column=0)
 
     def test_signal_usage_validates_column_number(self):
         """Test that column number must be >= 0."""
@@ -55,11 +56,11 @@ class TestSignalUsageModel:
 
     def test_signal_usage_minimal(self):
         """Test SignalUsage with minimal required fields."""
-        usage = SignalUsage(file="test.py", line=1)
+        usage = SignalUsage(file="test.py", line=1, column=0)
 
         assert usage.file == "test.py"
         assert usage.line == 1
-        assert usage.column == 0  # default
+        assert usage.column == 0
         assert usage.handler is None
         assert usage.pattern is None
 
@@ -73,7 +74,7 @@ class TestSignalInfoModel:
             signal="post_save",
             type="django",
             category="model_signals",
-            receivers=[SignalUsage(file="app/signals.py", line=10, handler="handle_save")],
+            receivers=[SignalUsage(file="app/signals.py", line=10, column=0, handler="handle_save")],
             senders=[],
         )
 
@@ -100,7 +101,7 @@ class TestSignalInfoModel:
             signal="task_success",
             type="celery",
             category="task_signals",
-            receivers=[SignalUsage(file="app/tasks.py", line=20, handler="on_task_success")],
+            receivers=[SignalUsage(file="app/tasks.py", line=20, column=0, handler="on_task_success")],
         )
 
         assert info.type == "celery"
@@ -120,6 +121,8 @@ class TestSignalSummaryModel:
             django_senders=2,
             celery_receivers=0,
             celery_senders=0,
+            custom_signals_defined=0,
+            unused_custom_signals=0,
         )
 
         assert summary.total_count == 10
@@ -127,12 +130,21 @@ class TestSignalSummaryModel:
         assert summary.django_senders == 2
 
     def test_signal_summary_with_defaults(self):
-        """Test SignalSummary with default values."""
-        summary = SignalSummary(total_count=5, files_scanned=2)
+        """Test SignalSummary with all required fields set to 0."""
+        summary = SignalSummary(
+            total_count=5,
+            files_scanned=2,
+            django_receivers=0,
+            django_senders=0,
+            celery_receivers=0,
+            celery_senders=0,
+            custom_signals_defined=0,
+            unused_custom_signals=0,
+        )
 
-        assert summary.django_receivers == 0  # default
-        assert summary.celery_receivers == 0  # default
-        assert summary.custom_signals_defined == 0  # default
+        assert summary.django_receivers == 0
+        assert summary.celery_receivers == 0
+        assert summary.custom_signals_defined == 0
 
     def test_signal_summary_validates_negative_counts(self):
         """Test that negative counts are rejected."""
@@ -148,6 +160,10 @@ class TestSignalSummaryModel:
         summary = SignalSummary(
             total_count=3,
             files_scanned=1,
+            django_receivers=0,
+            django_senders=0,
+            celery_receivers=0,
+            celery_senders=0,
             custom_signals_defined=5,
             unused_custom_signals=2,
         )
@@ -161,20 +177,29 @@ class TestSignalOutputModel:
 
     def test_valid_signal_output(self):
         """Test creating valid SignalOutput."""
-        summary = SignalSummary(total_count=2, files_scanned=1, django_receivers=2)
+        summary = SignalSummary(
+            total_count=2,
+            files_scanned=1,
+            django_receivers=2,
+            django_senders=0,
+            celery_receivers=0,
+            celery_senders=0,
+            custom_signals_defined=0,
+            unused_custom_signals=0,
+        )
 
         results = [
             SignalInfo(
                 signal="post_save",
                 type="django",
                 category="model_signals",
-                receivers=[SignalUsage(file="app/signals.py", line=10)],
+                receivers=[SignalUsage(file="app/signals.py", line=10, column=0)],
             ),
             SignalInfo(
                 signal="pre_delete",
                 type="django",
                 category="model_signals",
-                receivers=[SignalUsage(file="app/signals.py", line=20)],
+                receivers=[SignalUsage(file="app/signals.py", line=20, column=0)],
             ),
         ]
 
@@ -186,7 +211,16 @@ class TestSignalOutputModel:
 
     def test_signal_output_serialization(self):
         """Test SignalOutput can be serialized to dict."""
-        summary = SignalSummary(total_count=1, files_scanned=1)
+        summary = SignalSummary(
+            total_count=1,
+            files_scanned=1,
+            django_receivers=0,
+            django_senders=0,
+            celery_receivers=0,
+            celery_senders=0,
+            custom_signals_defined=0,
+            unused_custom_signals=0,
+        )
         results = [SignalInfo(signal="test", type="django", category="custom_signals")]
 
         output = SignalOutput(summary=summary, results=results, metadata={})
@@ -198,7 +232,16 @@ class TestSignalOutputModel:
 
     def test_signal_output_json_serialization(self):
         """Test SignalOutput can be serialized to JSON."""
-        summary = SignalSummary(total_count=1, files_scanned=1)
+        summary = SignalSummary(
+            total_count=1,
+            files_scanned=1,
+            django_receivers=0,
+            django_senders=0,
+            celery_receivers=0,
+            celery_senders=0,
+            custom_signals_defined=0,
+            unused_custom_signals=0,
+        )
         results = [SignalInfo(signal="test", type="django", category="custom_signals")]
 
         output = SignalOutput(summary=summary, results=results, metadata={})

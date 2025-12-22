@@ -17,6 +17,8 @@ class TestDjangoUrlModels:
             view_module="myapp.views",
             view_name="user_list",
             name="user-list",
+            is_partial=False,
+            is_conditional=False,
         )
         assert pattern.type == "path"
         assert pattern.pattern == "api/users/"

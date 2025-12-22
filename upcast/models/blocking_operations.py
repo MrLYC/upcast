@@ -21,7 +21,7 @@ class BlockingOperation(BaseModel):
 
     file: str = Field(..., description="File path")
     line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(default=0, ge=0, description="Column number")
+    column: int = Field(..., ge=0, description="Column number")
     category: str = Field(..., description="Operation category")
     operation: str = Field(..., description="Operation name")
     statement: str | None = Field(None, description="Code statement")
