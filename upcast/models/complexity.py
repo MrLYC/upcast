@@ -15,6 +15,11 @@ class ComplexityResult(BaseModel):
         complexity: Cyclomatic complexity score
         severity: Severity level (warning, high_risk, critical)
         message: Optional message about the complexity
+        description: First line of docstring
+        signature: Complete function signature
+        code: Full function source code
+        comment_lines: Number of comment lines (tokenize-based)
+        code_lines: Total lines (code + comments + blank)
     """
 
     name: str = Field(..., description="Function name")
@@ -23,6 +28,11 @@ class ComplexityResult(BaseModel):
     complexity: int = Field(..., ge=0, description="Cyclomatic complexity score")
     severity: str = Field(..., description="Severity level (warning, high_risk, critical)")
     message: str | None = Field(None, description="Optional message")
+    description: str | None = Field(None, description="First line of docstring")
+    signature: str | None = Field(None, description="Complete function signature")
+    code: str | None = Field(None, description="Full function source code")
+    comment_lines: int = Field(default=0, ge=0, description="Number of comment lines")
+    code_lines: int = Field(default=0, ge=0, description="Total lines")
 
 
 class ComplexitySummary(ScannerSummary):

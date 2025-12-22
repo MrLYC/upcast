@@ -4,7 +4,13 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.code_utils import extract_function_code
+from upcast.common.code_utils import (
+    count_comment_lines,
+    extract_description,
+    extract_function_code,
+    extract_function_signature,
+    get_code_lines,
+)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.complexity import ComplexityOutput, ComplexityResult, ComplexitySummary
 
@@ -82,6 +88,12 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             severity = self._assign_severity(complexity)
             message = f"Complexity {complexity} exceeds threshold {self.threshold}"
 
+            # Extract metadata per specification
+            description = extract_description(node)
+            signature = extract_function_signature(node)
+            code_lines = get_code_lines(node)
+            comment_lines = count_comment_lines(code) if code else 0
+
             return ComplexityResult(
                 name=node.name,
                 line=node.lineno or 0,
@@ -89,6 +101,11 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 complexity=complexity,
                 severity=severity,
                 message=message,
+                description=description,
+                signature=signature,
+                code=code,
+                comment_lines=comment_lines,
+                code_lines=code_lines,
             )
         except Exception:
             return None

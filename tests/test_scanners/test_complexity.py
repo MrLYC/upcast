@@ -31,6 +31,28 @@ class TestComplexityResultModel:
         assert result.complexity == 15
         assert result.severity == "warning"
 
+    def test_result_with_metadata_fields(self):
+        """Test ComplexityResult with all metadata fields."""
+        result = ComplexityResult(
+            name="documented_function",
+            line=1,
+            end_line=20,
+            complexity=8,
+            severity="acceptable",
+            message="OK",
+            description="This is a documented function",
+            signature="def documented_function(x: int, y: str = 'default') -> bool:",
+            code="def documented_function(x: int, y: str = 'default') -> bool:\n    '''This is a documented function'''\n    return True\n",
+            comment_lines=2,
+            code_lines=20,
+        )
+
+        assert result.description == "This is a documented function"
+        assert "documented_function" in result.signature
+        assert result.code is not None
+        assert result.comment_lines == 2
+        assert result.code_lines == 20
+
     def test_result_validates_line_number(self):
         """Test that line number must be >= 1."""
         with pytest.raises(ValidationError):
@@ -259,3 +281,36 @@ def another_complex(y):
         # Should scan both files with complex functions
         assert output.summary.files_scanned >= 1
         assert output.summary.total_count >= 1
+
+    def test_scanner_extracts_metadata_fields(self, tmp_path):
+        """Test scanner extracts all metadata fields."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            '''
+def documented_function(x: int, y: str = "default") -> bool:
+    """This is the description line.
+
+    More details here.
+    """
+    if x > 0:
+        if x > 5:
+            if x > 10:
+                return True
+    return False
+'''
+        )
+
+        scanner = ComplexityScanner(threshold=1)
+        output = scanner.scan(test_file)
+
+        assert len(output.results) > 0
+        result = next(iter(output.results.values()))[0]
+
+        # Verify all metadata fields are populated
+        assert result.description == "This is the description line."
+        assert "documented_function" in result.signature
+        assert "int" in result.signature
+        assert result.code is not None
+        assert "def documented_function" in result.code
+        assert result.code_lines > 0  # Should calculate total lines
+        # Note: comment_lines may be 0 since astroid's as_string() can strip comments

@@ -29,7 +29,7 @@ upcast scan-django-models /path/to/django/project
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
 
 # Check cyclomatic complexity
-upcast scan-complexity /path/to/project --threshold 15
+upcast scan-complexity-patterns /path/to/project --threshold 15
 ```
 
 ## Installation
@@ -657,12 +657,12 @@ handlers:
 
 ## Code Quality Scanners
 
-### scan-complexity
+### scan-complexity-patterns
 
 Analyze cyclomatic complexity to identify functions that may need refactoring.
 
 ```bash
-upcast scan-complexity /path/to/project
+upcast scan-complexity-patterns /path/to/project
 ```
 
 **Output example:**
@@ -683,6 +683,7 @@ modules:
       end_line: 98
       complexity: 14
       severity: warning
+      message: "Complexity 14 exceeds threshold 11"
       description: "Validate user registration with multiple checks"
       signature: "def process_user_registration(data: dict, strict: bool = True) -> Result:"
       comment_lines: 8
@@ -700,19 +701,19 @@ modules:
 
 ```bash
 # Scan with default threshold (11)
-upcast scan-complexity /path/to/project
+upcast scan-complexity-patterns /path/to/project
 
 # Custom threshold
-upcast scan-complexity . --threshold 15
+upcast scan-complexity-patterns . --threshold 15
 
 # Include test files (excluded by default)
-upcast scan-complexity . --include-tests
+upcast scan-complexity-patterns . --include-tests
 
 # Save to file
-upcast scan-complexity . -o complexity-report.yaml
+upcast scan-complexity-patterns . -o complexity-report.yaml
 
 # JSON format
-upcast scan-complexity . --format json
+upcast scan-complexity-patterns . --format json
 ```
 
 **Severity levels:**

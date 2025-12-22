@@ -24,7 +24,7 @@ def main():
     pass
 
 
-@main.command(name="scan-complexity")
+@main.command(name="scan-complexity-patterns")
 @click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
@@ -38,7 +38,7 @@ def main():
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True), default=".", required=False)
-def scan_complexity_cmd(
+def scan_complexity_patterns_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
@@ -48,7 +48,7 @@ def scan_complexity_cmd(
     exclude: tuple[str, ...],
     no_default_excludes: bool,
 ) -> None:
-    """Scan Python files for high cyclomatic complexity.
+    """Scan Python files for cyclomatic complexity patterns.
 
     Analyzes functions to identify code that may need refactoring.
     """
@@ -259,7 +259,7 @@ def scan_metrics_cmd(
         handle_scan_error(e, verbose=verbose)
 
 
-@main.command(name="scan-concurrency")
+@main.command(name="scan-concurrency-patterns")
 @click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
@@ -272,7 +272,7 @@ def scan_metrics_cmd(
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
 @click.argument("path", type=click.Path(exists=True), default=".", required=False)
-def scan_concurrency_cmd(
+def scan_concurrency_patterns_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
