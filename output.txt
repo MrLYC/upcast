@@ -1,2 +1,9 @@
+[34m?[39m [1mWhat would you like to validate?[22m
+[36m❯ All (changes + specs)[39m
+  All changes
+  All specs
+  Pick a specific change or spec
 
-✖ Error: Change 'fix-concurrency-scanner-implementation' not found.
+[1m↑↓[22m [2mnavigate[22m[2m • [22m[1m⏎[22m [2mselect[22m[?25l[23G
+[?25h
+✖ Error: User force closed the prompt with SIGINT
