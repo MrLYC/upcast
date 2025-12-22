@@ -1,4 +1,8 @@
-"""AST utilities for Django model detection."""
+"""Django model detection utilities.
+
+This module contains utilities for detecting Django models and fields in AST.
+Extracted from django_model_scanner for reuse across scanners.
+"""
 
 from typing import Any
 

@@ -11,9 +11,9 @@ from typing import Any
 
 from astroid import nodes
 
+from upcast.common.django.model_parser import merge_abstract_fields, parse_model
+from upcast.common.django.model_utils import is_django_model
 from upcast.common.scanner_base import BaseScanner
-from upcast.django_model_scanner.ast_utils import is_django_model
-from upcast.django_model_scanner.model_parser import merge_abstract_fields, parse_model
 from upcast.models.django_models import (
     DjangoField,
     DjangoModel,

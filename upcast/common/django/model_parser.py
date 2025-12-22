@@ -1,4 +1,8 @@
-"""Django model field and metadata parser."""
+"""Django model field and metadata parser.
+
+This module contains utilities for parsing Django model fields, Meta classes,
+and relationships. Extracted from django_model_scanner for reuse across scanners.
+"""
 
 import inspect
 from typing import Any, Optional
@@ -11,7 +15,7 @@ from upcast.common.ast_utils import (
 from upcast.common.ast_utils import (
     infer_value_with_fallback,
 )
-from upcast.django_model_scanner.ast_utils import is_django_field, safe_as_string
+from upcast.common.django.model_utils import is_django_field, safe_as_string
 
 
 # Local inference for backward compatibility
