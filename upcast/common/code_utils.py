@@ -173,11 +173,11 @@ def extract_function_signature(node: nodes.FunctionDef) -> str | None:  # noqa: 
         return None
 
 
-def extract_description(node: nodes.FunctionDef) -> str | None:
+def extract_description(node: nodes.FunctionDef | nodes.ClassDef) -> str | None:
     """Extract first line of docstring as description.
 
     Args:
-        node: Astroid FunctionDef or AsyncFunctionDef node
+        node: Astroid FunctionDef, AsyncFunctionDef, or ClassDef node
 
     Returns:
         First line of docstring or None if no docstring

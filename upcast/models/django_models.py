@@ -51,6 +51,7 @@ class DjangoModel(BaseModel):
         fields: Model fields keyed by name
         relationships: Relationship fields
         meta: Meta class options
+        description: First line of model docstring
         line: Line number where model is defined
     """
 
@@ -60,6 +61,7 @@ class DjangoModel(BaseModel):
     fields: dict[str, DjangoField] = Field(default_factory=dict, description="Model fields")
     relationships: list[DjangoRelationship] = Field(default_factory=list, description="Relationship fields")
     meta: dict[str, Any] | None = Field(None, description="Meta class options")
+    description: str | None = Field(None, description="First line of model docstring")
     line: int = Field(..., ge=1, description="Line number")
 
 

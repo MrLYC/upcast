@@ -76,9 +76,11 @@ upcast scan-django-models /path/to/django/project
 
 ```yaml
 app.models.User:
+  name: User
   module: app.models
   bases:
     - models.Model
+  description: "User model for authentication and profile management."
   fields:
     username:
       type: models.CharField
@@ -98,6 +100,7 @@ app.models.User:
 **Key features:**
 
 - Detects all Django model classes
+- Extracts model descriptions from docstrings
 - Extracts field types and parameters
 - Identifies relationships (ForeignKey, ManyToMany, OneToOne)
 - Captures model metadata and options

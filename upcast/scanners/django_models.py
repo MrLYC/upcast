@@ -11,6 +11,7 @@ from typing import Any
 
 from astroid import nodes
 
+from upcast.common.code_utils import extract_description
 from upcast.common.django.model_parser import merge_abstract_fields, parse_model
 from upcast.common.django.model_utils import is_django_model
 from upcast.common.scanner_base import BaseScanner
@@ -120,6 +121,10 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
                 file_path=file_path,
             )
             if model_data:
+                # Extract description from docstring
+                description = extract_description(class_node)
+                model_data["description"] = description
+
                 qname = model_data["qname"]  # Use qname from parsed data
                 models[qname] = model_data
 
@@ -177,6 +182,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
                 fields=fields,
                 relationships=relationships,
                 meta=model_data.get("meta"),
+                description=model_data.get("description"),
                 line=line,
             )
         except Exception as e:
