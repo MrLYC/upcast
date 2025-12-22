@@ -1,0 +1,114 @@
+name: Scanner Integration Tests
+
+# This workflow validates that scanner outputs remain consistent across changes.
+# It compares scan results against committed baseline to detect regressions.
+# Update baseline when scanner behavior intentionally changes:
+#   1. Run `make test-integration` locally
+#   2. Copy results: `cp -r example/scan-results/* example/scan-results-baseline/`
+#   3. Commit baseline updates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Include blueking-paas submodule
+
+      - name: Set up environment
+        uses: ./.github/actions/setup-uv-env
+
+      - name: Run integration tests
+        run: make test-integration
+
+      - name: Install yq for YAML processing
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Compare results against baseline
+        id: compare
+        run: |
+          set +e  # Don't exit immediately on error
+          BASELINE_DIR="example/scan-results-baseline"
+          RESULTS_DIR="example/scan-results"
+          FAILED=0
+          MISSING_BASELINE=0
+
+          echo "📊 Comparing scan results against baseline..."
+          echo ""
+
+          for file in "$RESULTS_DIR"/*.yaml; do
+            filename=$(basename "$file")
+            baseline="$BASELINE_DIR/$filename"
+
+            if [ ! -f "$baseline" ]; then
+              echo "⚠️  No baseline for $filename (new scanner or first run)"
+              MISSING_BASELINE=1
+              continue
+            fi
+
+            # Extract results sections (skip metadata like scan_duration_ms)
+            yq '.results' "$baseline" > /tmp/baseline-results.yaml 2>/dev/null || echo "null" > /tmp/baseline-results.yaml
+            yq '.results' "$file" > /tmp/new-results.yaml 2>/dev/null || echo "null" > /tmp/new-results.yaml
+
+            # Compare
+            if ! diff -u /tmp/baseline-results.yaml /tmp/new-results.yaml > /tmp/diff-$filename.txt 2>&1; then
+              echo "❌ Results changed in $filename:"
+              echo "----------------------------------------"
+              cat /tmp/diff-$filename.txt | head -100
+              if [ $(wc -l < /tmp/diff-$filename.txt) -gt 100 ]; then
+                echo "... (diff truncated, see artifacts for full output)"
+              fi
+              echo "----------------------------------------"
+              echo ""
+              FAILED=1
+            else
+              echo "✅ $filename matches baseline"
+            fi
+          done
+
+          echo ""
+          if [ $FAILED -eq 1 ]; then
+            echo "::error::Scanner results changed. Review diffs above and update baseline if changes are intentional."
+            echo ""
+            echo "To update baseline:"
+            echo "  1. Run: make test-integration"
+            echo "  2. Copy: cp -r example/scan-results/* example/scan-results-baseline/"
+            echo "  3. Commit: git add example/scan-results-baseline/ && git commit -m 'Update scanner baseline'"
+            exit 1
+          elif [ $MISSING_BASELINE -eq 1 ]; then
+            echo "⚠️  Some scanners have no baseline. This is OK for new scanners."
+            echo "To establish baseline:"
+            echo "  1. Run: make test-integration"
+            echo "  2. Copy: cp -r example/scan-results/* example/scan-results-baseline/"
+            echo "  3. Commit: git add example/scan-results-baseline/ && git commit -m 'Add scanner baseline'"
+          else
+            echo "✅ All scan results match baseline"
+          fi
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scan-results
+          path: example/scan-results/
+          retention-days: 30
+
+      - name: Upload comparison diffs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: scan-diffs
+          path: /tmp/diff-*.txt
+          retention-days: 7

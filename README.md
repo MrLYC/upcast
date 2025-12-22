@@ -904,6 +904,48 @@ Benefits:
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Well-Tested**: Comprehensive test suite with high coverage
 
+## Integration Testing
+
+Upcast includes comprehensive integration tests that validate all scanners on a real-world Django project (blueking-paas).
+
+### Running Integration Tests
+
+```bash
+# Run all scanners on example project
+make test-integration
+```
+
+This command:
+
+- Scans `example/blueking-paas` with all 12 scanners
+- Outputs results to `example/scan-results/*.yaml`
+- Takes approximately 1-2 minutes to complete
+
+### CI Validation
+
+The GitHub Actions workflow automatically:
+
+- Runs integration tests on every PR
+- Compares scan results against baseline
+- Fails if scanner output changes unexpectedly
+- Helps detect regressions in scanner behavior
+
+### Updating Baseline
+
+When scanner improvements intentionally change output:
+
+```bash
+# 1. Run integration tests
+make test-integration
+
+# 2. Copy new results to baseline
+cp -r example/scan-results/* example/scan-results-baseline/
+
+# 3. Commit baseline updates
+git add example/scan-results-baseline/
+git commit -m "Update scanner baseline: [describe changes]"
+```
+
 ## Contributing
 
 Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
