@@ -88,9 +88,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
     def _extract_url(self, node: nodes.Call) -> str | None:
         """Extract URL from request call with pattern normalization.
 
-        Tries to detect dynamic URL construction patterns first, then falls back
-        to literal inference. This ensures we normalize URLs even when astroid
-        can partially infer them.
+        Tries to infer from context first (variable assignments), then detects
+        dynamic URL construction patterns. Falls back to literal inference for
+        static URLs.
 
         Returns:
             Literal URL string, normalized pattern, or None
@@ -98,33 +98,101 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         # Try extracting from positional args
         if node.args:
             url_node = node.args[0]
-
-            # Check if it's a dynamic construction (prioritize pattern detection)
-            if self._is_dynamic_url(url_node):
-                pattern = self._normalize_url_pattern(url_node)
-                if pattern:
-                    return pattern
-
-            # Fall back to literal inference for static URLs
-            url_value = safe_infer_value(url_node)
-            if isinstance(url_value, str):
-                return url_value
+            return self._extract_url_from_node(url_node, node)
 
         # Try extracting from keyword args
         for keyword in node.keywords or []:
             if keyword.arg == "url":
-                url_node = keyword.value
+                return self._extract_url_from_node(keyword.value, node)
 
-                # Check if it's a dynamic construction
-                if self._is_dynamic_url(url_node):
-                    pattern = self._normalize_url_pattern(url_node)
-                    if pattern:
-                        return pattern
+        return None
 
-                # Fall back to literal inference
-                url_value = safe_infer_value(url_node)
-                if isinstance(url_value, str):
-                    return url_value
+    def _extract_url_from_node(self, url_node: nodes.NodeNG, context_node: nodes.Call) -> str | None:
+        """Extract URL from a node, with context inference.
+
+        Args:
+            url_node: The node representing the URL
+            context_node: The Call node for context lookup
+
+        Returns:
+            URL string or pattern (with consecutive ... merged)
+        """
+        # Try to infer from context (variable assignments)
+        inferred_url = self._infer_url_from_context(url_node, context_node)
+        if inferred_url:
+            return self._merge_consecutive_dots(inferred_url)
+
+        # Check if it's a dynamic construction (prioritize pattern detection)
+        if self._is_dynamic_url(url_node):
+            pattern = self._normalize_url_pattern(url_node)
+            if pattern:
+                return self._merge_consecutive_dots(pattern)
+
+        # Fall back to literal inference for static URLs
+        url_value = safe_infer_value(url_node)
+        if isinstance(url_value, str):
+            return url_value
+
+        return None
+
+    @staticmethod
+    def _merge_consecutive_dots(url: str) -> str:
+        """Merge consecutive ... patterns into a single ...
+
+        Since ... represents dynamic content, multiple consecutive ...
+        can be simplified to a single ...
+
+        Args:
+            url: URL pattern that may contain multiple ...
+
+        Returns:
+            URL with consecutive ... merged
+
+        Examples:
+            >>> _merge_consecutive_dots("...:...")
+            '...:...'
+            >>> _merge_consecutive_dots("......")
+            '...'
+            >>> _merge_consecutive_dots(".../...")
+            '.../...'
+            >>> _merge_consecutive_dots("........./......")
+            '.../...'
+        """
+        import re
+
+        # Replace multiple consecutive dots (4 or more) with just ...
+        # But preserve patterns like .../... or ...:...
+        # Pattern: Replace 4+ dots that are not separated by / or : with ...
+        return re.sub(r"\.{4,}", "...", url)
+
+    def _infer_url_from_context(self, url_node: nodes.NodeNG, context_node: nodes.Call) -> str | None:
+        """Try to infer URL by looking up variable definitions in context.
+
+        Args:
+            url_node: The node representing the URL
+            context_node: The Call node for context lookup
+
+        Returns:
+            Inferred URL string or None
+        """
+        # If it's a Name node (variable reference), try to find its assignment
+        if isinstance(url_node, nodes.Name):
+            # Look for assignments in the same scope
+            scope = context_node.scope()
+            if scope:
+                for node in scope.body:
+                    if isinstance(node, nodes.Assign):
+                        for target in node.targets:
+                            if isinstance(target, nodes.AssignName) and target.name == url_node.name:
+                                # Found the assignment, recursively extract from value
+                                return self._extract_url_from_node(node.value, context_node)
+
+        # If it's a formatted string or concatenation with resolvable parts
+        if isinstance(url_node, (nodes.BinOp, nodes.JoinedStr)):
+            # Try to partially resolve it
+            partial_url = self._try_partial_resolution(url_node, context_node)
+            if partial_url:
+                return partial_url
 
         return None
 
@@ -151,40 +219,218 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
     def _normalize_url_pattern(self, node: nodes.NodeNG) -> str | None:
         """Normalize dynamic URL construction into a pattern.
 
-        Recognizes common URL construction patterns and normalizes them:
-        - String concatenation: base + path → "..."
-        - F-strings: f"{base}/api" → "..." or ".../..."
-        - Format strings: "{}/api".format(base) → "..."
+        Recognizes common URL construction patterns and normalizes them while
+        preserving static path components:
+        - String concatenation: base + "/api" → ".../api"
+        - F-strings: f"{base}/api" → ".../api" or f"{proto}://{host}/path" → "...://.../path"
+        - Format strings: "{}/api".format(base) → ".../api"
         - Query params: url + "?" + params → "...?..."
 
         Args:
             node: AST node representing the URL expression
 
         Returns:
-            Normalized pattern string or None if unrecognizable
+            Normalized pattern string with static parts preserved or None
         """
         # Handle string concatenation (BinOp with '+')
         if isinstance(node, nodes.BinOp) and node.op == "+":
-            if self._contains_query_indicator(node):
-                return "...?..."
-            return "..."
+            return self._normalize_binop_url(node)
 
         # Handle f-strings (JoinedStr)
         if isinstance(node, nodes.JoinedStr):
-            node_str = safe_as_string(node)
-            if "?" in node_str or "params" in node_str.lower():
-                return "...?..."
-            if "/" in node_str:
-                return ".../..."
-            return "..."
+            return self._normalize_fstring_url(node)
 
         # Handle .format() calls
         if isinstance(node, nodes.Call) and isinstance(node.func, nodes.Attribute) and node.func.attrname == "format":
+            # Try to extract the template string
+            if isinstance(node.func.expr, nodes.Const):
+                template = node.func.expr.value
+                if isinstance(template, str):
+                    # Replace {} placeholders with ...
+                    import re
+
+                    pattern = re.sub(r"\{[^}]*\}", "...", template)
+                    return pattern
             return "..."
 
         # Handle % formatting
         if isinstance(node, nodes.BinOp) and node.op == "%":
+            # Try to extract the template string
+            if isinstance(node.left, nodes.Const) and isinstance(node.left.value, str):
+                template = node.left.value
+                # Replace %s, %d, etc. with ...
+                import re
+
+                pattern = re.sub(r"%[sd]", "...", template)
+                return pattern
             return "..."
+
+        return None
+
+    def _normalize_binop_url(self, node: nodes.BinOp) -> str:
+        """Normalize BinOp (string concatenation) URL.
+
+        Recursively processes concatenations to preserve static parts.
+
+        Args:
+            node: BinOp node with '+' operator
+
+        Returns:
+            Normalized URL pattern
+        """
+        parts = []
+        self._collect_binop_parts(node, parts)
+
+        # Convert parts to pattern
+        result_parts = []
+        for part in parts:
+            if isinstance(part, str):
+                # Static string - preserve it
+                result_parts.append(part)
+            else:
+                # Dynamic part - replace with ...
+                result_parts.append("...")
+
+        url = "".join(result_parts)
+
+        # Check for query params
+        if "?" in url:
+            return "...?..."
+
+        return url
+
+    def _collect_binop_parts(self, node: nodes.NodeNG, parts: list) -> None:
+        """Recursively collect parts from BinOp concatenation.
+
+        Args:
+            node: Current node
+            parts: List to collect parts into (str for static, NodeNG for dynamic)
+        """
+        if isinstance(node, nodes.BinOp) and node.op == "+":
+            self._collect_binop_parts(node.left, parts)
+            self._collect_binop_parts(node.right, parts)
+        elif isinstance(node, nodes.Const) and isinstance(node.value, str):
+            parts.append(node.value)
+        else:
+            # Dynamic part (variable, call, etc.)
+            parts.append(node)
+
+    def _normalize_fstring_url(self, node: nodes.JoinedStr) -> str:
+        """Normalize f-string URL.
+
+        Preserves static string parts and replaces FormattedValue parts with '...'.
+        Detects common patterns like f"{proto}://{host}/path".
+
+        Args:
+            node: JoinedStr node (f-string)
+
+        Returns:
+            Normalized URL pattern
+        """
+        parts = []
+        for value in node.values:
+            if isinstance(value, nodes.Const):
+                # Static part - preserve it
+                parts.append(str(value.value))
+            else:
+                # Dynamic part (FormattedValue) - replace with ...
+                parts.append("...")
+
+        url = "".join(parts)
+
+        # Check for query params
+        if "?" in url or "params" in url.lower():
+            return "...?..."
+
+        return url
+
+    def _try_partial_resolution(self, node: nodes.NodeNG, context_node: nodes.Call) -> str | None:  # noqa: C901
+        """Try to partially resolve a URL by looking up some variables.
+
+        Args:
+            node: URL expression node
+            context_node: Call node for context
+
+        Returns:
+            Partially resolved URL pattern or None
+        """
+        # For BinOp, try to resolve each part
+        if isinstance(node, nodes.BinOp) and node.op == "+":
+            parts = []
+            self._collect_binop_parts(node, parts)
+
+            resolved_parts = []
+            for part in parts:
+                if isinstance(part, str):
+                    resolved_parts.append(part)
+                elif isinstance(part, nodes.Name):
+                    # Try to resolve variable
+                    resolved = self._resolve_variable(part.name, context_node)
+                    if resolved:
+                        resolved_parts.append(resolved)
+                    else:
+                        resolved_parts.append("...")
+                else:
+                    resolved_parts.append("...")
+
+            return "".join(resolved_parts)
+
+        # For f-strings, try to resolve variables
+        if isinstance(node, nodes.JoinedStr):
+            parts = []
+            for value in node.values:
+                if isinstance(value, nodes.Const):
+                    parts.append(str(value.value))
+                elif isinstance(value, nodes.FormattedValue):
+                    # Try to resolve the value
+                    if isinstance(value.value, nodes.Name):
+                        resolved = self._resolve_variable(value.value.name, context_node)
+                        if resolved:
+                            parts.append(resolved)
+                        else:
+                            parts.append("...")
+                    else:
+                        parts.append("...")
+                else:
+                    parts.append("...")
+
+            return "".join(parts)
+
+        return None
+
+    def _resolve_variable(self, var_name: str, context_node: nodes.Call) -> str | None:  # noqa: C901
+        """Try to resolve a variable to its string value.
+
+        Args:
+            var_name: Variable name to resolve
+            context_node: Call node for context
+
+        Returns:
+            Resolved string value or None
+        """
+        scope = context_node.scope()
+        if not scope:
+            return None
+
+        # Look for assignments in the scope
+        for node in scope.body:
+            if isinstance(node, nodes.Assign):
+                for target in node.targets:
+                    if isinstance(target, nodes.AssignName) and target.name == var_name:
+                        # Found the assignment, try to infer the value
+                        value = safe_infer_value(node.value)
+                        if isinstance(value, str):
+                            return value
+
+        # Look in module-level assignments
+        module = context_node.root()
+        for node in module.body:
+            if isinstance(node, nodes.Assign):
+                for target in node.targets:
+                    if isinstance(target, nodes.AssignName) and target.name == var_name:
+                        value = safe_infer_value(node.value)
+                        if isinstance(value, str):
+                            return value
 
         return None
 

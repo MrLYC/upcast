@@ -571,7 +571,7 @@ request_duration_seconds:
 
 ### scan-http-requests
 
-Find HTTP and API requests throughout your codebase.
+Find HTTP and API requests throughout your codebase with intelligent URL pattern detection.
 
 ```bash
 upcast scan-http-requests /path/to/project
@@ -580,35 +580,51 @@ upcast scan-http-requests /path/to/project
 **Output example:**
 
 ```yaml
-requests:
-  - location: api/client.py:45
-    method: GET
-    library: requests
-    statement: requests.get('https://api.example.com/users')
-    url: https://api.example.com/users
-    has_timeout: false
+https://api.example.com/users/...:
+  method: GET
+  library: requests
+  usages:
+    - location: api/client.py:45
+      method: GET
+      statement: requests.get(f"https://api.example.com/users/{user_id}")
+      session_based: false
+      is_async: false
 
-  - location: services/http.py:67
-    method: POST
-    library: httpx
-    statement: httpx.post(url, json=data, timeout=30)
-    has_timeout: true
-    timeout: 30
+https://api.example.com/api/v2/data:
+  method: GET
+  library: requests
+  usages:
+    - location: services/http.py:67
+      method: GET
+      statement: requests.get(BASE_URL + "/api/v2/data")
+      timeout: 30
+      session_based: false
+      is_async: false
 
-  - location: tasks/fetch.py:23
-    method: GET
-    library: urllib
-    statement: urllib.request.urlopen(url)
-    has_timeout: false
+...://.../console-acp/api/v1/token/login:
+  method: POST
+  library: requests
+  usages:
+    - location: auth/login.py:23
+      method: POST
+      statement: requests.post(f"{proto}://{host}/console-acp/api/v1/token/login")
+      session_based: false
+      is_async: false
 ```
 
 **Key features:**
 
-- Detects `requests`, `httpx`, `urllib`, `aiohttp`
-- Extracts HTTP methods (GET, POST, PUT, DELETE)
-- Identifies URLs when possible
-- Checks for timeout configuration
-- Flags missing timeout warnings
+- **Smart URL Detection**: Detects `requests`, `httpx`, `urllib`, `aiohttp`
+- **Context-Aware Resolution**: Infers variable values from assignments in the same scope
+- **Pattern Preservation**: Preserves static URL parts while replacing dynamic segments with `...`
+  - `f"https://api.example.com/users/{user_id}"` → `https://api.example.com/users/...`
+  - `f"{proto}://{host}/api/v1/path"` → `...://.../api/v1/path`
+  - `BASE_URL + "/api/data"` → resolves BASE_URL if defined
+  - `f"{a}{b}{c}{d}"` → `...` (merges consecutive `...` into one)
+- **Extracts HTTP methods** (GET, POST, PUT, DELETE)
+- **Identifies URLs** when possible, with smart pattern normalization
+- **Checks for timeout configuration**
+- **Detects async requests** and session-based calls
 
 ### scan-exception-handlers
 
