@@ -8,7 +8,7 @@ import astroid
 from astroid import nodes
 
 if TYPE_CHECKING:
-    from upcast.django_settings_scanner.settings_parser import SettingsModule
+    from upcast.models.django_settings import SettingsModule
 
 
 def is_settings_module(file_path: str) -> bool:
@@ -455,7 +455,7 @@ def detect_dynamic_imports(module: nodes.Module, file_path: str) -> list:
         List of detected dynamic imports
     """
     # Import at function level to avoid circular import
-    from upcast.django_settings_scanner.settings_parser import DynamicImport
+    from upcast.models.django_settings import DynamicImport
 
     dynamic_imports = []
 
@@ -502,7 +502,8 @@ def parse_settings_module(file_path: str, base_path: str) -> "SettingsModule":
     Returns:
         SettingsModule with all definitions, imports, and metadata
     """
-    from upcast.django_settings_scanner.settings_parser import SettingsDefinition, SettingsModule
+    from upcast.common.django.settings_utils import resolve_relative_import
+    from upcast.models.django_settings import SettingsDefinition, SettingsModule
 
     # Read and parse the file
     with open(file_path, encoding="utf-8") as f:
@@ -550,8 +551,6 @@ def parse_settings_module(file_path: str, base_path: str) -> "SettingsModule":
     for import_path in star_imports_raw:
         if import_path.startswith("."):
             # Relative import - resolve it
-            from upcast.django_settings_scanner.ast_utils import resolve_relative_import
-
             # Count dots
             level = len(import_path) - len(import_path.lstrip("."))
             # Get module name after dots

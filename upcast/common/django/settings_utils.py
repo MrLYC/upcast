@@ -6,7 +6,6 @@ import astroid
 from astroid import nodes
 
 from upcast.common.ast_utils import infer_value_with_fallback
-from upcast.django_settings_scanner.definition_parser import is_uppercase_identifier
 
 
 def _check_inferred_types(node: nodes.Name) -> bool:
@@ -162,6 +161,9 @@ def extract_setting_name(node: nodes.NodeNG) -> str | None:
     Returns:
         The settings variable name, or None if not extractable
     """
+    # Import here to avoid circular import
+    from upcast.common.django.settings_parser import is_uppercase_identifier
+
     # Pattern 1: Attribute access (settings.KEY)
     if isinstance(node, nodes.Attribute):
         # Only return uppercase attributes (Django settings convention)

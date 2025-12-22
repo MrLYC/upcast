@@ -10,14 +10,14 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.scanner_base import BaseScanner
-from upcast.django_settings_scanner.ast_utils import (
+from upcast.common.django.settings_parser import is_settings_module, parse_settings_module
+from upcast.common.django.settings_utils import (
     extract_setting_name,
     is_settings_attribute_access,
     is_settings_getattr_call,
     is_settings_hasattr_call,
 )
-from upcast.django_settings_scanner.definition_parser import is_settings_module, parse_settings_module
+from upcast.common.scanner_base import BaseScanner
 from upcast.models.django_settings import (
     DjangoSettingsDefinitionOutput,
     DjangoSettingsSummary,
