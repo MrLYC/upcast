@@ -25,7 +25,7 @@ class TestDjangoUrlScannerCLI:
         """Test CLI help message."""
         result = runner.invoke(main, ["scan-django-urls", "--help"])
         assert result.exit_code == 0
-        assert "Scan Python files for Django URL pattern definitions" in result.output
+        assert "Scan Django URLconf files for URL patterns" in result.output
 
     def test_cli_scan_file(self, runner, fixtures_dir):
         """Test scanning a single file."""

@@ -4,10 +4,10 @@
 
 ### Task 1.1: Audit dependencies on old modules
 
-- [ ] Search for all imports from old scanner modules across codebase
-- [ ] Identify which utilities from old modules are used by new scanners
-- [ ] Document dependencies that need to be preserved
-- [ ] Create plan for moving shared utilities to `upcast/common/`
+- [x] Search for all imports from old scanner modules across codebase
+- [x] Identify which utilities from old modules are used by new scanners
+- [x] Document dependencies that need to be preserved
+- [x] Create plan for moving shared utilities to `upcast/common/`
 
 **Command to check**:
 
@@ -40,54 +40,54 @@ rg "from upcast\.(django_model_scanner|django_url_scanner|django_settings_scanne
 
 ### Task 2.1: Consolidate scan-django-models
 
-- [ ] Remove `scan_django_models_cmd` (old implementation)
-- [ ] Rename `scan_django_models_new_cmd` → `scan_django_models_cmd`
-- [ ] Update command name from `scan-django-models-new` to `scan-django-models`
-- [ ] Remove import: `from upcast.django_model_scanner import scan_django_models`
-- [ ] Verify `DjangoModelScanner` import exists in scanners import block
-- [ ] Test command works: `upcast scan-django-models --help`
+- [x] Remove `scan_django_models_cmd` (old implementation)
+- [x] Rename `scan_django_models_new_cmd` → `scan_django_models_cmd`
+- [x] Update command name from `scan-django-models-new` to `scan-django-models`
+- [x] Remove import: `from upcast.django_model_scanner import scan_django_models`
+- [x] Verify `DjangoModelScanner` import exists in scanners import block
+- [x] Test command works: `upcast scan-django-models --help`
 
 ### Task 2.2: Consolidate scan-django-urls
 
-- [ ] Remove `scan_django_urls_cmd` (old implementation)
-- [ ] Rename `scan_django_urls_new_cmd` → `scan_django_urls_cmd`
-- [ ] Update command name from `scan-django-urls-new` to `scan-django-urls`
-- [ ] Remove import: `from upcast.django_url_scanner import scan_django_urls`
-- [ ] Verify `DjangoUrlScanner` import exists
-- [ ] Test command works: `upcast scan-django-urls --help`
+- [x] Remove `scan_django_urls_cmd` (old implementation)
+- [x] Rename `scan_django_urls_new_cmd` → `scan_django_urls_cmd`
+- [x] Update command name from `scan-django-urls-new` to `scan-django-urls`
+- [x] Remove import: `from upcast.django_url_scanner import scan_django_urls`
+- [x] Verify `DjangoUrlScanner` import exists
+- [x] Test command works: `upcast scan-django-urls --help`
 
 ### Task 2.3: Consolidate scan-django-settings
 
-- [ ] Remove `scan_django_settings_cmd` (old implementation)
-- [ ] Rename `scan_django_settings_new_cmd` → `scan_django_settings_cmd`
-- [ ] Update command name from `scan-django-settings-new` to `scan-django-settings`
-- [ ] Remove import: `from upcast.django_settings_scanner import scan_django_settings`
-- [ ] Verify `DjangoSettingsScanner` import exists
-- [ ] Simplify options (remove old complex mode flags)
-- [ ] Test command works: `upcast scan-django-settings --help`
+- [x] Remove `scan_django_settings_cmd` (old implementation)
+- [x] Rename `scan_django_settings_new_cmd` → `scan_django_settings_cmd`
+- [x] Update command name from `scan-django-settings-new` to `scan-django-settings`
+- [x] Remove import: `from upcast.django_settings_scanner import scan_django_settings`
+- [x] Verify `DjangoSettingsScanner` import exists
+- [x] Simplify options (remove old complex mode flags)
+- [x] Test command works: `upcast scan-django-settings --help`
 
 ### Task 2.4: Consolidate scan-unit-tests
 
-- [ ] Remove duplicate `scan_unit_tests_cmd` (old implementation, line ~860)
-- [ ] Keep `scan_unit_tests_new_cmd` and rename to `scan_unit_tests_cmd`
-- [ ] Ensure command name is `scan-unit-tests` (no -new suffix)
-- [ ] Remove import: `from upcast.unit_test_scanner.cli import scan_unit_tests`
-- [ ] Verify `UnitTestScanner` import exists
-- [ ] Test command works: `upcast scan-unit-tests --help`
+- [x] Remove duplicate `scan_unit_tests_cmd` (old implementation, line ~860)
+- [x] Keep `scan_unit_tests_new_cmd` and rename to `scan_unit_tests_cmd`
+- [x] Ensure command name is `scan-unit-tests` (no -new suffix)
+- [x] Remove import: `from upcast.unit_test_scanner.cli import scan_unit_tests`
+- [x] Verify `UnitTestScanner` import exists
+- [x] Test command works: `upcast scan-unit-tests --help`
 
 ### Task 2.5: Verify scan-signals
 
-- [ ] Confirm `scan-signals` already uses new `SignalScanner`
-- [ ] Remove any deprecated warning from scanner implementation
-- [ ] Add `SignalScanner` to main imports if not present
-- [ ] Test command works: `upcast scan-signals --help`
+- [x] Confirm `scan-signals` already uses new `SignalScanner`
+- [x] Remove any deprecated warning from scanner implementation
+- [x] Add `SignalScanner` to main imports if not present
+- [x] Test command works: `upcast scan-signals --help`
 
 ### Task 2.6: Clean up imports in main.py
 
-- [ ] Remove all old scanner module imports
-- [ ] Ensure all new scanners are in unified import block
-- [ ] Remove unused imports
-- [ ] Run ruff to check for import errors
+- [x] Remove all old scanner module imports
+- [x] Ensure all new scanners are in unified import block
+- [x] Remove unused imports
+- [x] Run ruff to check for import errors
 
 **Expected final import block**:
 
