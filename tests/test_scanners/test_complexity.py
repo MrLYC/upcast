@@ -40,6 +40,7 @@ class TestComplexityResultModel:
                 end_line=10,
                 complexity=5,
                 severity="warning",
+                message=None,
             )
 
     def test_result_validates_complexity(self):
@@ -51,6 +52,7 @@ class TestComplexityResultModel:
                 end_line=10,
                 complexity=-1,  # invalid
                 severity="warning",
+                message=None,
             )
 
 
@@ -62,6 +64,7 @@ class TestComplexitySummaryModel:
         summary = ComplexitySummary(
             total_count=10,
             files_scanned=3,
+            scan_duration_ms=100,
             high_complexity_count=5,
             by_severity={"warning": 3, "high_risk": 2},
         )
@@ -78,6 +81,7 @@ class TestComplexityOutputModel:
         summary = ComplexitySummary(
             total_count=2,
             files_scanned=1,
+            scan_duration_ms=50,
             high_complexity_count=2,
             by_severity={"warning": 1, "high_risk": 1},
         )
@@ -90,6 +94,7 @@ class TestComplexityOutputModel:
                     end_line=20,
                     complexity=10,
                     severity="warning",
+                    message=None,
                 ),
                 ComplexityResult(
                     name="func2",
@@ -97,6 +102,7 @@ class TestComplexityOutputModel:
                     end_line=50,
                     complexity=20,
                     severity="high_risk",
+                    message=None,
                 ),
             ]
         }
@@ -167,10 +173,16 @@ def complex(x):
 """
         )
 
-        scanner = ComplexityScanner(threshold=10)
+        # Use low threshold to detect complex function
+        scanner = ComplexityScanner(threshold=3)
         output = scanner.scan(test_file)
 
+        # Should detect files and functions above threshold
         assert output.summary.files_scanned == 1
+        assert output.summary.total_count >= 1
+        # The complex function should be detected (key is relative path)
+        assert "test.py" in output.results
+        assert len(output.results["test.py"]) >= 1
 
     def test_scanner_handles_empty_file(self, tmp_path):
         """Test scanner handles empty files."""
@@ -186,11 +198,64 @@ def complex(x):
 
     def test_scanner_with_directory(self, tmp_path):
         """Test scanner can scan directory."""
-        (tmp_path / "file1.py").write_text("def func1(): return 1")
-        (tmp_path / "file2.py").write_text("def func2(): return 2")
+        # Create files with functions that exceed default threshold (11)
+        (tmp_path / "file1.py").write_text(
+            """
+def complex_func(x):
+    if x > 0:
+        if x > 10:
+            if x > 20:
+                if x > 30:
+                    if x > 40:
+                        if x > 50:
+                            if x > 60:
+                                if x > 70:
+                                    if x > 80:
+                                        if x > 90:
+                                            return 'very high'
+                                        return 'high9'
+                                    return 'high8'
+                                return 'high7'
+                            return 'high6'
+                        return 'high5'
+                    return 'high4'
+                return 'high3'
+            return 'high2'
+        return 'high1'
+    return 'zero'
+"""
+        )
+        (tmp_path / "file2.py").write_text(
+            """
+def another_complex(y):
+    for i in range(10):
+        if i > 0:
+            if i > 1:
+                if i > 2:
+                    if i > 3:
+                        if i > 4:
+                            if i > 5:
+                                if i > 6:
+                                    if i > 7:
+                                        if i > 8:
+                                            if i > 9:
+                                                print('max')
+                                            print('9')
+                                        print('8')
+                                    print('7')
+                                print('6')
+                            print('5')
+                        print('4')
+                    print('3')
+                print('2')
+            print('1')
+        print(i)
+"""
+        )
 
         scanner = ComplexityScanner()
         output = scanner.scan(tmp_path)
 
-        # Should scan both files
+        # Should scan both files with complex functions
         assert output.summary.files_scanned >= 1
+        assert output.summary.total_count >= 1

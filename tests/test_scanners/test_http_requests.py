@@ -15,6 +15,11 @@ class TestHttpRequestModels:
             location="test.py:10",
             statement="requests.get('http://api.example.com')",
             method="GET",
+            params=None,
+            headers=None,
+            json_body=None,
+            data=None,
+            timeout=None,
         )
         assert usage.method == "GET"
 
@@ -32,7 +37,7 @@ response = requests.get('http://api.example.com')
 """
         )
 
-        scanner = HttpRequestScanner()
+        scanner = HttpRequestsScanner()
         output = scanner.scan(test_file)
 
         assert output.summary.total_count >= 0

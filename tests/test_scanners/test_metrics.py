@@ -33,7 +33,7 @@ requests_total = Counter('http_requests_total', 'Total requests')
 """
         )
 
-        scanner = PrometheusMetricScanner()
+        scanner = MetricsScanner()
         output = scanner.scan(test_file)
 
         assert output.summary.total_count >= 0

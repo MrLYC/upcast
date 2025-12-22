@@ -128,7 +128,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsUsageOutput]):
             total_usages=total_usages,
         )
 
-        return DjangoSettingsUsageOutput(summary=summary, settings=settings_map)
+        return DjangoSettingsUsageOutput(summary=summary, results=settings_map)
 
     def _scan_definitions(self, path: Path) -> DjangoSettingsDefinitionOutput:
         """Scan for settings definitions.
@@ -165,7 +165,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsUsageOutput]):
             total_usages=0,
         )
 
-        return DjangoSettingsDefinitionOutput(summary=summary, definitions=modules)
+        return DjangoSettingsDefinitionOutput(summary=summary, results=modules)
 
     def _scan_file_for_usages(self, file_path: Path, base_path: Path) -> dict[str, SettingsUsage]:
         """Scan a file for settings usages.

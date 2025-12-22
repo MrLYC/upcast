@@ -34,7 +34,7 @@ t = threading.Thread(target=lambda: None)
 """
         )
 
-        scanner = ConcurrencyPatternScanner()
+        scanner = ConcurrencyScanner()
         output = scanner.scan(test_file)
 
         assert output.summary.total_count >= 0
