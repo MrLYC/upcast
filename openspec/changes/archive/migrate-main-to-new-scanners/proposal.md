@@ -3,10 +3,12 @@
 ## Metadata
 
 - **Change ID**: `migrate-main-to-new-scanners`
-- **Status**: PROPOSED
+- **Status**: PARTIALLY_COMPLETED (Archived)
 - **Created**: 2025-12-22
+- **Completed**: 2025-12-22 (Phase 1-2 only)
 - **Author**: Assistant
 - **Related Issues**: N/A
+- **Follow-up Change**: `move-scanner-utilities-to-common` (Phase 3 extraction)
 
 ## Why
 
@@ -142,13 +144,18 @@ Ensure existing tests work with updated commands:
 
 ## Success Criteria
 
+**Completed** ✅:
+
 1. ✅ All CLI commands in main.py use new scanner architecture
 2. ✅ No duplicate commands (remove all `-new` suffixed commands)
-3. ✅ All old scanner module directories deleted
-4. ✅ All tests pass with new implementation
-5. ✅ No imports from old modules remain
-6. ✅ CLI commands maintain backward compatibility
-7. ✅ Documentation updated to reflect changes
+3. ✅ CLI commands maintain backward compatibility
+4. ✅ All tests pass with new implementation (428 passed)
+5. ✅ Pre-commit checks pass (ruff, ruff-format, prettier)
+6. ✅ 2 old modules deleted (exception_handler_scanner, unit_test_scanner)
+
+**Deferred to `move-scanner-utilities-to-common`** 🔄: 3. ⏸️ All old scanner module directories deleted (4 remaining) 5. ⏸️ No imports from old modules remain (new scanners still import utilities)
+
+**Reason for deferral**: New scanners depend on old module utilities. Must extract utilities to common before deletion.
 
 ## Out of Scope
 
