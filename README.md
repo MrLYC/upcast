@@ -326,7 +326,7 @@ results:
 
 ### scan-concurrency-patterns
 
-Identify concurrency patterns including async/await, threading, and multiprocessing.
+Identify concurrency patterns including async/await, threading, and multiprocessing with detailed context and parameter extraction.
 
 ```bash
 upcast scan-concurrency-patterns /path/to/project
@@ -335,36 +335,106 @@ upcast scan-concurrency-patterns /path/to/project
 **Output example:**
 
 ```yaml
-async_functions:
-  - name: fetch_data
-    file: api/client.py
-    line: 45
-    uses_await: true
-    calls:
-      - asyncio.gather
-      - aiohttp.get
+summary:
+  total_count: 15
+  files_scanned: 8
+  scan_duration_ms: 120
+  by_category:
+    threading: 6
+    multiprocessing: 3
+    asyncio: 6
 
-thread_usage:
-  - pattern: threading.Thread
-    file: workers/processor.py
-    line: 78
-    target: process_batch
-    daemon: true
+results:
+  threading:
+    thread_creation:
+      - file: workers/processor.py
+        line: 78
+        pattern: thread_creation
+        function: start_worker
+        class_name: WorkerManager
+        details:
+          target: process_batch
+          name: worker-1
+        statement: threading.Thread(target=process_batch, name="worker-1")
 
-multiprocessing:
-  - pattern: multiprocessing.Pool
-    file: tasks/parallel.py
-    line: 123
-    workers: 4
+    thread_pool_executor:
+      - file: tasks/parallel.py
+        line: 45
+        pattern: thread_pool_executor
+        function: setup_executor
+        details:
+          max_workers: 4
+        statement: ThreadPoolExecutor(max_workers=4)
+
+    submit:
+      - file: tasks/parallel.py
+        line: 67
+        pattern: executor_submit_thread
+        function: process_items
+        details:
+          function: worker_function
+        api_call: submit
+        statement: executor.submit(worker_function, item)
+
+  multiprocessing:
+    process_creation:
+      - file: compute/workers.py
+        line: 123
+        pattern: process_creation
+        function: start_compute
+        details:
+          target: compute_intensive_task
+        statement: multiprocessing.Process(target=compute_intensive_task)
+
+    run_in_executor:
+      - file: api/handlers.py
+        line: 89
+        pattern: run_in_executor_process
+        function: async_handler
+        details:
+          executor_type: ProcessPoolExecutor
+          function: cpu_intensive
+        api_call: run_in_executor
+        statement: await loop.run_in_executor(process_pool, cpu_intensive)
+
+  asyncio:
+    async_function:
+      - file: api/client.py
+        line: 45
+        pattern: async_function
+        function: fetch_data
+        statement: async def fetch_data
+
+    create_task:
+      - file: api/client.py
+        line: 78
+        pattern: create_task
+        function: fetch_all
+        details:
+          coroutine: fetch_data
+        api_call: create_task
+        statement: asyncio.create_task(fetch_data(url))
+
+    run_in_executor:
+      - file: api/handlers.py
+        line: 56
+        pattern: run_in_executor_thread
+        function: async_handler
+        details:
+          executor_type: ThreadPoolExecutor
+          function: io_operation
+        api_call: run_in_executor
+        statement: await loop.run_in_executor(thread_pool, io_operation)
 ```
 
 **Key features:**
 
-- Detects async/await patterns
-- Identifies threading usage
-- Finds multiprocessing constructs
-- Tracks asyncio operations
-- Flags potential concurrency issues
+- **Pattern-Specific Detection**: Distinguishes Thread creation, ThreadPoolExecutor, submit() calls, etc.
+- **Context Extraction**: Captures enclosing function and class names for each pattern
+- **Parameter Extraction**: Extracts target functions, max_workers, coroutine names
+- **Executor Resolution**: Two-pass scanning resolves executor variables in submit() and run_in_executor()
+- **API Call Tracking**: Identifies specific API methods (create_task, submit, run_in_executor)
+- **Smart Filtering**: Skips asyncio.create_task() with unresolvable coroutines to reduce noise
 
 ### scan-blocking-operations
 
