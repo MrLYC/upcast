@@ -1,4 +1,8 @@
-"""View reference resolution utilities."""
+"""View reference resolution utilities.
+
+This module contains utilities for resolving Django view references in URL patterns.
+Extracted from django_url_scanner for reuse across scanners.
+"""
 
 import sys
 from typing import Any

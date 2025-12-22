@@ -1,4 +1,8 @@
-"""URL pattern parsing utilities."""
+"""URL pattern parsing utilities.
+
+This module contains utilities for parsing Django URL patterns.
+Extracted from django_url_scanner for reuse across scanners.
+"""
 
 import re
 from typing import Any

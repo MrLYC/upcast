@@ -10,10 +10,10 @@ from pathlib import Path
 
 from astroid import nodes
 
+from upcast.common.django.router_parser import parse_router_registrations
+from upcast.common.django.url_parser import parse_url_pattern
+from upcast.common.django.view_resolver import resolve_view
 from upcast.common.scanner_base import BaseScanner
-from upcast.django_url_scanner.router_parser import parse_router_registrations
-from upcast.django_url_scanner.url_parser import parse_url_pattern
-from upcast.django_url_scanner.view_resolver import resolve_view
 from upcast.models.django_urls import DjangoUrlOutput, DjangoUrlSummary, UrlModule, UrlPattern
 
 logger = logging.getLogger(__name__)

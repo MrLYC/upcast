@@ -1,4 +1,8 @@
-"""DRF Router parsing utilities."""
+"""DRF Router parsing utilities.
+
+This module contains utilities for parsing Django REST Framework router registrations.
+Extracted from django_url_scanner for reuse across scanners.
+"""
 
 from typing import Any
 
