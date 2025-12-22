@@ -4,7 +4,7 @@ from typing import Any
 
 from astroid import MANAGER, nodes
 
-from upcast.signal_scanner.signal_parser import (
+from upcast.common.signals.signal_parser import (
     SignalUsage,
     categorize_celery_signal,
     categorize_django_signal,

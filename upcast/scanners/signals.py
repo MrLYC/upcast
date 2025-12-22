@@ -56,7 +56,7 @@ class SignalScanner(BaseScanner[SignalOutput]):
         """
         import time
 
-        from upcast.signal_scanner.checker import SignalChecker
+        from upcast.common.signals.signal_checker import SignalChecker
 
         start_time = time.time()
 
