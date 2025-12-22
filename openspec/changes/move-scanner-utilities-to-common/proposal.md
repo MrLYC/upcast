@@ -3,8 +3,9 @@
 ## Metadata
 
 - **Change ID**: `move-scanner-utilities-to-common`
-- **Status**: PROPOSED
+- **Status**: COMPLETED
 - **Created**: 2025-12-22
+- **Completed**: 2025-12-22
 - **Author**: Assistant
 - **Related Changes**: `migrate-main-to-new-scanners` (prerequisite completed)
 
