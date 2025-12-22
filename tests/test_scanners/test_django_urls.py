@@ -19,6 +19,8 @@ class TestDjangoUrlModels:
             name="user-list",
             is_partial=False,
             is_conditional=False,
+            converters=[],
+            named_groups=[],
         )
         assert pattern.type == "path"
         assert pattern.pattern == "api/users/"

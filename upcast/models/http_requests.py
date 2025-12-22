@@ -23,16 +23,16 @@ class HttpRequestUsage(BaseModel):
         is_async: Whether using async library
     """
 
-    location: str = Field(..., description="file:line format")
-    statement: str = Field(..., description="Request statement")
-    method: str = Field(..., description="HTTP method")
+    location: str = Field(description="file:line format")
+    statement: str = Field(description="Request statement")
+    method: str = Field(description="HTTP method")
     params: dict[str, Any] | None = Field(None, description="Query parameters")
     headers: dict[str, Any] | None = Field(None, description="Request headers")
     json_body: dict[str, Any] | None = Field(None, description="JSON body")
     data: Any | None = Field(None, description="Form data")
     timeout: float | int | None = Field(None, description="Timeout")
-    session_based: bool = Field(..., description="Using session")
-    is_async: bool = Field(..., description="Async request")
+    session_based: bool = Field(description="Using session")
+    is_async: bool = Field(description="Async request")
 
 
 class HttpRequestInfo(BaseModel):
@@ -44,9 +44,9 @@ class HttpRequestInfo(BaseModel):
         usages: List of request usages
     """
 
-    method: str = Field(..., description="Primary HTTP method")
-    library: str = Field(..., description="Primary library (requests, httpx, etc)")
-    usages: list[HttpRequestUsage] = Field(..., description="Request usages")
+    method: str = Field(description="Primary HTTP method")
+    library: str = Field(description="Primary library (requests, httpx, etc)")
+    usages: list[HttpRequestUsage] = Field(description="Request usages")
 
 
 class HttpRequestSummary(ScannerSummary):
@@ -58,9 +58,9 @@ class HttpRequestSummary(ScannerSummary):
         by_library: Count by library
     """
 
-    total_requests: int = Field(..., ge=0, description="Total number of requests")
-    unique_urls: int = Field(..., ge=0, description="Number of unique URLs")
-    by_library: dict[str, int] = Field(default_factory=dict, description="Count by library")
+    total_requests: int = Field(ge=0, description="Total number of requests")
+    unique_urls: int = Field(ge=0, description="Number of unique URLs")
+    by_library: dict[str, int] = Field(description="Count by library")
 
 
 class HttpRequestOutput(ScannerOutput[dict[str, HttpRequestInfo]]):
@@ -72,4 +72,4 @@ class HttpRequestOutput(ScannerOutput[dict[str, HttpRequestInfo]]):
     """
 
     summary: HttpRequestSummary
-    results: dict[str, HttpRequestInfo] = Field(..., description="HTTP requests")
+    results: dict[str, HttpRequestInfo] = Field(description="HTTP requests")

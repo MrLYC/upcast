@@ -167,7 +167,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             self.env_vars[name].required = True
 
         # Update default value if provided and not already set
-        if default_value is not None and self.env_vars[name].default_value is None:
+        if default_value is not None and not self.env_vars[name].default_value:
             self.env_vars[name].default_value = default_value
 
     def _calculate_summary(

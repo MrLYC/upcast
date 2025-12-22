@@ -25,8 +25,8 @@ class ScannerSummary(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    total_count: int = Field(..., ge=0, description="Total items found")
-    files_scanned: int = Field(..., ge=0, description="Number of files scanned")
+    total_count: int = Field(ge=0, description="Total items found")
+    files_scanned: int = Field(ge=0, description="Number of files scanned")
     scan_duration_ms: int | None = Field(None, ge=0, description="Scan duration in milliseconds")
 
 

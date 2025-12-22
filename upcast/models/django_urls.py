@@ -28,21 +28,21 @@ class UrlPattern(BaseModel):
         note: Note for dynamic patterns
     """
 
-    type: str = Field(..., description="Pattern type (path, re_path, include, etc)")
+    type: str = Field(description="Pattern type (path, re_path, include, etc)")
     pattern: str | None = Field(None, description="URL pattern string")
     view_module: str | None = Field(None, description="View module path")
     view_name: str | None = Field(None, description="View function/class name")
     include_module: str | None = Field(None, description="Included URLconf module")
     namespace: str | None = Field(None, description="URL namespace")
     name: str | None = Field(None, description="URL pattern name")
-    converters: list[str] = Field(default_factory=list, description="Path converters")
-    named_groups: list[str] = Field(default_factory=list, description="Named regex groups")
+    converters: list[str] = Field(description="Path converters")
+    named_groups: list[str] = Field(description="Named regex groups")
     viewset_module: str | None = Field(None, description="ViewSet module")
     viewset_name: str | None = Field(None, description="ViewSet class name")
     basename: str | None = Field(None, description="Router basename")
     router_type: str | None = Field(None, description="Router type")
-    is_partial: bool = Field(..., description="Pattern is incomplete")
-    is_conditional: bool = Field(..., description="Pattern is conditional")
+    is_partial: bool = Field(description="Pattern is incomplete")
+    is_conditional: bool = Field(description="Pattern is conditional")
     description: str | None = Field(None, description="Pattern description")
     note: str | None = Field(None, description="Note for dynamic patterns")
 
@@ -54,7 +54,7 @@ class UrlModule(BaseModel):
         urlpatterns: List of URL patterns
     """
 
-    urlpatterns: list[UrlPattern] = Field(..., description="URL patterns")
+    urlpatterns: list[UrlPattern] = Field(description="URL patterns")
 
 
 class DjangoUrlSummary(ScannerSummary):
@@ -65,8 +65,8 @@ class DjangoUrlSummary(ScannerSummary):
         total_patterns: Total number of URL patterns
     """
 
-    total_modules: int = Field(..., ge=0, description="Number of URLconf modules")
-    total_patterns: int = Field(..., ge=0, description="Total URL patterns")
+    total_modules: int = Field(ge=0, description="Number of URLconf modules")
+    total_patterns: int = Field(ge=0, description="Total URL patterns")
 
 
 class DjangoUrlOutput(ScannerOutput[dict[str, UrlModule]]):
@@ -78,4 +78,4 @@ class DjangoUrlOutput(ScannerOutput[dict[str, UrlModule]]):
     """
 
     summary: DjangoUrlSummary
-    results: dict[str, UrlModule] = Field(..., description="URL modules")
+    results: dict[str, UrlModule] = Field(description="URL modules")

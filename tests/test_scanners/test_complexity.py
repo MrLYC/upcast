@@ -23,6 +23,8 @@ class TestComplexityResultModel:
             complexity=15,
             severity="warning",
             message="Function has high complexity",
+            comment_lines=5,
+            code_lines=40,
         )
 
         assert result.name == "complex_function"
@@ -116,7 +118,9 @@ class TestComplexityOutputModel:
                     end_line=20,
                     complexity=10,
                     severity="warning",
-                    message=None,
+                    message="",
+                    comment_lines=2,
+                    code_lines=10,
                 ),
                 ComplexityResult(
                     name="func2",
@@ -124,7 +128,9 @@ class TestComplexityOutputModel:
                     end_line=50,
                     complexity=20,
                     severity="high_risk",
-                    message=None,
+                    message="",
+                    comment_lines=3,
+                    code_lines=20,
                 ),
             ]
         }

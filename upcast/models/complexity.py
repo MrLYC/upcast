@@ -22,17 +22,17 @@ class ComplexityResult(BaseModel):
         code_lines: Total lines (code + comments + blank)
     """
 
-    name: str = Field(..., description="Function name")
-    line: int = Field(..., ge=1, description="Start line number")
-    end_line: int = Field(..., ge=1, description="End line number")
-    complexity: int = Field(..., ge=0, description="Cyclomatic complexity score")
-    severity: str = Field(..., description="Severity level (warning, high_risk, critical)")
-    message: str | None = Field(None, description="Optional message")
-    description: str | None = Field(None, description="First line of docstring")
-    signature: str | None = Field(None, description="Complete function signature")
-    code: str | None = Field(None, description="Full function source code")
-    comment_lines: int = Field(default=0, ge=0, description="Number of comment lines")
-    code_lines: int = Field(default=0, ge=0, description="Total lines")
+    name: str = Field(description="Function name")
+    line: int = Field(ge=1, description="Start line number")
+    end_line: int = Field(ge=1, description="End line number")
+    complexity: int = Field(ge=0, description="Cyclomatic complexity score")
+    severity: str = Field(description="Severity level (warning, high_risk, critical)")
+    message: str = Field("", description="Optional message")
+    description: str = Field("", description="First line of docstring")
+    signature: str = Field("", description="Complete function signature")
+    code: str = Field("", description="Full function source code")
+    comment_lines: int = Field(ge=0, description="Number of comment lines")
+    code_lines: int = Field(ge=0, description="Total lines")
 
 
 class ComplexitySummary(ScannerSummary):
@@ -43,8 +43,8 @@ class ComplexitySummary(ScannerSummary):
         by_severity: Count by severity level
     """
 
-    high_complexity_count: int = Field(..., ge=0, description="Functions above threshold")
-    by_severity: dict[str, int] = Field(default_factory=dict, description="Count by severity level")
+    high_complexity_count: int = Field(ge=0, description="Functions above threshold")
+    by_severity: dict[str, int] = Field(description="Count by severity level")
 
 
 class ComplexityOutput(ScannerOutput[dict[str, list[ComplexityResult]]]):
@@ -56,4 +56,4 @@ class ComplexityOutput(ScannerOutput[dict[str, list[ComplexityResult]]]):
     """
 
     summary: ComplexitySummary
-    results: dict[str, list[ComplexityResult]] = Field(..., description="Results grouped by module path")
+    results: dict[str, list[ComplexityResult]] = Field(description="Results grouped by module path")

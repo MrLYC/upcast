@@ -25,9 +25,9 @@ class ExceptClause(BaseModel):
         raise_count: Number of raise statements
     """
 
-    line: int = Field(..., ge=1, description="Line number")
-    exception_types: list[str] = Field(default_factory=list, description="Exception types handled")
-    lines: int = Field(..., ge=0, description="Number of lines in clause")
+    line: int | None = Field(ge=1, description="Line number")
+    exception_types: list[str] = Field(description="Exception types handled")
+    lines: int = Field(ge=0, description="Number of lines in clause")
     log_debug_count: int = Field(default=0, ge=0, description="log.debug() calls")
     log_info_count: int = Field(default=0, ge=0, description="log.info() calls")
     log_warning_count: int = Field(default=0, ge=0, description="log.warning() calls")
@@ -49,8 +49,8 @@ class ElseClause(BaseModel):
         lines: Number of lines in clause
     """
 
-    line: int = Field(..., ge=1, description="Line number")
-    lines: int = Field(..., ge=0, description="Number of lines")
+    line: int = Field(ge=0, description="Line number")
+    lines: int = Field(ge=0, description="Number of lines")
 
 
 class FinallyClause(BaseModel):
@@ -61,8 +61,8 @@ class FinallyClause(BaseModel):
         lines: Number of lines in clause
     """
 
-    line: int = Field(..., ge=1, description="Line number")
-    lines: int = Field(..., ge=0, description="Number of lines")
+    line: int = Field(ge=0, description="Line number")
+    lines: int = Field(ge=0, description="Number of lines")
 
 
 class ExceptionHandler(BaseModel):
@@ -78,11 +78,11 @@ class ExceptionHandler(BaseModel):
         finally_clause: Optional finally clause
     """
 
-    file: str = Field(..., description="File path")
-    lineno: int = Field(..., ge=1, description="Start line")
-    end_lineno: int = Field(..., ge=1, description="End line")
-    try_lines: int = Field(..., ge=0, description="Number of lines in try block")
-    except_clauses: list[ExceptClause] = Field(..., description="Except clauses")
+    file: str = Field(description="File path")
+    lineno: int | None = Field(ge=1, description="Start line")
+    end_lineno: int | None = Field(ge=1, description="End line")
+    try_lines: int | None = Field(ge=0, description="Number of lines in try block")
+    except_clauses: list[ExceptClause] = Field(description="Except clauses")
     else_clause: ElseClause | None = Field(None, description="Else clause")
     finally_clause: FinallyClause | None = Field(None, description="Finally clause")
 
@@ -95,8 +95,8 @@ class ExceptionHandlerSummary(ScannerSummary):
         total_except_clauses: Total number of except clauses
     """
 
-    total_handlers: int = Field(..., ge=0, description="Total try-except blocks")
-    total_except_clauses: int = Field(..., ge=0, description="Total except clauses")
+    total_handlers: int = Field(ge=0, description="Total try-except blocks")
+    total_except_clauses: int = Field(ge=0, description="Total except clauses")
 
 
 class ExceptionHandlerOutput(ScannerOutput[list[ExceptionHandler]]):
@@ -108,4 +108,4 @@ class ExceptionHandlerOutput(ScannerOutput[list[ExceptionHandler]]):
     """
 
     summary: ExceptionHandlerSummary
-    results: list[ExceptionHandler] = Field(..., description="Exception handlers")
+    results: list[ExceptionHandler] = Field(description="Exception handlers")

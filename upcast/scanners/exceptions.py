@@ -91,8 +91,8 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
 
             return ExceptionHandler(
                 file=file_path,
-                lineno=node.lineno or 0,
-                end_lineno=end_line or 0,
+                lineno=node.lineno,
+                end_lineno=end_line,
                 try_lines=try_lines,
                 except_clauses=except_clauses,
                 else_clause=else_clause,
@@ -109,7 +109,7 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
         flow_counts = self._count_control_flow(handler.body)
 
         return ExceptClause(
-            line=handler.lineno or 0,
+            line=handler.lineno,
             exception_types=exception_types,
             lines=lines,
             **log_counts,

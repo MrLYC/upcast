@@ -19,11 +19,11 @@ class BlockingOperation(BaseModel):
         class_name: Containing class name if applicable
     """
 
-    file: str = Field(..., description="File path")
-    line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(..., ge=0, description="Column number")
-    category: str = Field(..., description="Operation category")
-    operation: str = Field(..., description="Operation name")
+    file: str = Field(description="File path")
+    line: int | None = Field(ge=1, description="Line number")
+    column: int | None = Field(ge=0, description="Column number")
+    category: str = Field(description="Operation category")
+    operation: str = Field(description="Operation name")
     statement: str | None = Field(None, description="Code statement")
     function: str | None = Field(None, description="Containing function")
     class_name: str | None = Field(None, description="Containing class")
@@ -37,7 +37,7 @@ class BlockingOperationsSummary(ScannerSummary):
     """
 
     by_category: dict[str, int] = Field(
-        default_factory=dict,
+        ...,
         description="Count by category (time_based, database, synchronization, subprocess)",
     )
 
@@ -51,4 +51,4 @@ class BlockingOperationsOutput(ScannerOutput[dict[str, list[BlockingOperation]]]
     """
 
     summary: BlockingOperationsSummary
-    results: dict[str, list[BlockingOperation]] = Field(..., description="Operations grouped by category")
+    results: dict[str, list[BlockingOperation]] = Field(description="Operations grouped by category")

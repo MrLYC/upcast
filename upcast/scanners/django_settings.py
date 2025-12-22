@@ -252,7 +252,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsUsageOutput]):
 
         location = SettingsLocation(
             file=file_str,
-            line=node.lineno or 1,
+            line=node.lineno,
             column=node.col_offset,
             pattern=pattern,
             code=code,

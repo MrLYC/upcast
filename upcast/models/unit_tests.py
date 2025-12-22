@@ -13,8 +13,8 @@ class TargetModule(BaseModel):
         symbols: Imported symbols from the module
     """
 
-    module: str = Field(..., description="Module path")
-    symbols: list[str] = Field(default_factory=list, description="Imported symbols")
+    module: str = Field(description="Module path")
+    symbols: list[str] = Field(description="Imported symbols")
 
 
 class UnitTestInfo(BaseModel):
@@ -29,12 +29,12 @@ class UnitTestInfo(BaseModel):
         targets: List of imported modules/symbols
     """
 
-    name: str = Field(..., description="Test function name")
-    file: str = Field(..., description="File path")
-    line_range: tuple[int, int] = Field(..., description="(start_line, end_line)")
-    body_md5: str = Field(..., description="MD5 hash of test body")
-    assert_count: int = Field(..., ge=0, description="Number of assertions")
-    targets: list[TargetModule] = Field(default_factory=list, description="Imported modules")
+    name: str = Field(description="Test function name")
+    file: str = Field(description="File path")
+    line_range: tuple[int, int] = Field(description="(start_line, end_line)")
+    body_md5: str = Field(description="MD5 hash of test body")
+    assert_count: int = Field(ge=0, description="Number of assertions")
+    targets: list[TargetModule] = Field(description="Imported modules")
 
 
 class UnitTestSummary(ScannerSummary):
@@ -46,9 +46,9 @@ class UnitTestSummary(ScannerSummary):
         total_assertions: Total assertion count
     """
 
-    total_tests: int = Field(..., ge=0, description="Number of test functions")
-    total_files: int = Field(..., ge=0, description="Number of test files")
-    total_assertions: int = Field(..., ge=0, description="Total assertions")
+    total_tests: int = Field(ge=0, description="Number of test functions")
+    total_files: int = Field(ge=0, description="Number of test files")
+    total_assertions: int = Field(ge=0, description="Total assertions")
 
 
 class UnitTestOutput(ScannerOutput[dict[str, list[UnitTestInfo]]]):
@@ -60,4 +60,4 @@ class UnitTestOutput(ScannerOutput[dict[str, list[UnitTestInfo]]]):
     """
 
     summary: UnitTestSummary
-    results: dict[str, list[UnitTestInfo]] = Field(..., description="Tests grouped by file path")
+    results: dict[str, list[UnitTestInfo]] = Field(description="Tests grouped by file path")

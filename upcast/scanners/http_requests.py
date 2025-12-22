@@ -1,7 +1,8 @@
 """HTTP requests scanner implementation with Pydantic models."""
 
+import time
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from astroid import nodes
 
@@ -24,6 +25,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
     def scan(self, path: Path) -> HttpRequestOutput:
         """Scan for HTTP request patterns."""
+        start_time = time.time()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -47,7 +49,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         # Aggregate by URL
         requests_info = self._aggregate_requests(requests_by_url)
-        summary = self._calculate_summary(requests_info)
+        scan_duration_ms = int((time.time() - start_time) * 1000)
+        summary = self._calculate_summary(requests_info, scan_duration_ms)
 
         return HttpRequestOutput(summary=summary, results=requests_info)
 
@@ -59,10 +62,17 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         if not library:
             return None
 
+        if not method:
+            return None
+
         return HttpRequestUsage(
             location=f"{file_path}:{node.lineno}",
             statement=safe_as_string(node),
             method=method.upper(),
+            params=self._extract_params(node),
+            headers=self._extract_headers(node),
+            json_body=self._extract_json_body(node),
+            data=self._extract_data(node),
             timeout=self._extract_timeout(node),
             session_based="Session" in safe_as_string(func),
             is_async=library == "aiohttp" or "async" in safe_as_string(func),
@@ -447,6 +457,51 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         query_indicators = ["?", "urlencode", "params=", "query="]
         return any(indicator in node_str for indicator in query_indicators)
 
+    def _extract_params(self, node: nodes.Call) -> dict[str, Any] | None:
+        """Extract query parameters from params keyword argument."""
+        for keyword in node.keywords or []:
+            if keyword.arg == "params":
+                params_value = safe_infer_value(keyword.value)
+                if isinstance(params_value, dict):
+                    return params_value
+                # If we can't infer the exact value, return a placeholder
+                return {"<dynamic>": "..."}
+        return None
+
+    def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
+        """Extract headers from headers keyword argument."""
+        for keyword in node.keywords or []:
+            if keyword.arg == "headers":
+                headers_value = safe_infer_value(keyword.value)
+                if isinstance(headers_value, dict):
+                    return headers_value
+                # If we can't infer the exact value, return a placeholder
+                return {"<dynamic>": "..."}
+        return None
+
+    def _extract_json_body(self, node: nodes.Call) -> dict[str, Any] | None:
+        """Extract JSON body from json keyword argument."""
+        for keyword in node.keywords or []:
+            if keyword.arg == "json":
+                json_value = safe_infer_value(keyword.value)
+                if isinstance(json_value, dict):
+                    return json_value
+                # If we can't infer the exact value, return a placeholder
+                return {"<dynamic>": "..."}
+        return None
+
+    def _extract_data(self, node: nodes.Call) -> Any | None:
+        """Extract form data from data keyword argument."""
+        for keyword in node.keywords or []:
+            if keyword.arg == "data":
+                data_value = safe_infer_value(keyword.value)
+                # Data can be dict, string, bytes, or other types
+                if data_value is not None:
+                    return data_value
+                # If we can't infer the exact value, return a placeholder
+                return "<dynamic>"
+        return None
+
     def _extract_timeout(self, node: nodes.Call) -> float | int | None:
         """Extract timeout parameter."""
         for keyword in node.keywords or []:
@@ -481,7 +536,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return result
 
-    def _calculate_summary(self, requests: dict[str, HttpRequestInfo]) -> HttpRequestSummary:
+    def _calculate_summary(self, requests: dict[str, HttpRequestInfo], scan_duration_ms: int) -> HttpRequestSummary:
         """Calculate summary statistics."""
         all_usages = [usage for info in requests.values() for usage in info.usages]
         by_library: dict[str, int] = {}
@@ -492,6 +547,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         return HttpRequestSummary(
             total_count=len(all_usages),
             files_scanned=len({u.location.split(":")[0] for u in all_usages}),
+            scan_duration_ms=scan_duration_ms,
             total_requests=len(all_usages),
             unique_urls=len(requests),
             by_library=by_library,

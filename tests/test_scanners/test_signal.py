@@ -90,6 +90,8 @@ class TestSignalInfoModel:
             type="django",
             category="custom_signals",
             status="unused",
+            receivers=[],
+            senders=[],
         )
 
         assert info.status == "unused"
@@ -102,6 +104,7 @@ class TestSignalInfoModel:
             type="celery",
             category="task_signals",
             receivers=[SignalUsage(file="app/tasks.py", line=20, column=0, handler="on_task_success")],
+            senders=[],
         )
 
         assert info.type == "celery"
@@ -194,12 +197,14 @@ class TestSignalOutputModel:
                 type="django",
                 category="model_signals",
                 receivers=[SignalUsage(file="app/signals.py", line=10, column=0)],
+                senders=[],
             ),
             SignalInfo(
                 signal="pre_delete",
                 type="django",
                 category="model_signals",
                 receivers=[SignalUsage(file="app/signals.py", line=20, column=0)],
+                senders=[],
             ),
         ]
 
@@ -221,7 +226,7 @@ class TestSignalOutputModel:
             custom_signals_defined=0,
             unused_custom_signals=0,
         )
-        results = [SignalInfo(signal="test", type="django", category="custom_signals")]
+        results = [SignalInfo(signal="test", type="django", category="custom_signals", receivers=[], senders=[])]
 
         output = SignalOutput(summary=summary, results=results, metadata={})
 
@@ -242,7 +247,7 @@ class TestSignalOutputModel:
             custom_signals_defined=0,
             unused_custom_signals=0,
         )
-        results = [SignalInfo(signal="test", type="django", category="custom_signals")]
+        results = [SignalInfo(signal="test", type="django", category="custom_signals", receivers=[], senders=[])]
 
         output = SignalOutput(summary=summary, results=results, metadata={})
 

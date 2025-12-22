@@ -18,10 +18,10 @@ class SettingsLocation(BaseModel):
         code: Code snippet
     """
 
-    file: str = Field(..., description="File path")
-    line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(..., ge=0, description="Column number")
-    pattern: str = Field(..., description="Usage pattern")
+    file: str = Field(description="File path")
+    line: int | None = Field(ge=1, description="Line number")
+    column: int | None = Field(ge=0, description="Column number")
+    pattern: str = Field(description="Usage pattern")
     code: str | None = Field(None, description="Code snippet")
 
 
@@ -33,8 +33,8 @@ class SettingsUsage(BaseModel):
         locations: List of usage locations
     """
 
-    count: int = Field(..., ge=0, description="Number of usages")
-    locations: list[SettingsLocation] = Field(default_factory=list, description="Usage locations")
+    count: int = Field(ge=0, description="Number of usages")
+    locations: list[SettingsLocation] = Field(description="Usage locations")
 
 
 class SettingDefinition(BaseModel):
@@ -49,7 +49,7 @@ class SettingDefinition(BaseModel):
 
     value: Any | None = Field(None, description="Static value")
     statement: str | None = Field(None, description="Dynamic assignment statement")
-    lineno: int = Field(..., ge=1, description="Line number")
+    lineno: int | None = Field(ge=1, description="Line number")
     overrides: str | None = Field(None, description="Module path this overrides")
 
 
@@ -63,10 +63,10 @@ class DynamicImport(BaseModel):
         line: Line number
     """
 
-    pattern: str = Field(..., description="Import pattern")
+    pattern: str = Field(description="Import pattern")
     base_module: str | None = Field(None, description="Base module")
-    file: str = Field(..., description="File path")
-    line: int = Field(..., ge=1, description="Line number")
+    file: str = Field(description="File path")
+    line: int = Field(ge=1, description="Line number")
 
 
 class SettingsModule(BaseModel):
@@ -78,9 +78,9 @@ class SettingsModule(BaseModel):
         dynamic_imports: List of dynamic import patterns
     """
 
-    definitions: dict[str, SettingDefinition] = Field(default_factory=dict, description="Setting definitions")
-    star_imports: list[str] = Field(default_factory=list, description="From X import * statements")
-    dynamic_imports: list[DynamicImport] = Field(default_factory=list, description="Dynamic imports")
+    definitions: dict[str, SettingDefinition] = Field(description="Setting definitions")
+    star_imports: list[str] = Field(description="From X import * statements")
+    dynamic_imports: list[DynamicImport] = Field(description="Dynamic imports")
 
 
 class DjangoSettingsSummary(ScannerSummary):
@@ -91,8 +91,8 @@ class DjangoSettingsSummary(ScannerSummary):
         total_usages: Total usage count
     """
 
-    total_settings: int = Field(..., ge=0, description="Number of unique settings")
-    total_usages: int = Field(..., ge=0, description="Total usage count")
+    total_settings: int = Field(ge=0, description="Number of unique settings")
+    total_usages: int = Field(ge=0, description="Total usage count")
 
 
 class DjangoSettingsUsageOutput(ScannerOutput[dict[str, SettingsUsage]]):
@@ -104,7 +104,7 @@ class DjangoSettingsUsageOutput(ScannerOutput[dict[str, SettingsUsage]]):
     """
 
     summary: DjangoSettingsSummary
-    results: dict[str, SettingsUsage] = Field(..., description="Settings usages")
+    results: dict[str, SettingsUsage] = Field(description="Settings usages")
 
 
 class DjangoSettingsDefinitionOutput(ScannerOutput[dict[str, SettingsModule]]):
@@ -116,7 +116,7 @@ class DjangoSettingsDefinitionOutput(ScannerOutput[dict[str, SettingsModule]]):
     """
 
     summary: DjangoSettingsSummary
-    results: dict[str, SettingsModule] = Field(..., description="Settings definitions")
+    results: dict[str, SettingsModule] = Field(description="Settings definitions")
 
 
 class DjangoSettingsCombinedOutput(BaseModel):
@@ -127,5 +127,5 @@ class DjangoSettingsCombinedOutput(BaseModel):
         usages: Settings usages keyed by setting name
     """
 
-    definitions: dict[str, SettingsModule] = Field(..., description="Settings definitions")
-    usages: dict[str, SettingsUsage] = Field(..., description="Settings usages")
+    definitions: dict[str, SettingsModule] = Field(description="Settings definitions")
+    usages: dict[str, SettingsUsage] = Field(description="Settings usages")

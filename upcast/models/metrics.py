@@ -14,9 +14,9 @@ class MetricUsage(BaseModel):
         statement: Code statement
     """
 
-    location: str = Field(..., description="file:line format")
-    pattern: str = Field(..., description="Usage pattern")
-    statement: str = Field(..., description="Code statement")
+    location: str = Field(description="file:line format")
+    pattern: str = Field(description="Usage pattern")
+    statement: str = Field(description="Code statement")
 
 
 class MetricInfo(BaseModel):
@@ -35,16 +35,16 @@ class MetricInfo(BaseModel):
         usages: List of metric usages
     """
 
-    name: str = Field(..., description="Metric name")
-    type: str = Field(..., description="Metric type (Counter, Gauge, Histogram, Summary)")
-    help: str = Field(..., description="Metric help text")
-    labels: list[str] = Field(default_factory=list, description="Label names")
+    name: str = Field(description="Metric name")
+    type: str = Field(description="Metric type (Counter, Gauge, Histogram, Summary)")
+    help: str | None = Field(None, description="Metric help text")
+    labels: list[str] = Field(description="Label names")
     namespace: str | None = Field(None, description="Metric namespace")
     subsystem: str | None = Field(None, description="Metric subsystem")
     unit: str | None = Field(None, description="Metric unit")
-    custom_collector: bool = Field(..., description="Custom collector")
+    custom_collector: bool = Field(description="Custom collector")
     buckets: list[float] | None = Field(None, description="For Histogram")
-    usages: list[MetricUsage] = Field(default_factory=list, description="Metric usages")
+    usages: list[MetricUsage] = Field(description="Metric usages")
 
 
 class PrometheusMetricSummary(ScannerSummary):
@@ -55,8 +55,8 @@ class PrometheusMetricSummary(ScannerSummary):
         by_type: Count by metric type
     """
 
-    total_metrics: int = Field(..., ge=0, description="Total metrics")
-    by_type: dict[str, int] = Field(default_factory=dict, description="Count by type")
+    total_metrics: int = Field(ge=0, description="Total metrics")
+    by_type: dict[str, int] = Field(description="Count by type")
 
 
 class PrometheusMetricOutput(ScannerOutput[dict[str, MetricInfo]]):
@@ -68,4 +68,4 @@ class PrometheusMetricOutput(ScannerOutput[dict[str, MetricInfo]]):
     """
 
     summary: PrometheusMetricSummary
-    results: dict[str, MetricInfo] = Field(..., description="Metrics")
+    results: dict[str, MetricInfo] = Field(description="Metrics")

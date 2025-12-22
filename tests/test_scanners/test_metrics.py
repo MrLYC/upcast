@@ -16,6 +16,8 @@ class TestMetricModels:
             type="Counter",
             help="Total HTTP requests",
             custom_collector=False,
+            labels=[],
+            usages=[],
         )
         assert metric.name == "http_requests_total"
         assert metric.type == "Counter"

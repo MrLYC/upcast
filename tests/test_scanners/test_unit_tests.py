@@ -17,6 +17,7 @@ class TestUnitTestModels:
             line_range=(10, 20),
             body_md5="abc123",
             assert_count=3,
+            targets=[],
         )
         assert test_info.name == "test_example"
         assert test_info.assert_count == 3

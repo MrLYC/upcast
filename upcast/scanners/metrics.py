@@ -58,7 +58,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             return None
 
         # Extract help text
-        help_text = self._extract_string_arg(node.value, 1, "documentation") or ""
+        help_text = self._extract_string_arg(node.value, 1, "documentation")
 
         # Extract labels
         labels = self._extract_labels(node.value)

@@ -180,7 +180,7 @@ class SignalScanner(BaseScanner[SignalOutput]):
                         category=category,
                         receivers=receivers,
                         senders=senders,
-                        status=None,
+                        status="",
                     )
                 )
 

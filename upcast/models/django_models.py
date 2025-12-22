@@ -17,10 +17,10 @@ class DjangoField(BaseModel):
         line: Line number where field is defined
     """
 
-    name: str = Field(..., description="Field name")
-    type: str = Field(..., description="Field type (e.g., CharField, ForeignKey)")
-    parameters: dict[str, Any] = Field(default_factory=dict, description="Field parameters")
-    line: int = Field(..., ge=1, description="Line number")
+    name: str = Field(description="Field name")
+    type: str = Field(description="Field type (e.g., CharField, ForeignKey)")
+    parameters: dict[str, Any] = Field(description="Field parameters")
+    line: int = Field(ge=1, description="Line number")
 
 
 class DjangoRelationship(BaseModel):
@@ -34,9 +34,9 @@ class DjangoRelationship(BaseModel):
         on_delete: on_delete strategy for ForeignKey/OneToOne
     """
 
-    type: str = Field(..., description="Relationship type (ForeignKey, ManyToMany, etc)")
-    to: str = Field(..., description="Target model")
-    field: str = Field(..., description="Field name")
+    type: str = Field(description="Relationship type (ForeignKey, ManyToMany, etc)")
+    to: str = Field(description="Target model")
+    field: str = Field(description="Field name")
     related_name: str | None = Field(None, description="Related name")
     on_delete: str | None = Field(None, description="on_delete strategy")
 
@@ -55,14 +55,14 @@ class DjangoModel(BaseModel):
         line: Line number where model is defined
     """
 
-    name: str = Field(..., description="Model class name")
-    module: str = Field(..., description="Module path")
-    bases: list[str] = Field(default_factory=list, description="Base classes")
-    fields: dict[str, DjangoField] = Field(default_factory=dict, description="Model fields")
-    relationships: list[DjangoRelationship] = Field(default_factory=list, description="Relationship fields")
+    name: str = Field(description="Model class name")
+    module: str = Field(description="Module path")
+    bases: list[str] = Field(description="Base classes")
+    fields: dict[str, DjangoField] = Field(description="Model fields")
+    relationships: list[DjangoRelationship] = Field(description="Relationship fields")
     meta: dict[str, Any] | None = Field(None, description="Meta class options")
     description: str | None = Field(None, description="First line of model docstring")
-    line: int = Field(..., ge=1, description="Line number")
+    line: int = Field(ge=1, description="Line number")
 
 
 class DjangoModelSummary(ScannerSummary):
@@ -74,9 +74,9 @@ class DjangoModelSummary(ScannerSummary):
         total_relationships: Total number of relationships
     """
 
-    total_models: int = Field(..., ge=0, description="Number of models")
-    total_fields: int = Field(..., ge=0, description="Total fields")
-    total_relationships: int = Field(..., ge=0, description="Total relationships")
+    total_models: int = Field(ge=0, description="Number of models")
+    total_fields: int = Field(ge=0, description="Total fields")
+    total_relationships: int = Field(ge=0, description="Total relationships")
 
 
 class DjangoModelOutput(ScannerOutput[dict[str, DjangoModel]]):
@@ -88,4 +88,4 @@ class DjangoModelOutput(ScannerOutput[dict[str, DjangoModel]]):
     """
 
     summary: DjangoModelSummary
-    results: dict[str, DjangoModel] = Field(..., description="Models keyed by model name")
+    results: dict[str, DjangoModel] = Field(description="Models keyed by model name")

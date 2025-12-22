@@ -1,7 +1,5 @@
 """Data models for concurrency pattern scanner."""
 
-from typing import Any
-
 from pydantic import BaseModel, Field
 
 from upcast.models.base import ScannerOutput, ScannerSummary
@@ -19,12 +17,11 @@ class ConcurrencyUsage(BaseModel):
         context: Additional context information
     """
 
-    file: str = Field(..., description="File path")
-    line: int = Field(..., ge=1, description="Line number")
-    column: int = Field(..., ge=0, description="Column number")
-    pattern: str = Field(..., description="Pattern type")
+    file: str = Field(description="File path")
+    line: int | None = Field(ge=1, description="Line number")
+    column: int | None = Field(ge=0, description="Column number")
+    pattern: str = Field(description="Pattern type")
     statement: str | None = Field(None, description="Code statement")
-    context: dict[str, Any] | None = Field(None, description="Additional context")
 
 
 class ConcurrencyPatternSummary(ScannerSummary):
@@ -35,7 +32,7 @@ class ConcurrencyPatternSummary(ScannerSummary):
     """
 
     by_category: dict[str, int] = Field(
-        default_factory=dict,
+        ...,
         description="Count by category (threading, multiprocessing, asyncio, celery)",
     )
 

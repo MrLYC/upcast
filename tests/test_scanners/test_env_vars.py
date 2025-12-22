@@ -59,13 +59,13 @@ class TestEnvVarInfoModel:
         info = EnvVarInfo(
             name="API_KEY",
             required=True,
-            default_value=None,
+            default_value="",
             locations=[EnvVarLocation(file="api.py", line=5, column=0, pattern="os.getenv('API_KEY')")],
         )
 
         assert info.name == "API_KEY"
         assert info.required is True
-        assert info.default_value is None
+        assert info.default_value == ""
         assert len(info.locations) == 1
 
     def test_valid_env_var_info_optional(self):

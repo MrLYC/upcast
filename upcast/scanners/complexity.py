@@ -89,8 +89,8 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             message = f"Complexity {complexity} exceeds threshold {self.threshold}"
 
             # Extract metadata per specification
-            description = extract_description(node)
-            signature = extract_function_signature(node)
+            description = extract_description(node) or ""
+            signature = extract_function_signature(node) or ""
             code_lines = get_code_lines(node)
             comment_lines = count_comment_lines(code) if code else 0
 
@@ -103,7 +103,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 message=message,
                 description=description,
                 signature=signature,
-                code=code,
+                code=code or "",
                 comment_lines=comment_lines,
                 code_lines=code_lines,
             )

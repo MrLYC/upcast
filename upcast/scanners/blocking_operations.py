@@ -1,5 +1,6 @@
 """Blocking operations scanner implementation with Pydantic models."""
 
+import time
 from pathlib import Path
 from typing import ClassVar
 
@@ -39,6 +40,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
 
     def scan(self, path: Path) -> BlockingOperationsOutput:
         """Scan for blocking operations."""
+        start_time = time.time()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -62,7 +64,8 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                 if operation:
                     operations_by_category[operation.category].append(operation)
 
-        summary = self._calculate_summary(operations_by_category)
+        scan_duration_ms = int((time.time() - start_time) * 1000)
+        summary = self._calculate_summary(operations_by_category, scan_duration_ms)
         return BlockingOperationsOutput(summary=summary, results=operations_by_category)
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> BlockingOperation | None:
@@ -87,7 +90,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                 if self._matches_pattern(func_name, pattern):
                     return BlockingOperation(
                         file=file_path,
-                        line=node.lineno or 0,
+                        line=node.lineno,
                         column=node.col_offset,
                         category=category,
                         operation=func_name,
@@ -109,7 +112,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                 ):
                     return BlockingOperation(
                         file=file_path,
-                        line=node.lineno or 0,
+                        line=node.lineno,
                         column=node.col_offset,
                         category="synchronization",
                         operation=f"{func_name} (context)",
@@ -158,7 +161,9 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             parent = parent.parent
         return None
 
-    def _calculate_summary(self, operations: dict[str, list[BlockingOperation]]) -> BlockingOperationsSummary:
+    def _calculate_summary(
+        self, operations: dict[str, list[BlockingOperation]], scan_duration_ms: int
+    ) -> BlockingOperationsSummary:
         """Calculate summary statistics."""
         by_category = {cat: len(ops) for cat, ops in operations.items() if ops}
         total = sum(by_category.values())
@@ -168,5 +173,5 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             total_count=total,
             files_scanned=files,
             by_category=by_category,
-            scan_duration_ms=0,  # TODO: Add timing
+            scan_duration_ms=scan_duration_ms,
         )

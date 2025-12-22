@@ -1,5 +1,6 @@
 """Concurrency patterns scanner implementation with Pydantic models."""
 
+import time
 from pathlib import Path
 from typing import ClassVar
 
@@ -47,6 +48,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
 
     def scan(self, path: Path) -> ConcurrencyPatternOutput:
         """Scan for concurrency patterns."""
+        start_time = time.time()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -84,7 +86,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                     category = self._categorize_pattern(usage.pattern)
                     self._add_pattern(patterns, category, usage.pattern, usage)
 
-        summary = self._calculate_summary(patterns)
+        scan_duration_ms = int((time.time() - start_time) * 1000)
+        summary = self._calculate_summary(patterns, scan_duration_ms)
         return ConcurrencyPatternOutput(summary=summary, results=patterns)
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> ConcurrencyUsage | None:
@@ -152,7 +155,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             patterns[category][pattern_type] = []
         patterns[category][pattern_type].append(usage)
 
-    def _calculate_summary(self, patterns: dict[str, dict[str, list[ConcurrencyUsage]]]) -> ConcurrencyPatternSummary:
+    def _calculate_summary(
+        self, patterns: dict[str, dict[str, list[ConcurrencyUsage]]], scan_duration_ms: int
+    ) -> ConcurrencyPatternSummary:
         """Calculate summary statistics."""
         by_category: dict[str, int] = {}
         total = 0
@@ -173,5 +178,6 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         return ConcurrencyPatternSummary(
             total_count=total,
             files_scanned=files,
+            scan_duration_ms=scan_duration_ms,
             by_category=by_category,
         )
