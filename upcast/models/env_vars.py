@@ -62,4 +62,4 @@ class EnvVarOutput(ScannerOutput[dict[str, EnvVarInfo]]):
     """
 
     summary: EnvVarSummary
-    results: dict[str, EnvVarInfo] = Field(..., alias="env_vars", description="Environment variables")
+    results: dict[str, EnvVarInfo] = Field(..., description="Environment variables")

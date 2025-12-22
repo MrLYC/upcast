@@ -104,7 +104,7 @@ class DjangoSettingsUsageOutput(ScannerOutput[dict[str, SettingsUsage]]):
     """
 
     summary: DjangoSettingsSummary
-    results: dict[str, SettingsUsage] = Field(..., alias="settings", description="Settings usages")
+    results: dict[str, SettingsUsage] = Field(..., description="Settings usages")
 
 
 class DjangoSettingsDefinitionOutput(ScannerOutput[dict[str, SettingsModule]]):
@@ -116,7 +116,7 @@ class DjangoSettingsDefinitionOutput(ScannerOutput[dict[str, SettingsModule]]):
     """
 
     summary: DjangoSettingsSummary
-    results: dict[str, SettingsModule] = Field(..., alias="definitions", description="Settings definitions")
+    results: dict[str, SettingsModule] = Field(..., description="Settings definitions")
 
 
 class DjangoSettingsCombinedOutput(BaseModel):

@@ -51,6 +51,4 @@ class BlockingOperationsOutput(ScannerOutput[dict[str, list[BlockingOperation]]]
     """
 
     summary: BlockingOperationsSummary
-    results: dict[str, list[BlockingOperation]] = Field(
-        ..., alias="operations", description="Operations grouped by category"
-    )
+    results: dict[str, list[BlockingOperation]] = Field(..., description="Operations grouped by category")

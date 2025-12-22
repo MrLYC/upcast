@@ -108,4 +108,4 @@ class ExceptionHandlerOutput(ScannerOutput[list[ExceptionHandler]]):
     """
 
     summary: ExceptionHandlerSummary
-    results: list[ExceptionHandler] = Field(..., alias="exception_handlers", description="Exception handlers")
+    results: list[ExceptionHandler] = Field(..., description="Exception handlers")

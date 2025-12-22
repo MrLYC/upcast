@@ -49,7 +49,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         requests_info = self._aggregate_requests(requests_by_url)
         summary = self._calculate_summary(requests_info)
 
-        return HttpRequestOutput(summary=summary, requests=requests_info)
+        return HttpRequestOutput(summary=summary, results=requests_info)
 
     def _check_request_call(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> HttpRequestUsage | None:
         """Check if call is an HTTP request."""

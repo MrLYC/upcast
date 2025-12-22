@@ -63,7 +63,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                     operations_by_category[operation.category].append(operation)
 
         summary = self._calculate_summary(operations_by_category)
-        return BlockingOperationsOutput(summary=summary, operations=operations_by_category)
+        return BlockingOperationsOutput(summary=summary, results=operations_by_category)
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> BlockingOperation | None:
         """Check a node for blocking operations."""

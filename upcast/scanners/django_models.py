@@ -84,7 +84,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(models, scan_duration_ms)
 
-        return DjangoModelOutput(summary=summary, models=models)
+        return DjangoModelOutput(summary=summary, results=models)
 
     def _scan_file(self, file_path: Path) -> dict[str, dict[str, Any]]:
         """Scan a single file for Django models.

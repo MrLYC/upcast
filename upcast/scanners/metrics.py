@@ -38,7 +38,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
                     metrics[metric.name] = metric
 
         summary = self._calculate_summary(metrics)
-        return PrometheusMetricOutput(summary=summary, metrics=metrics)
+        return PrometheusMetricOutput(summary=summary, results=metrics)
 
     def _parse_metric_definition(
         self, node: nodes.Assign, file_path: str, imports: dict[str, str]

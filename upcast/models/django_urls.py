@@ -78,4 +78,4 @@ class DjangoUrlOutput(ScannerOutput[dict[str, UrlModule]]):
     """
 
     summary: DjangoUrlSummary
-    results: dict[str, UrlModule] = Field(..., alias="url_modules", description="URL modules")
+    results: dict[str, UrlModule] = Field(..., description="URL modules")

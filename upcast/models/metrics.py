@@ -68,4 +68,4 @@ class PrometheusMetricOutput(ScannerOutput[dict[str, MetricInfo]]):
     """
 
     summary: PrometheusMetricSummary
-    results: dict[str, MetricInfo] = Field(..., alias="metrics", description="Metrics")
+    results: dict[str, MetricInfo] = Field(..., description="Metrics")

@@ -60,4 +60,4 @@ class UnitTestOutput(ScannerOutput[dict[str, list[UnitTestInfo]]]):
     """
 
     summary: UnitTestSummary
-    results: dict[str, list[UnitTestInfo]] = Field(..., alias="tests", description="Tests grouped by file path")
+    results: dict[str, list[UnitTestInfo]] = Field(..., description="Tests grouped by file path")

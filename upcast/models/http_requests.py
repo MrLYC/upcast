@@ -72,4 +72,4 @@ class HttpRequestOutput(ScannerOutput[dict[str, HttpRequestInfo]]):
     """
 
     summary: HttpRequestSummary
-    results: dict[str, HttpRequestInfo] = Field(..., alias="requests", description="HTTP requests")
+    results: dict[str, HttpRequestInfo] = Field(..., description="HTTP requests")

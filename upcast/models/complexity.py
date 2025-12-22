@@ -46,6 +46,4 @@ class ComplexityOutput(ScannerOutput[dict[str, list[ComplexityResult]]]):
     """
 
     summary: ComplexitySummary
-    results: dict[str, list[ComplexityResult]] = Field(
-        ..., alias="modules", description="Results grouped by module path"
-    )
+    results: dict[str, list[ComplexityResult]] = Field(..., description="Results grouped by module path")

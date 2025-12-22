@@ -68,7 +68,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(url_modules, scan_duration_ms)
 
-        return DjangoUrlOutput(summary=summary, url_modules=url_modules)
+        return DjangoUrlOutput(summary=summary, results=url_modules)
 
     def _scan_file(self, file_path: Path) -> list[UrlPattern]:
         """Scan a single URLs file.

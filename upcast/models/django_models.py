@@ -86,4 +86,4 @@ class DjangoModelOutput(ScannerOutput[dict[str, DjangoModel]]):
     """
 
     summary: DjangoModelSummary
-    results: dict[str, DjangoModel] = Field(..., alias="models", description="Models keyed by qualified name")
+    results: dict[str, DjangoModel] = Field(..., description="Models keyed by model name")

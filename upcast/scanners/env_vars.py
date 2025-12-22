@@ -42,7 +42,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
 
         return EnvVarOutput(
             summary=summary,
-            env_vars=self.env_vars,
+            results=self.env_vars,
             metadata={"scanner_name": "env_vars", "root_path": str(self.base_path)},
         )
 

@@ -70,7 +70,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(tests_by_file, scan_duration_ms)
 
-        return UnitTestOutput(summary=summary, tests=tests_by_file)
+        return UnitTestOutput(summary=summary, results=tests_by_file)
 
     def _scan_file(self, file_path: Path) -> list[UnitTestInfo]:
         """Scan a single file for unit test functions.

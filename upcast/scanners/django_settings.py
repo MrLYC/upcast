@@ -74,7 +74,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsUsageOutput]):
             )
             return DjangoSettingsDefinitionOutput(
                 summary=summary,
-                definitions=result.results,  # type: ignore[attr-defined]
+                results=result.results,  # type: ignore[attr-defined]
             )
         else:
             summary = DjangoSettingsSummary(
@@ -86,7 +86,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsUsageOutput]):
             )
             return DjangoSettingsUsageOutput(
                 summary=summary,
-                settings=result.results,  # type: ignore[attr-defined]
+                results=result.results,  # type: ignore[attr-defined]
             )
 
         return result

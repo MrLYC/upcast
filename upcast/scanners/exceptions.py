@@ -48,7 +48,7 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
 
         return ExceptionHandlerOutput(
             summary=summary,
-            exception_handlers=self.handlers,
+            results=self.handlers,
         )
 
     def _scan_file(self, file_path: Path) -> None:

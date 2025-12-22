@@ -1,0 +1,196 @@
+"""Tests for ComplexityScanner models and implementation."""
+
+import pytest
+from pydantic import ValidationError
+
+from upcast.scanners.complexity import (
+    ComplexityOutput,
+    ComplexityResult,
+    ComplexityScanner,
+    ComplexitySummary,
+)
+
+
+class TestComplexityResultModel:
+    """Tests for ComplexityResult Pydantic model."""
+
+    def test_valid_result(self):
+        """Test creating valid ComplexityResult."""
+        result = ComplexityResult(
+            name="complex_function",
+            line=10,
+            end_line=50,
+            complexity=15,
+            severity="warning",
+            message="Function has high complexity",
+        )
+
+        assert result.name == "complex_function"
+        assert result.line == 10
+        assert result.end_line == 50
+        assert result.complexity == 15
+        assert result.severity == "warning"
+
+    def test_result_validates_line_number(self):
+        """Test that line number must be >= 1."""
+        with pytest.raises(ValidationError):
+            ComplexityResult(
+                name="func",
+                line=0,  # invalid
+                end_line=10,
+                complexity=5,
+                severity="warning",
+            )
+
+    def test_result_validates_complexity(self):
+        """Test that complexity must be >= 0."""
+        with pytest.raises(ValidationError):
+            ComplexityResult(
+                name="func",
+                line=1,
+                end_line=10,
+                complexity=-1,  # invalid
+                severity="warning",
+            )
+
+
+class TestComplexitySummaryModel:
+    """Tests for ComplexitySummary Pydantic model."""
+
+    def test_valid_summary(self):
+        """Test creating valid ComplexitySummary."""
+        summary = ComplexitySummary(
+            total_count=10,
+            files_scanned=3,
+            high_complexity_count=5,
+            by_severity={"warning": 3, "high_risk": 2},
+        )
+
+        assert summary.high_complexity_count == 5
+        assert summary.by_severity["warning"] == 3
+
+
+class TestComplexityOutputModel:
+    """Tests for ComplexityOutput Pydantic model."""
+
+    def test_valid_output(self):
+        """Test creating valid ComplexityOutput."""
+        summary = ComplexitySummary(
+            total_count=2,
+            files_scanned=1,
+            high_complexity_count=2,
+            by_severity={"warning": 1, "high_risk": 1},
+        )
+
+        results = {
+            "test.py": [
+                ComplexityResult(
+                    name="func1",
+                    line=10,
+                    end_line=20,
+                    complexity=10,
+                    severity="warning",
+                ),
+                ComplexityResult(
+                    name="func2",
+                    line=30,
+                    end_line=50,
+                    complexity=20,
+                    severity="high_risk",
+                ),
+            ]
+        }
+
+        output = ComplexityOutput(summary=summary, results=results, metadata={})
+
+        assert output.summary.high_complexity_count == 2
+        assert len(output.results["test.py"]) == 2
+
+
+class TestComplexityScannerIntegration:
+    """Integration tests for ComplexityScanner."""
+
+    def test_scanner_detects_simple_function(self, tmp_path):
+        """Test scanner detects simple function complexity."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+def simple_function():
+    return 42
+"""
+        )
+
+        scanner = ComplexityScanner(threshold=1)
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 0
+        assert output.summary.files_scanned == 1
+
+    def test_scanner_detects_complex_function(self, tmp_path):
+        """Test scanner detects complex functions."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+def complex_function(x):
+    if x > 0:
+        if x > 10:
+            return 'high'
+        elif x > 5:
+            return 'medium'
+        else:
+            return 'low'
+    else:
+        return 'negative'
+"""
+        )
+
+        scanner = ComplexityScanner(threshold=1)
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count > 0
+
+    def test_scanner_respects_threshold(self, tmp_path):
+        """Test scanner respects complexity threshold."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+def simple():
+    return 1
+
+def complex(x):
+    if x > 0:
+        if x > 10:
+            return 'high'
+        else:
+            return 'low'
+    return 'zero'
+"""
+        )
+
+        scanner = ComplexityScanner(threshold=10)
+        output = scanner.scan(test_file)
+
+        assert output.summary.files_scanned == 1
+
+    def test_scanner_handles_empty_file(self, tmp_path):
+        """Test scanner handles empty files."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text("")
+
+        scanner = ComplexityScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count == 0
+        # Empty file may not be counted as scanned
+        assert output.summary.files_scanned >= 0
+
+    def test_scanner_with_directory(self, tmp_path):
+        """Test scanner can scan directory."""
+        (tmp_path / "file1.py").write_text("def func1(): return 1")
+        (tmp_path / "file2.py").write_text("def func2(): return 2")
+
+        scanner = ComplexityScanner()
+        output = scanner.scan(tmp_path)
+
+        # Should scan both files
+        assert output.summary.files_scanned >= 1

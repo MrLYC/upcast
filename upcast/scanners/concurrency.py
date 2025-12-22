@@ -85,7 +85,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                     self._add_pattern(patterns, category, usage.pattern, usage)
 
         summary = self._calculate_summary(patterns)
-        return ConcurrencyPatternOutput(summary=summary, concurrency_patterns=patterns)
+        return ConcurrencyPatternOutput(summary=summary, results=patterns)
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> ConcurrencyUsage | None:
         """Check node for concurrency patterns."""

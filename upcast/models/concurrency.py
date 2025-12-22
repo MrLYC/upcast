@@ -51,6 +51,5 @@ class ConcurrencyPatternOutput(ScannerOutput[dict[str, dict[str, list[Concurrenc
     summary: ConcurrencyPatternSummary
     results: dict[str, dict[str, list[ConcurrencyUsage]]] = Field(
         ...,
-        alias="concurrency_patterns",
         description="Patterns grouped by category and type",
     )
