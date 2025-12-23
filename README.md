@@ -681,7 +681,7 @@ request_duration_seconds:
 
 #### scan-http-requests
 
-Find HTTP and API requests throughout your codebase with intelligent URL pattern detection.
+Find HTTP and API requests throughout your codebase with intelligent URL pattern detection and filtering.
 
 ```bash
 upcast scan-http-requests /path/to/project
@@ -692,11 +692,30 @@ upcast scan-http-requests /path/to/project
 > See full output: [`example/scan-results/http-requests.yaml`](example/scan-results/http-requests.yaml)
 
 ```yaml
+"...":
+  library: requests
+  method: GET
+  usages:
+    - file: accessories/cloudapi/components/http.py
+      line: 38
+      method: REQUEST
+      statement: requests.request(method, url, **kwargs)
+      session_based: false
+      is_async: false
+      timeout: null
+    - file: accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
+      line: 56
+      method: GET
+      statement: requests.get(url)
+      session_based: false
+      is_async: false
+
 https://api.example.com/users/...:
   method: GET
   library: requests
   usages:
-    - location: api/client.py:45
+    - file: api/client.py
+      line: 45
       method: GET
       statement: requests.get(f"https://api.example.com/users/{user_id}")
       session_based: false
@@ -706,20 +725,11 @@ https://api.example.com/api/v2/data:
   method: GET
   library: requests
   usages:
-    - location: services/http.py:67
+    - file: services/http.py
+      line: 67
       method: GET
       statement: requests.get(BASE_URL + "/api/v2/data")
       timeout: 30
-      session_based: false
-      is_async: false
-
-...://.../console-acp/api/v1/token/login:
-  method: POST
-  library: requests
-  usages:
-    - location: auth/login.py:23
-      method: POST
-      statement: requests.post(f"{proto}://{host}/console-acp/api/v1/token/login")
       session_based: false
       is_async: false
 ```
@@ -727,16 +737,19 @@ https://api.example.com/api/v2/data:
 **Key features:**
 
 - **Smart URL Detection**: Detects `requests`, `httpx`, `urllib`, `aiohttp`
+- **Accurate Request Identification**: Filters out non-request classes (RequestException, Response, Auth, Adapter, etc.)
+- **Request Constructor Support**: Correctly handles `requests.Request(method, url)` with positional and keyword arguments
 - **Context-Aware Resolution**: Infers variable values from assignments in the same scope
 - **Pattern Preservation**: Preserves static URL parts while replacing dynamic segments with `...`
   - `f"https://api.example.com/users/{user_id}"` → `https://api.example.com/users/...`
   - `f"{proto}://{host}/api/v1/path"` → `...://.../api/v1/path`
   - `BASE_URL + "/api/data"` → resolves BASE_URL if defined
   - `f"{a}{b}{c}{d}"` → `...` (merges consecutive `...` into one)
-- **Extracts HTTP methods** (GET, POST, PUT, DELETE)
+- **Extracts HTTP methods** (GET, POST, PUT, DELETE, REQUEST)
 - **Identifies URLs** when possible, with smart pattern normalization
 - **Checks for timeout configuration**
 - **Detects async requests** and session-based calls
+- **Extracts request parameters**: data, json_body, headers, params
 
 #### scan-exception-handlers
 
