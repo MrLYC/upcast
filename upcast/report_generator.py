@@ -516,39 +516,111 @@ class ReportGenerator:
                 lines.append(f"- **Required Variables**: {summary.get('required_count', 0)}")
                 lines.append(f"- **Optional Variables**: {summary.get('optional_count', 0)}")
 
-                # List required and optional variables in a table
+                # Create comprehensive table with all environment variables
                 if "results" in env_vars:
-                    required_vars = []
-                    optional_vars = []
+                    lines.append("\n#### Complete Environment Variable Definitions")
+                    lines.append("\nShowing all environment variables with their definitions, default values, and reference counts:")
+                    lines.append("\n| Variable | Required | Default Value | Reference Count | Access Pattern |")
+                    lines.append("|----------|----------|---------------|-----------------|----------------|")
                     
+                    # Sort by reference count (most used first)
+                    all_vars = []
                     for name, info in env_vars["results"].items():
                         if isinstance(info, dict):
-                            var_data = {
+                            all_vars.append({
                                 "name": name,
                                 "required": info.get("required", False),
                                 "default": info.get("default_value"),
-                                "locations": len(info.get("locations", []))
-                            }
-                            if var_data["required"]:
-                                required_vars.append(var_data)
+                                "count": len(info.get("locations", [])),
+                                "locations": info.get("locations", [])
+                            })
+                    
+                    all_vars.sort(key=lambda x: x["count"], reverse=True)
+                    
+                    for var in all_vars:
+                        # Format name
+                        var_name = var["name"] if var["name"] else "(dynamic)"
+                        
+                        # Format required status
+                        required_status = "✓ Yes" if var["required"] else "No"
+                        
+                        # Format default value
+                        default = var.get("default")
+                        if default is None:
+                            default_str = "-"
+                        elif isinstance(default, str):
+                            if len(default) > 30:
+                                default_str = f"`{default[:27]}...`"
                             else:
-                                optional_vars.append(var_data)
-
-                    if required_vars:
-                        lines.append("\n**Required Environment Variables:**")
-                        lines.append("\n| Variable | Usage Count | Notes |")
-                        lines.append("|----------|-------------|-------|")
-                        for var in sorted(required_vars, key=lambda x: x["name"]):
-                            lines.append(f"| `{var['name']}` | {var['locations']} | Must be set |")
-
-                    if optional_vars:
-                        lines.append("\n**Optional Environment Variables (with defaults):**")
-                        lines.append("\n| Variable | Default | Usage Count |")
-                        lines.append("|----------|---------|-------------|")
-                        for var in sorted(optional_vars, key=lambda x: x["locations"], reverse=True)[:10]:
-                            default = var.get("default")
-                            default_str = str(default) if default and len(str(default)) <= 30 else "(dynamic)"
-                            lines.append(f"| `{var['name']}` | `{default_str}` | {var['locations']} |")
+                                default_str = f"`{default}`"
+                        else:
+                            default_str = f"`{default}`"
+                        
+                        # Get access pattern from first location
+                        access_pattern = "-"
+                        if var["locations"]:
+                            first_loc = var["locations"][0]
+                            if isinstance(first_loc, dict):
+                                pattern = first_loc.get("pattern", "")
+                                if pattern:
+                                    # Simplify pattern
+                                    if "os.environ[" in pattern:
+                                        access_pattern = "environ[]"
+                                    elif "os.environ.get(" in pattern:
+                                        access_pattern = "environ.get()"
+                                    elif "os.getenv(" in pattern:
+                                        access_pattern = "getenv()"
+                                    else:
+                                        access_pattern = "other"
+                        
+                        lines.append(f"| `{var_name}` | {required_status} | {default_str} | {var['count']} | {access_pattern} |")
+                    
+                    # Add detailed usage locations section
+                    lines.append("\n#### Detailed Usage Locations")
+                    lines.append("\nShowing where each environment variable is referenced in the codebase:")
+                    
+                    for var in all_vars:
+                        var_name = var["name"] if var["name"] else "(dynamic)"
+                        locations = var["locations"]
+                        
+                        if locations:
+                            lines.append(f"\n##### `{var_name}` ({var['count']} references)")
+                            
+                            if var["required"]:
+                                lines.append("**Status:** ✓ Required")
+                            else:
+                                default = var.get("default")
+                                if default:
+                                    default_str = str(default) if len(str(default)) <= 40 else str(default)[:37] + "..."
+                                    lines.append(f"**Status:** Optional (default: `{default_str}`)")
+                                else:
+                                    lines.append("**Status:** Optional (no default)")
+                            
+                            lines.append("\n**References:**")
+                            
+                            # Show up to 5 references
+                            for i, loc in enumerate(locations[:5]):
+                                if isinstance(loc, dict):
+                                    file_path = loc.get("file", "unknown")
+                                    line_no = loc.get("line", "?")
+                                    code = loc.get("code", "")
+                                    
+                                    # Truncate file path
+                                    if len(file_path) > 60:
+                                        file_path = "..." + file_path[-57:]
+                                    
+                                    # Truncate code
+                                    if len(code) > 80:
+                                        code = code[:77] + "..."
+                                    
+                                    lines.append(f"- `{file_path}:{line_no}`")
+                                    if code:
+                                        lines.append(f"  ```python")
+                                        lines.append(f"  {code}")
+                                        lines.append(f"  ```")
+                            
+                            if len(locations) > 5:
+                                lines.append(f"- ... and {len(locations) - 5} more references")
 
         # Redis usage
         if "redis-usage" in self.results:

@@ -3186,24 +3186,114 @@ Showing all 99 URL patterns with their corresponding view implementations:
 - **Required Variables**: 6
 - **Optional Variables**: 3
 
-**Required Environment Variables:**
+#### Complete Environment Variable Definitions
 
-| Variable | Usage Count | Notes |
-|----------|-------------|-------|
-| `DATABASE_URL` | 3 | Must be set |
-| `OAUTHLIB_INSECURE_TRANSPORT` | 1 | Must be set |
-| `OAUTHLIB_RELAX_TOKEN_SCOPE` | 1 | Must be set |
-| `PAAS_WL_CLUSTER_API_SERVER_URLS` | 1 | Must be set |
-| `PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT` | 1 | Must be set |
-| `prometheus_multiproc_dir` | 1 | Must be set |
+Showing all environment variables with their definitions, default values, and reference counts:
 
-**Optional Environment Variables (with defaults):**
+| Variable | Required | Default Value | Reference Count | Access Pattern |
+|----------|----------|---------------|-----------------|----------------|
+| `DATABASE_URL` | ✓ Yes | - | 3 | getenv() |
+| `(dynamic)` | No | `<dynamic>` | 1 | getenv() |
+| `BKPAAS_BUILD_VERSION` | No | `unset` | 1 | getenv() |
+| `CELERY_TASK_DEFAULT_QUEUE` | No | `celery` | 1 | environ.get() |
+| `OAUTHLIB_INSECURE_TRANSPORT` | ✓ Yes | - | 1 | environ[] |
+| `OAUTHLIB_RELAX_TOKEN_SCOPE` | ✓ Yes | - | 1 | environ[] |
+| `PAAS_WL_CLUSTER_API_SERVER_URLS` | ✓ Yes | - | 1 | environ.get() |
+| `PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT` | ✓ Yes | - | 1 | environ[] |
+| `prometheus_multiproc_dir` | ✓ Yes | - | 1 | environ.get() |
 
-| Variable | Default | Usage Count |
-|----------|---------|-------------|
-| `` | `<dynamic>` | 1 |
-| `BKPAAS_BUILD_VERSION` | `unset` | 1 |
-| `CELERY_TASK_DEFAULT_QUEUE` | `celery` | 1 |
+#### Detailed Usage Locations
+
+Showing where each environment variable is referenced in the codebase:
+
+##### `DATABASE_URL` (3 references)
+**Status:** ✓ Required
+
+**References:**
+- `svc-bkrepo/svc_bk_repo/settings/__init__.py:140`
+  ```python
+  os.getenv('DATABASE_URL')
+  ```
+- `svc-mysql/svc_mysql/settings/__init__.py:139`
+  ```python
+  os.getenv('DATABASE_URL')
+  ```
+- `svc-otel/svc_otel/settings/__init__.py:139`
+  ```python
+  os.getenv('DATABASE_URL')
+  ```
+
+##### `(dynamic)` (1 references)
+**Status:** Optional (default: `<dynamic>`)
+
+**References:**
+- `apiserver/paasng/paasng/utils/configs.py:101`
+  ```python
+  os.getenv(env_key, default)
+  ```
+
+##### `BKPAAS_BUILD_VERSION` (1 references)
+**Status:** Optional (default: `unset`)
+
+**References:**
+- `...er/paasng/paasng/plat_admin/admin42/context_processors.py:24`
+  ```python
+  os.getenv('BKPAAS_BUILD_VERSION', 'unset')
+  ```
+
+##### `CELERY_TASK_DEFAULT_QUEUE` (1 references)
+**Status:** Optional (default: `celery`)
+
+**References:**
+- `apiserver/paasng/paasng/settings/__init__.py:656`
+  ```python
+  os.environ.get('CELERY_TASK_DEFAULT_QUEUE', 'celery')
+  ```
+
+##### `OAUTHLIB_INSECURE_TRANSPORT` (1 references)
+**Status:** ✓ Required
+
+**References:**
+- `apiserver/paasng/paasng/infras/accounts/oauth/backends.py:35`
+  ```python
+  os.environ['OAUTHLIB_INSECURE_TRANSPORT']
+  ```
+
+##### `OAUTHLIB_RELAX_TOKEN_SCOPE` (1 references)
+**Status:** ✓ Required
+
+**References:**
+- `apiserver/paasng/paasng/infras/accounts/oauth/backends.py:38`
+  ```python
+  os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE']
+  ```
+
+##### `PAAS_WL_CLUSTER_API_SERVER_URLS` (1 references)
+**Status:** ✓ Required
+
+**References:**
+- `...as/cluster/management/commands/initial_default_cluster.py:114`
+  ```python
+  os.environ.get('PAAS_WL_CLUSTER_API_SERVER_URLS')
+  ```
+
+##### `PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT` (1 references)
+**Status:** ✓ Required
+
+**References:**
+- `...rver/paasng/tests/paas_wl/infras/cluster/test_commands.py:56`
+  ```python
+  os.environ['PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT']
+  ```
+
+##### `prometheus_multiproc_dir` (1 references)
+**Status:** ✓ Required
+
+**References:**
+- `apiserver/paasng/paasng/__init__.py:33`
+  ```python
+  os.environ.get('prometheus_multiproc_dir')
+  ```
 
 ### Redis Usage
 
