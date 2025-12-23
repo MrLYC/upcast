@@ -43,52 +43,43 @@ The system SHALL detect Django URL patterns by locating `urlpatterns` variables 
 
 The system SHALL resolve view references to their module paths and extract documentation.
 
-#### Scenario: Resolve function view references
+#### Scenario: Always output view fields
 
-- **WHEN** a URL pattern references a function view
-- **THEN** the system SHALL use astroid inference to resolve the function
-- **AND** extract the full module path (e.g., `blog.views.index`)
-- **AND** extract the function's docstring as description
-- **AND** handle aliased imports correctly
+- **WHEN** formatting any path/re_path pattern
+- **THEN** the system SHALL always include `view_module` and `view_name` fields in output
+- **AND** SHALL set fields to `null` when resolution fails
+- **AND** SHALL NOT omit fields from output even when values are null
+- **AND** allow users to distinguish between unresolved views and non-view patterns
 
-**DIFF**: Function view resolution with docstring extraction
+**Rationale**: Explicit null values provide clearer indication of resolution status than missing fields
 
-#### Scenario: Resolve class-based views
+**DIFF**: Previously fields were omitted when null; now always included
 
-- **WHEN** a URL pattern references a class with `.as_view()`
-- **THEN** the system SHALL resolve the class reference
-- **AND** extract the class module path and name
-- **AND** extract the class docstring as description
-- **AND** record the `.as_view()` call
+#### Scenario: Extract view name even when module unknown
 
-**DIFF**: CBV (Class-Based View) support
+- **WHEN** view resolution partially succeeds
+- **AND** view name can be extracted but module path cannot
+- **THEN** the system SHALL record the view name
+- **AND** SHALL set view_module to null
+- **AND** SHALL mark view_resolved as false (if that field is present)
 
-#### Scenario: Handle unresolvable views
+**Rationale**: Partial information is better than no information
 
-- **WHEN** a view reference cannot be resolved via inference
-- **THEN** the system SHALL record the view as `<unresolved>`
-- **AND** log a warning in verbose mode
-- **AND** continue processing other routes
+**DIFF**: Added fallback extraction for view names
 
-**DIFF**: Graceful degradation for unresolvable references
+#### Scenario: Log resolution failures in verbose mode
 
-#### Scenario: Resolve partial-wrapped views
+- **WHEN** view resolution fails
+- **AND** verbose mode is enabled
+- **THEN** the system SHALL log:
+  - The URL pattern that failed
+  - The view node type that couldn't be resolved
+  - Any inference errors encountered
+- **AND** continue processing other patterns
 
-- **WHEN** a view is wrapped with `functools.partial`
-- **THEN** the system SHALL resolve the underlying function
-- **AND** note that it's a partial application
-- **AND** extract the base function's module and docstring
+**Rationale**: Debugging aid for understanding resolution failures
 
-**DIFF**: Support for functools.partial views
-
-#### Scenario: Handle conditional views
-
-- **WHEN** a view is selected via ternary expression
-- **THEN** the system SHALL record both possible views
-- **AND** mark the route as conditional
-- **AND** extract descriptions from both views if possible
-
-**DIFF**: Support for conditional route patterns
+**DIFF**: Added structured logging for resolution failures
 
 ### Requirement: Include Detection
 
@@ -276,3 +267,49 @@ The system SHALL handle errors gracefully and continue scanning when possible.
 - **AND** continue scanning
 
 **DIFF**: Graceful handling of missing imports
+
+### Requirement: Resolution Status Tracking
+
+The system SHALL provide explicit indication of view resolution success.
+
+#### Scenario: Track resolution status
+
+- **WHEN** resolving a view reference
+- **THEN** the system SHALL determine if resolution was successful
+- **AND** MAY include a `view_resolved` boolean field in output
+- **AND** set to true only when both module and name are successfully resolved
+
+**Rationale**: Allows users to filter and analyze resolution success rates
+
+#### Scenario: Distinguish pattern types
+
+- **WHEN** a pattern is not a view (include, router)
+- **THEN** view_resolved SHALL be null or omitted
+- **AND** view_module and view_name SHALL both be null
+- **AND** other fields (include_module, router_type) SHALL indicate pattern type
+
+**Rationale**: Clear distinction between unresolved views and non-view patterns
+
+### Requirement: Output Field Guarantees
+
+The system SHALL guarantee presence of critical fields in output.
+
+#### Scenario: Required view fields
+
+- **WHEN** exporting URL patterns to YAML or JSON
+- **THEN** every path/re_path entry SHALL include:
+  - `view_module` (string or null)
+  - `view_name` (string or null)
+- **AND** SHALL NOT omit these fields
+- **AND** SHALL use explicit null values for unresolved views
+
+**Rationale**: Consistent output structure simplifies parsing and analysis
+
+#### Scenario: Optional description field
+
+- **WHEN** a view's docstring can be extracted
+- **THEN** the system SHALL include `description` field with docstring value
+- **WHEN** docstring cannot be extracted
+- **THEN** description MAY be null or omitted
+
+**Rationale**: Description is supplementary information, not critical for routing analysis
