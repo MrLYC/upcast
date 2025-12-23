@@ -252,6 +252,98 @@ class ReportGenerator:
                             types_str = ", ".join(sorted(rel_types))
                             lines.append(f"| `{short_name}` | {count} | {types_str} |")
 
+                    # Add comprehensive model details with field information
+                    lines.append("\n#### Complete Model Field Details")
+                    lines.append("\nShowing all models with their fields, types, and inheritance:")
+                    
+                    # Sort models by name for easier navigation
+                    sorted_models = sorted(models["results"].items(), key=lambda x: x[0].split(".")[-1])
+                    
+                    for model_name, model_data in sorted_models:
+                        if not isinstance(model_data, dict):
+                            continue
+                        
+                        short_name = model_name.split(".")[-1] if "." in model_name else model_name
+                        module = model_data.get("module", "")
+                        
+                        lines.append(f"\n##### `{short_name}`")
+                        
+                        # Show module path
+                        if module:
+                            short_module = module if len(module) <= 60 else "..." + module[-57:]
+                            lines.append(f"**Module:** `{short_module}`")
+                        
+                        # Show inheritance
+                        bases = model_data.get("bases", [])
+                        if bases:
+                            bases_str = ", ".join([f"`{base}`" for base in bases])
+                            lines.append(f"**Inherits from:** {bases_str}")
+                        
+                        # Show description if available
+                        description = model_data.get("description")
+                        if description:
+                            lines.append(f"**Description:** {description}")
+                        
+                        # Show fields
+                        fields = model_data.get("fields", {})
+                        if fields:
+                            lines.append(f"\n**Fields ({len(fields)}):**")
+                            lines.append("\n| Field | Type | Parameters |")
+                            lines.append("|-------|------|------------|")
+                            
+                            for field_name, field_data in sorted(fields.items()):
+                                if isinstance(field_data, dict):
+                                    field_type = field_data.get("type", "unknown")
+                                    params = field_data.get("parameters", {})
+                                    
+                                    # Format parameters
+                                    param_list = []
+                                    for key, value in params.items():
+                                        if key == "type":
+                                            continue  # Skip type as it's already shown
+                                        # Format value
+                                        if isinstance(value, bool):
+                                            param_list.append(f"{key}={value}")
+                                        elif isinstance(value, (int, float)):
+                                            param_list.append(f"{key}={value}")
+                                        elif isinstance(value, str):
+                                            # Truncate long strings
+                                            val_str = value if len(value) <= 30 else value[:27] + "..."
+                                            param_list.append(f"{key}='{val_str}'")
+                                        elif isinstance(value, list):
+                                            param_list.append(f"{key}=[{len(value)} items]")
+                                    
+                                    params_str = ", ".join(param_list[:3])  # Show max 3 params
+                                    if len(param_list) > 3:
+                                        params_str += "..."
+                                    
+                                    if not params_str:
+                                        params_str = "-"
+                                    
+                                    lines.append(f"| `{field_name}` | `{field_type}` | {params_str} |")
+                        
+                        # Show relationships
+                        relationships = model_data.get("relationships", [])
+                        if relationships:
+                            lines.append(f"\n**Relationships ({len(relationships)}):**")
+                            for rel in relationships:
+                                if isinstance(rel, dict):
+                                    rel_type = rel.get("type", "unknown")
+                                    rel_to = rel.get("to", "unknown")
+                                    rel_field = rel.get("field", "unknown")
+                                    lines.append(f"- `{rel_field}`: {rel_type} → `{rel_to}`")
+                        
+                        # Show Meta information
+                        meta = model_data.get("meta", {})
+                        if meta:
+                            lines.append("\n**Meta:**")
+                            for key, value in meta.items():
+                                if isinstance(value, list):
+                                    lines.append(f"- {key}: {', '.join([f'`{v}`' for v in value])}")
+                                else:
+                                    lines.append(f"- {key}: `{value}`")
+
+
         # Django URLs
         if "django-urls" in self.results:
             urls = self.results["django-urls"]
