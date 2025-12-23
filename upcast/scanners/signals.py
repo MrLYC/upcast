@@ -90,7 +90,6 @@ class SignalScanner(BaseScanner[SignalOutput]):
             results=signals,
             metadata={
                 "scanner_name": "signal",
-                "root_path": str(path.resolve()),
             },
         )
 

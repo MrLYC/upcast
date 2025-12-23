@@ -2,8 +2,9 @@
 
 ## Status
 
-- **State**: draft
+- **State**: completed
 - **Created**: 2025-12-23
+- **Completed**: 2025-12-23
 - **Owner**: AI Agent
 
 ## Why
@@ -47,8 +48,8 @@ Update example scan results to reflect the change:
 - [x] `root_path` removed from env-vars scanner metadata
 - [x] `root_path` removed from signals scanner metadata
 - [x] Example outputs updated
-- [ ] All tests pass
-- [ ] Integration tests produce clean outputs without root_path
+- [x] All tests pass (285/285 passed)
+- [x] Integration tests produce clean outputs without root_path
 
 ## Out of Scope
 

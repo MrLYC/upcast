@@ -333,7 +333,6 @@ def handle_user_save(sender, instance, **kwargs):
 
         assert "scanner_name" in output.metadata
         assert output.metadata["scanner_name"] == "signal"
-        assert "root_path" in output.metadata
 
     def test_scanner_respects_include_patterns(self, tmp_path):
         """Test that scanner respects include patterns."""
