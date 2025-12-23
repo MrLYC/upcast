@@ -64,7 +64,8 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         labels = self._extract_labels(node.value)
 
         usage = MetricUsage(
-            location=f"{file_path}:{node.lineno}",
+            file=file_path,
+            line=node.lineno if hasattr(node, "lineno") else None,
             pattern=f"{metric_type} definition",
             statement=safe_as_string(node),
         )
@@ -132,7 +133,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
 
         return PrometheusMetricSummary(
             total_count=total_usages,
-            files_scanned=len({u.location.split(":")[0] for m in metrics.values() for u in m.usages}),
+            files_scanned=len({u.file for m in metrics.values() for u in m.usages}),
             total_metrics=len(metrics),
             by_type=by_type,
             scan_duration_ms=0,  # TODO: Add timing

@@ -2,8 +2,9 @@
 
 ## Status
 
-- **State**: draft
+- **State**: completed
 - **Created**: 2025-12-23
+- **Completed**: 2025-12-23
 - **Owner**: AI Agent
 
 ## Why
@@ -90,13 +91,13 @@ Update test assertions to check `file` and `line` separately instead of combined
 
 ## Success Criteria
 
-- [ ] `HttpRequestUsage` model has `file` and `line` fields (no `location`)
-- [ ] `MetricUsage` model has `file` and `line` fields (no `location`)
-- [ ] HTTP request scanner outputs separate fields
-- [ ] Metrics scanner outputs separate fields
-- [ ] Example outputs updated and validated
-- [ ] All tests pass
-- [ ] Consistent with `EnvVarLocation` pattern
+- [x] `HttpRequestUsage` model has `file` and `line` fields (no `location`)
+- [x] `MetricUsage` model has `file` and `line` fields (no `location`)
+- [x] HTTP request scanner outputs separate fields
+- [x] Metrics scanner outputs separate fields
+- [x] Example outputs updated and validated
+- [x] All tests pass (285 tests)
+- [x] Consistent with `EnvVarLocation` pattern
 
 ## Out of Scope
 

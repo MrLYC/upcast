@@ -3,7 +3,7 @@ results:
   api_visited_counter:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: api_visited_counter
     namespace: null
@@ -11,15 +11,15 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:21
-        pattern: Counter definition
-        statement:
-          API_VISITED_COUNTER = Counter('api_visited_counter', '', ('method',
-          'endpoint', 'status'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 21
+      pattern: Counter definition
+      statement: API_VISITED_COUNTER = Counter('api_visited_counter', '', ('method',
+        'endpoint', 'status'))
   api_visited_time_consumed:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: api_visited_time_consumed
     namespace: null
@@ -27,35 +27,35 @@ results:
     type: Histogram
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:23
-        pattern: Histogram definition
-        statement:
-          API_VISITED_TIME_CONSUME_HISTOGRAM = Histogram('api_visited_time_consumed',
-          '', ('method', 'endpoint', 'status'), buckets=[50, 100, 200, 500, 1000, 2000,
-          5000])
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 23
+      pattern: Histogram definition
+      statement: API_VISITED_TIME_CONSUME_HISTOGRAM = Histogram('api_visited_time_consumed',
+        '', ('method', 'endpoint', 'status'), buckets=[50, 100, 200, 500, 1000, 2000,
+        5000])
   bkrepo_quota_used_rate_metrics:
     buckets: null
     custom_collector: false
     help: bkrepo Quota Used Rate Metrics
     labels:
-      - service_id
-      - instance_id
-      - repo_name
+    - service_id
+    - instance_id
+    - repo_name
     name: bkrepo_quota_used_rate_metrics
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-bkrepo/svc_bk_repo/monitoring/metrics.py:32
-        pattern: Gauge definition
-        statement:
-          quota_used_rate_metric = GaugeMetricFamily('bkrepo_quota_used_rate_metrics',
-          'bkrepo Quota Used Rate Metrics', labels=['service_id', 'instance_id', 'repo_name'])
+    - file: svc-bkrepo/svc_bk_repo/monitoring/metrics.py
+      line: 32
+      pattern: Gauge definition
+      statement: quota_used_rate_metric = GaugeMetricFamily('bkrepo_quota_used_rate_metrics',
+        'bkrepo Quota Used Rate Metrics', labels=['service_id', 'instance_id', 'repo_name'])
   deploy_operation:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: deploy_operation
     namespace: null
@@ -63,11 +63,11 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:52
-        pattern: Counter definition
-        statement:
-          DEPLOYMENT_INFO_COUNTER = Counter('deploy_operation', '', ('source_type',
-          'environment', 'status'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 52
+      pattern: Counter definition
+      statement: DEPLOYMENT_INFO_COUNTER = Counter('deploy_operation', '', ('source_type',
+        'environment', 'status'))
   monitor_task_collect_duration_seconds:
     buckets: null
     custom_collector: false
@@ -79,15 +79,15 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:41
-        pattern: Gauge definition
-        statement:
-          collect_duration_metric = Gauge('monitor_task_collect_duration_seconds',
-          'duration to collect monitor task metrics', ['name'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 41
+      pattern: Gauge definition
+      statement: collect_duration_metric = Gauge('monitor_task_collect_duration_seconds',
+        'duration to collect monitor task metrics', ['name'])
   new_application:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: new_application
     namespace: null
@@ -95,15 +95,15 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:27
-        pattern: Counter definition
-        statement:
-          NEW_APP_COUNTER = Counter('new_application', '', ('region', 'language',
-          'source_init_template'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 27
+      pattern: Counter definition
+      statement: NEW_APP_COUNTER = Counter('new_application', '', ('region', 'language',
+        'source_init_template'))
   process_operate:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: process_operate
     namespace: null
@@ -111,11 +111,11 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:59
-        pattern: Counter definition
-        statement:
-          PROCESS_OPERATE_COUNTER = Counter('process_operate', '', ('environment',
-          'operate_type'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 59
+      pattern: Counter definition
+      statement: PROCESS_OPERATE_COUNTER = Counter('process_operate', '', ('environment',
+        'operate_type'))
   rabbitmq_cluster_alive:
     buckets: null
     custom_collector: false
@@ -127,11 +127,11 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:82
-        pattern: Gauge definition
-        statement:
-          alive = GaugeMetricFamily('rabbitmq_cluster_alive', 'rabbitmq cluster
-          alive status', labels=CheckClusterAlive.Result.as_label_keys() + ['name'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 82
+      pattern: Gauge definition
+      statement: alive = GaugeMetricFamily('rabbitmq_cluster_alive', 'rabbitmq cluster
+        alive status', labels=CheckClusterAlive.Result.as_label_keys() + ['name'])
   rabbitmq_instance_alive:
     buckets: null
     custom_collector: false
@@ -143,11 +143,11 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:101
-        pattern: Gauge definition
-        statement:
-          alive = GaugeMetricFamily('rabbitmq_instance_alive', 'rabbitmq instance
-          alive status', labels=CheckInstanceAlive.Result.as_label_keys())
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 101
+      pattern: Gauge definition
+      statement: alive = GaugeMetricFamily('rabbitmq_instance_alive', 'rabbitmq instance
+        alive status', labels=CheckInstanceAlive.Result.as_label_keys())
   rabbitmq_instance_connections:
     buckets: null
     custom_collector: false
@@ -159,12 +159,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:183
-        pattern: Gauge definition
-        statement:
-          connections = GaugeMetricFamily('rabbitmq_instance_connections',
-          'connections of vhost', labels=CronCheckInstanceConnectionStatus.ConnectionStatus.as_label_keys()
-          + ['state'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 183
+      pattern: Gauge definition
+      statement: connections = GaugeMetricFamily('rabbitmq_instance_connections',
+        'connections of vhost', labels=CronCheckInstanceConnectionStatus.ConnectionStatus.as_label_keys()
+        + ['state'])
   rabbitmq_instance_dlx_queue_messages:
     buckets: null
     custom_collector: false
@@ -176,12 +176,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:164
-        pattern: Gauge definition
-        statement:
-          messages = GaugeMetricFamily('rabbitmq_instance_dlx_queue_messages',
-          'messages of queue', labels=CheckInstanceDLXQueueStatus.Result.as_label_keys()
-          + ['queue'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 164
+      pattern: Gauge definition
+      statement: messages = GaugeMetricFamily('rabbitmq_instance_dlx_queue_messages',
+        'messages of queue', labels=CheckInstanceDLXQueueStatus.Result.as_label_keys()
+        + ['queue'])
   rabbitmq_instance_limits:
     buckets: null
     custom_collector: false
@@ -193,11 +193,11 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:204
-        pattern: Gauge definition
-        statement:
-          limits = GaugeMetricFamily('rabbitmq_instance_limits', 'limits of
-          vhost', labels=CheckInstanceLimits.Result.as_label_keys() + ['resource'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 204
+      pattern: Gauge definition
+      statement: limits = GaugeMetricFamily('rabbitmq_instance_limits', 'limits of
+        vhost', labels=CheckInstanceLimits.Result.as_label_keys() + ['resource'])
   rabbitmq_instance_queue_consumers:
     buckets: null
     custom_collector: false
@@ -209,12 +209,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:128
-        pattern: Gauge definition
-        statement:
-          consumers = GaugeMetricFamily('rabbitmq_instance_queue_consumers',
-          'consumers of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
-          + ['queue'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 128
+      pattern: Gauge definition
+      statement: consumers = GaugeMetricFamily('rabbitmq_instance_queue_consumers',
+        'consumers of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
+        + ['queue'])
   rabbitmq_instance_queue_message_bytes:
     buckets: null
     custom_collector: false
@@ -226,12 +226,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:138
-        pattern: Gauge definition
-        statement:
-          messages_size = GaugeMetricFamily('rabbitmq_instance_queue_message_bytes',
-          'messages size of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
-          + ['queue'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 138
+      pattern: Gauge definition
+      statement: messages_size = GaugeMetricFamily('rabbitmq_instance_queue_message_bytes',
+        'messages size of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
+        + ['queue'])
   rabbitmq_instance_queue_messages:
     buckets: null
     custom_collector: false
@@ -243,12 +243,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:133
-        pattern: Gauge definition
-        statement:
-          messages = GaugeMetricFamily('rabbitmq_instance_queue_messages',
-          'messages of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
-          + ['queue'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 133
+      pattern: Gauge definition
+      statement: messages = GaugeMetricFamily('rabbitmq_instance_queue_messages',
+        'messages of queue', labels=CheckInstanceQueueStatus.Result.as_label_keys()
+        + ['queue'])
   rabbitmq_instance_queue_usage:
     buckets: null
     custom_collector: false
@@ -260,12 +260,12 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:123
-        pattern: Gauge definition
-        statement:
-          usage = GaugeMetricFamily('rabbitmq_instance_queue_usage', 'percentage
-          of queue usage', labels=CheckInstanceQueueStatus.Result.as_label_keys() +
-          ['queue'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 123
+      pattern: Gauge definition
+      statement: usage = GaugeMetricFamily('rabbitmq_instance_queue_usage', 'percentage
+        of queue usage', labels=CheckInstanceQueueStatus.Result.as_label_keys() +
+        ['queue'])
   rabbitmq_instance_queues:
     buckets: null
     custom_collector: false
@@ -277,357 +277,357 @@ results:
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:118
-        pattern: Gauge definition
-        statement:
-          queues = GaugeMetricFamily('rabbitmq_instance_queues', 'rabbitmq
-          instance queue totals', labels=CheckInstanceQueueStatus.Result.as_label_keys())
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 118
+      pattern: Gauge definition
+      statement: queues = GaugeMetricFamily('rabbitmq_instance_queues', 'rabbitmq
+        instance queue totals', labels=CheckInstanceQueueStatus.Result.as_label_keys())
   rabbitmq_message_stats_rate:
     buckets: null
     custom_collector: false
     help: message stats rate recently
     labels:
-      - cluster
-      - type
+    - cluster
+    - type
     name: rabbitmq_message_stats_rate
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:54
-        pattern: Gauge definition
-        statement:
-          family = GaugeMetricFamily('rabbitmq_message_stats_rate', 'message
-          stats rate recently', labels=['cluster', 'type'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 54
+      pattern: Gauge definition
+      statement: family = GaugeMetricFamily('rabbitmq_message_stats_rate', 'message
+        stats rate recently', labels=['cluster', 'type'])
   rabbitmq_node_disk_alarm:
     buckets: null
     custom_collector: false
     help: is a disk alarm in effect
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_disk_alarm
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:123
-        pattern: Gauge definition
-        statement:
-          disk_alarm = GaugeMetricFamily('rabbitmq_node_disk_alarm', 'is a
-          disk alarm in effect', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 123
+      pattern: Gauge definition
+      statement: disk_alarm = GaugeMetricFamily('rabbitmq_node_disk_alarm', 'is a
+        disk alarm in effect', labels=['cluster', 'node'])
   rabbitmq_node_disk_limit:
     buckets: null
     custom_collector: false
     help: free disk space low watermark
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_disk_limit
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:118
-        pattern: Gauge definition
-        statement:
-          disk_limit = GaugeMetricFamily('rabbitmq_node_disk_limit', 'free
-          disk space low watermark', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 118
+      pattern: Gauge definition
+      statement: disk_limit = GaugeMetricFamily('rabbitmq_node_disk_limit', 'free
+        disk space low watermark', labels=['cluster', 'node'])
   rabbitmq_node_fd_attempts:
     buckets: null
     custom_collector: false
     help: file descriptor open attempts
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_fd_attempts
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:148
-        pattern: Gauge definition
-        statement:
-          fd_attempts = GaugeMetricFamily('rabbitmq_node_fd_attempts', 'file
-          descriptor open attempts', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 148
+      pattern: Gauge definition
+      statement: fd_attempts = GaugeMetricFamily('rabbitmq_node_fd_attempts', 'file
+        descriptor open attempts', labels=['cluster', 'node'])
   rabbitmq_node_fd_totals:
     buckets: null
     custom_collector: false
     help: file descriptors available
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_fd_totals
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:138
-        pattern: Gauge definition
-        statement:
-          fd_totals = GaugeMetricFamily('rabbitmq_node_fd_totals', 'file descriptors
-          available', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 138
+      pattern: Gauge definition
+      statement: fd_totals = GaugeMetricFamily('rabbitmq_node_fd_totals', 'file descriptors
+        available', labels=['cluster', 'node'])
   rabbitmq_node_fd_used:
     buckets: null
     custom_collector: false
     help: file descriptors used
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_fd_used
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:143
-        pattern: Gauge definition
-        statement:
-          fd_used = GaugeMetricFamily('rabbitmq_node_fd_used', 'file descriptors
-          used', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 143
+      pattern: Gauge definition
+      statement: fd_used = GaugeMetricFamily('rabbitmq_node_fd_used', 'file descriptors
+        used', labels=['cluster', 'node'])
   rabbitmq_node_gc_reclaimed:
     buckets: null
     custom_collector: false
     help: bytes reclaimed by GC
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_gc_reclaimed
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:188
-        pattern: Gauge definition
-        statement:
-          gc_reclaimed = GaugeMetricFamily('rabbitmq_node_gc_reclaimed', 'bytes
-          reclaimed by GC', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 188
+      pattern: Gauge definition
+      statement: gc_reclaimed = GaugeMetricFamily('rabbitmq_node_gc_reclaimed', 'bytes
+        reclaimed by GC', labels=['cluster', 'node'])
   rabbitmq_node_gc_totals:
     buckets: null
     custom_collector: false
     help: GC runs
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_gc_totals
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:183
-        pattern: Gauge definition
-        statement:
-          gc_totals = GaugeMetricFamily('rabbitmq_node_gc_totals', 'GC runs',
-          labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 183
+      pattern: Gauge definition
+      statement: gc_totals = GaugeMetricFamily('rabbitmq_node_gc_totals', 'GC runs',
+        labels=['cluster', 'node'])
   rabbitmq_node_mem_alarm:
     buckets: null
     custom_collector: false
     help: is a memory alarm in effect
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_mem_alarm
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:101
-        pattern: Gauge definition
-        statement:
-          mem_alarm = GaugeMetricFamily('rabbitmq_node_mem_alarm', 'is a memory
-          alarm in effect', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 101
+      pattern: Gauge definition
+      statement: mem_alarm = GaugeMetricFamily('rabbitmq_node_mem_alarm', 'is a memory
+        alarm in effect', labels=['cluster', 'node'])
   rabbitmq_node_mem_limit:
     buckets: null
     custom_collector: false
     help: memory usage high watermark
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_mem_limit
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:96
-        pattern: Gauge definition
-        statement:
-          mem_limit = GaugeMetricFamily('rabbitmq_node_mem_limit', 'memory
-          usage high watermark', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 96
+      pattern: Gauge definition
+      statement: mem_limit = GaugeMetricFamily('rabbitmq_node_mem_limit', 'memory
+        usage high watermark', labels=['cluster', 'node'])
   rabbitmq_node_mem_used:
     buckets: null
     custom_collector: false
     help: total amount of memory used
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_mem_used
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:91
-        pattern: Gauge definition
-        statement:
-          mem_used = GaugeMetricFamily('rabbitmq_node_mem_used', 'total amount
-          of memory used', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 91
+      pattern: Gauge definition
+      statement: mem_used = GaugeMetricFamily('rabbitmq_node_mem_used', 'total amount
+        of memory used', labels=['cluster', 'node'])
   rabbitmq_node_proc_total:
     buckets: null
     custom_collector: false
     help: Erlang process limit
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_proc_total
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:193
-        pattern: Gauge definition
-        statement:
-          proc_totals = GaugeMetricFamily('rabbitmq_node_proc_total', 'Erlang
-          process limit', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 193
+      pattern: Gauge definition
+      statement: proc_totals = GaugeMetricFamily('rabbitmq_node_proc_total', 'Erlang
+        process limit', labels=['cluster', 'node'])
   rabbitmq_node_proc_used:
     buckets: null
     custom_collector: false
     help: Erlang processes used
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_proc_used
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:198
-        pattern: Gauge definition
-        statement:
-          proc_used = GaugeMetricFamily('rabbitmq_node_proc_used', 'Erlang
-          processes used', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 198
+      pattern: Gauge definition
+      statement: proc_used = GaugeMetricFamily('rabbitmq_node_proc_used', 'Erlang
+        processes used', labels=['cluster', 'node'])
   rabbitmq_node_socket_totals:
     buckets: null
     custom_collector: false
     help: sockets available
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_socket_totals
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:164
-        pattern: Gauge definition
-        statement:
-          socket_totals = GaugeMetricFamily('rabbitmq_node_socket_totals',
-          'sockets available', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 164
+      pattern: Gauge definition
+      statement: socket_totals = GaugeMetricFamily('rabbitmq_node_socket_totals',
+        'sockets available', labels=['cluster', 'node'])
   rabbitmq_node_socket_used:
     buckets: null
     custom_collector: false
     help: sockets used
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_socket_used
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:169
-        pattern: Gauge definition
-        statement:
-          socket_used = GaugeMetricFamily('rabbitmq_node_socket_used', 'sockets
-          used', labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 169
+      pattern: Gauge definition
+      statement: socket_used = GaugeMetricFamily('rabbitmq_node_socket_used', 'sockets
+        used', labels=['cluster', 'node'])
   rabbitmq_node_status:
     buckets: null
     custom_collector: false
     help: node is running
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_status
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:221
-        pattern: Gauge definition
-        statement:
-          status = GaugeMetricFamily('rabbitmq_node_status', 'node is running',
-          labels=['cluster', 'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 221
+      pattern: Gauge definition
+      statement: status = GaugeMetricFamily('rabbitmq_node_status', 'node is running',
+        labels=['cluster', 'node'])
   rabbitmq_node_uptime:
     buckets: null
     custom_collector: false
     help: uptime
     labels:
-      - cluster
-      - node
+    - cluster
+    - node
     name: rabbitmq_node_uptime
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:216
-        pattern: Gauge definition
-        statement:
-          uptime = GaugeMetricFamily('rabbitmq_node_uptime', 'uptime', labels=['cluster',
-          'node'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 216
+      pattern: Gauge definition
+      statement: uptime = GaugeMetricFamily('rabbitmq_node_uptime', 'uptime', labels=['cluster',
+        'node'])
   rabbitmq_object_totals:
     buckets: null
     custom_collector: false
     help: rabbitmq overview objects
     labels:
-      - cluster
-      - type
+    - cluster
+    - type
     name: rabbitmq_object_totals
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:32
-        pattern: Gauge definition
-        statement:
-          family = GaugeMetricFamily('rabbitmq_object_totals', 'rabbitmq overview
-          objects', labels=['cluster', 'type'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 32
+      pattern: Gauge definition
+      statement: family = GaugeMetricFamily('rabbitmq_object_totals', 'rabbitmq overview
+        objects', labels=['cluster', 'type'])
   rabbitmq_queue_message_totals:
     buckets: null
     custom_collector: false
     help: number of messages in queue
     labels:
-      - cluster
-      - type
+    - cluster
+    - type
     name: rabbitmq_queue_message_totals
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/vendor/monitoring.py:42
-        pattern: Gauge definition
-        statement:
-          family = GaugeMetricFamily('rabbitmq_queue_message_totals', 'number
-          of messages in queue', labels=['cluster', 'type'])
+    - file: svc-rabbitmq/vendor/monitoring.py
+      line: 42
+      pattern: Gauge definition
+      statement: family = GaugeMetricFamily('rabbitmq_queue_message_totals', 'number
+        of messages in queue', labels=['cluster', 'type'])
   service_bind:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: service_bind
     namespace: null
@@ -635,13 +635,14 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:55
-        pattern: Counter definition
-        statement: SERVICE_BIND_COUNTER = Counter('service_bind', '', ('service', 'region'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 55
+      pattern: Counter definition
+      statement: SERVICE_BIND_COUNTER = Counter('service_bind', '', ('service', 'region'))
   service_provision:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: service_provision
     namespace: null
@@ -649,15 +650,15 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:56
-        pattern: Counter definition
-        statement:
-          SERVICE_PROVISION_COUNTER = Counter('service_provision', '', ('environment',
-          'service', 'plan'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 56
+      pattern: Counter definition
+      statement: SERVICE_PROVISION_COUNTER = Counter('service_provision', '', ('environment',
+        'service', 'plan'))
   status_counter_of_deployment:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: status_counter_of_deployment
     namespace: null
@@ -665,15 +666,15 @@ results:
     type: Counter
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:44
-        pattern: Counter definition
-        statement:
-          DEPLOYMENT_STATUS_COUNTER = Counter('status_counter_of_deployment',
-          '', ('kind', 'status'))
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 44
+      pattern: Counter definition
+      statement: DEPLOYMENT_STATUS_COUNTER = Counter('status_counter_of_deployment',
+        '', ('kind', 'status'))
   time_consumed_by_deployment:
     buckets: null
     custom_collector: false
-    help: ""
+    help: ''
     labels: []
     name: time_consumed_by_deployment
     namespace: null
@@ -681,48 +682,48 @@ results:
     type: Histogram
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/metrics.py:38
-        pattern: Histogram definition
-        statement:
-          DEPLOYMENT_TIME_CONSUME_HISTOGRAM = Histogram('time_consumed_by_deployment',
-          '', ('kind', 'status', 'language'), buckets=[1, 2, 4, 8, 16, 32, 64, 128,
-          256, 512, 1024, 2048, 4096])
+    - file: apiserver/paasng/paasng/misc/metrics/metrics.py
+      line: 38
+      pattern: Histogram definition
+      statement: DEPLOYMENT_TIME_CONSUME_HISTOGRAM = Histogram('time_consumed_by_deployment',
+        '', ('kind', 'status', 'language'), buckets=[1, 2, 4, 8, 16, 32, 64, 128,
+        256, 512, 1024, 2048, 4096])
   unavailable_deployments_total:
     buckets: null
     custom_collector: false
     help: A gauge for counting unavailable deployments
     labels:
-      - region
-      - cluster_name
+    - region
+    - cluster_name
     name: unavailable_deployments_total
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: apiserver/paasng/paasng/misc/metrics/workloads/deployment.py:44
-        pattern: Gauge definition
-        statement:
-          gauge_family = GaugeMetricFamily(name=cls.name, documentation=cls.description,
-          labels=['region', 'cluster_name'])
+    - file: apiserver/paasng/paasng/misc/metrics/workloads/deployment.py
+      line: 44
+      pattern: Gauge definition
+      statement: gauge_family = GaugeMetricFamily(name=cls.name, documentation=cls.description,
+        labels=['region', 'cluster_name'])
   worker_cluster_info:
     buckets: null
     custom_collector: false
     help: worker cluster info
     labels:
-      - worker
-      - name
+    - worker
+    - name
     name: worker_cluster_info
     namespace: null
     subsystem: null
     type: Gauge
     unit: null
     usages:
-      - location: svc-rabbitmq/tasks/monitor.py:65
-        pattern: Gauge definition
-        statement:
-          info = GaugeMetricFamily('worker_cluster_info', 'worker cluster info',
-          labels=['worker', 'name'])
+    - file: svc-rabbitmq/tasks/monitor.py
+      line: 65
+      pattern: Gauge definition
+      statement: info = GaugeMetricFamily('worker_cluster_info', 'worker cluster info',
+        labels=['worker', 'name'])
 summary:
   by_type:
     Counter: 7
@@ -732,3 +733,4 @@ summary:
   scan_duration_ms: 0
   total_count: 42
   total_metrics: 42
+

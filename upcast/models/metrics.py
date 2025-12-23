@@ -9,12 +9,14 @@ class MetricUsage(BaseModel):
     """A usage of a metric.
 
     Attributes:
-        location: Location in 'file:line' format
+        file: File path
+        line: Line number
         pattern: Usage pattern (e.g., counter.inc())
         statement: Code statement
     """
 
-    location: str = Field(description="file:line format")
+    file: str = Field(description="File path")
+    line: int | None = Field(None, ge=1, description="Line number")
     pattern: str = Field(description="Usage pattern")
     statement: str = Field(description="Code statement")
 

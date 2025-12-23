@@ -2,7 +2,7 @@
 
 ## Task List
 
-- [ ] **Update HttpRequestUsage model**
+- [x] **Update HttpRequestUsage model**
 
   - Remove `location: str` field
   - Add `file: str` field
@@ -10,7 +10,7 @@
   - Update docstring
   - File: `upcast/models/http_requests.py`
 
-- [ ] **Update MetricUsage model**
+- [x] **Update MetricUsage model**
 
   - Remove `location: str` field
   - Add `file: str` field
@@ -18,53 +18,53 @@
   - Update docstring
   - File: `upcast/models/metrics.py`
 
-- [ ] **Update HTTP request scanner**
+- [x] **Update HTTP request scanner**
 
   - Parse location string to extract file and line
   - Pass `file=` and `line=` instead of `location=` when creating `HttpRequestUsage`
   - Handle edge cases (no line number, invalid format)
   - File: `upcast/scanners/http_requests.py`
 
-- [ ] **Update Prometheus metrics scanner**
+- [x] **Update Prometheus metrics scanner**
 
   - Parse location string to extract file and line
   - Pass `file=` and `line=` instead of `location=` when creating `MetricUsage`
   - Handle edge cases (no line number, invalid format)
-  - File: `upcast/scanners/prometheus_metrics.py`
+  - File: `upcast/scanners/metrics.py`
 
-- [ ] **Update HTTP request tests**
+- [x] **Update HTTP request tests**
 
   - Update test fixtures to use `file` and `line` fields
   - Update assertions checking location to check `file` and `line` separately
   - Verify scanner output structure
   - Files: `tests/test_http_request_scanner/`
 
-- [ ] **Update Prometheus metrics tests**
+- [x] **Update Prometheus metrics tests**
 
   - Update test fixtures to use `file` and `line` fields
   - Update assertions checking location to check `file` and `line` separately
   - Verify scanner output structure
   - Files: `tests/test_prometheus_metrics_scanner/`
 
-- [ ] **Regenerate example outputs**
+- [x] **Regenerate example outputs**
 
   - Run `upcast scan-http-requests example/blueking-paas --format yaml > example/scan-results/http-requests.yaml`
-  - Run `upcast scan-prometheus-metrics example/blueking-paas --format yaml > example/scan-results/metrics.yaml`
+  - Run `upcast scan-metrics example/blueking-paas --format yaml > example/scan-results/metrics.yaml`
   - Verify outputs have `file` and `line` fields (no `location`)
 
-- [ ] **Run full test suite**
+- [x] **Run full test suite**
 
   - Run `uv run pytest tests/ -x`
-  - Verify all 285+ tests pass
+  - Verify all 285 tests pass
   - Check for any remaining `location` references
 
-- [ ] **Run integration tests**
+- [x] **Run integration tests**
 
   - Test on actual codebase
   - Verify output quality
   - Check JSON and YAML formats
 
-- [ ] **Validate with OpenSpec**
+- [x] **Validate with OpenSpec**
   - Run `openspec validate split-location-field --strict`
   - Address any validation issues
 

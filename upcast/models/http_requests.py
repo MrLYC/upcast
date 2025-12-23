@@ -11,7 +11,8 @@ class HttpRequestUsage(BaseModel):
     """A single HTTP request usage.
 
     Attributes:
-        location: Location in 'file:line' format
+        file: File path
+        line: Line number
         statement: Request statement
         method: HTTP method (GET, POST, etc.)
         params: Query parameters
@@ -23,7 +24,8 @@ class HttpRequestUsage(BaseModel):
         is_async: Whether using async library
     """
 
-    location: str = Field(description="file:line format")
+    file: str = Field(description="File path")
+    line: int | None = Field(None, ge=1, description="Line number")
     statement: str = Field(description="Request statement")
     method: str = Field(description="HTTP method")
     params: dict[str, Any] | None = Field(None, description="Query parameters")

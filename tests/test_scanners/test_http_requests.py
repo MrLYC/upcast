@@ -12,7 +12,8 @@ class TestHttpRequestModels:
     def test_valid_usage(self):
         """Test creating valid HttpRequestUsage."""
         usage = HttpRequestUsage(
-            location="test.py:10",
+            file="test.py",
+            line=10,
             statement="requests.get('http://api.example.com')",
             method="GET",
             params={},

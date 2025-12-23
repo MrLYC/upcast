@@ -66,7 +66,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             return None
 
         return HttpRequestUsage(
-            location=f"{file_path}:{node.lineno}",
+            file=file_path,
+            line=node.lineno if hasattr(node, "lineno") else None,
             statement=safe_as_string(node),
             method=method.upper(),
             params=self._extract_params(node),
@@ -575,7 +576,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return HttpRequestSummary(
             total_count=len(all_usages),
-            files_scanned=len({u.location.split(":")[0] for u in all_usages}),
+            files_scanned=len({u.file for u in all_usages}),
             scan_duration_ms=scan_duration_ms,
             total_requests=len(all_usages),
             unique_urls=len(requests),
