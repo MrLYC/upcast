@@ -1,8 +1,9 @@
 # ruff: noqa
 """urllib3 and urllib.request usage patterns for testing."""
 
+from urllib.request import Request, urlopen
+
 import urllib3
-from urllib.request import urlopen, Request
 
 # urllib3 PoolManager
 http = urllib3.PoolManager()

@@ -2,7 +2,6 @@
 """httpx library usage patterns for testing."""
 
 import httpx
-import asyncio
 
 # Sync GET
 r = httpx.get("https://example.com")

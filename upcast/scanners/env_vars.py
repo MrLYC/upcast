@@ -113,7 +113,10 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
     def _check_environ_subscript(self, node: nodes.Subscript, file_path: str, imports: dict[str, str]) -> None:
         """Check if Subscript node is os.environ['KEY'] or similar."""
         value_str = safe_as_string(node.value)
-        if "environ" not in value_str:
+
+        # Must be exactly os.environ or environ (from import)
+        # Reject cases like .data['key'], api.get()['key'], etc.
+        if not (value_str == "os.environ" or value_str == "environ"):
             return
 
         # Skip Del statements

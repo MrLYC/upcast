@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from upcast.cyclomatic_complexity_scanner.checker import ComplexityChecker
 from upcast.cyclomatic_complexity_scanner.complexity_parser import (
     ComplexityResult,

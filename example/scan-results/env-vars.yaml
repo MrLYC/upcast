@@ -51,15 +51,6 @@ results:
         pattern: os.getenv('DATABASE_URL')
     name: DATABASE_URL
     required: true
-  LANG:
-    locations:
-      - code: environment_variables['LANG']
-        column: 8
-        file: apiserver/paasng/paasng/platform/sourcectl/git/client.py
-        line: 329
-        pattern: environment_variables['LANG']
-    name: LANG
-    required: true
   OAUTHLIB_INSECURE_TRANSPORT:
     locations:
       - code: os.environ['OAUTHLIB_INSECURE_TRANSPORT']
@@ -96,62 +87,6 @@ results:
         pattern: os.environ['PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT']
     name: PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT
     required: true
-  cpu_total:
-    locations:
-      - code: quotas[app_env.environment]['cpu_total']
-        column: 16
-        file: apiserver/paasng/paasng/platform/applications/utils.py
-        line: 253
-        pattern: quotas[app_env.environment]['cpu_total']
-    name: cpu_total
-    required: true
-  environment:
-    locations:
-      - code: data['environment']['environment']
-        column: 70
-        file: apiserver/paasng/paas_wl/apis/admin/views/domain.py
-        line: 78
-        pattern: data['environment']['environment']
-      - code: data['environment']['environment']
-        column: 70
-        file: apiserver/paasng/paas_wl/workloads/networking/entrance/views.py
-        line: 94
-        pattern: data['environment']['environment']
-    name: environment
-    required: true
-  id:
-    locations:
-      - code:
-          "api_client.post(f'/api/bkapps/applications/{bk_app.code}/modules/{bk_module.name}/config_vars/',
-          {'key': 'A1', 'value': 'foo', 'environment_name': '_global_',
-          'description': 'foo'}).data['id']"
-        column: 17
-        file: apiserver/paasng/tests/api/test_engine.py
-        line: 54
-        pattern:
-          "api_client.post(f'/api/bkapps/applications/{bk_app.code}/modules/{bk_module.name}/config_vars/',
-          {'key': 'A1', 'value': 'foo', 'environment_name': '_global_',
-          'description': 'foo'}).data['id']"
-      - code:
-          "api_client.post(f'/api/bkapps/applications/{bk_app.code}/modules/{bk_module.name}/config_vars/',
-          {'key': 'A1', 'value': 'foo', 'environment_name': '_global_'}).data['id']"
-        column: 17
-        file: apiserver/paasng/tests/api/test_engine.py
-        line: 71
-        pattern:
-          "api_client.post(f'/api/bkapps/applications/{bk_app.code}/modules/{bk_module.name}/config_vars/',
-          {'key': 'A1', 'value': 'foo', 'environment_name': '_global_'}).data['id']"
-    name: id
-    required: true
-  memory_total:
-    locations:
-      - code: quotas[app_env.environment]['memory_total']
-        column: 16
-        file: apiserver/paasng/paasng/platform/applications/utils.py
-        line: 250
-        pattern: quotas[app_env.environment]['memory_total']
-    name: memory_total
-    required: true
   prometheus_multiproc_dir:
     locations:
       - code: os.environ.get('prometheus_multiproc_dir')
@@ -164,7 +99,7 @@ results:
 summary:
   files_scanned: 2368
   optional_count: 3
-  required_count: 11
-  scan_duration_ms: 12129
-  total_count: 14
-  total_env_vars: 14
+  required_count: 6
+  scan_duration_ms: 6978
+  total_count: 9
+  total_env_vars: 9

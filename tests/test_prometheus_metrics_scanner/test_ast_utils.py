@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 from astroid import MANAGER, nodes
-
 from upcast.prometheus_metrics_scanner.ast_utils import (
     extract_help_text,
     extract_labels,

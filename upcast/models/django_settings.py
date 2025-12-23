@@ -2,85 +2,55 @@
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from upcast.models.base import ScannerOutput, ScannerSummary
-
-
-class SettingsLocation(BaseModel):
-    """A location where a setting is used.
-
-    Attributes:
-        file: File path
-        line: Line number
-        column: Column number
-        pattern: Usage pattern (e.g., settings.DEBUG)
-        code: Code snippet
-    """
-
-    file: str = Field(description="File path")
-    line: int | None = Field(ge=1, description="Line number")
-    column: int | None = Field(ge=0, description="Column number")
-    pattern: str = Field(description="Usage pattern")
-    code: str | None = Field(None, description="Code snippet")
+from upcast.models.base import BaseModel, ScannerOutput, ScannerSummary
 
 
-class SettingsUsage(BaseModel):
-    """Usage information for a setting variable.
+class SettingDefinitionItem(BaseModel):
+    """A single definition of a setting.
 
     Attributes:
-        count: Number of usages
-        locations: List of usage locations
-    """
-
-    count: int = Field(ge=0, description="Number of usages")
-    locations: list[SettingsLocation] = Field(description="Usage locations")
-
-
-class SettingDefinition(BaseModel):
-    """A setting definition in a settings module.
-
-    Attributes:
-        value: Static value if determinable
-        statement: Dynamic assignment statement if value is not static
+        value: Inferred static value, None if cannot infer
+        statement: Code statement
         lineno: Line number
-        overrides: Module path this overrides (for multiple settings files)
+        type: Inferred type (e.g., 'str', 'int', 'bool', 'dict', 'list', 'dynamic')
     """
 
-    value: Any | None = Field(None, description="Static value")
-    statement: str | None = Field(None, description="Dynamic assignment statement")
-    lineno: int | None = Field(ge=1, description="Line number")
-    overrides: str | None = Field(None, description="Module path this overrides")
+    value: Any | None = Field(None, description="Inferred static value")
+    statement: str = Field(description="Code statement")
+    lineno: int = Field(ge=1, description="Line number")
+    type: str = Field(description="Inferred type")
 
 
-class DynamicImport(BaseModel):
-    """A dynamic import in settings module.
+class SettingUsageItem(BaseModel):
+    """A single usage of a setting.
 
     Attributes:
-        pattern: Import pattern
-        base_module: Base module if determinable
-        file: File path
-        line: Line number
+        statement: Code statement
+        lineno: Line number
     """
 
-    pattern: str = Field(description="Import pattern")
-    base_module: str | None = Field(None, description="Base module")
-    file: str = Field(description="File path")
-    line: int = Field(ge=1, description="Line number")
+    statement: str = Field(description="Code statement")
+    lineno: int = Field(ge=1, description="Line number")
 
 
-class SettingsModule(BaseModel):
-    """A Django settings module.
+class SettingInfo(BaseModel):
+    """Comprehensive information about a setting variable.
 
     Attributes:
-        definitions: Setting definitions keyed by setting name
-        star_imports: List of 'from X import *' statements
-        dynamic_imports: List of dynamic import patterns
+        definition_count: Number of definitions
+        usage_count: Number of usages
+        type_list: List of possible types inferred from definitions
+        definitions: Definitions keyed by file path (relative)
+        usages: Usages keyed by file path (relative)
     """
 
-    definitions: dict[str, SettingDefinition] = Field(description="Setting definitions")
-    star_imports: list[str] = Field(description="From X import * statements")
-    dynamic_imports: list[DynamicImport] = Field(description="Dynamic imports")
+    definition_count: int = Field(ge=0, description="Number of definitions")
+    usage_count: int = Field(ge=0, description="Number of usages")
+    type_list: list[str] = Field(description="List of possible types")
+    definitions: dict[str, list[SettingDefinitionItem]] = Field(description="Definitions by file")
+    usages: dict[str, list[SettingUsageItem]] = Field(description="Usages by file")
 
 
 class DjangoSettingsSummary(ScannerSummary):
@@ -88,44 +58,22 @@ class DjangoSettingsSummary(ScannerSummary):
 
     Attributes:
         total_settings: Number of unique settings
+        total_definitions: Total definition count
         total_usages: Total usage count
     """
 
     total_settings: int = Field(ge=0, description="Number of unique settings")
+    total_definitions: int = Field(ge=0, description="Total definition count")
     total_usages: int = Field(ge=0, description="Total usage count")
 
 
-class DjangoSettingsUsageOutput(ScannerOutput[dict[str, SettingsUsage]]):
-    """Output for settings usage scan.
+class DjangoSettingsOutput(ScannerOutput[dict[str, SettingInfo]]):
+    """Output for Django settings scan.
 
     Attributes:
         summary: Summary statistics
-        results: Settings usages keyed by setting name
+        results: Settings information keyed by setting name
     """
 
     summary: DjangoSettingsSummary
-    results: dict[str, SettingsUsage] = Field(description="Settings usages")
-
-
-class DjangoSettingsDefinitionOutput(ScannerOutput[dict[str, SettingsModule]]):
-    """Output for settings definition scan.
-
-    Attributes:
-        summary: Summary statistics
-        results: Settings modules keyed by module path
-    """
-
-    summary: DjangoSettingsSummary
-    results: dict[str, SettingsModule] = Field(description="Settings definitions")
-
-
-class DjangoSettingsCombinedOutput(BaseModel):
-    """Combined output for both definitions and usages.
-
-    Attributes:
-        definitions: Settings modules keyed by module path
-        usages: Settings usages keyed by setting name
-    """
-
-    definitions: dict[str, SettingsModule] = Field(description="Settings definitions")
-    usages: dict[str, SettingsUsage] = Field(description="Settings usages")
+    results: dict[str, SettingInfo] = Field(description="Settings information")

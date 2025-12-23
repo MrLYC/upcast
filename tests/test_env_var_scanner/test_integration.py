@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from upcast.env_var_scanner.checker import EnvVarChecker
 from upcast.env_var_scanner.cli import scan_directory, scan_files
 from upcast.env_var_scanner.export import export_to_json, export_to_yaml

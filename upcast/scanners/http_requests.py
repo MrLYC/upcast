@@ -42,7 +42,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             for node in module.nodes_of_class(nodes.Call):
                 usage = self._check_request_call(node, rel_path, imports)
                 if usage:
-                    url = self._extract_url(node) or "unknown_url"
+                    url = self._extract_url(node) or "..."
                     if url not in requests_by_url:
                         requests_by_url[url] = []
                     requests_by_url[url].append(usage)
@@ -125,25 +125,44 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             context_node: The Call node for context lookup
 
         Returns:
-            URL string or pattern (with consecutive ... merged)
+            URL string or pattern (with consecutive ... merged), or None if URL contains Uninferable
         """
         # Try to infer from context (variable assignments)
         inferred_url = self._infer_url_from_context(url_node, context_node)
         if inferred_url:
+            # Filter out URLs containing "Uninferable" - replace with ...
+            inferred_url = self._clean_uninferable(inferred_url)
             return self._merge_consecutive_dots(inferred_url)
 
         # Check if it's a dynamic construction (prioritize pattern detection)
         if self._is_dynamic_url(url_node):
             pattern = self._normalize_url_pattern(url_node)
             if pattern:
+                # Filter out "Uninferable" strings
+                pattern = self._clean_uninferable(pattern)
                 return self._merge_consecutive_dots(pattern)
 
         # Fall back to literal inference for static URLs
         url_value = safe_infer_value(url_node)
         if isinstance(url_value, str):
+            # Filter out "Uninferable"
+            if "Uninferable" in url_value:
+                return None
             return url_value
 
         return None
+
+    @staticmethod
+    def _clean_uninferable(url: str) -> str:
+        """Replace 'Uninferable' with '...' in URL patterns.
+
+        Args:
+            url: URL pattern that may contain 'Uninferable'
+
+        Returns:
+            URL with 'Uninferable' replaced by '...'
+        """
+        return url.replace("Uninferable", "...")
 
     @staticmethod
     def _merge_consecutive_dots(url: str) -> str:
@@ -399,6 +418,14 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                             parts.append(resolved)
                         else:
                             parts.append("...")
+                    elif isinstance(value.value, nodes.Attribute):
+                        # For attribute access (e.g., settings.URL), try to infer
+                        attr_value = safe_infer_value(value.value)
+                        # Only use if it's a valid string and doesn't contain "Uninferable"
+                        if isinstance(attr_value, str) and "Uninferable" not in attr_value:
+                            parts.append(attr_value)
+                        else:
+                            parts.append("...")
                     else:
                         parts.append("...")
                 else:
@@ -429,7 +456,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                     if isinstance(target, nodes.AssignName) and target.name == var_name:
                         # Found the assignment, try to infer the value
                         value = safe_infer_value(node.value)
-                        if isinstance(value, str):
+                        # Only return if it's a valid string (not Uninferable)
+                        if isinstance(value, str) and value and "Uninferable" not in value:
                             return value
 
         # Look in module-level assignments
@@ -439,7 +467,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 for target in node.targets:
                     if isinstance(target, nodes.AssignName) and target.name == var_name:
                         value = safe_infer_value(node.value)
-                        if isinstance(value, str):
+                        # Only return if it's a valid string (not Uninferable)
+                        if isinstance(value, str) and value and "Uninferable" not in value:
                             return value
 
         return None
@@ -464,8 +493,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 params_value = safe_infer_value(keyword.value)
                 if isinstance(params_value, dict):
                     return params_value
-                # If we can't infer the exact value, return a placeholder
-                return {"<dynamic>": "..."}
+                # If we can't infer the exact value, omit field
+                return None
         return None
 
     def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
@@ -475,8 +504,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 headers_value = safe_infer_value(keyword.value)
                 if isinstance(headers_value, dict):
                     return headers_value
-                # If we can't infer the exact value, return a placeholder
-                return {"<dynamic>": "..."}
+                # If we can't infer the exact value, omit field
+                return None
         return None
 
     def _extract_json_body(self, node: nodes.Call) -> dict[str, Any] | None:
@@ -486,8 +515,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 json_value = safe_infer_value(keyword.value)
                 if isinstance(json_value, dict):
                     return json_value
-                # If we can't infer the exact value, return a placeholder
-                return {"<dynamic>": "..."}
+                # If we can't infer the exact value, omit field
+                return None
         return None
 
     def _extract_data(self, node: nodes.Call) -> Any | None:
@@ -498,8 +527,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 # Data can be dict, string, bytes, or other types
                 if data_value is not None:
                     return data_value
-                # If we can't infer the exact value, return a placeholder
-                return "<dynamic>"
+                # If we can't infer the exact value, omit field
+                return None
         return None
 
     def _extract_timeout(self, node: nodes.Call) -> float | int | None:

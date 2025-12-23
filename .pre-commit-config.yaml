@@ -3,22 +3,30 @@ repos:
     rev: "v4.4.0"
     hooks:
       - id: check-case-conflict
+        exclude: ^example/blueking-paas/
       - id: check-merge-conflict
+        exclude: ^example/blueking-paas/
       - id: check-toml
+        exclude: ^example/blueking-paas/
       - id: check-yaml
+        exclude: ^example/blueking-paas/
       - id: end-of-file-fixer
+        exclude: ^example/blueking-paas/
       - id: trailing-whitespace
+        exclude: ^example/blueking-paas/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.9.10"
     hooks:
       - id: ruff
         args: [--exit-non-zero-on-fix]
-        exclude: ^tests/
+        exclude: ^(tests/|example/blueking-paas/)
       - id: ruff-format
+        exclude: ^example/blueking-paas/
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v3.0.3"
     hooks:
       - id: prettier
         language_version: system
+        exclude: ^example/blueking-paas/

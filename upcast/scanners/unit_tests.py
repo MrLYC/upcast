@@ -36,8 +36,8 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             exclude_patterns: File patterns to exclude
             verbose: Enable verbose logging
         """
-        # Default patterns to scan only test files
-        default_includes = ["test_*.py", "*_test.py"]
+        # Default patterns to scan only test files (recursively)
+        default_includes = ["**/test_*.py", "**/*_test.py"]
         include_patterns = include_patterns or default_includes
 
         super().__init__(
@@ -58,25 +58,32 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         """
         start_time = time.perf_counter()
         files = self.get_files_to_scan(path)
+        base_path = path if path.is_dir() else path.parent
 
         # Group tests by file path
         tests_by_file: dict[str, list[UnitTestInfo]] = {}
 
         for file_path in files:
-            file_tests = self._scan_file(file_path)
+            # Calculate relative path for output
+            from upcast.common.file_utils import get_relative_path_str
+
+            rel_path = get_relative_path_str(file_path, base_path)
+
+            file_tests = self._scan_file(file_path, rel_path)
             if file_tests:
-                tests_by_file[str(file_path)] = file_tests
+                tests_by_file[rel_path] = file_tests
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(tests_by_file, scan_duration_ms)
 
         return UnitTestOutput(summary=summary, results=tests_by_file)
 
-    def _scan_file(self, file_path: Path) -> list[UnitTestInfo]:
+    def _scan_file(self, file_path: Path, rel_path: str) -> list[UnitTestInfo]:
         """Scan a single file for unit test functions.
 
         Args:
-            file_path: Path to the test file
+            file_path: Absolute path to the test file
+            rel_path: Relative path for output
 
         Returns:
             List of detected test functions
@@ -90,7 +97,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
 
         # Visit all function definitions
         for func_node in module.nodes_of_class(nodes.FunctionDef):
-            test_info = self._check_function(func_node, file_path, module_imports)
+            test_info = self._check_function(func_node, rel_path, module_imports)
             if test_info:
                 tests.append(test_info)
 
@@ -102,14 +109,14 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
     def _check_function(
         self,
         node: nodes.FunctionDef,
-        file_path: Path,
+        rel_path: str,
         module_imports: dict[str, str],
     ) -> UnitTestInfo | None:
         """Check if a function is a test function and parse it.
 
         Args:
             node: Function definition node
-            file_path: Path to the test file
+            rel_path: Relative path to the test file
             module_imports: Import mappings
 
         Returns:
@@ -133,7 +140,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             return None
 
         # Parse the test function
-        return self._parse_test_function(node, file_path, module_imports)
+        return self._parse_test_function(node, rel_path, module_imports)
 
     def _is_unittest_testcase(self, class_node: nodes.ClassDef) -> bool:
         """Check if a class inherits from unittest.TestCase.
@@ -162,14 +169,14 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
     def _parse_test_function(
         self,
         func_node: nodes.FunctionDef,
-        file_path: Path,
+        rel_path: str,
         module_imports: dict[str, str],
     ) -> UnitTestInfo:
         """Parse a test function and extract metadata.
 
         Args:
             func_node: Function definition node
-            file_path: Path to the test file
+            rel_path: Relative path to the test file
             module_imports: Import mappings
 
         Returns:
@@ -190,7 +197,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
 
         return UnitTestInfo(
             name=name,
-            file=str(file_path),
+            file=rel_path,
             line_range=(line_start, line_end),
             body_md5=body_md5,
             assert_count=assert_count,

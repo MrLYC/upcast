@@ -216,7 +216,7 @@ def test_class_context_extraction(temp_test_file: Path):
 
     # Find patterns inside ConcurrencyManager class
     class_patterns = []
-    for pattern_type, usages in thread_patterns.items():
+    for _pattern_type, usages in thread_patterns.items():
         for usage in usages:
             if usage.class_name == "ConcurrencyManager":
                 class_patterns.append(usage)

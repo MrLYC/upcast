@@ -72,7 +72,7 @@ def _calculate_module_path(file_path: Path, root_path: Path) -> str:
         return ""
 
 
-def parse_model(
+def parse_model(  # noqa: C901
     class_node: nodes.ClassDef,
     root_path: Optional[str | Path] = None,
     file_path: Optional[Path] = None,
@@ -127,6 +127,10 @@ def parse_model(
     for base in class_node.bases:
         base_qname = _extract_base_qname(base, class_node)
         if base_qname:
+            # Convert relative qname (e.g., ".Tag") to absolute qname using calculated module_path
+            if base_qname.startswith("."):
+                base_class_name = base_qname.lstrip(".")
+                base_qname = f"{module_path}.{base_class_name}" if module_path else base_class_name
             result["bases"].append(base_qname)
 
     # Parse Meta class
@@ -559,11 +563,11 @@ def _extract_base_qname(base: Any, class_node: nodes.ClassDef) -> Optional[str]:
             for inferred in inferred_list:
                 if hasattr(inferred, "qname"):
                     qname = inferred.qname()  # type: ignore[attr-defined]
-                    # Return valid qname if it contains module path
+                    # Return valid qname if it contains module path and not a builtin
                     if qname and "." in qname and not qname.startswith("builtins."):
                         return qname
-        except Exception:
-            return base_str
+        except Exception:  # noqa: S110
+            pass  # Continue to fallback logic
 
         # Fallback: Try to get from import statement
         base_name = None
@@ -585,8 +589,8 @@ def _extract_base_qname(base: Any, class_node: nodes.ClassDef) -> Optional[str]:
                             for name, alias in import_node.names:
                                 if (alias or name) == module_name:
                                     return f"{import_node.modname}.{name}.{base_name}"
-                except Exception:
-                    return base_str
+                except Exception:  # noqa: S110
+                    pass
         elif isinstance(base, nodes.Name):
             # Pattern: Model (direct import)
             base_name = base.name
@@ -598,11 +602,18 @@ def _extract_base_qname(base: Any, class_node: nodes.ClassDef) -> Optional[str]:
                         for name, alias in import_node.names:
                             if (alias or name) == base_name:
                                 return f"{import_node.modname}.{name}"
-            except Exception:
-                return base_str
 
-    except Exception:
-        return base_str
+                # If not imported, check if it's defined in the same module
+                # This handles cases where a class inherits from another class in the same file
+                for cls in module_root.nodes_of_class(nodes.ClassDef):
+                    if cls.name == base_name:
+                        # Return full module path + class name
+                        return f"{module_root.qname()}.{base_name}"
+            except Exception:  # noqa: S110
+                pass
+
+    except Exception:  # noqa: S110
+        pass
 
     return base_str
 

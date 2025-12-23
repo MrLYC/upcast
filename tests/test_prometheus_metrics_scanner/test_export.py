@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from upcast.prometheus_metrics_scanner.export import (
     export_to_yaml,
     export_to_yaml_string,

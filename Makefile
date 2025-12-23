@@ -42,7 +42,7 @@ test-integration: ## Run integration tests on example project
 	@uv run upcast scan-complexity-patterns example/blueking-paas -o example/scan-results/complexity-patterns.yaml --threshold 10 || true
 	@uv run upcast scan-concurrency-patterns example/blueking-paas -o example/scan-results/concurrency-patterns.yaml || true
 	@uv run upcast scan-django-models example/blueking-paas -o example/scan-results/django-models.yaml || true
-	@uv run upcast scan-django-settings example/blueking-paas -o example/scan-results/django-settings.yaml --mode usage || true
+	@uv run upcast scan-django-settings example/blueking-paas -o example/scan-results/django-settings.yaml || true
 	@uv run upcast scan-django-urls example/blueking-paas -o example/scan-results/django-urls.yaml || true
 	@uv run upcast scan-env-vars example/blueking-paas -o example/scan-results/env-vars.yaml || true
 	@uv run upcast scan-exception-handlers example/blueking-paas -o example/scan-results/exception-handlers.yaml || true

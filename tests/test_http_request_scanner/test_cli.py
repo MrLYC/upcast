@@ -5,7 +5,6 @@ from pathlib import Path
 
 import yaml
 from click.testing import CliRunner
-
 from upcast.http_request_scanner.cli import scan_http_requests
 
 

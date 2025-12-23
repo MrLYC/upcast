@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 from astroid import parse
-
 from upcast.cyclomatic_complexity_scanner.checker import ComplexityChecker
 
 

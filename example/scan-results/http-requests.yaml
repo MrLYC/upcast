@@ -2,27 +2,111 @@ metadata: {}
 results:
   "...":
     library: requests
-    method: PUT
+    method: GET
     usages:
       - is_async: false
-        json_body:
-          <dynamic>: "..."
+        location: apiserver/paasng/paas_wl/workloads/tracing/instrumentor.py:101
+        method: REQUESTSINSTRUMENTOR
+        session_based: false
+        statement: RequestsInstrumentor()
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/cloudapi/components/http.py:38
+        method: REQUEST
+        session_based: false
+        statement: requests.request(method, url, **kwargs)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py:56
+        method: GET
+        session_based: false
+        statement: requests.get(url)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:118
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:128
+        method: GET
+        session_based: false
+        statement:
+          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
+          'end_time': end_time.isoformat()}, auth=self.auth)"
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:160
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:185
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:202
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:212
+        method: GET
+        session_based: false
+        statement:
+          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
+          'end_time': end_time.isoformat()}, auth=self.auth)"
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:240
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:271
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:296
+        method: GET
+        session_based: false
+        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:140
+        method: GET
+        session_based: false
+        statement: requests.get(self.config.meta_info_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+        timeout: 15
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:151
+        method: GET
+        session_based: false
+        statement: requests.get(self.config.index_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+        timeout: 15
+      - is_async: false
+        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:162
+        method: PUT
+        session_based: false
+        statement:
+          requests.put(self.config.create_service_url, json=data, auth=self.auth,
+          timeout=self.REQUEST_CREATE_TIMEOUT)
+        timeout: 300
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:175
         method: PUT
         session_based: false
         statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
         timeout: 300
       - is_async: false
-        json_body:
-          <dynamic>: "..."
+        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:187
+        method: POST
+        session_based: false
+        statement: requests.post(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+        timeout: 300
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:199
         method: PUT
         session_based: false
         statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
         timeout: 300
       - is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:211
         method: POST
         session_based: false
@@ -41,16 +125,18 @@ results:
         statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
         timeout: 15
       - is_async: false
-        json_body:
-          <dynamic>: "..."
+        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:250
+        method: DELETE
+        session_based: false
+        statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
+        timeout: 30
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:261
         method: PUT
         session_based: false
         statement: requests.put(url, json=config, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
         timeout: 300
       - is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:268
         method: POST
         session_based: false
@@ -65,8 +151,6 @@ results:
       - headers:
           content-type: application/json
         is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py:64
         method: PUT
         session_based: false
@@ -74,8 +158,6 @@ results:
       - headers:
           content-type: application/json
         is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py:69
         method: DELETE
         session_based: false
@@ -83,60 +165,166 @@ results:
       - headers:
           content-type: application/json
         is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py:73
         method: GET
         session_based: false
         statement: requests.get(url=url, headers=self.headers, auth=self.auth, json=json)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py:39
         method: GET
-        params:
-          <dynamic>: "..."
         session_based: false
         statement: requests.get(url=url, headers=headers, params=data, timeout=timeout)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py:41
         method: HEAD
         session_based: false
         statement: requests.head(url=url, headers=headers, timeout=timeout)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py:43
         method: POST
         session_based: false
         statement: requests.post(url=url, headers=headers, json=data, timeout=timeout)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py:45
         method: DELETE
         session_based: false
         statement: requests.delete(url=url, headers=headers, json=data)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
+      - is_async: false
         location: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py:47
         method: PUT
         session_based: false
         statement: requests.put(url=url, headers=headers, json=data)
       - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:94
+        method: OAUTH2SESSION
+        session_based: true
+        statement: OAuth2Session(self.client_id)
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:132
+        method: OAUTH2SESSION
+        session_based: true
+        statement:
+          OAuth2Session(client_id=self.client_id, redirect_uri=self.redirect_uri,
+          scope=self.scope)
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:240
+        method: POST
+        session_based: false
+        statement:
+          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
+          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
+          rtx=username, **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:261
+        method: POST
+        session_based: false
+        statement:
+          requests.post(url=self.refresh_url, params=dict(app_code=self.app_code,
+          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
+          headers=self.app_info_headers)
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:278
+        method: GET
+        session_based: false
+        statement:
+          "requests.get(url=self.validate_url, json={'access_token': access_token},
+          headers=self.app_info_headers)"
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:295
+        method: POST
+        session_based: false
+        statement:
+          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
+          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
+          id_provider='bk_login', **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:316
+        method: POST
+        session_based: false
+        statement:
+          requests.post(url=self.refresh_url, json=dict(app_code=self.app_code,
+          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
+          headers=self.app_info_headers)
+      - is_async: false
+        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:333
+        method: POST
+        session_based: false
+        statement:
+          "requests.post(url=self.validate_url, json={'access_token': access_token},
+          headers=self.app_info_headers)"
+      - is_async: false
+        location: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py:97
+        method: HTTPBASICAUTH
+        session_based: false
+        statement: HTTPBasicAuth(*self.basic_auth)
+      - is_async: false
+        location: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py:100
+        method: REQUEST
+        session_based: false
+        statement: requests.request(method, url, **kwargs)
+      - is_async: false
         location: apiserver/paasng/paasng/misc/search/backends.py:83
         method: GET
         session_based: false
         statement: requests.get(self.BKDOC_SEARCH_BASE_URL.format(keyword))
+      - is_async: false
+        location: apiserver/paasng/paasng/misc/tracing/instrumentor.py:101
+        method: REQUESTSINSTRUMENTOR
+        session_based: false
+        statement: RequestsInstrumentor()
+      - is_async: false
+        location: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py:147
+        method: GET
+        session_based: false
+        statement: requests.get(logo_url, stream=True)
+      - is_async: false
+        location: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py:156
+        method: GET
+        session_based: false
+        statement: requests.get(settings.APPLICATION_DEFAULT_LOGO, stream=True)
+      - is_async: false
+        location: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py:33
+        method: GET
+        session_based: false
+        statement: requests.get(target_url, stream=True)
+      - is_async: false
+        location: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py:105
+        method: GET
+        session_based: false
+        statement:
+          requests.get(url, params=params, timeout=self.TIMEOUT, verify=self.SSL_VERIFY,
+          **kwargs)
+        timeout: 60
+      - is_async: false
+        location: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/thirdparty/test_api.py:33
+        method: RESPONSE
+        session_based: false
+        statement: Response()
+      - is_async: false
+        location: apiserver/paasng/tests/paasng/platform/smart_app/test_dispatch.py:50
+        method: ADAPTER
+        session_based: false
+        statement: Adapter()
+      - is_async: false
+        location: apiserver/paasng/tests/paasng/platform/smart_app/utils.py:40
+        method: RESPONSE
+        session_based: false
+        statement: Response()
+      - is_async: false
+        location: apiserver/paasng/tests/paasng/platform/sourcectl/packages/utils.py:36
+        method: RESPONSE
+        session_based: false
+        statement: Response()
+      - is_async: false
+        location: apiserver/paasng/tests/utils/api.py:26
+        method: RESPONSE
+        session_based: false
+        statement: Response()
+      - is_async: false
+        location: svc-bkrepo/svc_bk_repo/vendor/helper.py:69
+        method: HTTPBASICAUTH
+        session_based: false
+        statement: HTTPBasicAuth(username=self.username, password=self.password)
   ".../api/overview":
     library: requests
     method: GET
@@ -150,159 +338,44 @@ results:
     library: requests
     method: POST
     usages:
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
+      - is_async: false
         location: apiserver/paasng/paasng/infras/oauth2/api.py:101
         method: POST
         session_based: false
         statement: requests.post(url, json=data, headers=self.headers)
   ".../api/v1/apps/.../access-keys":
     library: requests
-    method: GET
+    method: POST
     usages:
-      - headers:
-          <dynamic>: "..."
-        is_async: false
+      - is_async: false
         location: apiserver/paasng/paasng/infras/oauth2/api.py:114
         method: POST
         session_based: false
         statement: requests.post(url, headers=self.headers)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
+      - is_async: false
         location: apiserver/paasng/paasng/infras/oauth2/api.py:139
         method: GET
         session_based: false
         statement: requests.get(url, headers=self.headers)
   ".../api/v1/apps/.../access-keys/...":
     library: requests
-    method: PUT
+    method: DELETE
     usages:
-      - headers:
-          <dynamic>: "..."
-        is_async: false
+      - is_async: false
         location: apiserver/paasng/paasng/infras/oauth2/api.py:122
         method: DELETE
         session_based: false
         statement: requests.delete(url, headers=self.headers)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
+      - is_async: false
         location: apiserver/paasng/paasng/infras/oauth2/api.py:131
         method: PUT
         session_based: false
         statement: requests.put(url, json=data, headers=self.headers)
-  ".../sites/Uninferable/event/config":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:202
-        method: GET
-        session_based: false
-        statement: requests.get(self.base_url + url, auth=self.auth)
-  ".../sites/Uninferable/event/metrics/aggregate_by_interval":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:296
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-  ".../sites/Uninferable/event/metrics/c/Uninferable/d/Uninferable/detail":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:271
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-  ".../sites/Uninferable/event/metrics/overview":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:240
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-  ".../sites/Uninferable/event/metrics/total":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:212
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement:
-          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
-          'end_time': end_time.isoformat()}, auth=self.auth)"
-  ".../sites/Uninferable/t/Uninferable/config":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:118
-        method: GET
-        session_based: false
-        statement: requests.get(self.base_url + url, auth=self.auth)
-  ".../sites/Uninferable/t/Uninferable/metrics/aggregate_by_interval":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:185
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-  ".../sites/Uninferable/t/Uninferable/metrics/dimension/Uninferable":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:160
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-  ".../sites/Uninferable/t/Uninferable/metrics/total":
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:128
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement:
-          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
-          'end_time': end_time.isoformat()}, auth=self.auth)"
   ".../sites/register":
     library: requests
     method: POST
     usages:
       - is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:82
         method: POST
         session_based: false
@@ -310,8 +383,6 @@ results:
           'extra_info': {'paas_app_code': app_code, 'module_name': module_name,
           'environment': env}}, auth=self.auth)"
       - is_async: false
-        json_body:
-          <dynamic>: "..."
         location: apiserver/paasng/paasng/accessories/paas_analysis/clients.py:102
         method: POST
         session_based: false
@@ -361,15 +432,6 @@ results:
         statement:
           "Request('POST', 'https://example.com/api', headers={'BK_PASSWORD':
           '123456', 'api_key': 'abcdef'})"
-  Uninferable/media/applogo/Uninferable.png:
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py:147
-        method: GET
-        session_based: false
-        statement: requests.get(logo_url, stream=True)
   faked requests exception:
     library: requests
     method: REQUESTEXCEPTION
@@ -379,213 +441,11 @@ results:
         method: REQUESTEXCEPTION
         session_based: false
         statement: RequestException('faked requests exception')
-  unknown_url:
-    library: requests
-    method: GET
-    usages:
-      - is_async: false
-        location: apiserver/paasng/paas_wl/workloads/tracing/instrumentor.py:101
-        method: REQUESTSINSTRUMENTOR
-        session_based: false
-        statement: RequestsInstrumentor()
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/cloudapi/components/http.py:38
-        method: REQUEST
-        session_based: false
-        statement: requests.request(method, url, **kwargs)
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py:56
-        method: GET
-        session_based: false
-        statement: requests.get(url)
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:140
-        method: GET
-        session_based: false
-        statement: requests.get(self.config.meta_info_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:151
-        method: GET
-        session_based: false
-        statement: requests.get(self.config.index_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:162
-        method: PUT
-        session_based: false
-        statement:
-          requests.put(self.config.create_service_url, json=data, auth=self.auth,
-          timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:187
-        method: POST
-        session_based: false
-        statement: requests.post(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - is_async: false
-        location: apiserver/paasng/paasng/accessories/servicehub/remote/client.py:250
-        method: DELETE
-        session_based: false
-        statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
-        timeout: 30
-      - is_async: false
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:94
-        method: OAUTH2SESSION
-        session_based: true
-        statement: OAuth2Session(self.client_id)
-      - is_async: false
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:132
-        method: OAUTH2SESSION
-        session_based: true
-        statement:
-          OAuth2Session(client_id=self.client_id, redirect_uri=self.redirect_uri,
-          scope=self.scope)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:240
-        method: POST
-        session_based: false
-        statement:
-          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
-          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
-          rtx=username, **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:261
-        method: POST
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement:
-          requests.post(url=self.refresh_url, params=dict(app_code=self.app_code,
-          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
-          headers=self.app_info_headers)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:278
-        method: GET
-        session_based: false
-        statement:
-          "requests.get(url=self.validate_url, json={'access_token': access_token},
-          headers=self.app_info_headers)"
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:295
-        method: POST
-        session_based: false
-        statement:
-          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
-          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
-          id_provider='bk_login', **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:316
-        method: POST
-        session_based: false
-        statement:
-          requests.post(url=self.refresh_url, json=dict(app_code=self.app_code,
-          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
-          headers=self.app_info_headers)
-      - headers:
-          <dynamic>: "..."
-        is_async: false
-        json_body:
-          <dynamic>: "..."
-        location: apiserver/paasng/paasng/infras/accounts/oauth/backends.py:333
-        method: POST
-        session_based: false
-        statement:
-          "requests.post(url=self.validate_url, json={'access_token': access_token},
-          headers=self.app_info_headers)"
-      - is_async: false
-        location: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py:97
-        method: HTTPBASICAUTH
-        session_based: false
-        statement: HTTPBasicAuth(*self.basic_auth)
-      - is_async: false
-        location: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py:100
-        method: REQUEST
-        session_based: false
-        statement: requests.request(method, url, **kwargs)
-      - is_async: false
-        location: apiserver/paasng/paasng/misc/tracing/instrumentor.py:101
-        method: REQUESTSINSTRUMENTOR
-        session_based: false
-        statement: RequestsInstrumentor()
-      - is_async: false
-        location: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py:156
-        method: GET
-        session_based: false
-        statement: requests.get(settings.APPLICATION_DEFAULT_LOGO, stream=True)
-      - is_async: false
-        location: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py:33
-        method: GET
-        session_based: false
-        statement: requests.get(target_url, stream=True)
-      - is_async: false
-        location: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py:105
-        method: GET
-        params:
-          <dynamic>: "..."
-        session_based: false
-        statement:
-          requests.get(url, params=params, timeout=self.TIMEOUT, verify=self.SSL_VERIFY,
-          **kwargs)
-        timeout: 60
-      - is_async: false
-        location: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/thirdparty/test_api.py:33
-        method: RESPONSE
-        session_based: false
-        statement: Response()
-      - is_async: false
-        location: apiserver/paasng/tests/paasng/platform/smart_app/test_dispatch.py:50
-        method: ADAPTER
-        session_based: false
-        statement: Adapter()
-      - is_async: false
-        location: apiserver/paasng/tests/paasng/platform/smart_app/utils.py:40
-        method: RESPONSE
-        session_based: false
-        statement: Response()
-      - is_async: false
-        location: apiserver/paasng/tests/paasng/platform/sourcectl/packages/utils.py:36
-        method: RESPONSE
-        session_based: false
-        statement: Response()
-      - is_async: false
-        location: apiserver/paasng/tests/utils/api.py:26
-        method: RESPONSE
-        session_based: false
-        statement: Response()
-      - is_async: false
-        location: svc-bkrepo/svc_bk_repo/vendor/helper.py:69
-        method: HTTPBASICAUTH
-        session_based: false
-        statement: HTTPBasicAuth(username=self.username, password=self.password)
 summary:
   by_library:
     requests: 68
   files_scanned: 23
-  scan_duration_ms: 14217
+  scan_duration_ms: 6719
   total_count: 68
   total_requests: 68
-  unique_urls: 20
+  unique_urls: 9

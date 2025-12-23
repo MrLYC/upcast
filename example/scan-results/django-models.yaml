@@ -1312,7 +1312,7 @@ results:
     relationships: []
   apiserver.paasng.paas_wl.utils.models.UuidAuditedModel:
     bases:
-      - .AuditedModel
+      - apiserver.paasng.paas_wl.utils.models.AuditedModel
     description: Add a UUID primary key to an class`AuditedModel`.
     fields:
       uuid:
@@ -1644,7 +1644,7 @@ results:
         type: models.ForeignKey
   apiserver.paasng.paas_wl.workloads.networking.ingress.models.AppDomainSharedCert:
     bases:
-      - .BasicCert
+      - apiserver.paasng.paas_wl.workloads.networking.ingress.models.BasicCert
     description:
       Shared TLS Certifications for AppDomain, every app's domain may link
       to this certificate as
@@ -1656,6 +1656,23 @@ results:
           max_length: 2048
           type: models.TextField
         type: models.TextField
+      name:
+        line: 1
+        name: name
+        parameters:
+          max_length: 128
+          type: models.CharField
+          unique: true
+          validators:
+            - "`RegexValidator(DNS_SAFE_PATTERN)`"
+        type: models.CharField
+      region:
+        line: 1
+        name: region
+        parameters:
+          max_length: 32
+          type: models.CharField
+        type: models.CharField
     line: 1
     meta:
       db_table: services_appdomainsharedcert
@@ -4253,9 +4270,18 @@ results:
     relationships: []
   apiserver.paasng.paasng.misc.audit.models.AdminOperationRecord:
     bases:
-      - .BaseOperation
+      - apiserver.paasng.paasng.misc.audit.models.BaseOperation
     description: 后台管理操作记录，用于记录平台管理员在 Admin 系统上的操作
     fields:
+      access_type:
+        line: 1
+        name: access_type
+        parameters:
+          choices: "`AccessType.get_choices()`"
+          default: "`AccessType.WEB`"
+          type: models.IntegerField
+          verbose_name: 访问方式
+        type: models.IntegerField
       app_code:
         line: 1
         name: app_code
@@ -4265,6 +4291,100 @@ results:
           "null": true
           type: models.CharField
           verbose_name: 应用ID, 非必填
+        type: models.CharField
+      attribute:
+        line: 1
+        name: attribute
+        parameters:
+          blank: true
+          help_text: 如增强服务的属性可以为：mysql、bkrepo
+          max_length: 32
+          "null": true
+          type: models.CharField
+          verbose_name: 对象属性
+        type: models.CharField
+      data_after:
+        line: 1
+        name: data_after
+        parameters:
+          blank: true
+          "null": true
+          type: models.JSONField
+          verbose_name: 操作后的数据
+        type: models.JSONField
+      data_before:
+        line: 1
+        name: data_before
+        parameters:
+          blank: true
+          "null": true
+          type: models.JSONField
+          verbose_name: 操作前的数据
+        type: models.JSONField
+      end_time:
+        line: 1
+        name: end_time
+        parameters:
+          help_text: 仅需要后台执行的的操作才需要记录结束时间
+          "null": true
+          type: models.DateTimeField
+        type: models.DateTimeField
+      environment:
+        line: 1
+        name: environment
+        parameters:
+          blank: true
+          choices: "`AppEnvName.get_choices()`"
+          max_length: 16
+          "null": true
+          type: models.CharField
+          verbose_name: 环境，非必填
+        type: models.CharField
+      module_name:
+        line: 1
+        name: module_name
+        parameters:
+          blank: true
+          max_length: 32
+          "null": true
+          type: models.CharField
+          verbose_name: 模块名，非必填
+        type: models.CharField
+      operation:
+        line: 1
+        name: operation
+        parameters:
+          choices: "`OperationEnum.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 操作类型
+        type: models.CharField
+      result_code:
+        line: 1
+        name: result_code
+        parameters:
+          choices: "`ResultCode.get_choices()`"
+          default: "`ResultCode.SUCCESS`"
+          type: models.IntegerField
+          verbose_name: 操作结果
+        type: models.IntegerField
+      start_time:
+        line: 1
+        name: start_time
+        parameters:
+          auto_now_add: true
+          db_index: true
+          type: models.DateTimeField
+          verbose_name: 开始时间
+        type: models.DateTimeField
+      target:
+        line: 1
+        name: target
+        parameters:
+          choices: "`OperationTarget.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 操作对象
         type: models.CharField
     line: 1
     meta: {}
@@ -4299,9 +4419,18 @@ results:
         type: models.OneToOneField
   apiserver.paasng.paasng.misc.audit.models.AppOperationRecord:
     bases:
-      - .BaseOperation
+      - apiserver.paasng.paasng.misc.audit.models.BaseOperation
     description: 应用操作记录，用于记录应用开发者的操作，需要同步记录应用的权限数据，并可以选择是否将数据上报到审计中心
     fields:
+      access_type:
+        line: 1
+        name: access_type
+        parameters:
+          choices: "`AccessType.get_choices()`"
+          default: "`AccessType.WEB`"
+          type: models.IntegerField
+          verbose_name: 访问方式
+        type: models.IntegerField
       action_id:
         line: 1
         name: action_id
@@ -4321,6 +4450,73 @@ results:
           type: models.CharField
           verbose_name: 应用ID, 必填
         type: models.CharField
+      attribute:
+        line: 1
+        name: attribute
+        parameters:
+          blank: true
+          help_text: 如增强服务的属性可以为：mysql、bkrepo
+          max_length: 32
+          "null": true
+          type: models.CharField
+          verbose_name: 对象属性
+        type: models.CharField
+      data_after:
+        line: 1
+        name: data_after
+        parameters:
+          blank: true
+          "null": true
+          type: models.JSONField
+          verbose_name: 操作后的数据
+        type: models.JSONField
+      data_before:
+        line: 1
+        name: data_before
+        parameters:
+          blank: true
+          "null": true
+          type: models.JSONField
+          verbose_name: 操作前的数据
+        type: models.JSONField
+      end_time:
+        line: 1
+        name: end_time
+        parameters:
+          help_text: 仅需要后台执行的的操作才需要记录结束时间
+          "null": true
+          type: models.DateTimeField
+        type: models.DateTimeField
+      environment:
+        line: 1
+        name: environment
+        parameters:
+          blank: true
+          choices: "`AppEnvName.get_choices()`"
+          max_length: 16
+          "null": true
+          type: models.CharField
+          verbose_name: 环境，非必填
+        type: models.CharField
+      module_name:
+        line: 1
+        name: module_name
+        parameters:
+          blank: true
+          max_length: 32
+          "null": true
+          type: models.CharField
+          verbose_name: 模块名，非必填
+        type: models.CharField
+      operation:
+        line: 1
+        name: operation
+        parameters:
+          choices: "`OperationEnum.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 操作类型
+        type: models.CharField
       resource_type_id:
         line: 1
         name: resource_type_id
@@ -4330,6 +4526,33 @@ results:
           help_text: 开发者中心注册的资源都为蓝鲸应用
           max_length: 32
           type: models.CharField
+        type: models.CharField
+      result_code:
+        line: 1
+        name: result_code
+        parameters:
+          choices: "`ResultCode.get_choices()`"
+          default: "`ResultCode.SUCCESS`"
+          type: models.IntegerField
+          verbose_name: 操作结果
+        type: models.IntegerField
+      start_time:
+        line: 1
+        name: start_time
+        parameters:
+          auto_now_add: true
+          db_index: true
+          type: models.DateTimeField
+          verbose_name: 开始时间
+        type: models.DateTimeField
+      target:
+        line: 1
+        name: target
+        parameters:
+          choices: "`OperationTarget.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 操作对象
         type: models.CharField
     line: 1
     meta: {}
@@ -6659,9 +6882,60 @@ results:
     relationships: []
   apiserver.paasng.paasng.platform.modules.models.runtime.AppSlugBuilder:
     bases:
-      - .AppImage
+      - apiserver.paasng.paasng.platform.modules.models.runtime.AppImage
     description: 应用构建环境
-    fields: {}
+    fields:
+      image:
+        line: 1
+        name: image
+        parameters:
+          max_length: 256
+          type: models.CharField
+          verbose_name: 镜像
+        type: models.CharField
+      is_default:
+        line: 1
+        name: is_default
+        parameters:
+          default: false
+          "null": true
+          type: models.BooleanField
+          verbose_name: 是否为默认运行时
+        type: models.BooleanField
+      is_hidden:
+        line: 1
+        name: is_hidden
+        parameters:
+          default: false
+          type: models.BooleanField
+          verbose_name: 是否隐藏
+        type: models.BooleanField
+      name:
+        line: 1
+        name: name
+        parameters:
+          max_length: 64
+          type: models.CharField
+          unique: true
+          verbose_name: 名称
+        type: models.CharField
+      tag:
+        line: 1
+        name: tag
+        parameters:
+          max_length: 32
+          type: models.CharField
+          verbose_name: 标签
+        type: models.CharField
+      type:
+        line: 1
+        name: type
+        parameters:
+          choices: "`AppImageType.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 镜像类型
+        type: models.CharField
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.runtime
@@ -6682,9 +6956,60 @@ results:
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.modules.models.runtime.AppSlugRunner:
     bases:
-      - .AppImage
+      - apiserver.paasng.paasng.platform.modules.models.runtime.AppImage
     description: 应用运行环境
-    fields: {}
+    fields:
+      image:
+        line: 1
+        name: image
+        parameters:
+          max_length: 256
+          type: models.CharField
+          verbose_name: 镜像
+        type: models.CharField
+      is_default:
+        line: 1
+        name: is_default
+        parameters:
+          default: false
+          "null": true
+          type: models.BooleanField
+          verbose_name: 是否为默认运行时
+        type: models.BooleanField
+      is_hidden:
+        line: 1
+        name: is_hidden
+        parameters:
+          default: false
+          type: models.BooleanField
+          verbose_name: 是否隐藏
+        type: models.BooleanField
+      name:
+        line: 1
+        name: name
+        parameters:
+          max_length: 64
+          type: models.CharField
+          unique: true
+          verbose_name: 名称
+        type: models.CharField
+      tag:
+        line: 1
+        name: tag
+        parameters:
+          max_length: 32
+          type: models.CharField
+          verbose_name: 标签
+        type: models.CharField
+      type:
+        line: 1
+        name: type
+        parameters:
+          choices: "`AppImageType.get_choices()`"
+          max_length: 32
+          type: models.CharField
+          verbose_name: 镜像类型
+        type: models.CharField
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.runtime
@@ -6697,7 +7022,7 @@ results:
   apiserver.paasng.paasng.platform.sourcectl.models.DockerRepository:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
-      - .RepositoryMixin
+      - apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
     description: 容器镜像仓库
     fields:
       repo_url:
@@ -6734,7 +7059,7 @@ results:
   apiserver.paasng.paasng.platform.sourcectl.models.GitRepository:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
-      - .RepositoryMixin
+      - apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
     description: 基于 Git 的软件存储库
     fields:
       repo_url:
@@ -7013,7 +7338,7 @@ results:
   apiserver.paasng.paasng.platform.sourcectl.models.SvnRepository:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
-      - .RepositoryMixin
+      - apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
     description: 基于 Svn 的软件存储库
     fields:
       repo_url:
@@ -7190,7 +7515,7 @@ results:
     relationships: []
   apiserver.paasng.paasng.utils.models.OwnerTimestampedModel:
     bases:
-      - .TimestampedModel
+      - apiserver.paasng.paasng.utils.models.TimestampedModel
     description: Model with 'created' and 'updated' fields.
     fields: {}
     line: 1
@@ -7234,7 +7559,7 @@ results:
     relationships: []
   apiserver.paasng.paasng.utils.models.UuidAuditedModel:
     bases:
-      - .AuditedModel
+      - apiserver.paasng.paasng.utils.models.AuditedModel
     description: Add a UUID primary key to an :class:`AuditedModel`.
     fields:
       uuid:
@@ -7457,9 +7782,23 @@ results:
     relationships: []
   svc-rabbitmq.vendor.models.ClusterTag:
     bases:
-      - .Tag
+      - svc-rabbitmq.vendor.models.Tag
     description: 集群标签，用于分配和分组
-    fields: {}
+    fields:
+      key:
+        line: 1
+        name: key
+        parameters:
+          max_length: 64
+          type: models.CharField
+        type: models.CharField
+      value:
+        line: 1
+        name: value
+        parameters:
+          max_length: 128
+          type: models.CharField
+        type: models.CharField
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7496,7 +7835,7 @@ results:
     relationships: []
   svc-rabbitmq.vendor.models.LimitPolicy:
     bases:
-      - .LinkableModel
+      - svc-rabbitmq.vendor.models.LinkableModel
     description: 集群下创建 vhost 限制机制，和具体 vhost 无关
     fields:
       cluster_id:
@@ -7524,6 +7863,14 @@ results:
           "null": true
           type: models.CharField
         type: models.CharField
+      link_type:
+        line: 1
+        name: link_type
+        parameters:
+          choices: "`[(i.value, i.name) for i in LinkType]`"
+          default: "`LinkType.empty.value`"
+          type: models.IntegerField
+        type: models.IntegerField
       name:
         line: 1
         name: name
@@ -7544,12 +7891,30 @@ results:
     meta: {}
     module: svc-rabbitmq.vendor.models
     name: LimitPolicy
-    relationships: []
+    relationships:
+      - field: linked
+        on_delete: "`models.CASCADE`"
+        to: self
+        type: models.ForeignKey
   svc-rabbitmq.vendor.models.LimitPolicyTag:
     bases:
-      - .Tag
+      - svc-rabbitmq.vendor.models.Tag
     description: 表示绑定关系
-    fields: {}
+    fields:
+      key:
+        line: 1
+        name: key
+        parameters:
+          max_length: 64
+          type: models.CharField
+        type: models.CharField
+      value:
+        line: 1
+        name: value
+        parameters:
+          max_length: 128
+          type: models.CharField
+        type: models.CharField
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7608,7 +7973,7 @@ results:
     relationships: []
   svc-rabbitmq.vendor.models.UserPolicy:
     bases:
-      - .LinkableModel
+      - svc-rabbitmq.vendor.models.LinkableModel
     description: 集群下创建 vhost 默认策略，和具体 vhost 无关
     fields:
       apply_to:
@@ -7636,6 +8001,14 @@ results:
           default: true
           type: models.BooleanField
         type: models.BooleanField
+      link_type:
+        line: 1
+        name: link_type
+        parameters:
+          choices: "`[(i.value, i.name) for i in LinkType]`"
+          default: "`LinkType.empty.value`"
+          type: models.IntegerField
+        type: models.IntegerField
       name:
         line: 1
         name: name
@@ -7665,12 +8038,30 @@ results:
     meta: {}
     module: svc-rabbitmq.vendor.models
     name: UserPolicy
-    relationships: []
+    relationships:
+      - field: linked
+        on_delete: "`models.CASCADE`"
+        to: self
+        type: models.ForeignKey
   svc-rabbitmq.vendor.models.UserPolicyTag:
     bases:
-      - .Tag
+      - svc-rabbitmq.vendor.models.Tag
     description: 表示绑定关系
-    fields: {}
+    fields:
+      key:
+        line: 1
+        name: key
+        parameters:
+          max_length: 64
+          type: models.CharField
+        type: models.CharField
+      value:
+        line: 1
+        name: value
+        parameters:
+          max_length: 128
+          type: models.CharField
+        type: models.CharField
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7683,8 +8074,8 @@ results:
         type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 2066
+  scan_duration_ms: 1450
   total_count: 167
-  total_fields: 640
+  total_fields: 684
   total_models: 167
-  total_relationships: 146
+  total_relationships: 148

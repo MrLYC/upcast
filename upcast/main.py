@@ -667,12 +667,6 @@ def scan_signals_cmd(
     default="yaml",
     help="Output format (yaml or json)",
 )
-@click.option(
-    "--mode",
-    type=click.Choice(["usage", "definitions"], case_sensitive=False),
-    default="usage",
-    help="Scan mode: usage for settings usages, definitions for settings definitions",
-)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -681,43 +675,34 @@ def scan_django_settings_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
-    mode: str,
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
 ) -> None:
-    """Scan Django code for settings definitions or usages.
+    """Scan Django code for settings definitions and usages.
 
-    This command can scan for:
-    - Settings usages: where settings are accessed (settings.KEY, getattr, hasattr)
-    - Settings definitions: where settings are defined in settings modules
+    This command scans for both settings definitions and usages, producing
+    comprehensive output for each setting variable.
 
     PATH: Directory or file to scan (defaults to current directory)
 
     Examples:
 
         \b
-        # Scan for settings usages
-        upcast scan-django-settings . --mode usage
-
-        \b
-        # Scan for settings definitions
-        upcast scan-django-settings . --mode definitions
+        # Scan for settings
+        upcast scan-django-settings .
 
         \b
         # Save results to file
-        upcast scan-django-settings . --mode usage -o settings_usage.yaml
+        upcast scan-django-settings . -o settings.yaml
 
         \b
         # Output as JSON
         upcast scan-django-settings . --format json
     """
     try:
-        scanner = DjangoSettingsScanner(
-            scan_mode=mode,
-            verbose=verbose,
-        )
+        scanner = DjangoSettingsScanner(verbose=verbose)
         output_format_str = format
         run_scanner_cli(scanner, path, output, output_format_str, include, exclude, no_default_excludes, verbose)
 

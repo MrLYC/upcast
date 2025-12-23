@@ -167,7 +167,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         if not func_name or "Thread" not in func_name or "ThreadPool" in func_name:
             return None
 
-        if not ("threading.Thread" in func_name or func_name.endswith("Thread")):
+        # Only accept threading.Thread, reject custom Thread classes
+        if func_name != "threading.Thread":
             return None
 
         # Extract target and name
@@ -232,7 +233,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         if not func_name or "Process" not in func_name or "ProcessPool" in func_name:
             return None
 
-        if not ("multiprocessing.Process" in func_name or func_name.endswith("Process")):
+        # Only accept multiprocessing.Process, reject dataclasses and custom Process classes
+        if func_name != "multiprocessing.Process":
             return None
 
         # Extract target and name

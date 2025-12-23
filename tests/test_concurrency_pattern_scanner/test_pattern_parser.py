@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 from astroid import parse
-
 from upcast.concurrency_pattern_scanner.pattern_parser import (
     parse_async_context_manager,
     parse_async_function,
@@ -298,5 +297,66 @@ async def test():
     executor_types = {"process_pool": "ProcessPoolExecutor"}
     pattern = parse_run_in_executor(executor_call, "test.py", executor_types)
     assert pattern["file"] == "test.py"
+
+
+def test_no_false_positive_for_dataclass_process():
+    """
+    Regression test: Verify that dataclasses named 'Process' are not detected
+    as process creation. This was a false positive before the qualified name fix.
+    """
+    code = """
+from dataclasses import dataclass
+
+@dataclass
+class Process:
+    name: str
+    replicas: int
+
+def create_plain_process():
+    # This should NOT be detected as multiprocessing.Process
+    return Process(name="web", replicas=2)
+"""
+    module = parse(code)
+    call_nodes = list(module.nodes_of_class(type(parse("f()").body[0].value)))
+
+    # Find Process call
+    process_call = next(
+        (c for c in call_nodes if hasattr(c.func, "name") and c.func.name == "Process"),
+        None,
+    )
+    assert process_call is not None
+
+    # This should return None because it's not multiprocessing.Process
+    pattern = parse_process_creation(process_call, "test.py")
+    assert pattern is None
+
+
+def test_no_false_positive_for_custom_thread_class():
+    """
+    Regression test: Verify that custom classes named 'Thread' are not detected
+    as threading.Thread creation.
+    """
+    code = """
+class Thread:
+    def __init__(self, title: str):
+        self.title = title
+
+def create_thread():
+    # This should NOT be detected as threading.Thread
+    return Thread(title="Discussion")
+"""
+    module = parse(code)
+    call_nodes = list(module.nodes_of_class(type(parse("f()").body[0].value)))
+
+    # Find Thread call
+    thread_call = next(
+        (c for c in call_nodes if hasattr(c.func, "name") and c.func.name == "Thread"),
+        None,
+    )
+    assert thread_call is not None
+
+    # This should return None because it's not threading.Thread
+    pattern = parse_thread_creation(thread_call, "test.py")
+    assert pattern is None
     assert pattern["executor"] == "process_pool"
     assert pattern["_category"] == "multiprocessing"
