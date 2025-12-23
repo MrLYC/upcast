@@ -195,6 +195,47 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         path_str = str(file_path).lower()
         return "settings" in path_str or "config" in path_str
 
+    def _extract_value(self, node: nodes.NodeNG) -> Any:
+        """Extract value from an AST node recursively.
+
+        Args:
+            node: The AST node to extract value from
+
+        Returns:
+            Extracted value or None if cannot extract
+        """
+        try:
+            # Handle constants
+            if isinstance(node, nodes.Const):
+                return node.value
+
+            # Handle lists
+            if isinstance(node, nodes.List):
+                return [self._extract_value(elt) for elt in node.elts]
+
+            # Handle tuples
+            if isinstance(node, nodes.Tuple):
+                return tuple(self._extract_value(elt) for elt in node.elts)
+
+            # Handle dicts
+            if isinstance(node, nodes.Dict):
+                result = {}
+                for key_node, value_node in node.items:
+                    key = self._extract_value(key_node)
+                    value = self._extract_value(value_node)
+                    if key is not None:
+                        result[key] = value
+                return result
+
+            # Handle sets
+            if isinstance(node, nodes.Set):
+                return {self._extract_value(elt) for elt in node.elts}
+
+        except Exception:  # noqa: S110
+            pass
+
+        return None
+
     def _infer_value(self, value_node: nodes.NodeNG, var_name: str) -> tuple[Any, str, str]:
         """Infer value, type, and statement from an assignment node.
 
@@ -206,6 +247,13 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
             Tuple of (value, type_str, statement)
         """
         try:
+            # Try to extract value directly
+            extracted_value = self._extract_value(value_node)
+            if extracted_value is not None:
+                type_str = type(extracted_value).__name__
+                statement = f"{var_name} = {extracted_value!r}"
+                return extracted_value, type_str, statement
+
             # Try to infer the value
             inferred_values = list(value_node.infer())
             if inferred_values and len(inferred_values) == 1:
@@ -217,20 +265,6 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                     type_str = type(value).__name__
                     statement = f"{var_name} = {value!r}"
                     return value, type_str, statement
-
-                # Handle lists
-                if isinstance(inferred, nodes.List):
-                    try:
-                        value = [
-                            elt.value if isinstance(elt, nodes.Const) else "..."
-                            for elt in value_node.elts  # type: ignore[attr-defined]
-                        ]
-                    except Exception:  # noqa: S110
-                        pass
-                    else:
-                        type_str = "list"
-                        statement = f"{var_name} = {value!r}"
-                        return value, type_str, statement
 
                 # Handle dicts
                 if isinstance(inferred, nodes.Dict):

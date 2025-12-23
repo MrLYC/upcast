@@ -159,3 +159,95 @@ SECRET_KEY = 'test'
         assert output.summary.total_definitions == 2
         assert output.summary.total_usages == 0
         assert output.summary.files_scanned > 0
+
+    def test_scanner_extracts_complex_list_values(self, tmp_path):
+        """Test scanner extracts complex list values (lists with dicts)."""
+        test_file = tmp_path / "settings.py"
+        test_file.write_text(
+            """
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+]
+"""
+        )
+
+        scanner = DjangoSettingsScanner()
+        output = scanner.scan(test_file)
+
+        assert "AUTH_PASSWORD_VALIDATORS" in output.results
+        validator_info = output.results["AUTH_PASSWORD_VALIDATORS"]
+        assert validator_info.definition_count == 1
+        assert "list" in validator_info.type_list
+
+        # Check value extraction
+        first_file = next(iter(validator_info.definitions.keys()))
+        validator_def = validator_info.definitions[first_file][0]
+        assert validator_def.value is not None
+        assert isinstance(validator_def.value, list)
+        assert len(validator_def.value) == 2
+
+        # Verify first dict
+        assert isinstance(validator_def.value[0], dict)
+        assert "NAME" in validator_def.value[0]
+        assert (
+            validator_def.value[0]["NAME"] == "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+        )
+
+        # Verify second dict with nested OPTIONS
+        assert isinstance(validator_def.value[1], dict)
+        assert "NAME" in validator_def.value[1]
+        assert "OPTIONS" in validator_def.value[1]
+        assert validator_def.value[1]["OPTIONS"]["min_length"] == 8
+
+    def test_scanner_extracts_nested_structures(self, tmp_path):
+        """Test scanner extracts nested data structures."""
+        test_file = tmp_path / "settings.py"
+        test_file.write_text(
+            """
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'OPTIONS': {
+            'isolation_level': 'READ COMMITTED',
+        },
+    }
+}
+
+LOGGING_HANDLERS = [
+    ('console', {'level': 'INFO'}),
+    ('file', {'level': 'ERROR', 'filename': 'app.log'}),
+]
+"""
+        )
+
+        scanner = DjangoSettingsScanner()
+        output = scanner.scan(test_file)
+
+        # Test nested dict
+        assert "DATABASES" in output.results
+        db_info = output.results["DATABASES"]
+        first_file = next(iter(db_info.definitions.keys()))
+        db_def = db_info.definitions[first_file][0]
+        assert db_def.value is not None
+        assert isinstance(db_def.value, dict)
+        assert "default" in db_def.value
+        assert db_def.value["default"]["ENGINE"] == "django.db.backends.postgresql"
+        assert db_def.value["default"]["OPTIONS"]["isolation_level"] == "READ COMMITTED"
+
+        # Test list of tuples with dicts
+        assert "LOGGING_HANDLERS" in output.results
+        log_info = output.results["LOGGING_HANDLERS"]
+        first_file = next(iter(log_info.definitions.keys()))
+        log_def = log_info.definitions[first_file][0]
+        assert log_def.value is not None
+        assert isinstance(log_def.value, list)
+        assert len(log_def.value) == 2
+        assert log_def.value[0] == ("console", {"level": "INFO"})
+        assert log_def.value[1][1]["filename"] == "app.log"
