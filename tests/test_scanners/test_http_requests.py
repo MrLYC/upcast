@@ -195,3 +195,90 @@ def fetch(a, b, c, d):
         output = scanner.scan(test_file)
 
         assert output.summary.total_count == 0
+
+    def test_scanner_handles_request_constructor_positional(self, tmp_path):
+        """Test scanner handles Request(method, url) with positional args."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import Request
+
+req = Request('GET', 'https://api.example.com/data')
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 1
+        # URL should be extracted from second argument
+        assert "https://api.example.com/data" in output.results
+        # Method should be extracted from first argument
+        result = output.results["https://api.example.com/data"]
+        assert result.method == "GET"
+        # Should NOT have "GET" as a URL key
+        assert "GET" not in output.results or output.results["GET"].method != "REQUEST"
+
+    def test_scanner_handles_request_constructor_keyword_args(self, tmp_path):
+        """Test scanner handles Request(method='GET', url='...')."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import Request
+
+req = Request(method='POST', url='https://api.example.com/submit')
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 1
+        # URL should be extracted from url keyword
+        assert "https://api.example.com/submit" in output.results
+        # Method should be POST
+        result = output.results["https://api.example.com/submit"]
+        assert result.method == "POST"
+
+    def test_scanner_handles_request_constructor_mixed_args(self, tmp_path):
+        """Test scanner handles Request('GET', url='...')."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import Request
+
+req = Request('DELETE', url='https://api.example.com/items/123')
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 1
+        # URL should be extracted from url keyword
+        assert "https://api.example.com/items/123" in output.results
+        # Method should be DELETE
+        result = output.results["https://api.example.com/items/123"]
+        assert result.method == "DELETE"
+
+    def test_scanner_handles_request_constructor_with_dynamic_url(self, tmp_path):
+        """Test scanner handles Request with dynamic URL."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import Request
+
+def make_request(item_id):
+    req = Request('GET', f'https://api.example.com/items/{item_id}')
+    return req
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 1
+        # Should preserve static parts and show pattern
+        assert "https://api.example.com/items/..." in output.results
+        result = output.results["https://api.example.com/items/..."]
+        assert result.method == "GET"

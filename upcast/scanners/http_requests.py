@@ -42,7 +42,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             for node in module.nodes_of_class(nodes.Call):
                 usage = self._check_request_call(node, rel_path, imports)
                 if usage:
-                    url = self._extract_url(node) or "..."
+                    url = self._extract_url_with_imports(node, imports) or "..."
                     if url not in requests_by_url:
                         requests_by_url[url] = []
                     requests_by_url[url].append(usage)
@@ -53,6 +53,35 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         summary = self._calculate_summary(requests_info, scan_duration_ms)
 
         return HttpRequestOutput(summary=summary, results=requests_info)
+
+    def _extract_url_with_imports(self, node: nodes.Call, imports: dict[str, str]) -> str | None:
+        """Extract URL from request call with import context.
+
+        Args:
+            node: Call node
+            imports: Import information from the module
+
+        Returns:
+            URL string or None
+        """
+        func = node.func
+        is_request_constructor = self._is_request_constructor(func, imports)
+
+        # Try extracting from keyword args first (works for all cases)
+        for keyword in node.keywords or []:
+            if keyword.arg == "url":
+                return self._extract_url_from_node(keyword.value, node)
+
+        # Try extracting from positional args
+        if node.args:
+            # For Request constructor: URL is second argument (index 1)
+            # For other methods: URL is first argument (index 0)
+            url_index = 1 if is_request_constructor else 0
+            if len(node.args) > url_index:
+                url_node = node.args[url_index]
+                return self._extract_url_from_node(url_node, node)
+
+        return None
 
     def _check_request_call(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> HttpRequestUsage | None:
         """Check if call is an HTTP request."""
@@ -65,11 +94,18 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         if not method:
             return None
 
+        # For Request constructors, extract method from first argument
+        actual_method = method
+        if self._is_request_constructor(func, imports):
+            actual_method = self._extract_method_from_request_constructor(node)
+            if not actual_method:
+                actual_method = method
+
         return HttpRequestUsage(
             file=file_path,
             line=node.lineno if hasattr(node, "lineno") else None,
             statement=safe_as_string(node),
-            method=method.upper(),
+            method=actual_method.upper(),
             params=self._extract_params(node),
             headers=self._extract_headers(node),
             json_body=self._extract_json_body(node),
@@ -78,6 +114,35 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             session_based="Session" in safe_as_string(func),
             is_async=library == "aiohttp" or "async" in safe_as_string(func),
         )
+
+    def _extract_method_from_request_constructor(self, node: nodes.Call) -> str | None:
+        """Extract HTTP method from Request constructor.
+
+        Handles:
+        - Request('GET', url) - positional
+        - Request(method='GET', url=url) - keyword
+        - Request('GET', url=url) - mixed
+
+        Args:
+            node: Call node for Request constructor
+
+        Returns:
+            HTTP method string or None
+        """
+        # Check keyword arguments first
+        for keyword in node.keywords or []:
+            if keyword.arg == "method":
+                method_value = safe_infer_value(keyword.value)
+                if isinstance(method_value, str):
+                    return method_value
+
+        # Check first positional argument
+        if node.args and len(node.args) > 0:
+            method_value = safe_infer_value(node.args[0])
+            if isinstance(method_value, str):
+                return method_value
+
+        return None
 
     def _identify_request(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> tuple[str | None, str | None]:
         """Identify HTTP library and method."""
@@ -96,27 +161,25 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                     return lib, func_name
         return None, None
 
-    def _extract_url(self, node: nodes.Call) -> str | None:
-        """Extract URL from request call with pattern normalization.
+    def _is_request_constructor(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> bool:
+        """Check if the call is a Request constructor.
 
-        Tries to infer from context first (variable assignments), then detects
-        dynamic URL construction patterns. Falls back to literal inference for
-        static URLs.
+        Request constructors have signature: Request(method, url, ...)
+        where the first argument is the HTTP method and second is the URL.
+
+        Args:
+            func_node: Function node to check
+            imports: Import information
 
         Returns:
-            Literal URL string, normalized pattern, or None
+            True if this is a Request constructor call
         """
-        # Try extracting from positional args
-        if node.args:
-            url_node = node.args[0]
-            return self._extract_url_from_node(url_node, node)
-
-        # Try extracting from keyword args
-        for keyword in node.keywords or []:
-            if keyword.arg == "url":
-                return self._extract_url_from_node(keyword.value, node)
-
-        return None
+        if isinstance(func_node, nodes.Name):
+            func_name = func_node.name
+            qualified = imports.get(func_name, func_name)
+            # Check for requests.Request or urllib.request.Request
+            return "Request" in qualified and func_name == "Request"
+        return False
 
     def _extract_url_from_node(self, url_node: nodes.NodeNG, context_node: nodes.Call) -> str | None:
         """Extract URL from a node, with context inference.

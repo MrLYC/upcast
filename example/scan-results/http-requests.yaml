@@ -685,7 +685,7 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys/...':
     library: requests
-    method: PUT
+    method: DELETE
     usages:
     - data: null
       file: apiserver/paasng/paasng/infras/oauth2/api.py
@@ -738,67 +738,6 @@ results:
       statement: 'requests.post(self.base_url + url, json={''site_type'': ''custom'',
         ''extra_info'': {''site_name'': site_name}}, auth=self.auth)'
       timeout: null
-  GET:
-    library: requests
-    method: REQUEST
-    usages:
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-      headers: null
-      is_async: false
-      json_body: null
-      line: 28
-      method: REQUEST
-      params: null
-      session_based: false
-      statement: Request('GET', 'https://example.com/api?BK_PASSWORD=123456&api_key=abcdef')
-      timeout: null
-  POST:
-    library: requests
-    method: REQUEST
-    usages:
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-      headers: null
-      is_async: false
-      json_body:
-        BK_PASSWORD: '123456'
-        api_key: abcdef
-      line: 37
-      method: REQUEST
-      params: null
-      session_based: false
-      statement: 'Request(''POST'', ''https://example.com/api'', json={''BK_PASSWORD'':
-        ''123456'', ''api_key'': ''abcdef''})'
-      timeout: null
-    - data:
-        BK_PASSWORD: '123456'
-        api_key: abcdef
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-      headers: null
-      is_async: false
-      json_body: null
-      line: 47
-      method: REQUEST
-      params: null
-      session_based: false
-      statement: 'Request(''POST'', ''https://example.com/api'', data={''BK_PASSWORD'':
-        ''123456'', ''api_key'': ''abcdef''})'
-      timeout: null
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-      headers:
-        BK_PASSWORD: '123456'
-        api_key: abcdef
-      is_async: false
-      json_body: null
-      line: 57
-      method: REQUEST
-      params: null
-      session_based: false
-      statement: 'Request(''POST'', ''https://example.com/api'', headers={''BK_PASSWORD'':
-        ''123456'', ''api_key'': ''abcdef''})'
-      timeout: null
   faked requests exception:
     library: requests
     method: REQUESTEXCEPTION
@@ -814,11 +753,73 @@ results:
       session_based: false
       statement: RequestException('faked requests exception')
       timeout: null
+  https://example.com/api:
+    library: requests
+    method: POST
+    usages:
+    - data: null
+      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      headers: null
+      is_async: false
+      json_body:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      line: 37
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', json={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
+    - data:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      headers: null
+      is_async: false
+      json_body: null
+      line: 47
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', data={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
+    - data: null
+      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      headers:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      is_async: false
+      json_body: null
+      line: 57
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', headers={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
+  https://example.com/api?BK_PASSWORD=123456&api_key=abcdef:
+    library: requests
+    method: GET
+    usages:
+    - data: null
+      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      headers: null
+      is_async: false
+      json_body: null
+      line: 28
+      method: GET
+      params: null
+      session_based: false
+      statement: Request('GET', 'https://example.com/api?BK_PASSWORD=123456&api_key=abcdef')
+      timeout: null
 summary:
   by_library:
     requests: 68
   files_scanned: 23
-  scan_duration_ms: 6674
+  scan_duration_ms: 7990
   total_count: 68
   total_requests: 68
   unique_urls: 9
+
