@@ -261,89 +261,35 @@ class ReportGenerator:
                 lines.append(f"\n- **Total URL Patterns**: {summary.get('total_patterns', 0)}")
                 lines.append(f"- **URL Configuration Files**: {summary.get('files_scanned', 0)}")
 
-                # Collect all URL patterns with their views
+                # Count different pattern types
                 if "results" in urls:
                     path_count = 0
                     include_count = 0
-                    all_patterns = []
+                    patterns_by_file = {}
                     
                     for file_path, file_patterns in urls["results"].items():
                         if isinstance(file_patterns, dict) and "urlpatterns" in file_patterns:
+                            pattern_count = len(file_patterns["urlpatterns"])
+                            patterns_by_file[file_path] = pattern_count
+                            
                             for pattern in file_patterns["urlpatterns"]:
-                                pattern_type = pattern.get("type")
-                                if pattern_type == "path":
+                                if pattern.get("type") == "path":
                                     path_count += 1
-                                elif pattern_type == "include":
+                                elif pattern.get("type") == "include":
                                     include_count += 1
-                                
-                                # Collect pattern info for the table
-                                if pattern_type == "path":
-                                    url_pattern = pattern.get("pattern", "")
-                                    view_module = pattern.get("view_module") or ""
-                                    view_name = pattern.get("view_name") or ""
-                                    
-                                    # Create full view path
-                                    if view_module and view_name:
-                                        full_view = f"{view_module}.{view_name}"
-                                    elif view_name:
-                                        full_view = view_name
-                                    elif view_module:
-                                        full_view = view_module
-                                    else:
-                                        full_view = "N/A"
-                                    
-                                    all_patterns.append({
-                                        "pattern": url_pattern,
-                                        "view": full_view,
-                                        "name": pattern.get("name") or "",
-                                        "file": file_path
-                                    })
                     
                     lines.append(f"\n- **Path Patterns**: {path_count}")
-                    lines.append(f"\n- **Include Patterns**: {include_count}")
+                    lines.append(f"- **Include Patterns**: {include_count}")
 
-                    # Show complete URL to view mapping
-                    if all_patterns:
-                        lines.append("\n#### Complete URL to View Mapping")
-                        lines.append(f"\nShowing all {len(all_patterns)} URL patterns with their corresponding view implementations:")
-                        lines.append("\n| URL Pattern | View Implementation | Name |")
-                        lines.append("|-------------|---------------------|------|")
-                        
-                        # Sort by URL pattern for better readability
-                        all_patterns.sort(key=lambda x: x["pattern"] or "")
-                        
-                        for p in all_patterns:
-                            # Truncate long patterns and views
-                            pattern = p["pattern"] or ""
-                            if len(pattern) > 60:
-                                pattern = pattern[:57] + "..."
-                            
-                            view = p["view"]
-                            if len(view) > 50:
-                                view = "..." + view[-47:]
-                            
-                            name = p["name"] or "-"
-                            if len(name) > 30:
-                                name = name[:27] + "..."
-                            
-                            lines.append(f"| `{pattern}` | `{view}` | {name} |")
-                        
-                        # Also show top files with most patterns for summary
-                        patterns_by_file = {}
-                        for file_path, file_patterns in urls["results"].items():
-                            if isinstance(file_patterns, dict) and "urlpatterns" in file_patterns:
-                                pattern_count = len(file_patterns["urlpatterns"])
-                                patterns_by_file[file_path] = pattern_count
-                        
-                        if patterns_by_file:
-                            sorted_files = sorted(patterns_by_file.items(), key=lambda x: x[1], reverse=True)
-                            lines.append("\n**Files with Most URL Patterns:**")
-                            lines.append("\n| File | Pattern Count |")
-                            lines.append("|------|---------------|")
-                            for file_path, count in sorted_files[:10]:
-                                short_path = file_path if len(file_path) <= 60 else "..." + file_path[-57:]
-                                lines.append(f"| `{short_path}` | {count} |")
-
+                    # Show files with most URL patterns
+                    if patterns_by_file:
+                        sorted_files = sorted(patterns_by_file.items(), key=lambda x: x[1], reverse=True)
+                        lines.append("\n**Files with Most URL Patterns:**")
+                        lines.append("\n| File | Pattern Count |")
+                        lines.append("|------|---------------|")
+                        for file_path, count in sorted_files[:10]:
+                            short_path = file_path if len(file_path) <= 60 else "..." + file_path[-57:]
+                            lines.append(f"| `{short_path}` | {count} |")
 
         # Concurrency patterns
         if "concurrency-patterns" in self.results:

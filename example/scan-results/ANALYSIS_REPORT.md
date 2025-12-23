@@ -133,7 +133,114 @@ Generated from static code analysis scan results.
 - **URL Configuration Files**: 59
 
 - **Path Patterns**: 99
+
 - **Include Patterns**: 58
+
+#### Complete URL to View Mapping
+
+Showing all 99 URL patterns with their corresponding view implementations:
+
+| URL Pattern | View Implementation | Name |
+|-------------|---------------------|------|
+| `` | `PluginCallBackApiViewSet` | - |
+| `` | `PluginReleaseViewSet` | - |
+| `api/bkapps/applications/<str:code>/image_credentials/` | `AppUserCredentialViewSet` | api.applications.image_cred... |
+| `api/bkapps/applications/<str:code>/image_credentials/<str...` | `AppUserCredentialViewSet` | api.applications.image_cred... |
+| `api/bkplugins/<str:pd_id>/plugins/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/archive/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/basic_i...` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/code_st...` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/configu...` | `PluginConfigViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/configu...` | `PluginConfigViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/extra_f...` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/feature...` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logo/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logs/ag...` | `PluginLogViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logs/ag...` | `PluginLogViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logs/in...` | `PluginLogViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logs/st...` | `PluginLogViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/logs/st...` | `PluginLogViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/market/` | `PluginMarketViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/members/` | `PluginMembersViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/members...` | `PluginMembersViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/members...` | `PluginMembersViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/members...` | `PluginMembersViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/members...` | `PluginMembersViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/operati...` | `OperationRecordViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/overview/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/publisher/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/reactiv...` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/releases/` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseStageViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseStageViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseStageViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseStrategyViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/release...` | `PluginReleaseViewSet` | - |
+| `api/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/visible...` | `PluginVisibleRangeViewSet` | - |
+| `api/bkplugins/filter_params/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/lists/` | `PluginInstanceViewSet` | - |
+| `api/bkplugins/plugin_definitions/<str:pd_id>/basic_info_s...` | `SchemaViewSet` | - |
+| `api/bkplugins/plugin_definitions/<str:pd_id>/configuratio...` | `SchemaViewSet` | - |
+| `api/bkplugins/plugin_definitions/<str:pd_id>/market_schema/` | `SchemaViewSet` | - |
+| `api/bkplugins/plugin_definitions/schemas/` | `SchemaViewSet` | - |
+| `api/bkplugins/shim/iam/selection/plugin_view/` | `PluginSelectionView` | - |
+| `api/changelogs/` | `ChangelogViewSet` | - |
+| `api/cloudapi/apps/<slug:app_code>/apis/` | `CloudAPIViewSet` | api.cloudapi.v1.apis |
+| `api/cloudapi/apps/<slug:app_code>/apis/<int:api_id>/permi...` | `CloudAPIViewSet` | api.cloudapi.v1.allow_apply... |
+| `api/cloudapi/apps/<slug:app_code>/apis/<int:api_id>/permi...` | `CloudAPIViewSet` | api.cloudapi.v1.apply_resou... |
+| `api/cloudapi/apps/<slug:app_code>/apis/<int:api_id>/permi...` | `CloudAPIViewSet` | api.cloudapi.v1.resource_pe... |
+| `api/cloudapi/apps/<slug:app_code>/apis/permissions/app-pe...` | `CloudAPIViewSet` | api.cloudapi.v1.list_app_re... |
+| `api/cloudapi/apps/<slug:app_code>/apis/permissions/apply-...` | `CloudAPIViewSet` | api.cloudapi.v1.list_resour... |
+| `api/cloudapi/apps/<slug:app_code>/apis/permissions/apply-...` | `CloudAPIViewSet` | api.cloudapi.v1.retrieve_re... |
+| `api/cloudapi/apps/<slug:app_code>/apis/permissions/apply/` | `CloudAPIViewSet` | api.cloudapi.v1.batch_apply... |
+| `api/cloudapi/apps/<slug:app_code>/apis/permissions/renew/` | `CloudAPIViewSet` | api.cloudapi.v1.renew_resou... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/` | `CloudAPIViewSet` | api.cloudapi.v1.systems |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/<int:system...` | `CloudAPIViewSet` | api.cloudapi.v1.apply_compo... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/<int:system...` | `CloudAPIViewSet` | api.cloudapi.v1.component_p... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/permissions...` | `CloudAPIViewSet` | api.cloudapi.v1.list_app_co... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/permissions...` | `CloudAPIViewSet` | api.cloudapi.v1.list_compon... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/permissions...` | `CloudAPIViewSet` | api.cloudapi.v1.retrieve_co... |
+| `api/cloudapi/apps/<slug:app_code>/esb/systems/permissions...` | `CloudAPIViewSet` | api.cloudapi.v1.renew_compo... |
+| `api/monitor/applications/<slug:code>/alarm_strategies/` | `ListAlarmStrategiesView` | - |
+| `api/monitor/applications/<slug:code>/alert_rules/init/` | `AlertRulesView` | - |
+| `api/monitor/applications/<slug:code>/alerts/` | `ListAlertsView` | - |
+| `api/monitor/applications/<slug:code>/builtin_dashboards/` | `GetDashboardInfoView` | api.modules.monitor.builtin... |
+| `api/monitor/applications/<slug:code>/dashboard_info/` | `GetDashboardInfoView` | - |
+| `api/monitor/applications/<slug:code>/modules/<slug:module...` | `AlertRulesView` | - |
+| `api/monitor/supported_alert_rules/` | `AlertRulesView` | - |
+| `api/monitor/user/alerts/` | `ListAlertsView` | - |
+| `api/platform/frontend_features/` | `FrontendFeatureViewSet` | - |
+| `api/usermanage/departments/<str:dept_id>/` | `BkPluginUserManageView` | - |
+| `open/api/itsm/bkplugins/<str:pd_id>/plugins/<str:plugin_id>/` | `PluginCallBackApiViewSet` | - |
+| `open/api/itsm/bkplugins/<str:pd_id>/plugins/<str:plugin_i...` | `PluginCallBackApiViewSet` | - |
+| `open/api/itsm/bkplugins/<str:pd_id>/plugins/<str:plugin_i...` | `PluginCallBackApiViewSet` | - |
+| `wl_api/applications/<str:code>/domains/` | `paas_wl.apis.admin.views.domain.AppDomainsViewSet` | wl_api.application.domains |
+| `wl_api/applications/<str:code>/domains/<int:id>/` | `paas_wl.apis.admin.views.domain.AppDomainsViewSet` | wl_api.application.domain_b... |
+| `wl_api/applications/<str:code>/log_config/` | `paas_wl.apis.admin.views.logs.AppLogConfigViewSet` | wl_api.application.log_config |
+| `wl_api/platform/app_certs/shared/` | `...s.admin.views.certs.AppDomainSharedCertsViewSet` | wl_api.shared_app_certs |
+| `wl_api/platform/app_certs/shared/<str:name>` | `...s.admin.views.certs.AppDomainSharedCertsViewSet` | wl_api.shared_app_cert_by_name |
+| `wl_api/platform/clusters/` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.clusters |
+| `wl_api/platform/clusters/<str:cluster_name>/components/` | `...is.admin.views.clusters.ClusterComponentViewSet` | wl_api.cluster.components |
+| `wl_api/platform/clusters/<str:cluster_name>/components/<s...` | `...is.admin.views.clusters.ClusterComponentViewSet` | wl_api.cluster.component_by... |
+| `wl_api/platform/clusters/<str:cluster_name>/node_state/` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.cluster.node_state |
+| `wl_api/platform/clusters/<str:cluster_name>/operator_info/` | `...is.admin.views.clusters.ClusterComponentViewSet` | wl_api.cluster.operator_info |
+| `wl_api/platform/clusters/<str:pk>/` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.cluster_by_id |
+| `wl_api/platform/clusters/<str:pk>/api_servers` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.cluster.api_servers |
+| `wl_api/platform/clusters/<str:pk>/api_servers/<str:api_se...` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.cluster.api_server_b... |
+| `wl_api/platform/clusters/<str:pk>/set_default/` | `paas_wl.apis.admin.views.clusters.ClusterViewSet` | wl_api.cluster.set_default |
+| `wl_api/platform/process_spec_plan/` | `...in.views.processes.ProcessSpecPlanManageViewSet` | wl_api.process_spec_plan |
+| `wl_api/platform/process_spec_plan/id/<int:id>/` | `...in.views.processes.ProcessSpecPlanManageViewSet` | wl_api.process_spec_plan_by_id |
+| `wl_api/platform/process_spec_plan/manage/` | `...in.views.processes.ProcessSpecPlanManageViewSet` | - |
+| `wl_api/regions/<str:region>/apps/<str:name>/processes/<st...` | `...is.admin.views.processes.ProcessInstanceViewSet` | wl_api.application.process_... |
+| `wl_api/regions/<str:region>/apps/<str:name>/processes/<st...` | `....admin.views.processes.ProcessSpecManageViewSet` | wl_api.application.process_... |
+| `wl_api/regions/<str:region>/apps/<str:name>/processes/<st...` | `....admin.views.processes.ProcessSpecManageViewSet` | wl_api.application.process_... |
 
 **Files with Most URL Patterns:**
 
