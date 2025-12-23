@@ -537,7 +537,7 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys':
     library: requests
-    method: GET
+    method: POST
     usages:
     - data: null
       file: apiserver/paasng/paasng/infras/oauth2/api.py
@@ -563,7 +563,7 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys/...':
     library: requests
-    method: PUT
+    method: DELETE
     usages:
     - data: null
       file: apiserver/paasng/paasng/infras/oauth2/api.py
@@ -681,8 +681,7 @@ summary:
   by_library:
     requests: 56
   files_scanned: 14
-  scan_duration_ms: 6999
+  scan_duration_ms: 10248
   total_count: 56
   total_requests: 56
   unique_urls: 8
-

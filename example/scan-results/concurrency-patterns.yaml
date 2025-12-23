@@ -52,5 +52,5 @@ summary:
     multiprocessing: 1
     threading: 3
   files_scanned: 4
-  scan_duration_ms: 7626
+  scan_duration_ms: 11241
   total_count: 4

@@ -25794,7 +25794,7 @@ results:
   try_lines: 2
 summary:
   files_scanned: 422
-  scan_duration_ms: 5960
+  scan_duration_ms: 9470
   total_count: 1189
   total_except_clauses: 1189
   total_handlers: 1092
