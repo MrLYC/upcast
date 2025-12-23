@@ -62,9 +62,15 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 - `--format FORMAT`: Choose output format (`yaml` or `json`)
 - `-v, --verbose`: Enable detailed logging
 
-## Django Scanners
+## Scanners
 
-### scan-django-models
+Upcast provides 12 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+
+> 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
+
+### Django Scanners
+
+#### scan-django-models
 
 Analyze Django model definitions, extracting fields, relationships, and metadata.
 
@@ -73,6 +79,8 @@ upcast scan-django-models /path/to/django/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/django-models.yaml`](example/scan-results/django-models.yaml)
 
 ```yaml
 app.models.User:
@@ -105,7 +113,7 @@ app.models.User:
 - Identifies relationships (ForeignKey, ManyToMany, OneToOne)
 - Captures model metadata and options
 
-### scan-django-settings
+#### scan-django-settings
 
 Find all references to Django settings variables and extract settings definitions from your Django project.
 
@@ -128,6 +136,8 @@ upcast scan-django-settings --combined /path/to/django/project
 ```
 
 **Output example (usages):**
+
+> See full output: [`example/scan-results/django-settings.yaml`](example/scan-results/django-settings.yaml)
 
 ```yaml
 DEBUG:
@@ -222,7 +232,7 @@ usages:
 - `-o, --output FILE`: Write results to YAML file
 - `-v, --verbose`: Enable verbose output
 
-### scan-django-urls
+#### scan-django-urls
 
 Scan Django URL configurations and extract route patterns, including view resolution.
 
@@ -231,6 +241,8 @@ upcast scan-django-urls /path/to/django/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/django-urls.yaml`](example/scan-results/django-urls.yaml)
 
 ```yaml
 apiserver.paasng.paas_wl.apis.admin.urls:
@@ -278,7 +290,7 @@ apiserver.paasng.paas_wl.apis.admin.urls:
 - Both fields are set to `null` when resolution fails (e.g., for include() patterns or dynamic views)
 - Resolution success rate typically exceeds 80% on real-world codebases
 
-### scan-signals
+#### scan-signals
 
 Discover Django and Celery signal definitions and handlers.
 
@@ -295,6 +307,8 @@ upcast scan-signals /path/to/project --include "**/signals/**"
 ```
 
 **Output format:**
+
+> See full output: [`example/scan-results/signals.yaml`](example/scan-results/signals.yaml)
 
 ```yaml
 metadata:
@@ -338,9 +352,9 @@ results:
 - Detects unused custom signals
 - Provides comprehensive statistics in summary
 
-## Code Analysis Scanners
+### Code Analysis Scanners
 
-### scan-concurrency-patterns
+#### scan-concurrency-patterns
 
 Identify concurrency patterns including async/await, threading, and multiprocessing with detailed context and parameter extraction.
 
@@ -349,6 +363,8 @@ upcast scan-concurrency-patterns /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/concurrency-patterns.yaml`](example/scan-results/concurrency-patterns.yaml)
 
 ```yaml
 summary:
@@ -452,7 +468,7 @@ results:
 - **API Call Tracking**: Identifies specific API methods (create_task, submit, run_in_executor)
 - **Smart Filtering**: Skips asyncio.create_task() with unresolvable coroutines to reduce noise
 
-### scan-blocking-operations
+#### scan-blocking-operations
 
 Find blocking operations that may cause performance issues in async code.
 
@@ -461,6 +477,8 @@ upcast scan-blocking-operations /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/blocking-operations.yaml`](example/scan-results/blocking-operations.yaml)
 
 ```yaml
 summary:
@@ -502,7 +520,7 @@ operations:
 - Detects Django ORM `select_for_update()`
 - Flags anti-patterns in async code
 
-### scan-unit-tests
+#### scan-unit-tests
 
 Analyze unit test files and extract test information.
 
@@ -511,6 +529,8 @@ upcast scan-unit-tests /path/to/tests
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/unit-tests.yaml`](example/scan-results/unit-tests.yaml)
 
 ```yaml
 tests/test_users.py:
@@ -552,9 +572,9 @@ tests/test_api.py:
 - Captures fixtures and markers
 - Counts tests per file
 
-## Infrastructure Scanners
+### Infrastructure Scanners
 
-### scan-env-vars
+#### scan-env-vars
 
 Scan for environment variable usage with advanced type inference.
 
@@ -563,6 +583,8 @@ upcast scan-env-vars /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/env-vars.yaml`](example/scan-results/env-vars.yaml)
 
 ```yaml
 DATABASE_URL:
@@ -604,7 +626,7 @@ API_TIMEOUT:
 - Identifies required vs optional variables
 - Aggregates all usages per variable
 
-### scan-prometheus-metrics
+#### scan-prometheus-metrics
 
 Extract Prometheus metrics definitions with full metadata.
 
@@ -613,6 +635,8 @@ upcast scan-prometheus-metrics /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/metrics.yaml`](example/scan-results/metrics.yaml)
 
 ```yaml
 http_requests_total:
@@ -653,9 +677,9 @@ request_duration_seconds:
 - Identifies histogram buckets
 - Supports decorator patterns
 
-## HTTP & Exception Scanners
+### HTTP & Exception Scanners
 
-### scan-http-requests
+#### scan-http-requests
 
 Find HTTP and API requests throughout your codebase with intelligent URL pattern detection.
 
@@ -664,6 +688,8 @@ upcast scan-http-requests /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/http-requests.yaml`](example/scan-results/http-requests.yaml)
 
 ```yaml
 https://api.example.com/users/...:
@@ -712,7 +738,7 @@ https://api.example.com/api/v2/data:
 - **Checks for timeout configuration**
 - **Detects async requests** and session-based calls
 
-### scan-exception-handlers
+#### scan-exception-handlers
 
 Analyze exception handling patterns in your code.
 
@@ -721,6 +747,8 @@ upcast scan-exception-handlers /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/exception-handlers.yaml`](example/scan-results/exception-handlers.yaml)
 
 ```yaml
 handlers:
@@ -760,9 +788,9 @@ handlers:
 - Checks for error logging
 - Detects exception re-raising
 
-## Code Quality Scanners
+### Code Quality Scanners
 
-### scan-complexity-patterns
+#### scan-complexity-patterns
 
 Analyze cyclomatic complexity to identify functions that may need refactoring.
 
@@ -771,6 +799,8 @@ upcast scan-complexity-patterns /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/complexity-patterns.yaml`](example/scan-results/complexity-patterns.yaml)
 
 ```yaml
 summary:
@@ -837,6 +867,8 @@ upcast scan-complexity-patterns . --format json
 - **Test Exclusion**: Automatically excludes test files (configurable)
 - **Detailed Metadata**: Function signature, docstring, line numbers
 - **Actionable Output**: Sorted by severity with clear recommendations
+
+---
 
 ## Architecture
 
