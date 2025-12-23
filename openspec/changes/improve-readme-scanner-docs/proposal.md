@@ -2,9 +2,10 @@
 
 ## Status
 
-- **State**: draft
+- **State**: complete
 - **Created**: 2025-12-23
 - **Owner**: AI Agent
+- **Completed**: 2025-12-23
 
 ## Why
 
@@ -58,11 +59,11 @@ Each scanner section will include:
 
 ## Success Criteria
 
-- [ ] README has clear `## Scanners` section
-- [ ] All 12 scanners documented with consistent structure
-- [ ] Each scanner links to example output
-- [ ] Documentation validated against actual scanner behavior
-- [ ] Navigation improved (table of contents, clear hierarchy)
+- [x] README has clear `## Scanners` section
+- [x] All 12 scanners documented with consistent structure
+- [x] Each scanner links to example output
+- [x] Documentation validated against actual scanner behavior
+- [x] Navigation improved (table of contents, clear hierarchy)
 
 ## Out of Scope
 
