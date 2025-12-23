@@ -1125,11 +1125,11 @@ This command:
 The GitHub Actions workflow automatically:
 
 - Runs integration tests on every PR
-- Compares scan results against baseline
+- Compares scan results against committed versions using Git
 - Fails if scanner output changes unexpectedly
 - Helps detect regressions in scanner behavior
 
-### Updating Baseline
+### Accepting Result Changes
 
 When scanner improvements intentionally change output:
 
@@ -1137,12 +1137,12 @@ When scanner improvements intentionally change output:
 # 1. Run integration tests
 make test-integration
 
-# 2. Copy new results to baseline
-cp -r example/scan-results/* example/scan-results-baseline/
+# 2. Review the changes
+git diff example/scan-results/
 
-# 3. Commit baseline updates
-git add example/scan-results-baseline/
-git commit -m "Update scanner baseline: [describe changes]"
+# 3. Commit updated results
+git add example/scan-results/
+git commit -m "Update scan results: [describe changes]"
 ```
 
 **Note:** All 13 scanners are tested on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas), with results available in [`example/scan-results/`](example/scan-results/).

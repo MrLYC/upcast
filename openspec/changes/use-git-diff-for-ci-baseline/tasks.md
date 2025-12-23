@@ -4,17 +4,17 @@
 
 ### Task 1.1: Modify scanner-integration.yml workflow
 
-- [ ] Remove BASELINE_DIR variable
-- [ ] Remove baseline directory checks
-- [ ] Replace file-based comparison with git diff comparison
-- [ ] Update "Compare results against baseline" step to:
+- [x] Remove BASELINE_DIR variable
+- [x] Remove baseline directory checks
+- [x] Replace file-based comparison with git diff comparison
+- [x] Update "Compare results against baseline" step to:
   - Extract results section from committed and current files
   - Use `git show HEAD:<file>` to get committed version
   - Compare using diff
   - Handle new files (not in git history)
-- [ ] Update error messages and instructions
-- [ ] Remove references to copying/committing baseline directory
-- [ ] Test locally with act or manual workflow run
+- [x] Update error messages and instructions
+- [x] Remove references to copying/committing baseline directory
+- [x] Test locally with act or manual workflow run
 
 **Success Criteria**:
 
@@ -43,10 +43,10 @@
 
 ### Task 2.1: Remove baseline directory (if exists)
 
-- [ ] Check if `example/scan-results-baseline/` exists
-- [ ] If exists, remove directory: `rm -rf example/scan-results-baseline/`
-- [ ] Remove from `.gitignore` if present
-- [ ] Commit removal with message: "Remove scan-results-baseline directory"
+- [x] Check if `example/scan-results-baseline/` exists
+- [x] If exists, remove directory: `rm -rf example/scan-results-baseline/`
+- [x] Remove from `.gitignore` if present
+- [x] Commit removal with message: "Remove scan-results-baseline directory"
 
 **Success Criteria**:
 
@@ -55,10 +55,10 @@
 
 ### Task 2.2: Verify scan-results directory
 
-- [ ] Ensure `example/scan-results/` exists and is committed
-- [ ] Verify all scanner outputs are present
-- [ ] Run `make test-integration` to ensure files are up-to-date
-- [ ] Commit any updates
+- [x] Ensure `example/scan-results/` exists and is committed
+- [x] Verify all scanner outputs are present
+- [x] Run `make test-integration` to ensure files are up-to-date
+- [x] Commit any updates
 
 **Success Criteria**:
 
@@ -69,14 +69,14 @@
 
 ### Task 3.1: Update README.md
 
-- [ ] Find all mentions of `scan-results-baseline`
-- [ ] Update integration test section to remove baseline instructions
-- [ ] Add new section explaining CI behavior:
+- [x] Find all mentions of `scan-results-baseline`
+- [x] Update integration test section to remove baseline instructions
+- [x] Add new section explaining CI behavior:
   - CI compares against committed results
   - How to accept changes (just commit)
   - What to do if unexpected changes appear
-- [ ] Update troubleshooting section
-- [ ] Add examples of expected CI output
+- [x] Update troubleshooting section
+- [x] Add examples of expected CI output
 
 **Success Criteria**:
 
@@ -113,10 +113,10 @@
 
 ### Task 4.1: Run full integration test suite
 
-- [ ] Run `make test-integration` locally
-- [ ] Verify all scanners complete successfully
-- [ ] Check all output files are valid YAML
-- [ ] Commit any updated results
+- [x] Run `make test-integration` locally
+- [x] Verify all scanners complete successfully
+- [x] Check all output files are valid YAML
+- [x] Commit any updated results
 
 **Success Criteria**:
 
@@ -125,10 +125,10 @@
 
 ### Task 4.2: Validate OpenSpec change
 
-- [ ] Run `openspec validate use-git-diff-for-ci-baseline --strict`
-- [ ] Fix any validation errors
-- [ ] Ensure all scenarios have proper format
-- [ ] Check cross-references are valid
+- [x] Run `openspec validate use-git-diff-for-ci-baseline --strict`
+- [x] Fix any validation errors
+- [x] Ensure all scenarios have proper format
+- [x] Check cross-references are valid
 
 **Success Criteria**:
 
