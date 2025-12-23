@@ -15,6 +15,7 @@ from upcast.scanners import (
     ExceptionHandlerScanner,
     HttpRequestsScanner,
     MetricsScanner,
+    RedisUsageScanner,
     UnitTestScanner,
 )
 
@@ -705,6 +706,73 @@ def scan_django_settings_cmd(
         scanner = DjangoSettingsScanner(verbose=verbose)
         output_format_str = format
         run_scanner_cli(scanner, path, output, output_format_str, include, exclude, no_default_excludes, verbose)
+
+        if verbose:
+            click.echo("Scan complete!", err=True)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
+@main.command(name="scan-redis-usage")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_redis_usage_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for Redis usage patterns in Django projects.
+
+    Detects:
+    - Cache backend configurations (django-redis)
+    - Session storage using Redis
+    - Celery broker and result backend
+    - Django Channels
+    - Distributed locks
+    - Direct redis-py usage
+    - Rate limiting configurations
+    - Feature flags
+    """
+    try:
+        if verbose:
+            click.echo(f"Scanning for Redis usage in: {path}", err=True)
+
+        scanner = RedisUsageScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            verbose=verbose,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+        )
 
         if verbose:
             click.echo("Scan complete!", err=True)

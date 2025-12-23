@@ -1,0 +1,94 @@
+metadata: {}
+results:
+  celery_broker:
+  - config:
+      backend: null
+      client_class: null
+      db: null
+      host: null
+      location: settings.get('CELERY_BROKER_URL', REDIS_URL)
+      options: {}
+      port: null
+    file: apiserver/paasng/paasng/settings/__init__.py
+    has_ttl: null
+    is_pipeline: false
+    key: null
+    library: redis
+    line: 609
+    operation: null
+    pattern: null
+    statement: CELERY_BROKER_URL = "settings.get('CELERY_BROKER_URL', REDIS_URL)"
+    timeout: null
+    type: celery_broker
+    warning: null
+  celery_result:
+  - config:
+      backend: null
+      client_class: null
+      db: null
+      host: null
+      location: settings.get('CELERY_RESULT_BACKEND', REDIS_URL)
+      options: {}
+      port: null
+    file: apiserver/paasng/paasng/settings/__init__.py
+    has_ttl: null
+    is_pipeline: false
+    key: null
+    library: redis
+    line: 610
+    operation: null
+    pattern: null
+    statement: CELERY_RESULT_BACKEND = "settings.get('CELERY_RESULT_BACKEND', REDIS_URL)"
+    timeout: null
+    type: celery_result
+    warning: null
+  direct_client:
+  - config: null
+    file: apiserver/paasng/paasng/misc/metrics/workloads/deployment.py
+    has_ttl: null
+    is_pipeline: false
+    key: metrics:unavailable_deployments_total
+    library: django_redis
+    line: 40
+    operation: get
+    pattern: null
+    statement: cache.get(cache_key)
+    timeout: null
+    type: direct_client
+    warning: null
+  - config: null
+    file: apiserver/paasng/paasng/misc/metrics/workloads/deployment.py
+    has_ttl: true
+    is_pipeline: false
+    key: metrics:unavailable_deployments_total
+    library: django_redis
+    line: 67
+    operation: set
+    pattern: null
+    statement: cache.set(cache_key, gauge_family, timeout=60 * 5)
+    timeout: 300
+    type: direct_client
+    warning: null
+  - config: null
+    file: svc-rabbitmq/tasks/management/commands/worker.py
+    has_ttl: null
+    is_pipeline: false
+    key: '...'
+    library: django_redis
+    line: 59
+    operation: get_or_set
+    pattern: null
+    statement: cache.get_or_set(settings.TASK_LEADER_KEY, self.name, settings.TASK_LEADER_TTL)
+    timeout: null
+    type: direct_client
+    warning: null
+summary:
+  categories:
+    celery_broker: 1
+    celery_result: 1
+    direct_client: 3
+  files_scanned: 3
+  scan_duration_ms: 12096
+  total_count: 5
+  total_usages: 5
+  warnings: []

@@ -171,11 +171,6 @@ ignore = [
     "TRY003",
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
-"tests/test_cyclomatic_complexity_scanner/fixtures/*" = ["TRY301", "TRY300", "SIM102"]
-"tests/test_http_request_scanner/fixtures/*" = ["ALL"]
-
 [tool.ruff.format]
 preview = true
 

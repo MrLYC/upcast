@@ -50,6 +50,7 @@ test-integration: ## Run integration tests on example project
 	@uv run upcast scan-metrics example/blueking-paas -o example/scan-results/metrics.yaml || true
 	@uv run upcast scan-signals example/blueking-paas -o example/scan-results/signals.yaml || true
 	@uv run upcast scan-unit-tests example/blueking-paas -o example/scan-results/unit-tests.yaml || true
+
 	@echo "✓ Integration tests complete. Results in example/scan-results/"
 
 .PHONY: clean-scan-results

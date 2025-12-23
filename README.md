@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 12 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, code complexity, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 13 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -24,6 +24,9 @@ upcast scan-env-vars /path/to/project
 
 # Analyze Django models
 upcast scan-django-models /path/to/django/project
+
+# Scan Redis usage patterns
+upcast scan-redis-usage /path/to/django/project
 
 # Find blocking operations
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
@@ -64,7 +67,7 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 
 ## Scanners
 
-Upcast provides 12 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 13 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
 
@@ -351,6 +354,140 @@ results:
 - Supports decorator-based connections (`@receiver`)
 - Detects unused custom signals
 - Provides comprehensive statistics in summary
+
+#### scan-redis-usage
+
+Analyze Redis usage patterns in Django projects, including cache backends, Celery configuration, and direct redis-py usage.
+
+```bash
+# Basic usage
+upcast scan-redis-usage /path/to/project
+
+# Save to file
+upcast scan-redis-usage /path/to/project -o redis-usage.yaml
+
+# Filter specific directories
+upcast scan-redis-usage /path/to/project --include "app/**" --include "core/**"
+```
+
+**Output example:**
+
+> See full output: [`example/scan-results/redis-usage.yaml`](example/scan-results/redis-usage.yaml)
+
+```yaml
+summary:
+  total_count: 5
+  total_usages: 5
+  files_scanned: 3
+  scan_duration_ms: 12096
+  categories:
+    celery_broker: 1
+    celery_result: 1
+    direct_client: 3
+  warnings: []
+
+results:
+  celery_broker:
+    - type: celery_broker
+      file: settings/__init__.py
+      line: 609
+      library: redis
+      config:
+        location: settings.get('CELERY_BROKER_URL', REDIS_URL)
+      statement: CELERY_BROKER_URL = "..."
+
+  direct_client:
+    - type: direct_client
+      file: misc/metrics/workloads/deployment.py
+      line: 40
+      library: django_redis
+      operation: get
+      key: metrics:unavailable_deployments_total
+      statement: cache.get(cache_key)
+      has_ttl: null
+      timeout: null
+      is_pipeline: false
+
+    - type: direct_client
+      file: misc/metrics/workloads/deployment.py
+      line: 67
+      library: django_redis
+      operation: set
+      key: metrics:unavailable_deployments_total
+      statement: cache.set(cache_key, gauge_family, timeout=60 * 5)
+      has_ttl: true
+      timeout: 300
+      is_pipeline: false
+
+    - type: direct_client
+      file: svc-rabbitmq/tasks/management/commands/worker.py
+      line: 59
+      library: django_redis
+      operation: get_or_set
+      key: "..."
+      statement: cache.get_or_set(settings.TASK_LEADER_KEY, ...)
+      has_ttl: null
+      timeout: null
+      is_pipeline: false
+
+  distributed_lock:
+    - type: distributed_lock
+      file: workers/tasks.py
+      line: 45
+      library: django_redis
+      operation: lock
+      key: task:...:lock
+      statement: cache.lock(f"task:{task_id}:lock", timeout=60)
+      timeout: 60
+      pattern: cache_lock
+      is_pipeline: false
+```
+
+**Key features:**
+
+- **Configuration Detection:**
+
+  - Django cache backends (CACHES, django-redis)
+  - Celery broker and result backend settings
+  - Django Channels Redis layer configuration
+  - DRF throttling with Redis
+
+- **Usage Pattern Analysis:**
+
+  - Django cache API (`cache.get()`, `cache.set()`, etc.)
+  - Direct redis-py client operations
+  - Distributed locks (`cache.lock()`)
+  - Pipeline operations tracking
+
+- **Smart Key Inference:**
+
+  - Extracts literal Redis keys when possible
+  - Uses `...` for dynamic/unresolvable keys
+  - Handles f-strings, format(), % formatting
+  - Resolves variable assignments in scope
+
+- **TTL & Timeout Tracking:**
+
+  - Detects TTL configuration in cache operations
+  - Warns about missing TTL on set operations
+  - Extracts timeout values from lock operations
+  - Identifies operations without expiration
+
+- **Library Detection:**
+  - Distinguishes between django_redis, redis-py, channels_redis
+  - Tracks session storage and rate limiting configurations
+  - Identifies custom Redis client usage
+
+**Usage Types:**
+
+- `cache_backend`: Django CACHES configuration
+- `session_storage`: SESSION_ENGINE with Redis
+- `celery_broker`: Celery message broker
+- `celery_result`: Celery result backend
+- `channels`: Django Channels layer
+- `rate_limiting`: DRF throttling
+- `direct_client`: Direct cache/Redis API calls
+- `distributed_lock`: Distributed locking patterns
 
 ### Code Analysis Scanners
 
@@ -917,6 +1054,7 @@ class MyOutput(ScannerOutput[ResultType]):
 - **exceptions**: `ExceptionHandler`, `ExceptionHandlerSummary`, `ExceptionHandlerOutput`
 - **http_requests**: `HttpRequestInfo`, `HttpRequestSummary`, `HttpRequestOutput`
 - **metrics**: `MetricInfo`, `PrometheusMetricSummary`, `PrometheusMetricOutput`
+- **redis_usage**: `RedisUsage`, `RedisUsageSummary`, `RedisUsageOutput`
 - **signals**: `SignalInfo`, `SignalSummary`, `SignalOutput`
 - **unit_tests**: `UnitTestInfo`, `UnitTestSummary`, `UnitTestOutput`
 
@@ -954,10 +1092,10 @@ Benefits:
 - Better error messages
 - Unified file filtering
 
-## Ke2 Features
+## Key Features
 
 - **Static Analysis**: No code execution - safe for any codebase
-- **11 Specialized Scanners**: Comprehensive project analysis
+- **13 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
 - **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
@@ -1006,6 +1144,8 @@ cp -r example/scan-results/* example/scan-results-baseline/
 git add example/scan-results-baseline/
 git commit -m "Update scanner baseline: [describe changes]"
 ```
+
+**Note:** All 13 scanners are tested on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas), with results available in [`example/scan-results/`](example/scan-results/).
 
 ## Contributing
 

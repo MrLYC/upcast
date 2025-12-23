@@ -10,6 +10,7 @@ from upcast.scanners.env_vars import EnvVarScanner
 from upcast.scanners.exceptions import ExceptionHandlerScanner
 from upcast.scanners.http_requests import HttpRequestsScanner
 from upcast.scanners.metrics import MetricsScanner
+from upcast.scanners.redis_usage import RedisUsageScanner
 from upcast.scanners.signals import SignalScanner
 from upcast.scanners.unit_tests import UnitTestScanner
 
@@ -24,6 +25,7 @@ __all__ = [
     "ExceptionHandlerScanner",
     "HttpRequestsScanner",
     "MetricsScanner",
+    "RedisUsageScanner",
     "SignalScanner",
     "UnitTestScanner",
 ]

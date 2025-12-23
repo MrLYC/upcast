@@ -109,6 +109,15 @@ from upcast.models.http_requests import (
 # Prometheus metrics
 from upcast.models.metrics import MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
 
+# Redis usage
+from upcast.models.redis_usage import (
+    RedisConfig,
+    RedisUsage,
+    RedisUsageOutput,
+    RedisUsageSummary,
+    RedisUsageType,
+)
+
 # Signals
 from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, SignalUsage
 
@@ -160,6 +169,11 @@ __all__ = [
     "MetricUsage",
     "PrometheusMetricOutput",
     "PrometheusMetricSummary",
+    "RedisConfig",
+    "RedisUsage",
+    "RedisUsageOutput",
+    "RedisUsageSummary",
+    "RedisUsageType",
     "ScannerOutput",
     # Base models
     "ScannerSummary",
