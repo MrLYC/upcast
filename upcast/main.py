@@ -786,5 +786,72 @@ def scan_redis_usage_cmd(
         sys.exit(1)
 
 
+@main.command(name="generate-report")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path for the report")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.argument("scan_results_dir", type=click.Path(exists=True), default="example/scan-results", required=False)
+def generate_report_cmd(
+    scan_results_dir: str,
+    output: Optional[str],
+    verbose: bool,
+) -> None:
+    """Generate a comprehensive markdown report from scan results.
+
+    Reads YAML scan results from a directory and generates a comprehensive
+    project analysis report in Markdown format.
+
+    SCAN_RESULTS_DIR: Directory containing YAML scan results (default: example/scan-results)
+
+    Examples:
+
+        \b
+        # Generate report from default directory
+        upcast generate-report
+
+        \b
+        # Generate report from custom directory
+        upcast generate-report /path/to/scan-results
+
+        \b
+        # Save report to file
+        upcast generate-report example/scan-results -o report.md
+
+        \b
+        # Verbose output
+        upcast generate-report -v
+    """
+    try:
+        from upcast.report_generator import ReportGenerator
+
+        if verbose:
+            click.echo(f"Loading scan results from: {scan_results_dir}", err=True)
+
+        generator = ReportGenerator(scan_results_dir)
+        generator.load_results()
+
+        if verbose:
+            click.echo(f"Loaded {len(generator.results)} scan result files", err=True)
+
+        report = generator.generate_report()
+
+        if output:
+            with open(output, "w", encoding="utf-8") as f:
+                f.write(report)
+            click.echo(f"Report saved to: {output}", err=True)
+        else:
+            click.echo(report)
+
+        if verbose:
+            click.echo("Report generation complete!", err=True)
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     main()
