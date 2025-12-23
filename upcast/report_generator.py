@@ -59,7 +59,7 @@ class ReportGenerator:
         total_files = 0
         total_findings = 0
 
-        for scan_type, data in self.results.items():
+        for _scan_type, data in self.results.items():
             if isinstance(data, dict) and "summary" in data:
                 summary = data["summary"]
                 if "files_scanned" in summary:
@@ -84,6 +84,7 @@ class ReportGenerator:
                 summary = complexity["summary"]
                 lines.append("\n### Cyclomatic Complexity")
                 lines.append(f"\n- **High Complexity Functions**: {summary.get('high_complexity_count', 0)}")
+                lines.append(f"- **Files Analyzed**: {summary.get('files_scanned', 0)}")
 
                 if "by_severity" in summary:
                     lines.append("- **By Severity**:")
@@ -91,7 +92,7 @@ class ReportGenerator:
                         lines.append(f"  - {severity.replace('_', ' ').title()}: {count}")
 
                 # Show top 5 most complex functions
-                if "results" in complexity and complexity["results"]:
+                if complexity.get("results"):
                     lines.append("\n#### Top 5 Most Complex Functions")
                     results_list = []
                     for file_path, functions in complexity["results"].items():
@@ -101,11 +102,14 @@ class ReportGenerator:
 
                     results_list.sort(reverse=True, key=lambda x: x[0])
                     for complexity_val, file_path, func in results_list[:5]:
+                        severity = func.get("severity", "unknown")
                         lines.append(
-                            f"\n- **{func.get('name', 'unknown')}** " f"(Complexity: {complexity_val}, {file_path})"
+                            f"\n- **{func.get('name', 'unknown')}** "
+                            f"(Complexity: {complexity_val}, Severity: {severity})"
                         )
-                        if "description" in func and func["description"]:
-                            lines.append(f"  - {func['description']}")
+                        lines.append(f"  - File: `{file_path}:{func.get('line', '?')}`")
+                        if func.get("description"):
+                            lines.append(f"  - Description: {func['description']}")
 
         # Blocking operations
         if "blocking-operations" in self.results:
@@ -114,11 +118,18 @@ class ReportGenerator:
                 summary = blocking["summary"]
                 lines.append("\n### Blocking Operations")
                 lines.append(f"\n- **Total Operations**: {summary.get('total_count', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
                 if "by_category" in summary:
                     lines.append("- **By Category**:")
                     for category, count in summary["by_category"].items():
                         lines.append(f"  - {category.replace('_', ' ').title()}: {count}")
+
+                # Add recommendations
+                lines.append("\n**Recommendations:**")
+                lines.append("- Consider using async alternatives for blocking I/O operations")
+                lines.append("- Review time.sleep() calls in async contexts")
+                lines.append("- Optimize database queries with select_for_update()")
 
         return "\n".join(lines)
 
@@ -135,6 +146,12 @@ class ReportGenerator:
                 lines.append(f"\n- **Total Models**: {summary.get('total_models', 0)}")
                 lines.append(f"- **Total Fields**: {summary.get('total_fields', 0)}")
                 lines.append(f"- **Total Relationships**: {summary.get('total_relationships', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
+
+                # Calculate average fields per model
+                if summary.get("total_models", 0) > 0:
+                    avg_fields = summary.get("total_fields", 0) / summary.get("total_models", 1)
+                    lines.append(f"- **Average Fields per Model**: {avg_fields:.1f}")
 
         # Django URLs
         if "django-urls" in self.results:
@@ -145,6 +162,20 @@ class ReportGenerator:
                 lines.append(f"\n- **Total URL Patterns**: {summary.get('total_patterns', 0)}")
                 lines.append(f"- **URL Configuration Files**: {summary.get('files_scanned', 0)}")
 
+                # Count different pattern types
+                if "results" in urls:
+                    path_count = 0
+                    include_count = 0
+                    for file_patterns in urls["results"].values():
+                        if isinstance(file_patterns, dict) and "urlpatterns" in file_patterns:
+                            for pattern in file_patterns["urlpatterns"]:
+                                if pattern.get("type") == "path":
+                                    path_count += 1
+                                elif pattern.get("type") == "include":
+                                    include_count += 1
+                    lines.append(f"- **Path Patterns**: {path_count}")
+                    lines.append(f"- **Include Patterns**: {include_count}")
+
         # Concurrency patterns
         if "concurrency-patterns" in self.results:
             concurrency = self.results["concurrency-patterns"]
@@ -152,11 +183,14 @@ class ReportGenerator:
                 summary = concurrency["summary"]
                 lines.append("\n### Concurrency Patterns")
                 lines.append(f"\n- **Total Patterns**: {summary.get('total_count', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
                 if "by_category" in summary:
                     lines.append("- **By Category**:")
                     for category, count in summary["by_category"].items():
                         lines.append(f"  - {category.title()}: {count}")
+
+                lines.append("\n**Note:** Consider using asyncio for I/O-bound operations to improve performance.")
 
         # Signals
         if "signals" in self.results:
@@ -165,10 +199,17 @@ class ReportGenerator:
                 summary = signals["summary"]
                 lines.append("\n### Signal Usage")
                 lines.append(f"\n- **Total Signals**: {summary.get('total_count', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
                 if "django_receivers" in summary:
                     lines.append(f"- **Django Receivers**: {summary.get('django_receivers', 0)}")
                 if "celery_receivers" in summary:
                     lines.append(f"- **Celery Receivers**: {summary.get('celery_receivers', 0)}")
+                if "custom_signals_defined" in summary:
+                    lines.append(f"- **Custom Signals Defined**: {summary.get('custom_signals_defined', 0)}")
+                if "unused_custom_signals" in summary:
+                    unused = summary.get("unused_custom_signals", 0)
+                    if unused > 0:
+                        lines.append(f"- ⚠️ **Unused Custom Signals**: {unused}")
 
         return "\n".join(lines)
 
@@ -186,6 +227,18 @@ class ReportGenerator:
                 lines.append(f"- **Required Variables**: {summary.get('required_count', 0)}")
                 lines.append(f"- **Optional Variables**: {summary.get('optional_count', 0)}")
 
+                # List required variables
+                if "results" in env_vars:
+                    required_vars = [
+                        name for name, info in env_vars["results"].items() if isinstance(info, dict) and info.get("required", False)
+                    ]
+                    if required_vars:
+                        lines.append("\n**Critical Required Variables:**")
+                        for var in sorted(required_vars)[:10]:  # Show top 10
+                            lines.append(f"- `{var}`")
+                        if len(required_vars) > 10:
+                            lines.append(f"- ... and {len(required_vars) - 10} more")
+
         # Redis usage
         if "redis-usage" in self.results:
             redis = self.results["redis-usage"]
@@ -193,11 +246,16 @@ class ReportGenerator:
                 summary = redis["summary"]
                 lines.append("\n### Redis Usage")
                 lines.append(f"\n- **Total Usages**: {summary.get('total_usages', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
                 if "categories" in summary:
                     lines.append("- **By Category**:")
                     for category, count in summary["categories"].items():
                         lines.append(f"  - {category.replace('_', ' ').title()}: {count}")
+
+                # Check for warnings
+                if summary.get("warnings"):
+                    lines.append(f"\n⚠️ **Warnings**: {len(summary['warnings'])} issues detected")
 
         # Metrics
         if "metrics" in self.results:
@@ -206,6 +264,7 @@ class ReportGenerator:
                 summary = metrics["summary"]
                 lines.append("\n### Prometheus Metrics")
                 lines.append(f"\n- **Total Metrics**: {summary.get('total_metrics', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
                 if "by_type" in summary:
                     lines.append("- **By Type**:")
@@ -218,7 +277,7 @@ class ReportGenerator:
             if "summary" in settings:
                 summary = settings["summary"]
                 lines.append("\n### Django Settings")
-                lines.append(f"\n- **Total Settings**: {summary.get('total_count', 0)}")
+                lines.append(f"\n- **Total Settings References**: {summary.get('total_count', 0)}")
                 lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
         return "\n".join(lines)
@@ -264,10 +323,27 @@ class ReportGenerator:
                 lines.append("\n### HTTP Requests")
                 lines.append(f"\n- **Total Requests**: {summary.get('total_count', 0)}")
                 lines.append(f"- **Unique URLs**: {summary.get('unique_urls', 0)}")
+                lines.append(f"- **Files Scanned**: {summary.get('files_scanned', 0)}")
 
                 if "by_library" in summary:
                     lines.append("- **By Library**:")
                     for library, count in summary["by_library"].items():
                         lines.append(f"  - {library}: {count}")
+
+                # Show top external APIs if available
+                if "results" in http:
+                    external_urls = []
+                    for url, info in http["results"].items():
+                        if isinstance(info, dict) and url.startswith(("http://", "https://")):
+                            count = len(info.get("usages", []))
+                            external_urls.append((count, url))
+
+                    if external_urls:
+                        external_urls.sort(reverse=True)
+                        lines.append("\n**Top External APIs:**")
+                        for count, url in external_urls[:5]:
+                            # Truncate long URLs
+                            display_url = url if len(url) <= 60 else url[:57] + "..."
+                            lines.append(f"- `{display_url}` ({count} calls)")
 
         return "\n".join(lines)

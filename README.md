@@ -33,6 +33,9 @@ upcast scan-blocking-operations /path/to/project -o blocking.yaml
 
 # Check cyclomatic complexity
 upcast scan-complexity-patterns /path/to/project --threshold 15
+
+# Generate comprehensive analysis report
+upcast generate-report example/scan-results -o report.md
 ```
 
 ## Installation
@@ -40,6 +43,31 @@ upcast scan-complexity-patterns /path/to/project --threshold 15
 ```bash
 pip install upcast
 ```
+
+## Generating Analysis Reports
+
+After scanning your project with multiple scanners, you can generate a comprehensive Markdown report that aggregates all findings:
+
+```bash
+# Scan your project
+upcast scan-env-vars ./myproject -o scan-results/env-vars.yaml
+upcast scan-django-models ./myproject -o scan-results/django-models.yaml
+upcast scan-complexity-patterns ./myproject -o scan-results/complexity.yaml
+# ... run other scanners
+
+# Generate comprehensive report
+upcast generate-report scan-results -o analysis-report.md
+```
+
+The generated report includes:
+- **Executive Summary**: Overall project statistics
+- **Code Quality**: Complexity analysis and blocking operations
+- **Architecture & Patterns**: Django models, URLs, concurrency patterns, signals
+- **Infrastructure**: Environment variables, Redis usage, metrics, settings
+- **Testing & Reliability**: Unit tests and exception handlers
+- **External Dependencies**: HTTP requests and API usage
+
+See [example report](example/scan-results/ANALYSIS_REPORT.md) generated from the blueking-paas project.
 
 ## Common Options
 
