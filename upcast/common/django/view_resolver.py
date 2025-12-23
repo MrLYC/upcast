@@ -112,6 +112,12 @@ def _resolve_as_view_call(
         "resolved": False,
     }
 
+    # Always try to extract view name first as fallback
+    if isinstance(class_node, nodes.Attribute):
+        result["view_name"] = class_node.attrname
+    elif isinstance(class_node, nodes.Name):
+        result["view_name"] = class_node.name
+
     try:
         # Try to infer the class
         inferred = next(class_node.infer(), Uninferable)
@@ -120,15 +126,17 @@ def _resolve_as_view_call(
             result["view_name"] = inferred.name
             result["description"] = inferred.doc_node.value if inferred.doc_node else None
             result["resolved"] = True
+            return result
     except (InferenceError, StopIteration):
-        # Fall back to extracting from node structure
-        if isinstance(class_node, nodes.Attribute):
-            result["view_name"] = class_node.attrname
-            # Try to get module from the expression
-            if isinstance(class_node.expr, nodes.Name):
-                result["view_module"] = f"<unresolved>.{class_node.expr.name}"
-        elif isinstance(class_node, nodes.Name):
-            result["view_name"] = class_node.name
+        pass
+
+    # Fallback: Try to resolve module from attribute expression
+    if isinstance(class_node, nodes.Attribute) and isinstance(class_node.expr, nodes.Name):
+        module_name = _resolve_import_name(class_node.expr.name, module_context)
+        if module_name:
+            # Only set the module path, not the class name (which is already in view_name)
+            result["view_module"] = module_name
+            result["resolved"] = True
 
     return result
 
@@ -153,6 +161,9 @@ def _resolve_attribute(
         "resolved": False,
     }
 
+    # Always extract view name as fallback
+    result["view_name"] = attr_node.attrname
+
     try:
         # Try to infer the target
         inferred = next(attr_node.infer(), Uninferable)
@@ -161,14 +172,16 @@ def _resolve_attribute(
             result["view_name"] = inferred.name
             result["description"] = inferred.doc_node.value if inferred.doc_node else None
             result["resolved"] = True
+            return result
     except (InferenceError, StopIteration):
-        # Fall back to extracting from node structure
-        result["view_name"] = attr_node.attrname
-        if isinstance(attr_node.expr, nodes.Name):
-            # views.index -> try to resolve 'views' import
-            module_name = _resolve_import_name(attr_node.expr.name, module_context)
-            if module_name:
-                result["view_module"] = module_name
+        pass
+
+    # Fallback: Try to resolve module from expression
+    if isinstance(attr_node.expr, nodes.Name):
+        module_name = _resolve_import_name(attr_node.expr.name, module_context)
+        if module_name:
+            result["view_module"] = module_name
+            # Don't mark as fully resolved since we only have the module, not the full path
 
     return result
 
@@ -191,6 +204,9 @@ def _resolve_name(name_node: nodes.Name, module_context: nodes.Module, verbose: 
         "resolved": False,
     }
 
+    # Always extract view name as fallback
+    result["view_name"] = name_node.name
+
     try:
         inferred = next(name_node.infer(), Uninferable)
         if inferred is not Uninferable and isinstance(inferred, (nodes.FunctionDef, nodes.ClassDef)):
@@ -199,7 +215,7 @@ def _resolve_name(name_node: nodes.Name, module_context: nodes.Module, verbose: 
             result["description"] = inferred.doc_node.value if inferred.doc_node else None
             result["resolved"] = True
     except (InferenceError, StopIteration):
-        result["view_name"] = name_node.name
+        pass  # Keep the fallback name we already set
 
     return result
 

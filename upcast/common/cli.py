@@ -154,7 +154,8 @@ def run_scanner_cli(
         raise TypeError(f"Scanner must return ScannerOutput, got {type(scanner_output)}")
 
     # Use Pydantic model serialization
-    formatted_data = scanner_output.model_dump(mode="json", exclude_none=True)
+    # Note: Keep None values for critical fields (e.g., view_module, view_name in Django URLs)
+    formatted_data = scanner_output.model_dump(mode="json", exclude_none=False)
 
     # Export results
     if output:

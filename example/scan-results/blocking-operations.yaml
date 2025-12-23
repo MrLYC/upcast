@@ -125,6 +125,7 @@ results:
       operation: time.sleep
       statement: time.sleep(1)
     - category: time_based
+      class_name: null
       column: 8
       file: apiserver/paasng/paasng/plat_admin/admin_cli/deploy.py
       function: wait_for_release
@@ -140,6 +141,7 @@ results:
       operation: time.sleep
       statement: time.sleep(self.polling_result_interval)
     - category: time_based
+      class_name: null
       column: 8
       file: apiserver/paasng/tests/paas_wl/e2e/ingress/conftest.py
       function: sleep_only
@@ -147,6 +149,7 @@ results:
       operation: time.sleep
       statement: time.sleep(5)
     - category: time_based
+      class_name: null
       column: 8
       file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
       function: get_ingress_nginx_pod
@@ -194,6 +197,7 @@ results:
       operation: time.sleep
       statement: time.sleep(0.2)
     - category: time_based
+      class_name: null
       column: 4
       file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
       function: test_UserActionRateLimiter
@@ -201,6 +205,7 @@ results:
       operation: time.sleep
       statement: time.sleep(window_size)
     - category: time_based
+      class_name: null
       column: 4
       file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
       function: test_rate_limits_on_view_func
@@ -268,5 +273,5 @@ summary:
     database: 5
     time_based: 28
   files_scanned: 21
-  scan_duration_ms: 11173
+  scan_duration_ms: 14237
   total_count: 33

@@ -10,6 +10,15 @@ import yaml
 from upcast.models.base import ScannerOutput
 
 
+# Configure YAML to output None values as 'null'
+def represent_none(self, _):
+    """Represent None as 'null' in YAML output."""
+    return self.represent_scalar("tag:yaml.org,2002:null", "null")
+
+
+yaml.add_representer(type(None), represent_none)
+
+
 def sort_dict_recursive(obj: Any) -> Any:
     """Recursively sort dictionary keys and nested structures.
 
@@ -151,7 +160,8 @@ def export_scanner_output(
         OSError: If file cannot be written
     """
     # Convert ScannerOutput to dict
-    data = output.model_dump(mode="json", exclude_none=True) if isinstance(output, ScannerOutput) else dict(output)
+    # Note: Keep None values for critical fields like view_module and view_name
+    data = output.model_dump(mode="json", exclude_none=False) if isinstance(output, ScannerOutput) else dict(output)
 
     # Inject metadata if requested
     if include_metadata:

@@ -49,6 +49,7 @@ results:
   apiserver.paasng.paas_wl.bk_app.applications.models.build.Build:
     bases:
       - paas_wl.utils.models.UuidAuditedModel
+    description: null
     fields:
       application_id:
         line: 1
@@ -168,6 +169,7 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: App
         type: models.ForeignKey
   apiserver.paasng.paas_wl.bk_app.applications.models.build.BuildProcess:
@@ -292,10 +294,12 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: App
         type: models.ForeignKey
       - field: output_stream
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: OutputStream
         type: models.OneToOneField
       - field: build
@@ -361,11 +365,13 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: App
         type: models.ForeignKey
   apiserver.paasng.paas_wl.bk_app.applications.models.misc.OutputStreamLine:
     bases:
       - models.Model
+    description: null
     fields:
       created:
         line: 1
@@ -409,6 +415,7 @@ results:
   apiserver.paasng.paas_wl.bk_app.applications.models.release.Release:
     bases:
       - paas_wl.bk_app.applications.models.UuidAuditedModel
+    description: null
     fields:
       failed:
         line: 1
@@ -451,14 +458,17 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: App
         type: models.ForeignKey
       - field: config
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: Config
         type: models.ForeignKey
       - field: build
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: Build
         type: models.ForeignKey
   apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource.AppModelDeploy:
@@ -550,6 +560,7 @@ results:
     relationships:
       - field: revision
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: AppModelRevision
         type: models.ForeignKey
   apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource.AppModelResource:
@@ -583,6 +594,7 @@ results:
     relationships:
       - field: revision
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: AppModelRevision
         type: models.OneToOneField
   apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource.AppModelRevision:
@@ -860,6 +872,7 @@ results:
   apiserver.paasng.paas_wl.bk_app.monitoring.app_monitor.models.AppMetricsMonitor:
     bases:
       - paas_wl.bk_app.applications.models.AuditedModel
+    description: null
     fields:
       is_enabled:
         line: 1
@@ -890,11 +903,13 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`WlApp`"
         type: models.OneToOneField
   apiserver.paasng.paas_wl.bk_app.processes.models.ProcessProbe:
     bases:
       - models.Model
+    description: null
     fields:
       failure_threshold:
         line: 1
@@ -963,6 +978,7 @@ results:
   apiserver.paasng.paas_wl.bk_app.processes.models.ProcessSpec:
     bases:
       - paas_wl.utils.models.TimestampedModel
+    description: null
     fields:
       autoscaling:
         line: 1
@@ -1028,11 +1044,13 @@ results:
         type: models.ForeignKey
       - field: plan
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ProcessSpecPlan`"
         type: models.ForeignKey
   apiserver.paasng.paas_wl.bk_app.processes.models.ProcessSpecPlan:
     bases:
       - models.Model
+    description: null
     fields:
       created:
         line: 1
@@ -1079,6 +1097,7 @@ results:
   apiserver.paasng.paas_wl.infras.cluster.models.APIServer:
     bases:
       - paas_wl.utils.models.UuidAuditedModel
+    description: null
     fields:
       host:
         line: 1
@@ -1364,6 +1383,7 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: api.App
         type: models.ForeignKey
   apiserver.paasng.paas_wl.workloads.images.models.AppUserCredential:
@@ -1462,6 +1482,7 @@ results:
   apiserver.paasng.paas_wl.workloads.networking.egress.models.EgressSpec:
     bases:
       - paas_wl.bk_app.applications.models.AuditedModel
+    description: null
     fields:
       cpu_limit:
         line: 1
@@ -1491,6 +1512,7 @@ results:
     relationships:
       - field: wl_app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`WlApp`"
         type: models.OneToOneField
   apiserver.paasng.paas_wl.workloads.networking.egress.models.RCStateAppBinding:
@@ -1507,10 +1529,12 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`WlApp`"
         type: models.OneToOneField
       - field: state
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`RegionClusterState`"
         type: models.ForeignKey
   apiserver.paasng.paas_wl.workloads.networking.egress.models.RegionClusterState:
@@ -1632,14 +1656,17 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`WlApp`"
         type: models.ForeignKey
       - field: cert
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: AppDomainCert
         type: models.ForeignKey
       - field: shared_cert
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: AppDomainSharedCert
         type: models.ForeignKey
   apiserver.paasng.paas_wl.workloads.networking.ingress.models.AppDomainSharedCert:
@@ -1722,11 +1749,13 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`WlApp`"
         type: models.ForeignKey
   apiserver.paasng.paas_wl.workloads.networking.ingress.models.BasicCert:
     bases:
       - paas_wl.bk_app.applications.models.AuditedModel
+    description: null
     fields:
       name:
         line: 1
@@ -1888,18 +1917,22 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: api.App
         type: models.ForeignKey
       - field: output_stream
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: api.OutputStream
         type: models.OneToOneField
       - field: build
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: api.Build
         type: models.ForeignKey
       - field: config
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: api.Config
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.ci.models.CIResourceAppEnvRelation:
@@ -2049,6 +2082,7 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Module`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.log.models.CustomCollectorConfig:
@@ -2124,6 +2158,7 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Module`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.log.models.ElasticSearchConfig:
@@ -2177,6 +2212,7 @@ results:
     relationships:
       - field: env
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ModuleEnvironment`"
         type: models.ForeignKey
       - field: stdout
@@ -2221,10 +2257,12 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
       - field: env
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ModuleEnvironment`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.publish.market.models.DisplayOptions:
@@ -2304,6 +2342,7 @@ results:
     relationships:
       - field: product
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Product`"
         type: models.OneToOneField
   apiserver.paasng.paasng.accessories.publish.market.models.MarketConfig:
@@ -2371,6 +2410,7 @@ results:
         type: models.OneToOneField
       - field: source_module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Module`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.publish.market.models.Product:
@@ -2411,15 +2451,18 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.OneToOneField
       - field: tag
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: "`Tag`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.publish.market.models.Tag:
     bases:
       - models.Model
+    description: null
     fields:
       enabled:
         line: 1
@@ -2473,11 +2516,13 @@ results:
     relationships:
       - field: parent
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: self
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.publish.sync_market.models.TagMap:
     bases:
       - django_models.Model
+    description: null
     fields:
       remote_id:
         line: 1
@@ -2493,6 +2538,7 @@ results:
     relationships:
       - field: tag
         on_delete: "`django_models.CASCADE`"
+        related_name: null
         to: "`market_models.Tag`"
         type: django_models.OneToOneField
   apiserver.paasng.paasng.accessories.servicehub.models.RemoteServiceEngineAppAttachment:
@@ -2564,11 +2610,13 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: modules.Module
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.servicehub.models.ServiceEngineAppAttachment:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
+    description: null
     fields:
       credentials_enabled:
         line: 1
@@ -2593,10 +2641,12 @@ results:
         type: models.ForeignKey
       - field: service
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Service`"
         type: models.ForeignKey
       - field: plan
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Plan`"
         type: models.ForeignKey
       - field: service_instance
@@ -2619,10 +2669,12 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: modules.Module
         type: models.ForeignKey
       - field: service
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Service`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.servicehub.models.SharedServiceAttachment:
@@ -2663,11 +2715,13 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: modules.Module
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.services.models.Plan:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       description:
         line: 1
@@ -2703,6 +2757,7 @@ results:
     relationships:
       - field: service
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: Service
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.services.models.PreCreatedInstance:
@@ -2725,11 +2780,13 @@ results:
     relationships:
       - field: plan
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: Plan
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.services.models.ResourceId:
     bases:
       - models.Model
+    description: null
     fields:
       namespace:
         line: 1
@@ -2759,6 +2816,7 @@ results:
   apiserver.paasng.paasng.accessories.services.models.Service:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       available_languages:
         line: 1
@@ -2820,11 +2878,13 @@ results:
     relationships:
       - field: category
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ServiceCategory`"
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.services.models.ServiceCategory:
     bases:
       - models.Model
+    description: null
     fields:
       sort_priority:
         line: 1
@@ -2841,6 +2901,7 @@ results:
   apiserver.paasng.paasng.accessories.services.models.ServiceInstance:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       to_be_deleted:
         line: 1
@@ -2856,10 +2917,12 @@ results:
     relationships:
       - field: service
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: Service
         type: models.ForeignKey
       - field: plan
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: Plan
         type: models.ForeignKey
   apiserver.paasng.paasng.accessories.smart_advisor.models.AppModuleTagRel:
@@ -3028,6 +3091,7 @@ results:
     name: BkPluginDistributor
     relationships:
       - field: plugins
+        on_delete: null
         related_name: distributors
         to: "`Application`"
         type: models.ManyToManyField
@@ -3100,6 +3164,7 @@ results:
         type: models.OneToOneField
       - field: tag
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: BkPluginTag
         type: models.ForeignKey
   apiserver.paasng.paasng.bk_plugins.bk_plugins.models.BkPluginTag:
@@ -3146,6 +3211,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models.PluginGradeManager:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       grade_manager_id:
         line: 1
@@ -3182,6 +3248,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models.PluginUserGroup:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       pd_id:
         line: 1
@@ -3225,6 +3292,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions.PluginBasicInfoDefinition:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       access_mode:
         line: 1
@@ -3271,6 +3339,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions.PluginConfigInfoDefinition:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       docs:
         line: 1
@@ -3293,6 +3362,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions.PluginDefinition:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       administrator:
         line: 1
@@ -3330,6 +3400,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions.PluginMarketInfoDefinition:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       extra_fields_order:
         line: 1
@@ -3359,6 +3430,7 @@ results:
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions.PluginVisibleRangeDefinition:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields: {}
     line: 1
     meta: {}
@@ -3433,6 +3505,7 @@ results:
     relationships:
       - field: plugin
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`PluginInstance`"
         type: models.ForeignKey
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances.PluginConfig:
@@ -3551,6 +3624,7 @@ results:
     relationships:
       - field: pd
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: PluginDefinition
         type: models.ForeignKey
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances.PluginMarketInfo:
@@ -3589,6 +3663,7 @@ results:
     relationships:
       - field: plugin
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`PluginInstance`"
         type: models.OneToOneField
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances.PluginRelease:
@@ -3726,6 +3801,7 @@ results:
         type: models.ForeignKey
       - field: current_stage
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: PluginReleaseStage
         type: models.OneToOneField
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances.PluginReleaseStage:
@@ -3828,6 +3904,7 @@ results:
         type: models.ForeignKey
       - field: next_stage
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: PluginReleaseStage
         type: models.OneToOneField
   apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances.PluginReleaseStrategy:
@@ -3916,6 +3993,7 @@ results:
   apiserver.paasng.paasng.infras.accounts.models.AccountFeatureFlag:
     bases:
       - paasng.utils.models.TimestampedModel
+    description: null
     fields:
       effect:
         line: 1
@@ -3965,6 +4043,7 @@ results:
     relationships:
       - field: user
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`User`"
         type: models.ForeignKey
   apiserver.paasng.paasng.infras.accounts.models.Oauth2TokenHolder:
@@ -4071,6 +4150,7 @@ results:
     relationships:
       - field: user
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`User`"
         type: models.ForeignKey
   apiserver.paasng.paasng.infras.accounts.models.UserProfile:
@@ -4101,6 +4181,7 @@ results:
   apiserver.paasng.paasng.infras.bkmonitorv3.models.BKMonitorSpace:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       extra_info:
         line: 1
@@ -4166,6 +4247,7 @@ results:
   apiserver.paasng.paasng.infras.iam.members.models.ApplicationGradeManager:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       app_code:
         line: 1
@@ -4193,6 +4275,7 @@ results:
   apiserver.paasng.paasng.infras.iam.members.models.ApplicationUserGroup:
     bases:
       - paasng.utils.models.AuditedModel
+    description: null
     fields:
       app_code:
         line: 1
@@ -4227,6 +4310,7 @@ results:
   apiserver.paasng.paasng.infras.oauth2.models.BkAppSecretInEnvVar:
     bases:
       - paasng.utils.models.TimestampedModel
+    description: null
     fields:
       bk_app_code:
         line: 1
@@ -4415,6 +4499,7 @@ results:
         type: models.OneToOneField
       - field: operation
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`AppOperationRecord`"
         type: models.OneToOneField
   apiserver.paasng.paasng.misc.audit.models.AppOperationRecord:
@@ -4562,6 +4647,7 @@ results:
   apiserver.paasng.paasng.misc.audit.models.BaseOperation:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       access_type:
         line: 1
@@ -4866,11 +4952,13 @@ results:
         type: models.OneToOneField
       - field: operation
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Operation`"
         type: models.OneToOneField
   apiserver.paasng.paasng.misc.operations.models.Operation:
     bases:
       - models.Model
+    description: null
     fields:
       created:
         line: 1
@@ -4931,6 +5019,7 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.applications.models.Application:
@@ -5059,6 +5148,7 @@ results:
   apiserver.paasng.paasng.platform.applications.models.ApplicationDeploymentModuleOrder:
     bases:
       - models.Model
+    description: null
     fields:
       order:
         line: 1
@@ -5075,6 +5165,7 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Module`"
         type: models.OneToOneField
   apiserver.paasng.paasng.platform.applications.models.ApplicationEnvironment:
@@ -5124,6 +5215,7 @@ results:
   apiserver.paasng.paasng.platform.applications.models.ApplicationFeatureFlag:
     bases:
       - paasng.utils.models.TimestampedModel
+    description: null
     fields:
       effect:
         line: 1
@@ -5172,11 +5264,13 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.applications.models.UserMarkedApplication:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
+    description: null
     fields: {}
     line: 1
     meta:
@@ -5188,6 +5282,7 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.bkapp_model.models.BkAppManagedFields:
@@ -5238,6 +5333,7 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.bkapp_model.models.ModuleDeployHook:
@@ -5351,6 +5447,7 @@ results:
   apiserver.paasng.paasng.platform.bkapp_model.models.ObservabilityConfig:
     bases:
       - paas_wl.utils.models.TimestampedModel
+    description: null
     fields: {}
     line: 1
     meta: {}
@@ -5381,6 +5478,7 @@ results:
     relationships:
       - field: app_environment
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ApplicationEnvironment`"
         type: models.OneToOneField
   apiserver.paasng.paasng.platform.bkapp_model.models.ProcessSpecEnvOverlay:
@@ -5447,6 +5545,7 @@ results:
     relationships:
       - field: application
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.declarative.models.ApplicationDescription:
@@ -5698,10 +5797,12 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: modules.Module
         type: models.ForeignKey
       - field: environment
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: applications.ApplicationEnvironment
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.engine.models.mobile_config.MobileConfig:
@@ -5748,6 +5849,7 @@ results:
   apiserver.paasng.paasng.platform.engine.models.operations.ModuleEnvironmentOperations:
     bases:
       - paasng.utils.models.TimestampedModel
+    description: null
     fields:
       id:
         line: 1
@@ -5846,10 +5948,12 @@ results:
     relationships:
       - field: engine_app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`EngineApp`"
         type: models.ForeignKey
       - field: deployment
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Deployment`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.engine.models.preset_envvars.PresetEnvVariable:
@@ -5885,6 +5989,7 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Module`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.engine.models.steps.DeployStep:
@@ -6004,6 +6109,8 @@ results:
     name: StepMetaSet
     relationships:
       - field: metas
+        on_delete: null
+        related_name: null
         to: "`DeployStepMeta`"
         type: models.ManyToManyField
   apiserver.paasng.paasng.platform.environments.models.EnvRoleProtection:
@@ -6295,6 +6402,7 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.OneToOneField
   apiserver.paasng.paasng.platform.evaluation.models.AppOperationReportCollectionTask:
@@ -6410,6 +6518,7 @@ results:
   apiserver.paasng.paasng.platform.mgrlegacy.models.CNativeMigrationProcess:
     bases:
       - paasng.utils.models.OwnerTimestampedModel
+    description: null
     fields:
       confirm_at:
         line: 1
@@ -6446,6 +6555,7 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.mgrlegacy.models.MigrationProcess:
@@ -6532,6 +6642,7 @@ results:
     relationships:
       - field: app
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`Application`"
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.mgrlegacy.models.WlAppBackupRel:
@@ -6560,11 +6671,13 @@ results:
     relationships:
       - field: app_environment
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: "`ApplicationEnvironment`"
         type: models.OneToOneField
   apiserver.paasng.paasng.platform.modules.models.build_cfg.BuildConfig:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields:
       build_method:
         line: 1
@@ -6620,20 +6733,24 @@ results:
         to: modules.Module
         type: models.OneToOneField
       - field: buildpacks
+        on_delete: null
         related_name: related_build_configs
         to: modules.AppBuildPack
         type: models.ManyToManyField
       - field: buildpack_builder
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: modules.AppSlugBuilder
         type: models.ForeignKey
       - field: buildpack_runner
         on_delete: "`models.SET_NULL`"
+        related_name: null
         to: modules.AppSlugRunner
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.modules.models.deploy_config.DeployConfig:
     bases:
       - paasng.utils.models.UuidAuditedModel
+    description: null
     fields: {}
     line: 1
     meta: {}
@@ -6816,12 +6933,14 @@ results:
     name: AppBuildPack
     relationships:
       - field: modules
+        on_delete: null
         related_name: buildpacks
         to: modules.Module
         type: models.ManyToManyField
   apiserver.paasng.paasng.platform.modules.models.runtime.AppImage:
     bases:
       - paasng.utils.models.TimestampedModel
+    description: null
     fields:
       image:
         line: 1
@@ -6942,10 +7061,12 @@ results:
     name: AppSlugBuilder
     relationships:
       - field: buildpacks
+        on_delete: null
         related_name: slugbuilders
         to: "`AppBuildPack`"
         type: models.ManyToManyField
       - field: modules
+        on_delete: null
         related_name: slugbuilders
         to: modules.Module
         type: models.ManyToManyField
@@ -7016,6 +7137,7 @@ results:
     name: AppSlugRunner
     relationships:
       - field: modules
+        on_delete: null
         related_name: slugrunners
         to: modules.Module
         type: models.ManyToManyField
@@ -7127,6 +7249,7 @@ results:
     relationships:
       - field: module
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: modules.Module
         type: models.ForeignKey
   apiserver.paasng.paasng.platform.sourcectl.models.SourcePackage:
@@ -7582,6 +7705,7 @@ results:
   svc-bkrepo.svc_bk_repo.monitoring.models.RepoQuotaStatistics:
     bases:
       - models.Model
+    description: null
     fields:
       max_size:
         line: 1
@@ -7623,11 +7747,13 @@ results:
     relationships:
       - field: instance
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: paas_service.ServiceInstance
         type: models.ForeignKey
   svc-otel.svc_otel.vendor.models.ApmData:
     bases:
       - paas_service.models.AuditedModel
+    description: null
     fields:
       app_name:
         line: 1
@@ -7675,6 +7801,7 @@ results:
   svc-rabbitmq.tasks.models.CronTask:
     bases:
       - models.Model
+    description: null
     fields:
       enabled:
         line: 1
@@ -7726,6 +7853,7 @@ results:
   svc-rabbitmq.vendor.models.Cluster:
     bases:
       - paas_service.models.AuditedModel
+    description: null
     fields:
       admin:
         line: 1
@@ -7894,6 +8022,7 @@ results:
     relationships:
       - field: linked
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: self
         type: models.ForeignKey
   svc-rabbitmq.vendor.models.LimitPolicyTag:
@@ -7928,6 +8057,7 @@ results:
   svc-rabbitmq.vendor.models.LinkableModel:
     bases:
       - paas_service.models.AuditedModel
+    description: null
     fields:
       link_type:
         line: 1
@@ -7945,11 +8075,13 @@ results:
     relationships:
       - field: linked
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: self
         type: models.ForeignKey
   svc-rabbitmq.vendor.models.Tag:
     bases:
       - paas_service.models.AuditedModel
+    description: null
     fields:
       key:
         line: 1
@@ -8041,6 +8173,7 @@ results:
     relationships:
       - field: linked
         on_delete: "`models.CASCADE`"
+        related_name: null
         to: self
         type: models.ForeignKey
   svc-rabbitmq.vendor.models.UserPolicyTag:
@@ -8074,7 +8207,7 @@ results:
         type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 1450
+  scan_duration_ms: 2090
   total_count: 167
   total_fields: 684
   total_models: 167

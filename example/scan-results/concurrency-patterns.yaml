@@ -4,7 +4,8 @@ results:
   celery: {}
   multiprocessing:
     process_creation:
-      - class_name: Cluster
+      - api_call: null
+        class_name: Cluster
         column: 24
         details:
           target: Sentinel
@@ -17,7 +18,8 @@ results:
           self.start_event, self.broker, self.timeout))
   threading:
     thread_creation:
-      - class_name: ParallelChainedGenerator
+      - api_call: null
+        class_name: ParallelChainedGenerator
         column: 19
         details:
           target: self._consume_gen
@@ -26,7 +28,8 @@ results:
         line: 185
         pattern: thread_creation
         statement: threading.Thread(target=self._consume_gen, args=(gen, ))
-      - class_name: TestBareGitRepoController
+      - api_call: null
+        class_name: TestBareGitRepoController
         column: 12
         details:
           target: httpd.serve_forever
@@ -36,7 +39,10 @@ results:
         pattern: thread_creation
         statement: threading.Thread(target=httpd.serve_forever)
     thread_pool_executor:
-      - column: 17
+      - api_call: null
+        class_name: null
+        column: 17
+        details: null
         file: apiserver/paasng/paasng/platform/smart_app/services/dispatch.py
         function: dispatch_package_to_modules
         line: 74
@@ -47,5 +53,5 @@ summary:
     multiprocessing: 1
     threading: 3
   files_scanned: 4
-  scan_duration_ms: 7605
+  scan_duration_ms: 12045
   total_count: 4

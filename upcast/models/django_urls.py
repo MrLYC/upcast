@@ -9,18 +9,16 @@ class UrlPattern(BaseModel):
     """A Django URL pattern.
 
     Attributes:
-        type: Pattern type (path, re_path, include, etc)
+        type: Pattern type (path, re_path, include, router_registration, etc)
         pattern: URL pattern string
-        view_module: View module path
-        view_name: View function/class name
+        view_module: View/ViewSet module path
+        view_name: View function/class name (including ViewSets)
         include_module: Included URLconf module
         namespace: URL namespace
         name: URL pattern name
         converters: Path converters used
         named_groups: Named regex groups
-        viewset_module: ViewSet module for router patterns
-        viewset_name: ViewSet class name
-        basename: Router basename
+        basename: Router basename (for router registrations)
         router_type: Router type (DefaultRouter, SimpleRouter)
         is_partial: Whether pattern is incomplete
         is_conditional: Whether pattern is conditional
@@ -28,17 +26,15 @@ class UrlPattern(BaseModel):
         note: Note for dynamic patterns
     """
 
-    type: str = Field(description="Pattern type (path, re_path, include, etc)")
+    type: str = Field(description="Pattern type (path, re_path, include, router_registration, etc)")
     pattern: str | None = Field(None, description="URL pattern string")
-    view_module: str | None = Field(None, description="View module path")
-    view_name: str | None = Field(None, description="View function/class name")
+    view_module: str | None = Field(None, description="View/ViewSet module path")
+    view_name: str | None = Field(None, description="View function/class name (including ViewSets)")
     include_module: str | None = Field(None, description="Included URLconf module")
     namespace: str | None = Field(None, description="URL namespace")
     name: str | None = Field(None, description="URL pattern name")
     converters: list[str] = Field(description="Path converters")
     named_groups: list[str] = Field(description="Named regex groups")
-    viewset_module: str | None = Field(None, description="ViewSet module")
-    viewset_name: str | None = Field(None, description="ViewSet class name")
     basename: str | None = Field(None, description="Router basename")
     router_type: str | None = Field(None, description="Router type")
     is_partial: bool = Field(description="Pattern is incomplete")

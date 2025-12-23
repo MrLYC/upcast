@@ -33,6 +33,7 @@ results:
     name: CELERY_TASK_DEFAULT_QUEUE
     required: false
   DATABASE_URL:
+    default_value: null
     locations:
       - code: os.getenv('DATABASE_URL')
         column: 3
@@ -52,6 +53,7 @@ results:
     name: DATABASE_URL
     required: true
   OAUTHLIB_INSECURE_TRANSPORT:
+    default_value: null
     locations:
       - code: os.environ['OAUTHLIB_INSECURE_TRANSPORT']
         column: 0
@@ -61,6 +63,7 @@ results:
     name: OAUTHLIB_INSECURE_TRANSPORT
     required: true
   OAUTHLIB_RELAX_TOKEN_SCOPE:
+    default_value: null
     locations:
       - code: os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE']
         column: 0
@@ -70,6 +73,7 @@ results:
     name: OAUTHLIB_RELAX_TOKEN_SCOPE
     required: true
   PAAS_WL_CLUSTER_API_SERVER_URLS:
+    default_value: null
     locations:
       - code: os.environ.get('PAAS_WL_CLUSTER_API_SERVER_URLS')
         column: 26
@@ -79,6 +83,7 @@ results:
     name: PAAS_WL_CLUSTER_API_SERVER_URLS
     required: true
   PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT:
+    default_value: null
     locations:
       - code: os.environ['PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT']
         column: 4
@@ -88,6 +93,7 @@ results:
     name: PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT
     required: true
   prometheus_multiproc_dir:
+    default_value: null
     locations:
       - code: os.environ.get('prometheus_multiproc_dir')
         column: 11
@@ -100,6 +106,6 @@ summary:
   files_scanned: 2368
   optional_count: 3
   required_count: 6
-  scan_duration_ms: 6978
+  scan_duration_ms: 19183
   total_count: 9
   total_env_vars: 9

@@ -10,6 +10,7 @@ results:
             'enabled_by_default': [], 'disable_switch_off': [], 'user_type': 'qq',
             'user_tips': 'username_field', 'redis': {}})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -33,6 +34,7 @@ results:
         - lineno: 257
           statement: settings.get('ADMIN_USERNAME', 'admin')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -54,6 +56,7 @@ results:
         - lineno: 591
           statement: settings.get('ALLOWED_HOSTS', ['*'])
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 75
           statement: ALLOWED_HOSTS = ['*']
@@ -76,6 +79,7 @@ results:
         - lineno: 63
           statement: env.list('ALLOWED_HOSTS', default=['*'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
       - list
@@ -88,6 +92,7 @@ results:
         - lineno: 1477
           statement: settings.get('ALLOW_THIRD_APP_SYS_IDS', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -101,6 +106,7 @@ results:
             ALLOW_THIRD_APP_SYS_IDS.split(',') if ALLOW_THIRD_APP_SYS_IDS else
             []
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -115,10 +121,12 @@ results:
         - lineno: 704
           statement: settings.get('APIGW_ENVIRONMENT', 'prod')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 299
           statement: env('APIGW_ENVIRONMENT', default='prod')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -136,6 +144,7 @@ results:
         - lineno: 769
           statement: settings.get('APIGW_HEALTHZ_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -150,6 +159,7 @@ results:
         - lineno: 980
           statement: settings.get('APIGW_PUBLIC_KEY', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -161,6 +171,7 @@ results:
         - lineno: 835
           statement: settings.get('APPLICATION_DEFAULT_LOGO', f'{BKPAAS_URL}/static/images/default_logo.png')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -190,6 +201,7 @@ results:
         - lineno: 1327
           statement: settings.get('APP_DOCKER_REGISTRY_ADDR', 'index.docker.io')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 6
@@ -216,6 +228,7 @@ results:
         - lineno: 1331
           statement: settings.get('APP_DOCKER_NAMESPACE', 'bkpaas/docker')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -230,6 +243,7 @@ results:
         - lineno: 1335
           statement: settings.get('APP_DOCKER_PASSWORD', 'blueking')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -247,6 +261,7 @@ results:
         - lineno: 1329
           statement: settings.get('APP_DOCKER_REGISTRY_SKIP_TLS_VERIFY', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -261,6 +276,7 @@ results:
         - lineno: 1333
           statement: settings.get('APP_DOCKER_USERNAME', 'bkpaas')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -278,6 +294,7 @@ results:
         - lineno: 186
           statement: settings.get('APP_INGRESS_CLASS')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -299,6 +316,7 @@ results:
         - lineno: 192
           statement: settings.get('APP_INGRESS_EXT_V1BETA1_PATH_TRAILING_SLASH', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -313,6 +331,7 @@ results:
         - lineno: 194
           statement: APP_INGRESS_EXT_V1BETA1_PATH_TRAILING_SLASH
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -327,6 +346,7 @@ results:
         - lineno: 817
           statement: settings.get('APP_LOGO_BUCKET', 'bkpaas3-apps-logo')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -370,6 +390,7 @@ results:
         - lineno: 1147
           statement: settings.get('APP_REQUIRE_CONTACTS', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -386,6 +407,7 @@ results:
         - lineno: 1136
           statement: settings.get('APP_ZONE_CLUSTER_MAPPINGS', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -424,6 +446,7 @@ results:
         - lineno: 1010
           statement: settings.get('AUTH_ENV_NAME', 'prod')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -509,6 +532,7 @@ results:
         - lineno: 776
           statement: settings.get('AUTO_CREATE_REGULAR_USER', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -523,26 +547,32 @@ results:
         - lineno: 72
           statement: Path(__file__).parents[2]
           type: dynamic
+          value: null
       apiserver/paasng/paasng/settings/workloads.py:
         - lineno: 46
           statement: Path(__file__).parents[2]
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 66
           statement: Path(__file__).parents[2].absolute()
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 66
           statement: Path(__file__).parents[2].absolute()
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 69
           statement: Path(__file__).parents[2].absolute()
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 55
           statement: os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 13
@@ -596,6 +626,7 @@ results:
             EnumField('kubernetes.io/basic-auth', label='credentials for basic
             authentication')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -607,6 +638,7 @@ results:
         - lineno: 226
           statement: settings.get('BCS_EGRESS_GATE_IMAGE', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -621,6 +653,7 @@ results:
         - lineno: 230
           statement: settings.get('BCS_EGRESS_POD_CIDRS', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -635,6 +668,7 @@ results:
         - lineno: 228
           statement: settings.get('BCS_EGRESS_POD_IP_IMAGE', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -649,10 +683,12 @@ results:
         - lineno: 982
           statement: settings.get('BKAUTH_BACKEND_TYPE', 'bk_token')
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 296
           statement: env('BKAUTH_BACKEND_TYPE', default='bk_token')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -667,6 +703,7 @@ results:
         - lineno: 992
           statement: settings.get('BKAUTH_BK_LOGIN_DOMAIN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -678,6 +715,7 @@ results:
         - lineno: 993
           statement: settings.get('BKAUTH_BK_LOGIN_PATH', '/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -689,10 +727,12 @@ results:
         - lineno: 692
           statement: settings.get('BKAUTH_DEFAULT_PROVIDER_TYPE', 'BK')
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 294
           statement: env('BKAUTH_DEFAULT_PROVIDER_TYPE', default='BK')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -719,6 +759,7 @@ results:
         - lineno: 983
           statement: settings.get('BKAUTH_TOKEN_APP_CODE', BK_APP_CODE)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -736,6 +777,7 @@ results:
         - lineno: 991
           statement: settings.get('BKAUTH_TOKEN_CHECK_ENDPOINT')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -755,6 +797,7 @@ results:
         - lineno: 990
           statement: settings.get('BKAUTH_TOKEN_GRANT_ENDPOINT')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -766,6 +809,7 @@ results:
         - lineno: 984
           statement: settings.get('BKAUTH_TOKEN_SECRET_KEY', BK_APP_SECRET)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -783,6 +827,7 @@ results:
         - lineno: 987
           statement: settings.get('BKAUTH_TOKEN_USER_INFO_ENDPOINT', f'{BK_COMPONENT_API_URL}/api/c/compapi/v2/bk_login/get_user/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -794,10 +839,12 @@ results:
         - lineno: 986
           statement: settings.get('BKAUTH_USER_COOKIE_VERIFY_URL', f'{BK_LOGIN_API_URL}/api/v3/is_login/')
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 300
           statement: LOGIN_URL + env.str('BK_LOGIN_VERIFY_API_PATH', default='/api/v3/is_login/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -809,6 +856,7 @@ results:
         - lineno: 1277
           statement: settings.get('BKDOC_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -828,22 +876,27 @@ results:
         - lineno: 117
           statement: force_bytes(settings.get('BKKRILL_ENCRYPT_SECRET_KEY', ''))
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 236
           statement: env.str('BKKRILL_ENCRYPT_SECRET_KEY', default='U2ViQ1dRc0FiSU9jaFBhd0p0emhZQmhxRHpDdGdxU1k=').encode()
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 235
           statement: env.str('BKKRILL_ENCRYPT_SECRET_KEY', default='Q3NyY0V3cFpTUlVNbHp3RUZMYWtXaEdOdXp3eWZNSkc=').encode()
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 241
           statement: env.str('BKKRILL_ENCRYPT_SECRET_KEY', default='').encode() or 'b1ZPY1FDTXV1WGpGb0x2cmJKdlVLQW5OdnJBb2FscVY='.encode()
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 226
           statement: env.bytes('BKKRILL_ENCRYPT_SECRET_KEY')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -857,6 +910,7 @@ results:
             "settings.get('BKLOG_CONFIG', {'TIME_ZONE': BKLOG_TIME_ZONE,
             'STORAGE_CLUSTER_ID': BKLOG_STORAGE_CLUSTER_ID})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -873,6 +927,7 @@ results:
         - lineno: 1189
           statement: settings.get('BKLOG_STORAGE_CLUSTER_ID')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -884,6 +939,7 @@ results:
         - lineno: 1188
           statement: settings.get('BKLOG_TIME_ZONE')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -895,6 +951,7 @@ results:
         - lineno: 1386
           statement: settings.get('BKMONITOR_METRIC_RELABELINGS', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -914,6 +971,7 @@ results:
             settings.get('BKPAAS_K8S_CLUSTER_COMPONENTS', ['bk-ingress-nginx',
             'bkapp-log-collection', 'bkpaas-app-operator', 'bcs-general-pod-autoscaler'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -931,6 +989,7 @@ results:
         - lineno: 1485
           statement: settings.get('BKPAAS_PLATFORM_MANAGERS', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -952,6 +1011,7 @@ results:
         - lineno: 826
           statement: settings.get('BKPAAS_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 10
@@ -998,6 +1058,7 @@ results:
             "settings.get('BKPAAS_WEIXIN_URL_MAP', {'stag': 'http://localhost:8080/',
             'prod': 'http://localhost:8080/'})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1015,6 +1076,7 @@ results:
         - lineno: 244
           statement: env.int('BKREPO_COLLECT_INTERVAL_MINUTES', default=30)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1029,6 +1091,7 @@ results:
         - lineno: 286
           statement: env.int('BKREPO_DEFAULT_QUOTA', None)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1043,6 +1106,7 @@ results:
         - lineno: 1392
           statement: settings.get('BKREPO_MONITOR_CONF', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -1065,6 +1129,7 @@ results:
         - lineno: 28
           statement: settings.BKREPO_MONITOR_CONF.get('service_name', 'bkrepo')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -1076,6 +1141,7 @@ results:
         - lineno: 701
           statement: settings.get('BK_APIGW_NAME')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -1087,6 +1153,7 @@ results:
         - lineno: 708
           statement: settings.get('BK_API_DEFAULT_STAGE_MAPPINGS', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1103,10 +1170,12 @@ results:
         - lineno: 706
           statement: settings.get('BK_API_URL_TMPL', 'http://localhost:8080/api/{api_name}/')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 298
           statement: env('BK_API_URL_TMPL', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 17
@@ -1170,10 +1239,12 @@ results:
         - lineno: 666
           statement: settings.get('BK_APP_CODE', 'bk_paas3')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 293
           statement: env('BK_APP_CODE', default='bk_paas3')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 18
@@ -1242,10 +1313,12 @@ results:
         - lineno: 667
           statement: settings.get('BK_APP_SECRET', '')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 294
           statement: env('BK_APP_SECRET', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 16
@@ -1308,6 +1381,7 @@ results:
         - lineno: 1419
           statement: settings.get('BK_AUDIT_DATA_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1322,6 +1396,7 @@ results:
         - lineno: 1420
           statement: settings.get('BK_AUDIT_ENDPOINT', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1336,6 +1411,7 @@ results:
         - lineno: 1423
           statement: BK_AUDIT_SETTINGS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -1347,6 +1423,7 @@ results:
         - lineno: 882
           statement: settings.get('BK_AUDIT_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1361,6 +1438,7 @@ results:
         - lineno: 880
           statement: settings.get('BK_BCS_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1375,6 +1453,7 @@ results:
         - lineno: 881
           statement: settings.get('BK_BSCP_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1389,6 +1468,7 @@ results:
         - lineno: 868
           statement: settings.get('BK_CC_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1405,6 +1485,7 @@ results:
         - lineno: 1105
           statement: settings.get('BK_CI_BUILD_PIPELINE_ID', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -1429,6 +1510,7 @@ results:
         - lineno: 1107
           statement: settings.get('BK_CI_CLIENT_USERNAME', 'blueking')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1443,6 +1525,7 @@ results:
         - lineno: 1103
           statement: settings.get('BK_CI_PAAS_PROJECT_ID', 'bk_paas3')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -1467,6 +1550,7 @@ results:
         - lineno: 875
           statement: settings.get('BK_CI_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1481,6 +1565,7 @@ results:
         - lineno: 876
           statement: settings.get('BK_CODECC_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1495,10 +1580,12 @@ results:
         - lineno: 695
           statement: settings.get('BK_COMPONENT_API_URL', '')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 296
           statement: env('BK_COMPONENT_API_URL', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1517,6 +1604,7 @@ results:
             get_database_conf(settings, encrypted_url_var='PAAS_LEGACY_DATABASE_URL',
             env_var_prefix='BK_CONSOLE_', for_tests=RUNNING_TESTS)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 10
@@ -1556,6 +1644,7 @@ results:
         - lineno: 929
           statement: settings.get('BK_CONSOLE_URL', f'{BK_PAAS2_URL}/console/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1570,6 +1659,7 @@ results:
         - lineno: 581
           statement: settings.get('BK_COOKIE_DOMAIN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -1581,6 +1671,7 @@ results:
         - lineno: 588
           statement: settings.get('BK_COOKIE_NAME', 'bk_token')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 6
@@ -1609,22 +1700,27 @@ results:
         - lineno: 123
           statement: settings.get('BK_CRYPTO_TYPE', 'CLASSIC')
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 310
           statement: env.str('BK_CRYPTO_TYPE', default='CLASSIC')
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 283
           statement: env.str('BK_CRYPTO_TYPE', default='CLASSIC')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 306
           statement: env.str('BK_CRYPTO_TYPE', default='CLASSIC')
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 295
           statement: env.str('BK_CRYPTO_TYPE', default='CLASSIC')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1639,6 +1735,7 @@ results:
         - lineno: 1282
           statement: settings.get('BK_DOCS_URL_PREFIX', 'https://bk.tencent.com/docs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1655,6 +1752,7 @@ results:
         - lineno: 1280
           statement: settings.get('BK_DOC_APP_ID', 'bk_docs_center')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1669,6 +1767,7 @@ results:
         - lineno: 866
           statement: settings.get('BK_DOMAIN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1683,6 +1782,7 @@ results:
         - lineno: 853
           statement: settings.get('BK_IAM_APIGATEWAY_URL', f"{BK_API_URL_TMPL.format(api_name='bk-iam')}/{BK_IAM_APIGW_SERVICE_STAGE}")
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 8
@@ -1718,6 +1818,7 @@ results:
         - lineno: 847
           statement: settings.get('BK_IAM_APIGW_SERVICE_STAGE', 'stage')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1756,6 +1857,7 @@ results:
         - lineno: 860
           statement: settings.get('BK_IAM_RESOURCE_API_HOST', BKPAAS_URL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -1779,6 +1881,7 @@ results:
         - lineno: 684
           statement: settings.get('BK_IAM_SKIP', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1796,6 +1899,7 @@ results:
         - lineno: 870
           statement: settings.get('BK_IAM_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1815,6 +1919,7 @@ results:
         - lineno: 908
           statement: BK_IAM_URL + '/apply-join-user-group?id={user_group_id}'
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -1834,6 +1939,7 @@ results:
         - lineno: 851
           statement: settings.get('BK_IAM_USE_APIGATEWAY', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -1866,6 +1972,7 @@ results:
         - lineno: 844
           statement: settings.get('BK_IAM_V3_INNER_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 9
@@ -1906,6 +2013,7 @@ results:
         - lineno: 869
           statement: settings.get('BK_JOB_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1922,6 +2030,7 @@ results:
         - lineno: 1344
           statement: settings.get('BK_LESSCODE_APIGW_STAGE', 'prod')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -1933,6 +2042,7 @@ results:
         - lineno: 1347
           statement: settings.get('BK_LESSCODE_TIPS', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -1949,6 +2059,7 @@ results:
         - lineno: 1346
           statement: settings.get('BK_LESSCODE_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1966,6 +2077,7 @@ results:
         - lineno: 926
           statement: settings.get('BK_LOGIN_API_URL', LOGIN_FULL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -1977,6 +2089,7 @@ results:
         - lineno: 1186
           statement: settings.get('BK_LOG_APIGW_SERVICE_STAGE', 'stag')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -1993,6 +2106,7 @@ results:
         - lineno: 1208
           statement: ('[bk-mark]', '[/bk-mark]')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2009,6 +2123,7 @@ results:
         - lineno: 873
           statement: settings.get('BK_LOG_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -2032,10 +2147,12 @@ results:
         - lineno: 872
           statement: settings.get('BK_MONITORV3_URL', '')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 303
           statement: env('BK_MONITORV3_URL', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 8
@@ -2068,6 +2185,7 @@ results:
         - lineno: 1396
           statement: settings.get('BK_MONITOR_APIGW_SERVICE_STAGE', 'stage')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2082,6 +2200,7 @@ results:
         - lineno: 879
           statement: settings.get('BK_NODEMAN_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2096,6 +2215,7 @@ results:
         - lineno: 1405
           statement: BK_NOTICE = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -2107,6 +2227,7 @@ results:
         - lineno: 1404
           statement: settings.get('BK_NOTICE_ENV', 'prod')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2118,6 +2239,7 @@ results:
         - lineno: 974
           statement: settings.get('BK_OAUTH_API_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2132,6 +2254,7 @@ results:
         - lineno: 291
           statement: env('BK_OTEL_GRPC_URL', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2146,6 +2269,7 @@ results:
         - lineno: 832
           statement: settings.get('BK_PAAS2_INNER_URL', BK_PAAS2_URL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2171,6 +2295,7 @@ results:
             'description': _('蓝鲸配置平台访问地址，建议切换为 BKPAAS_CC_URL')}, 'BK_JOB_HOST':
             {'value': BK_JOB_URL, 'description': _('蓝鲸作业平台访问地址，建议切换为 BKPAAS_JOB_URL')}})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -2193,6 +2318,7 @@ results:
         - lineno: 829
           statement: settings.get('BK_PAAS2_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 10
@@ -2234,6 +2360,7 @@ results:
         - lineno: 1285
           statement: settings.get('BK_PAAS_DOCS_VER', '1.5')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2245,6 +2372,7 @@ results:
         - lineno: 878
           statement: settings.get('BK_PIPELINE_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2259,6 +2387,7 @@ results:
         - lineno: 1025
           statement: settings.get('BK_PLUGIN_APIGW_SERVICE_STAGE', 'prod')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -2282,6 +2411,7 @@ results:
         - lineno: 1026
           statement: settings.get('BK_PLUGIN_APIGW_SERVICE_USER_AUTH_TYPE', 'default')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2298,6 +2428,7 @@ results:
         - lineno: 874
           statement: settings.get('BK_REPO_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2314,6 +2445,7 @@ results:
         - lineno: 884
           statement: settings.get('BK_SHARED_RES_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2328,6 +2460,7 @@ results:
         - lineno: 841
           statement: settings.get('BK_SSM_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2339,6 +2472,7 @@ results:
         - lineno: 877
           statement: settings.get('BK_TURBO_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2353,6 +2487,7 @@ results:
         - lineno: 871
           statement: settings.get('BK_USER_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2367,6 +2502,7 @@ results:
         - lineno: 812
           statement: settings.get('BLOBSTORE_BKREPO_CONFIG')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 12
@@ -2408,6 +2544,7 @@ results:
         - lineno: 1054
           statement: settings.get('BLOBSTORE_BUCKET_APP_SOURCE', 'bkpaas3-slug-packages')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 15
@@ -2471,6 +2608,7 @@ results:
         - lineno: 1058
           statement: settings.get('BLOBSTORE_BUCKET_AP_PACKAGES', 'bkpaas3-source-packages')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -2499,6 +2637,7 @@ results:
         - lineno: 1056
           statement: settings.get('BLOBSTORE_BUCKET_TEMPLATES', 'bkpaas3-apps-tmpls')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -2520,6 +2659,7 @@ results:
         - lineno: 798
           statement: settings.get('BLOBSTORE_S3_ACCESS_KEY', default='minio')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2537,6 +2677,7 @@ results:
         - lineno: 797
           statement: settings.get('BLOBSTORE_S3_ENDPOINT', default='http://127.0.0.1:9100')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -2557,6 +2698,7 @@ results:
         - lineno: 802
           statement: settings.get('BLOBSTORE_S3_REGION_NAME', 'us-east-1')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2574,6 +2716,7 @@ results:
         - lineno: 799
           statement: settings.get('BLOBSTORE_S3_SECRET_KEY', default='')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2591,6 +2734,7 @@ results:
         - lineno: 803
           statement: settings.get('BLOBSTORE_S3_SIG_VERSION', 's3v4')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2608,6 +2752,7 @@ results:
         - lineno: 794
           statement: settings.get('BLOBSTORE_TYPE')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2627,6 +2772,7 @@ results:
             EnumField('bootstrap.kubernetes.io/token', label='bootstrap token
             data')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2638,6 +2784,7 @@ results:
         - lineno: 73
           statement: settings.get('BUILDER_USERNAME', 'blueking')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2649,6 +2796,7 @@ results:
         - lineno: 79
           statement: settings.get('BUILD_EXTRA_ENV_VARS', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -2670,6 +2818,7 @@ results:
         - lineno: 1321
           statement: int(settings.get('BUILD_PROCESS_TIMEOUT', 60 * 15))
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2687,16 +2836,20 @@ results:
         - lineno: 563
           statement: CACHES = {...}
           type: dict
+          value: null
         - lineno: 565
           statement: CACHES = {...}
           type: dict
+          value: null
         - lineno: 567
           statement: CACHES = {...}
           type: dict
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 259
           statement: CACHES = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -2721,6 +2874,7 @@ results:
         - lineno: 613
           statement: settings.get('CELERY_BROKER_HEARTBEAT')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2732,9 +2886,11 @@ results:
         - lineno: 622
           statement: settings.get('CELERY_BROKER_TRANSPORT_OPTIONS', {})
           type: dynamic
+          value: null
         - lineno: 626
           statement: copy.deepcopy(REDIS_CONNECTION_OPTIONS)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2746,6 +2902,7 @@ results:
         - lineno: 609
           statement: settings.get('CELERY_BROKER_URL', REDIS_URL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2757,6 +2914,7 @@ results:
         - lineno: 644
           statement: settings.get('CELERY_BROKER_USE_SSL') or None
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2780,6 +2938,7 @@ results:
         - lineno: 610
           statement: settings.get('CELERY_RESULT_BACKEND', REDIS_URL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2791,6 +2950,7 @@ results:
         - lineno: 638
           statement: CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -2814,6 +2974,7 @@ results:
         - lineno: 656
           statement: os.environ.get('CELERY_TASK_DEFAULT_QUEUE', 'celery')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -2849,6 +3010,7 @@ results:
         - lineno: 314
           statement: os.path.join(BASE_DIR, 'changelog')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2863,6 +3025,7 @@ results:
         - lineno: 1013
           statement: settings.get('CLI_AUTH_CODE', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2877,6 +3040,7 @@ results:
         - lineno: 1014
           statement: settings.get('CLI_AUTH_SECRET', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2891,6 +3055,7 @@ results:
         - lineno: 1100
           statement: settings.get('CODE_CHECK_CONFIGS', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -2908,6 +3073,7 @@ results:
         - lineno: 110
           statement: settings.get('CODE_EDITOR_IMAGE', 'codercom/code-server:4.9.0')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -2922,6 +3088,7 @@ results:
         - lineno: 108
           statement: settings.get('CODE_EDITOR_PORT', 8080)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -2946,6 +3113,7 @@ results:
         - lineno: 112
           statement: settings.get('CODE_EDITOR_START_DIR', '/home/coder/project')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -2988,6 +3156,7 @@ results:
         - lineno: 767
           statement: settings.get('COMPONENT_SYSTEM_HEALTHZ_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3002,6 +3171,7 @@ results:
         - lineno: 697
           statement: settings.get('COMPONENT_SYSTEM_HOST', BK_COMPONENT_API_URL)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3016,6 +3186,7 @@ results:
         - lineno: 699
           statement: settings.get('COMPONENT_SYSTEM_HOST_IN_TEST', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3030,6 +3201,7 @@ results:
         - lineno: 1040
           statement: ('SLUG_URL', 'HOME', 'S3CMD_CONF', 'HOSTNAME')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3046,6 +3218,7 @@ results:
         - lineno: 1047
           statement: settings.get('CONFIGVAR_PROTECTED_PREFIXES', ['BKPAAS_', 'KUBERNETES_'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3173,6 +3346,7 @@ results:
         - lineno: 86
           statement: settings.get('CONTAINER_PORT', 5000)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 40
@@ -3319,6 +3493,7 @@ results:
         - lineno: 598
           statement: settings.get('CORS_ORIGIN_ALLOW_ALL', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3330,6 +3505,7 @@ results:
         - lineno: 596
           statement: settings.get('CORS_ORIGIN_REGEX_WHITELIST', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3341,6 +3517,7 @@ results:
         - lineno: 269
           statement: env.int('CRON_TASK_CHECK_INTERVAL', 10)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3355,6 +3532,7 @@ results:
         - lineno: 576
           statement: settings.get('CSRF_COOKIE_DOMAIN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3380,6 +3558,7 @@ results:
             settings.get('CSRF_TRUSTED_ORIGINS', [f'http://*{BK_COOKIE_DOMAIN}',
             f'https://*{BK_COOKIE_DOMAIN}'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3394,6 +3573,7 @@ results:
             settings.get('VALID_CUSTOM_DOMAIN_SUFFIXES', []), 'allow_user_modifications':
             True})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3405,6 +3585,7 @@ results:
         - lineno: 187
           statement: settings.get('CUSTOM_DOMAIN_INGRESS_CLASS')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -3421,31 +3602,39 @@ results:
         - lineno: 532
           statement: DATABASES = {...}
           type: dict
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 141
           statement: DATABASES = {...}
           type: dict
+          value: null
         - lineno: 143
           statement: DATABASES = {...}
           type: dict
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 140
           statement: DATABASES = {...}
           type: dict
+          value: null
         - lineno: 142
           statement: DATABASES = {...}
           type: dict
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 140
           statement: DATABASES = {...}
           type: dict
+          value: null
         - lineno: 142
           statement: DATABASES = {...}
           type: dict
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 125
           statement: DATABASES = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 2
@@ -3479,22 +3668,27 @@ results:
         - lineno: 126
           statement: settings.get('DEBUG', False)
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 72
           statement: env('DEBUG')
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 75
           statement: env('DEBUG')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 75
           statement: env('DEBUG')
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 61
           statement: env.bool('DEBUG', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3509,6 +3703,7 @@ results:
         - lineno: 1447
           statement: settings.get('DEBUG_FORCE_DISABLE_CSRF', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3545,6 +3740,7 @@ results:
         - lineno: 561
           statement: settings.get('DEFAULT_CACHE_CONFIG')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -3602,6 +3798,7 @@ results:
         - lineno: 1512
           statement: settings.get('DEFAULT_PERSISTENT_STORAGE_CLASS_NAME', 'cfs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -3624,6 +3821,7 @@ results:
         - lineno: 1515
           statement: settings.get('DEFAULT_PERSISTENT_STORAGE_SIZE', '1Gi')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -3676,6 +3874,7 @@ results:
         - lineno: 243
           statement: DEFAULT_PROC_SPEC_PLANS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 1
@@ -3690,6 +3889,7 @@ results:
         - lineno: 935
           statement: settings.get('DEFAULT_REGION_NAME', 'default')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 117
@@ -4023,6 +4223,7 @@ results:
         - lineno: 937
           statement: DEFAULT_REGION_TEMPLATE = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 1
@@ -4037,6 +4238,7 @@ results:
         - lineno: 31
           statement: DEFAULT_RULE_CONFIGS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -4050,6 +4252,7 @@ results:
             "settings.get('DEFAULT_RUNTIME_IMAGES', {DEFAULT_REGION_NAME:
             'blueking'})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4066,6 +4269,7 @@ results:
         - lineno: 67
           statement: settings.get('DEFAULT_SLUGBUILDER_IMAGE', 'bkpaas/slugbuilder:latest')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -4086,6 +4290,7 @@ results:
         - lineno: 66
           statement: settings.get('DEFAULT_SLUGRUNNER_IMAGE', 'bkpaas/slugrunner:latest')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4102,6 +4307,7 @@ results:
             "settings.get('DEFAULT_WEB_REPLICAS_MAP', {'stag': 1, 'prod':
             2})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4140,6 +4346,7 @@ results:
         - lineno: 105
           statement: settings.get('DEV_SANDBOX_CORS_ALLOW_ORIGINS', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4154,6 +4361,7 @@ results:
         - lineno: 103
           statement: settings.get('DEV_SANDBOX_COUNT_LIMIT', 5)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4170,6 +4378,7 @@ results:
         - lineno: 97
           statement: settings.get('DEV_SANDBOX_DEVSERVER_PORT', 8000)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 8
@@ -4207,6 +4416,7 @@ results:
         - lineno: 99
           statement: settings.get('DEV_SANDBOX_IMAGE', 'bkpaas/dev-heroku-bionic:latest')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4223,6 +4433,7 @@ results:
         - lineno: 101
           statement: settings.get('DEV_SANDBOX_WORKSPACE', '/cnb/devsandbox/src')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4237,6 +4448,7 @@ results:
         - lineno: 1120
           statement: settings.get('DISABLE_PERIODICAL_JOBS', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4251,6 +4463,7 @@ results:
         - lineno: 1367
           statement: settings.get('DISPLAY_BK_PLUGIN_APPS', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -4273,6 +4486,7 @@ results:
         - lineno: 30
           statement: EnumField('kubernetes.io/dockercfg', label='kubernetes.io/dockercfg')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4286,6 +4500,7 @@ results:
             EnumField('kubernetes.io/dockerconfigjson', label='serialized ~/.docker/config.json
             file')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4299,6 +4514,7 @@ results:
             "settings.get('DOCKER_REGISTRY_CONFIG', {'DEFAULT_REGISTRY':
             'https://hub.docker.com', 'ALLOW_THIRD_PARTY_REGISTRY': False})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4395,6 +4611,7 @@ results:
           statement: "settings.get('ELASTICSEARCH_HOSTS', [{'host': 'localhost',
             'port': '9200'}])"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4412,6 +4629,7 @@ results:
         - lineno: 280
           statement: env.bool('ENABLE_ADMIN', False)
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 277
           statement: ENABLE_ADMIN = False
@@ -4443,6 +4661,7 @@ results:
         - lineno: 1435
           statement: settings.get('ENABLE_BCS', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4460,6 +4679,7 @@ results:
         - lineno: 1422
           statement: bool(BK_AUDIT_DATA_TOKEN)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4474,6 +4694,7 @@ results:
         - lineno: 1342
           statement: settings.get('ENABLE_BK_LESSCODE', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4491,6 +4712,7 @@ results:
         - lineno: 1184
           statement: settings.get('ENABLE_BK_LOG_APIGW', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4507,6 +4729,7 @@ results:
         - lineno: 1384
           statement: settings.get('ENABLE_BK_MONITOR', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 7
@@ -4538,10 +4761,12 @@ results:
         - lineno: 1388
           statement: settings.get('ENABLE_BK_MONITOR_APIGW', True)
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 301
           statement: env.bool('ENABLE_BK_MONITOR_APIGW', default=True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4559,6 +4784,7 @@ results:
         - lineno: 1402
           statement: settings.get('ENABLE_BK_NOTICE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4576,6 +4802,7 @@ results:
         - lineno: 973
           statement: settings.get('ENABLE_BK_OAUTH', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -4598,6 +4825,7 @@ results:
         - lineno: 205
           statement: settings.get('ENABLE_MODERN_INGRESS_SUPPORT', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4614,6 +4842,7 @@ results:
         - lineno: 1453
           statement: settings.get('ENABLE_OTEL_TRACE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4633,6 +4862,7 @@ results:
             settings.get('ENABLE_SEND_OPERATION_REPORT_EMAIL_TO_PLAT_MANAGE',
             False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4647,6 +4877,7 @@ results:
         - lineno: 1492
           statement: settings.get('ENABLE_VERIFICATION_CODE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 6
@@ -4675,22 +4906,27 @@ results:
         - lineno: 124
           statement: "'SM4CTR' if BK_CRYPTO_TYPE == 'SHANGMI' else 'FernetCipher'"
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 311
           statement: "'SM4CTR' if BK_CRYPTO_TYPE == 'SHANGMI' else 'FernetCipher'"
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 284
           statement: "'SM4CTR' if BK_CRYPTO_TYPE == 'SHANGMI' else 'FernetCipher'"
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 307
           statement: "'SM4CTR' if BK_CRYPTO_TYPE == 'SHANGMI' else 'FernetCipher'"
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 296
           statement: "'SM4CTR' if BK_CRYPTO_TYPE == 'SHANGMI' else 'FernetCipher'"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4732,10 +4968,12 @@ results:
         - lineno: 1077
           statement: ENGINE_PROC_REPLICAS_BY_TYPE = {...}
           type: dict
+          value: null
       apiserver/paasng/paasng/settings/workloads.py:
         - lineno: 267
           statement: ENGINE_PROC_REPLICAS_BY_TYPE = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 1
@@ -4764,6 +5002,7 @@ results:
         - lineno: 30
           statement: ConfigVarEnvName.GLOBAL.value
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4790,6 +5029,7 @@ results:
         - lineno: 1203
           statement: settings.get('ES_K8S_LOG_INDEX_NGINX_PATTERNS', 'app_log-nginx-(?P<date>.+)')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4806,6 +5046,7 @@ results:
         - lineno: 1201
           statement: settings.get('ES_K8S_LOG_INDEX_PATTERNS', 'app_log-*')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -4858,6 +5099,7 @@ results:
         - lineno: 213
           statement: settings.get('EXTRA_INSTALLED_APPS', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -4869,6 +5111,7 @@ results:
         - lineno: 287
           statement: env.bool('FEATURE_FLAG_ENABLE_ADMIN', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4883,6 +5126,7 @@ results:
         - lineno: 1524
           statement: settings.get('FE_FEATURE_SETTINGS_AGGREGATE_SEARCH', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4897,6 +5141,7 @@ results:
         - lineno: 1532
           statement: settings.get('FE_FEATURE_SETTINGS_ANALYTICS', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4911,6 +5156,7 @@ results:
         - lineno: 1540
           statement: settings.get('FE_FEATURE_SETTINGS_APP_ACCESS_TOKEN', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4925,6 +5171,7 @@ results:
         - lineno: 1538
           statement: settings.get('FE_FEATURE_SETTINGS_CNATIVE_MGRLEGACY', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4939,6 +5186,7 @@ results:
         - lineno: 1528
           statement: settings.get('FE_FEATURE_SETTINGS_DEVELOPMENT_TIME_RECORD', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4953,6 +5201,7 @@ results:
         - lineno: 1526
           statement: settings.get('FE_FEATURE_SETTINGS_DOCUMENT_MANAGEMENT', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4967,6 +5216,7 @@ results:
         - lineno: 1534
           statement: settings.get('FE_FEATURE_SETTINGS_IMAGE_APP_BIND_REPO', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4981,6 +5231,7 @@ results:
         - lineno: 1522
           statement: settings.get('FE_FEATURE_SETTINGS_MARKET_VISIBILITY', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -4995,6 +5246,7 @@ results:
         - lineno: 1536
           statement: settings.get('FE_FEATURE_SETTINGS_MGRLEGACY', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5009,6 +5261,7 @@ results:
         - lineno: 1530
           statement: settings.get('FE_FEATURE_SETTINGS_REGION_DISPLAY', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5023,6 +5276,7 @@ results:
         - lineno: 1543
           statement: settings.get('FORBIDDEN_REPO_PORTS', [])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -5039,6 +5293,7 @@ results:
         - lineno: 575
           statement: settings.get('FORCE_SCRIPT_NAME')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -5065,6 +5320,7 @@ results:
         - lineno: 1467
           statement: settings.get('FORCE_USING_LEGACY_SUB_PATH_VAR_VALUE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5079,6 +5335,7 @@ results:
         - lineno: 284
           statement: settings.get('FOR_TESTS_APISERVER_URL', 'http://localhost:28080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5090,6 +5347,7 @@ results:
         - lineno: 1444
           statement: settings.get('FOR_TESTS_APP_SVN_INFO')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5104,6 +5362,7 @@ results:
         - lineno: 285
           statement: settings.get('FOR_TESTS_CA_DATA', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5115,6 +5374,7 @@ results:
         - lineno: 286
           statement: settings.get('FOR_TESTS_CERT_DATA', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5126,6 +5386,7 @@ results:
         - lineno: 291
           statement: FOR_TESTS_CLUSTER_CONFIG = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 6
@@ -5150,6 +5411,7 @@ results:
         - lineno: 289
           statement: settings.get('FOR_TESTS_FORCE_DOMAIN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5161,6 +5423,7 @@ results:
         - lineno: 287
           statement: settings.get('FOR_TESTS_KEY_DATA', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5172,6 +5435,7 @@ results:
         - lineno: 1441
           statement: settings.get('FOR_TESTS_LEGACY_APP_CODE', 'test-app')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -5191,6 +5455,7 @@ results:
         - lineno: 1443
           statement: settings.get('FOR_TESTS_SVN_SERVER_CONF')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5205,6 +5470,7 @@ results:
         - lineno: 288
           statement: settings.get('FOR_TESTS_TOKEN_VALUE', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5216,6 +5482,7 @@ results:
         - lineno: 300
           statement: settings.get('FOR_TEST_E2E_INGRESS_CONFIG', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -5236,6 +5503,7 @@ results:
         - lineno: 1394
           statement: settings.get('GCS_MYSQL_MONITOR_CONF', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -5258,6 +5526,7 @@ results:
         - lineno: 29
           statement: settings.GCS_MYSQL_MONITOR_CONF.get('service_name', 'gcs_mysql')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5300,6 +5569,7 @@ results:
             'paasng.misc.monitoring.healthz.probes.ServiceHubProbe', 'paasng.misc.monitoring.healthz.probes.PlatformBlobStoreProbe',
             'paasng.misc.monitoring.healthz.probes.BKIAMProbe'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5314,6 +5584,7 @@ results:
         - lineno: 750
           statement: settings.get('HEALTHZ_TOKEN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -5381,6 +5652,7 @@ results:
         - lineno: 676
           statement: settings.get('IAM_APP_CODE', default=BK_APP_CODE)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 8
@@ -5418,6 +5690,7 @@ results:
         - lineno: 677
           statement: settings.get('IAM_APP_SECRET', default=BK_APP_SECRET)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 8
@@ -5455,6 +5728,7 @@ results:
         - lineno: 673
           statement: settings.get('IAM_PAAS_V3_SYSTEM_ID', default='bk_paas3')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 24
@@ -5570,6 +5844,7 @@ results:
         - lineno: 1364
           statement: settings.get('IAM_PLUGINS_CENTER_SYSTEM_ID', default='bk_plugins')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 21
@@ -5645,6 +5920,7 @@ results:
         - lineno: 670
           statement: settings.get('IAM_SYSTEM_ID', default='bk_paas')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5842,6 +6118,7 @@ results:
         - lineno: 241
           statement: env.int('INSTANCE_APP_NAME_MAX_LENGTH', 16)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5856,6 +6133,7 @@ results:
         - lineno: 242
           statement: env.int('INSTANCE_BILL_ID_MAX_LENGTH', 4)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5870,6 +6148,7 @@ results:
         - lineno: 292
           statement: env.int('INSTANCE_DEFAULT_CLUSTER_ID', 0)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5884,6 +6163,7 @@ results:
         - lineno: 243
           statement: env.str('INSTANCE_DEFAULT_PREFIX', 'app')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -5900,6 +6180,7 @@ results:
         - lineno: 1019
           statement: settings.get('IS_ALLOW_CREATE_BK_PLUGIN_APP', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -5919,6 +6200,7 @@ results:
         - lineno: 720
           statement: settings.get('IS_ALLOW_CREATE_CLOUD_NATIVE_APP_BY_DEFAULT', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5930,6 +6212,7 @@ results:
         - lineno: 717
           statement: settings.get('IS_ALLOW_CREATE_SMART_APP_BY_DEFAULT', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5944,6 +6227,7 @@ results:
         - lineno: 1022
           statement: settings.get('IS_ALLOW_PLUGIN_CENTER', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -5958,6 +6242,7 @@ results:
         - lineno: 1270
           statement: settings.get('IS_PATCH_CODE_IN_MGRLEGACY', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5969,6 +6254,7 @@ results:
         - lineno: 1248
           statement: settings.get('IWIKI_API_BASE_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5980,6 +6266,7 @@ results:
         - lineno: 1249
           statement: settings.get('IWIKI_API_RIO_GW_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -5991,6 +6278,7 @@ results:
         - lineno: 1247
           statement: settings.get('IWIKI_WEB_UI_BASE_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6036,6 +6324,7 @@ results:
         - lineno: 68
           statement: settings.get('KANIKO_IMAGE', 'bkpaas/kaniko-executor')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6050,6 +6339,7 @@ results:
         - lineno: 71
           statement: settings.get('KANIKO_REGISTRY_MIRRORS', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6064,6 +6354,7 @@ results:
         - lineno: 157
           statement: settings.get('KUBE_CONFIG_FILE', '/data/kubelet/conf/kubeconfig.yaml')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6078,6 +6369,7 @@ results:
         - lineno: 297
           statement: (('zh-cn', '简体中文'), ('en', 'English'))
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 176
           statement: LANGUAGES = ['...', '...']
@@ -6184,6 +6476,7 @@ results:
         - lineno: 310
           statement: settings.get('BK_COOKIE_DOMAIN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6260,6 +6553,7 @@ results:
         - lineno: 726
           statement: settings.get('LESSCODE_APP_USE_CLOUD_NATIVE_TYPE', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6276,6 +6570,7 @@ results:
             "settings.get('LIVE_AGENT_CONFIG', {'text': '联系客服', 'link':
             'about:blank'})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6290,6 +6585,7 @@ results:
         - lineno: 312
           statement: (os.path.join(BASE_DIR, 'locale'), )
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6318,22 +6614,27 @@ results:
         - lineno: 515
           statement: LOGGING = {...}
           type: dict
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 234
           statement: LOGGING = {...}
           type: dict
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 233
           statement: LOGGING = {...}
           type: dict
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 238
           statement: LOGGING = {...}
           type: dict
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 174
           statement: LOGGING = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 1
@@ -6348,6 +6649,7 @@ results:
         - lineno: 412
           statement: settings.get('LOGGING_ALWAYS_CONSOLE', default=False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6359,6 +6661,7 @@ results:
         - lineno: 397
           statement: settings.get('LOGGING_DIRECTORY', default=None)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6370,6 +6673,7 @@ results:
         - lineno: 399
           statement: settings.get('LOGGING_FILE_FORMAT', default='json')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6403,6 +6707,7 @@ results:
         - lineno: 922
           statement: settings.get('LOGIN_FULL', f'{BK_PAAS2_URL}/login/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -6423,6 +6728,7 @@ results:
         - lineno: 923
           statement: settings.get('LOGIN_SIMPLE', f'{BK_PAAS2_URL}/login/plain/')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6437,6 +6743,7 @@ results:
         - lineno: 298
           statement: env.str('BK_LOGIN_API_URL', default='http://paasee.blueking-fake.com/login')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6448,6 +6755,7 @@ results:
         - lineno: 1182
           statement: settings.get('LOG_COLLECTOR_TYPE', 'ELK')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -6465,6 +6773,7 @@ results:
         - lineno: 171
           statement: env.str('LOG_FILE', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6476,10 +6785,12 @@ results:
         - lineno: 391
           statement: settings.get('LOG_LEVEL', default='INFO')
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 170
           statement: env.str('LOG_LEVEL', 'INFO')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6503,6 +6814,7 @@ results:
         - lineno: 779
           statement: settings.get('MAX_MODULES_COUNT_PER_APPLICATION', default=10, cast='@int')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -6519,6 +6831,7 @@ results:
         - lineno: 781
           statement: settings.get('MAX_PROCESSES_PER_MODULE', default=16, cast='@int')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -6593,6 +6906,7 @@ results:
         - lineno: 280
           statement: env.int('MAX_TASK_PRE_WORKER', 100)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -6609,6 +6923,7 @@ results:
         - lineno: 279
           statement: env.int('MAX_TASK_WORKERS', 2)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -6627,6 +6942,7 @@ results:
         - lineno: 389
           statement: MESSAGE_TAGS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -6638,22 +6954,27 @@ results:
         - lineno: 714
           statement: settings.get('METRIC_CLIENT_TOKEN_DICT', {})
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 240
           statement: METRIC_CLIENT_TOKEN_DICT = {...}
           type: dict
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 239
           statement: METRIC_CLIENT_TOKEN_DICT = {...}
           type: dict
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 247
           statement: METRIC_CLIENT_TOKEN_DICT = {...}
           type: dict
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 227
           statement: METRIC_CLIENT_TOKEN_DICT = {...}
           type: dict
+          value: null
     type_list:
       - dict
       - dynamic
@@ -6674,6 +6995,7 @@ results:
         - lineno: 723
           statement: settings.get('MGRLEGACY_CLOUD_NATIVE_TARGET_CLUSTER', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6829,6 +7151,7 @@ results:
         - lineno: 1252
           statement: settings.get('MK_SEARCH_API_BASE_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6840,6 +7163,7 @@ results:
         - lineno: 1254
           statement: settings.get('MK_SEARCH_API_PRIVATE_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6851,6 +7175,7 @@ results:
         - lineno: 1253
           statement: settings.get('MK_SEARCH_API_RIO_GW_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6862,6 +7187,7 @@ results:
         - lineno: 919
           statement: settings.get('MOBILE_DOAMIN_SUFFIXS', ['.example.com'])
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -6885,6 +7211,7 @@ results:
         - lineno: 278
           statement: settings.get('MONITOR_CONFIG', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -6903,6 +7230,7 @@ results:
         - lineno: 144
           statement: settings.get('MUL_MODULE_VOLUME_HOST_PATH_APP_LOGGING_DIR', '/tmp/v3logs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6917,6 +7245,7 @@ results:
         - lineno: 143
           statement: settings.get('MUL_MODULE_VOLUME_MOUNT_APP_LOGGING_DIR', '/app/v3logs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 5
@@ -6942,6 +7271,7 @@ results:
         - lineno: 142
           statement: settings.get('MUL_MODULE_VOLUME_NAME_APP_LOGGING', 'appv3logs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -6973,6 +7303,7 @@ results:
             'sms': 'paasng.utils.notification_plugins.SMSNotificationPlugin', 'wechat':
             'paasng.utils.notification_plugins.WeChatNotificationPlugin'})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -6999,6 +7330,7 @@ results:
         - lineno: 28
           statement: EnumField('Opaque', label='arbitrary user-defined data')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -7010,6 +7342,7 @@ results:
         - lineno: 1459
           statement: settings.get('OTEL_BK_DATA_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7027,6 +7360,7 @@ results:
         - lineno: 1460
           statement: settings.get('OTEL_GRPC_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7048,6 +7382,7 @@ results:
         - lineno: 1454
           statement: settings.get('OTEL_INSTRUMENT_DB_API', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7065,6 +7400,7 @@ results:
         - lineno: 1458
           statement: settings.get('OTEL_SAMPLER', 'always_on')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7082,6 +7418,7 @@ results:
         - lineno: 1456
           statement: settings.get('OTEL_SERVICE_NAME', 'bkpaas3-apiserver')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7099,6 +7436,7 @@ results:
         - lineno: 1238
           statement: settings.get('PAAS_ANALYSIS_BASE_URL', 'http://localhost:8085')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7113,6 +7451,7 @@ results:
         - lineno: 1239
           statement: settings.get('PAAS_ANALYSIS_JWT_CONF', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7132,6 +7471,7 @@ results:
             'url': 'redis://localhost:6379/0', 'queue_name': 'paas_ng-meters',
             'tags': []})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7166,6 +7506,7 @@ results:
             get_database_conf(settings, encrypted_url_var='PAAS_LEGACY_DATABASE_URL',
             env_var_prefix='PAAS_LEGACY_', for_tests=RUNNING_TESTS)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -7188,6 +7529,7 @@ results:
         - lineno: 788
           statement: settings.get('PAAS_LEGACY_DB_ENCRYPT_KEY')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7202,6 +7544,7 @@ results:
         - lineno: 1050
           statement: get_paas_service_jwt_clients(settings)
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 271
           statement: PAAS_SERVICE_JWT_CLIENTS = ['...']
@@ -7292,6 +7635,7 @@ results:
         - lineno: 1446
           statement: settings.get('PAAS_X_BK_DATA_DB_CONF', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -7303,6 +7647,7 @@ results:
         - lineno: 1157
           statement: settings.get('PHALANX_AUTH_TOKEN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7317,6 +7662,7 @@ results:
         - lineno: 1154
           statement: settings.get('PHALANX_URL', 'http://localhost:8080')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7331,6 +7677,7 @@ results:
         - lineno: 1291
           statement: settings.get('PLATFORM_FAQ_URL', f'{PAAS_DOCS_URL_PREFIX}/BaseGuide/faq')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7345,9 +7692,11 @@ results:
         - lineno: 838
           statement: settings.get('PLUGIN_APP_DEFAULT_LOGO', APPLICATION_DEFAULT_LOGO)
           type: dynamic
+          value: null
         - lineno: 1376
           statement: settings.get('PLUGIN_APP_DEFAULT_LOGO', default=f'{BKPAAS_URL}/static/images/plugin-default.svg')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7365,6 +7714,7 @@ results:
         - lineno: 732
           statement: settings.get('PLUGIN_APP_USE_CLOUD_NATIVE_TYPE', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7381,6 +7731,7 @@ results:
         - lineno: 1370
           statement: settings.get('PLUGIN_CENTER_PROJECT_ID', default='bkplugins')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7395,6 +7746,7 @@ results:
         - lineno: 1373
           statement: settings.get('PLUGIN_CENTER_URL', default=f'{BKPAAS_URL}/plugin-center')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7409,6 +7761,7 @@ results:
         - lineno: 821
           statement: settings.get('PLUGIN_LOGO_BUCKET', 'bkpaas3-plugin-logo')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7435,6 +7788,7 @@ results:
         - lineno: 1361
           statement: settings.get('PLUGIN_REPO_CONF')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 7
@@ -7464,6 +7818,7 @@ results:
         - lineno: 1029
           statement: settings.get('PLUGIN_VISIBILTY_LEVEL', 10)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7532,6 +7887,7 @@ results:
         - lineno: 76
           statement: settings.get('PYTHON_BUILDPACK_PIP_INDEX_URL')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 7
@@ -7561,6 +7917,7 @@ results:
         - lineno: 272
           statement: env.int('RABBITMQ_CLUSTER_ALIVE_CHECK_INTERVAL', 5)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7586,6 +7943,7 @@ results:
         - lineno: 276
           statement: env.int('RABBITMQ_CONNECTION_RECOVERY_INTERVAL', 60)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7604,6 +7962,7 @@ results:
         - lineno: 277
           statement: env.int('RABBITMQ_CONNECTION_RECOVERY_MAX_IDLE', 7200)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7618,6 +7977,7 @@ results:
         - lineno: 250
           statement: env.str('RABBITMQ_DEFAULT_DEAD_LETTER_EXCHANGE', 'dlx.exchange')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7632,6 +7992,7 @@ results:
         - lineno: 252
           statement: env.bool('RABBITMQ_DEFAULT_DEAD_LETTER_EXCHANGE_DURABLE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7646,6 +8007,7 @@ results:
         - lineno: 251
           statement: env.str('RABBITMQ_DEFAULT_DEAD_LETTER_EXCHANGE_TYPE', 'direct')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7660,6 +8022,7 @@ results:
         - lineno: 253
           statement: env.str('RABBITMQ_DEFAULT_DEAD_LETTER_QUEUE', 'dlx.queue')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7677,6 +8040,7 @@ results:
         - lineno: 254
           statement: env.bool('RABBITMQ_DEFAULT_DEAD_LETTER_QUEUE_DURABLE', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7691,6 +8055,7 @@ results:
         - lineno: 249
           statement: env.str('RABBITMQ_DEFAULT_DEAD_LETTER_ROUTING_KEY', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7705,6 +8070,7 @@ results:
         - lineno: 246
           statement: env.str('RABBITMQ_DEFAULT_USER_CONFIGURE_PERMISSIONS', '.*')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7721,6 +8087,7 @@ results:
         - lineno: 248
           statement: env.str('RABBITMQ_DEFAULT_USER_READ_PERMISSIONS', '.*')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7737,6 +8104,7 @@ results:
         - lineno: 245
           statement: env.str('RABBITMQ_DEFAULT_USER_TAGS', 'management')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7754,6 +8122,7 @@ results:
         - lineno: 247
           statement: env.str('RABBITMQ_DEFAULT_USER_WRITE_PERMISSIONS', '.*')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7770,6 +8139,7 @@ results:
         - lineno: 273
           statement: env.int('RABBITMQ_INSTANCE_ALIVE_CHECK_INTERVAL', 5)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7784,6 +8154,7 @@ results:
         - lineno: 275
           statement: env.int('RABBITMQ_INSTANCE_QUEUE_CHECK_INTERVAL', 5)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7800,6 +8171,7 @@ results:
         - lineno: 274
           statement: env.int('RABBITMQ_INSTANCE_VHOST_CHECK_INTERVAL', 5)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7816,6 +8188,7 @@ results:
         - lineno: 255
           statement: env.int('RABBITMQ_MANAGEMENT_API_CACHE_SECONDS', 3)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7830,6 +8203,7 @@ results:
         - lineno: 1390
           statement: settings.get('RABBITMQ_MONITOR_CONF', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -7855,6 +8229,7 @@ results:
         - lineno: 27
           statement: settings.RABBITMQ_MONITOR_CONF.get('service_name', 'rabbitmq')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -7866,6 +8241,7 @@ results:
         - lineno: 84
           statement: RAVEN_CONFIG = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -7877,6 +8253,7 @@ results:
         - lineno: 552
           statement: REDIS_CONNECTION_OPTIONS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 1
@@ -7893,6 +8270,7 @@ results:
         - lineno: 546
           statement: settings.get('REDIS_URL', 'redis://127.0.0.1:6379/0')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 4
@@ -7914,6 +8292,7 @@ results:
         - lineno: 970
           statement: "settings.get('REGION_CONFIGS', {'regions': [copy.deepcopy(DEFAULT_REGION_TEMPLATE)]})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -7931,6 +8310,7 @@ results:
         - lineno: 711
           statement: "settings.get('REGION_TO_USER_AUTH_TYPE_MAP', {'default': 'default'})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -7947,6 +8327,7 @@ results:
         - lineno: 289
           statement: env.str('REMOTE_LOGO_URL', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8043,6 +8424,7 @@ results:
         - lineno: 364
           statement: REST_FRAMEWORK = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -8054,6 +8436,7 @@ results:
         - lineno: 807
           statement: settings.get('RGW_ACCESS_KEY_ID', default=BLOBSTORE_S3_ACCESS_KEY)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -8070,6 +8453,7 @@ results:
         - lineno: 806
           statement: settings.get('RGW_ENDPOINT_URL', default=BLOBSTORE_S3_ENDPOINT)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -8089,6 +8473,7 @@ results:
         - lineno: 808
           statement: settings.get('RGW_SECRET_ACCESS_KEY', default=BLOBSTORE_S3_SECRET_KEY)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -8154,6 +8539,7 @@ results:
             "'test' in sys.argv or 'pytest' in sys.argv[0] or 'PYTEST_XDIST_TESTRUNUID'
             in os.environ"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8165,6 +8551,7 @@ results:
         - lineno: 25
           statement: AppEnvironment.get_values()
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8187,6 +8574,7 @@ results:
         - lineno: 285
           statement: env.bool('SCHEDULER_ENABLED', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8201,22 +8589,27 @@ results:
         - lineno: 120
           statement: settings.get('SECRET_KEY') or force_str(BKKRILL_ENCRYPT_SECRET_KEY)
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 69
           statement: env.str('SECRET_KEY', default='ot08tcs_&u(&fb~bgny!6+(b07ch*@nj')
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 72
           statement: env.str('SECRET_KEY', default='_1k2_z@u+dystbt#l&~87yfqb_tn*!4z')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 72
           statement: env.str('SECRET_KEY', default='c6h~oz+!%4b%br^8ekz&s7zt$(athjh_')
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 58
           statement: env.str('SECRET_KEY', 't4kiak&jPl0!bvHNEyxmJSsO4DEpqH9Z')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8240,6 +8633,7 @@ results:
         - lineno: 548
           statement: settings.get('SENTINEL_MASTER_NAME', 'mymaster')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -8264,6 +8658,7 @@ results:
         - lineno: 549
           statement: settings.get('SENTINEL_PASSWORD', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -8288,6 +8683,7 @@ results:
         - lineno: 1450
           statement: settings.get('SENTRY_CONFIG', {})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -8308,18 +8704,22 @@ results:
         - lineno: 246
           statement: env.str('SENTRY_DSN', default='')
           type: dynamic
+          value: null
       svc-mysql/svc_mysql/settings/__init__.py:
         - lineno: 243
           statement: env.str('SENTRY_DSN', default='')
           type: dynamic
+          value: null
       svc-otel/svc_otel/settings/__init__.py:
         - lineno: 251
           statement: env.str('SENTRY_DSN', default='')
           type: dynamic
+          value: null
       svc-rabbitmq/svc_rabbitmq/settings/__init__.py:
         - lineno: 81
           statement: env.str('SENTRY_DSN', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8331,6 +8731,7 @@ results:
         - lineno: 89
           statement: settings.get('SERVICES_PLUGINS', default={})
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8356,6 +8757,7 @@ results:
             EnumField('kubernetes.io/service-account-token', label='ServiceAccount
             token')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8367,6 +8769,7 @@ results:
         - lineno: 815
           statement: settings.get('SERVICE_LOGO_BUCKET', 'bkpaas3-platform-assets')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -8407,6 +8810,7 @@ results:
         - lineno: 1128
           statement: SERVICE_REMOTE_ENDPOINTS.to_list()
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -8436,6 +8840,7 @@ results:
         - lineno: 577
           statement: settings.get('SESSION_COOKIE_DOMAIN')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8515,6 +8920,7 @@ results:
         - lineno: 128
           statement: settings.get('SLUGBUILDER_RESOURCES_SPEC')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8529,6 +8935,7 @@ results:
         - lineno: 1065
           statement: settings.get('SLUG_ENCRYPT_SECRET_KEY', BKKRILL_ENCRYPT_SECRET_KEY)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8545,6 +8952,7 @@ results:
             "settings.get('SMART_APP_DEFAULT_SERVICES_CONFIG', {'mysql':
             {}})"
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8586,6 +8994,7 @@ results:
         - lineno: 1306
           statement: settings.get('SMART_DOCKER_REGISTRY_ADDR', 'index.docker.io')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8602,6 +9011,7 @@ results:
         - lineno: 1308
           statement: settings.get('SMART_DOCKER_NAMESPACE', 'bkpaas/docker')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8616,6 +9026,7 @@ results:
         - lineno: 1312
           statement: settings.get('SMART_DOCKER_PASSWORD', 'blueking')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8632,6 +9043,7 @@ results:
         - lineno: 1310
           statement: settings.get('SMART_DOCKER_USERNAME', 'bkpaas')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8678,6 +9090,7 @@ results:
         - lineno: 729
           statement: settings.get('SOURCE_PACKAGE_APP_CLOUD_NATIVE', True)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8696,6 +9109,7 @@ results:
             EnumField('kubernetes.io/ssh-auth', label='credentials for SSH
             authentication')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8707,6 +9121,7 @@ results:
         - lineno: 323
           statement: (str(BASE_DIR / 'public' / 'assets'), )
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 113
           statement: STATICFILES_DIRS = ['...']
@@ -8742,6 +9157,7 @@ results:
         - lineno: 337
           statement: ('django.contrib.staticfiles.finders.FileSystemFinder', 'django.contrib.staticfiles.finders.AppDirectoriesFinder')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8785,6 +9201,7 @@ results:
         - lineno: 223
           statement: os.path.join(BASE_DIR, 'static_files')
           type: dynamic
+          value: null
     type_list:
       - dynamic
       - str
@@ -8800,6 +9217,7 @@ results:
         - lineno: 321
           statement: settings.get('STATIC_URL', '/static/')
           type: dynamic
+          value: null
       svc-bkrepo/svc_bk_repo/settings/__init__.py:
         - lineno: 108
           statement: STATIC_URL = '/static/'
@@ -8850,6 +9268,7 @@ results:
         - lineno: 1294
           statement: settings.get('SUPPORT_LIVE_AGENT', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -8864,6 +9283,7 @@ results:
         - lineno: 384
           statement: SWAGGER_SETTINGS = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -8875,6 +9295,7 @@ results:
         - lineno: 134
           statement: settings.get('SYSTEM_CONFIG_VARS_KEY_PREFIX', 'BKPAAS_')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8948,6 +9369,7 @@ results:
             'django.template.context_processors.csrf', 'django.template.context_processors.i18n',
             'paasng.plat_admin.admin42.context_processors.admin_config')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -8972,6 +9394,7 @@ results:
         - lineno: 1474
           statement: settings.get('THIRD_APP_INIT_CODES', '')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -9003,6 +9426,7 @@ results:
         - lineno: 162
           statement: env.str('TIME_ZONE', 'UTC')
           type: dynamic
+          value: null
     type_list:
       - dynamic
       - str
@@ -9030,6 +9454,7 @@ results:
             EnumField('kubernetes.io/tls', label='data for a TLS client or
             server')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 0
@@ -9041,6 +9466,7 @@ results:
         - lineno: 1008
           statement: settings.get('TOKEN_AUTH_ENDPOINT', f'{BK_SSM_URL}/api/v1/auth/access-tokens')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -9060,6 +9486,7 @@ results:
         - lineno: 1009
           statement: settings.get('TOKEN_REFRESH_ENDPOINT', f'{BK_SSM_URL}/api/v1/auth/access-tokens/refresh')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -9134,9 +9561,11 @@ results:
         - lineno: 999
           statement: settings.get('USER_TYPE', ProviderType.BK.value)
           type: dynamic
+          value: null
         - lineno: 1001
           statement: ProviderType(USER_TYPE)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 21
@@ -9282,6 +9711,7 @@ results:
         - lineno: 1471
           statement: settings.get('USE_LEGACY_SUB_PATH_PATTERN', False)
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -9331,6 +9761,7 @@ results:
         - lineno: 139
           statement: settings.get('VOLUME_HOST_PATH_APP_LOGGING_DIR', '/tmp/logs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 1
@@ -9345,6 +9776,7 @@ results:
         - lineno: 138
           statement: settings.get('VOLUME_MOUNT_APP_LOGGING_DIR', '/app/logs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 3
@@ -9364,6 +9796,7 @@ results:
         - lineno: 137
           statement: settings.get('VOLUME_NAME_APP_LOGGING', 'applogs')
           type: dynamic
+          value: null
     type_list:
       - dynamic
     usage_count: 2
@@ -9380,6 +9813,7 @@ results:
         - lineno: 330
           statement: WEBPACK_LOADER = {...}
           type: dict
+          value: null
     type_list:
       - dict
     usage_count: 0
@@ -9430,7 +9864,7 @@ results:
     usages: {}
 summary:
   files_scanned: 2368
-  scan_duration_ms: 25125
+  scan_duration_ms: 47738
   total_count: 474
   total_definitions: 616
   total_settings: 474
