@@ -35,75 +35,51 @@ The system SHALL detect asyncio.create_task() patterns and extract meaningful co
 
 The system SHALL detect threading-based concurrency patterns including Thread creation and ThreadPoolExecutor usage.
 
-#### Scenario: Detect threading.Thread creation
+#### Scenario: Detect threading.Thread creation with qualified name verification
 
 - **WHEN** scanning for thread-based concurrency
 - **THEN** the system SHALL identify `threading.Thread()` instantiations
+- **AND** SHALL verify the class is from `threading` module using import resolution
+- **AND** SHALL reject custom Thread classes from other modules
 - **AND** extract the target function or callable from `target=` keyword argument
 - **AND** extract thread name from `name=` keyword argument if specified
 - **AND** store target and name in `details` field
 - **AND** categorize under `threading.thread_creation`
 
-**DIFF**: Now requires explicit extraction of target and name into details field
+**Rationale**: Same false positive prevention logic as Process detection
 
-#### Scenario: Detect ThreadPoolExecutor creation
-
-- **WHEN** scanning for thread pool patterns
-- **THEN** the system SHALL identify `ThreadPoolExecutor()` instantiations
-- **AND** extract the `max_workers` parameter value if present
-- **AND** track the executor variable name for resolution
-- **AND** store max_workers in `details` field
-- **AND** categorize under `threading.thread_pool_executors`
-
-**DIFF**: Now requires explicit max_workers extraction into details field
-
-#### Scenario: Detect thread pool submit calls
-
-- **WHEN** scanning for executor task submission
-- **THEN** the system SHALL identify calls to `executor.submit()`
-- **AND** resolve the executor variable to ThreadPoolExecutor using executor mapping
-- **AND** extract the submitted function/callable from first positional argument
-- **AND** store function in `details` field
-- **AND** categorize under `threading.executor_submissions`
-
-**DIFF**: Now requires using executor mapping to resolve executor type
+**DIFF**: Added module verification requirement matching Process detection fix
 
 ### Requirement: Multiprocessing Pattern Detection
 
 The system SHALL detect multiprocessing-based concurrency patterns including Process creation and ProcessPoolExecutor usage.
 
-#### Scenario: Detect multiprocessing.Process creation
+#### Scenario: Detect multiprocessing.Process creation with qualified name verification
 
 - **WHEN** scanning for process-based concurrency
 - **THEN** the system SHALL identify `multiprocessing.Process()` instantiations
+- **AND** SHALL verify the class is from `multiprocessing` module using import resolution
+- **AND** SHALL reject custom classes named "Process" from other modules
+- **AND** SHALL reject dataclasses or Pydantic models named "Process"
 - **AND** extract the target function from `target=` keyword argument
 - **AND** extract process name from `name=` keyword argument if specified
 - **AND** store target and name in `details` field
-- **AND** categorize under `multiprocessing.process_creation`
 
-**DIFF**: Now requires explicit extraction of target and name into details field
+**Rationale**: Prevents false positives from dataclasses, models, or domain objects that happen to be named "Process"
 
-#### Scenario: Detect ProcessPoolExecutor creation
+**DIFF**: Added strict module verification requirement to prevent false positives
 
-- **WHEN** scanning for process pool patterns
-- **THEN** the system SHALL identify `ProcessPoolExecutor()` instantiations
-- **AND** extract the `max_workers` parameter value if present
-- **AND** track the executor variable name for resolution
-- **AND** store max_workers in `details` field
-- **AND** categorize under `multiprocessing.process_pool_executors`
+#### Scenario: Skip non-multiprocessing Process classes
 
-**DIFF**: Now requires explicit max_workers extraction into details field
+- **WHEN** code instantiates a class named "Process" from a non-multiprocessing module
+- **EXAMPLES**: `PlainProcess(...)`, `RequestProcess(...)`, `@dataclass class Process`
+- **THEN** the system SHALL NOT report this as a concurrency pattern
+- **AND** SHALL NOT output a record for this instantiation
+- **AND** SHALL log debug message about skipped Process class
 
-#### Scenario: Detect process pool submit calls
+**Rationale**: Dataclasses and domain models commonly use "Process" as a name; these are not concurrency patterns
 
-- **WHEN** scanning for executor task submission
-- **THEN** the system SHALL identify calls to `executor.submit()`
-- **AND** resolve the executor variable to ProcessPoolExecutor using executor mapping
-- **AND** extract the submitted function/callable from first positional argument
-- **AND** store function in `details` field
-- **AND** categorize under `multiprocessing.executor_submissions`
-
-**DIFF**: Now requires using executor mapping to resolve executor type
+**NEW**: Explicit requirement to skip false positive patterns
 
 ### Requirement: Executor Bridge Pattern Detection
 

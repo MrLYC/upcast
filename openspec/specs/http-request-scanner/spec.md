@@ -69,59 +69,27 @@ The system SHALL detect HTTP requests made via the requests library using astroi
 
 The system SHALL detect HTTP requests made via the httpx library for both sync and async usage.
 
-#### Scenario: httpx.get() sync detection
-
-- **WHEN** code uses `httpx.get('https://example.com')`
-- **THEN** the system SHALL identify this as an HTTP request
-- **AND** extract library as "httpx"
-- **AND** extract method as "GET"
-- **AND** mark is_async as false
-
-#### Scenario: httpx AsyncClient detection
-
-- **WHEN** code uses:
-  ```python
-  async with httpx.AsyncClient() as client:
-      await client.get('https://example.com')
-  ```
-- **THEN** the system SHALL detect the async client usage
-- **AND** mark is_async as true
-- **AND** mark session_based as true
-
-#### Scenario: httpx with parameters
+#### Scenario: httpx with parameters (updated)
 
 - **WHEN** code uses `httpx.post('https://api.example.com', json={'data': 'value'})`
-- **THEN** the system SHALL extract json_body as `{'data': 'value'}`
-- **AND** handle parameters same as requests library
+- **THEN** the system SHALL extract json_body as `{'data': 'value'}` if inferrable
+- **AND** SHALL omit json_body if not inferrable (same as requests library)
+- **AND** handle all parameters with same optional field pattern
+
+**DIFF**: Updated to match new optional field behavior
 
 ### Requirement: aiohttp Library Detection
 
 The system SHALL detect HTTP requests made via the aiohttp library for async usage.
 
-#### Scenario: aiohttp ClientSession detection
+#### Scenario: aiohttp with JSON data (updated)
 
-- **WHEN** code uses:
-  ```python
-  async with aiohttp.ClientSession() as session:
-      async with session.get('https://example.com') as resp:
-          await resp.text()
-  ```
-- **THEN** the system SHALL identify this as an HTTP request
-- **AND** extract library as "aiohttp"
-- **AND** mark is_async as true
-- **AND** mark session_based as true
+- **WHEN** code uses `await session.post(url, json=data)`
+- **THEN** the system SHALL apply same inference logic as requests
+- **AND** SHALL omit json_body if data is not inferrable
+- **AND** handle parameters consistently with other libraries
 
-#### Scenario: aiohttp with parameters
-
-- **WHEN** code uses `session.post('https://api.example.com', json={'key': 'value'}, headers={'Auth': 'token'})`
-- **THEN** the system SHALL extract json_body and headers
-- **AND** handle parameters similar to requests library
-
-#### Scenario: aiohttp timeout handling
-
-- **WHEN** code uses `session.get('https://example.com', timeout=10)`
-- **THEN** the system SHALL extract timeout as 10
-- **AND** handle aiohttp.ClientTimeout objects if present
+**DIFF**: Updated to match new optional field behavior
 
 ### Requirement: urllib3 Library Detection
 
@@ -639,3 +607,35 @@ The system SHALL merge consecutive ellipsis placeholders in URLs to reduce redun
 **Implementation**: Apply regex pattern `r'\.\.\.(\s*\+\s*\.\.\.)+` to replace multiple consecutive `... + ...` with a single `...`.
 
 **Rationale**: Multiple adjacent `...` convey the same meaning as a single `...` but add noise. Single placeholder is cleaner and more readable.
+
+### Requirement: Static Value Inference
+
+The system SHALL attempt to infer static values from common patterns before marking as uninferrable.
+
+#### Scenario: Infer from simple variable assignments
+
+- **WHEN** json parameter is a variable reference
+- **AND** variable is assigned a literal value earlier in same function
+- **EXAMPLE**:
+  ```python
+  payload = {"action": "deploy", "env": "prod"}
+  requests.post(url, json=payload)
+  ```
+- **THEN** the system SHOULD attempt to resolve payload value
+- **AND** SHOULD include resolved value in json_body if successful
+- **AND** SHALL omit field if resolution fails
+
+**Rationale**: Simple data flow analysis can resolve common patterns without full static analysis
+
+#### Scenario: Skip complex expressions
+
+- **WHEN** json parameter involves:
+  - Function calls
+  - Comprehensions
+  - Conditional expressions
+  - Attribute access chains
+- **THEN** the system SHALL skip inference
+- **AND** SHALL omit json_body field
+- **AND** SHALL NOT attempt complex static analysis
+
+**Rationale**: Complex expressions are rarely inferrable without execution; better to omit than guess

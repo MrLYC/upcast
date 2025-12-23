@@ -1,308 +1,119 @@
-## ADDED Requirements
+# unit-test-scanner Specification
+
+## Purpose
+
+TBD - created by archiving change implement-unit-test-scanner. Update Purpose after archive.
+
+## Requirements
 
 ### Requirement: Unit Test Detection
 
 The system SHALL detect Python unit tests using pytest and unittest patterns through AST analysis.
 
-#### Scenario: Detect pytest test functions
+#### Scenario: Detect pytest test functions with robust file discovery
 
 - **WHEN** scanning a Python file
-- **THEN** the system SHALL identify functions starting with `test_`
-- **AND** located in files matching `test*.py` or `*_test.py`
-- **AND** extract the function name, location (file:line), and body
+- **AND** file name matches `test*.py` or `*_test.py` pattern
+- **AND** file is in tests directory or subdirectory
+- **THEN** the system SHALL parse the file with AST
+- **AND** SHALL identify functions starting with `test_`
+- **AND** SHALL extract the function name, location (file:line), and body
+- **AND** SHALL verify file patterns work across different directory structures
 
-#### Scenario: Detect unittest test methods
+**Rationale**: Robust file discovery is critical for scanner functionality
 
-- **WHEN** scanning a Python file containing unittest.TestCase subclasses
-- **THEN** the system SHALL identify methods starting with `test_`
-- **AND** extract the test class name and method name
-- **AND** record the location (file:line)
+**DIFF**: Added emphasis on file discovery and pattern matching verification
 
-#### Scenario: Skip non-test functions
+#### Scenario: Handle test discovery in nested directories
 
-- **WHEN** a function does not match test patterns
-- **THEN** the system SHALL exclude it from output
-- **AND** continue scanning other functions
+- **WHEN** test files are in nested directory structure
+- **EXAMPLES**:
+  - `tests/unit/test_models.py`
+  - `apiserver/paasng/tests/paasng/platform/engine/test_managers.py`
+- **THEN** the system SHALL discover these files correctly
+- **AND** SHALL apply test detection to all matched files
+- **AND** SHALL not be blocked by directory depth
+
+**Rationale**: Real-world projects often have deeply nested test directories
+
+**NEW**: Explicit nested directory support requirement
+
+#### Scenario: Debug test file discovery failures
+
+- **WHEN** no test files are found in a directory known to contain tests
+- **THEN** the system SHALL log diagnostic information if verbose mode enabled:
+  - Total files scanned
+  - Files matched by pattern
+  - Files excluded by ignore patterns
+  - Files failing AST parsing
+- **AND** SHALL help diagnose configuration or path issues
+
+**Rationale**: Empty output should be debuggable; logging helps identify root cause
+
+**NEW**: Debug logging requirement for discovery failures
 
 ### Requirement: Test Body Analysis
 
 The system SHALL analyze test function bodies to extract assertions, calculate checksums, and identify dependencies.
 
-#### Scenario: Count assert statements
+#### Scenario: Handle parsing failures gracefully
 
-- **WHEN** parsing a test function body
-- **THEN** the system SHALL count all `assert` statements (pytest style)
-- **AND** count all `self.assert*` method calls (unittest style)
-- **AND** return the total assertion count
+- **WHEN** test file cannot be parsed due to syntax errors
+- **THEN** the system SHALL log error with file path
+- **AND** SHALL continue scanning other files
+- **AND** SHALL include failed file in summary stats
+- **AND** SHALL not crash or return empty output for all tests
 
-#### Scenario: Calculate function body MD5
+**Rationale**: Partial results are better than total failure; graceful degradation is important
 
-- **WHEN** parsing a test function
-- **THEN** the system SHALL normalize the function body (strip comments, normalize whitespace)
-- **AND** calculate MD5 hash of the normalized body
-- **AND** return the hash as a hex string
-- **EXAMPLE**: `"9b8c0f0c7c1f3e4f2a4a9d3d8a8c2b1f"`
+**NEW**: Error handling requirement for parse failures
 
-#### Scenario: Extract imports and references
+### Requirement: File Discovery Validation
 
-- **WHEN** analyzing test function body
-- **THEN** the system SHALL track all imported modules in the file
-- **AND** identify all Name and Attribute nodes referencing imported symbols
-- **AND** resolve full module paths for referenced objects
+The system SHALL provide diagnostic information about test file discovery.
 
-### Requirement: Test Target Resolution
+#### Scenario: Log discovery statistics
 
-The system SHALL identify which modules a test targets by matching referenced symbols against a root_modules list.
+- **WHEN** scanning completes
+- **THEN** summary SHALL include:
+  - Total files scanned
+  - Files matching test patterns
+  - Test functions/methods detected
+  - Files with parsing errors
+- **AND** SHALL log file discovery stats if verbose mode enabled
 
-#### Scenario: Match against root modules
+**Rationale**: Statistics help verify scanner is working correctly and aid debugging
 
-- **WHEN** given `root_modules = ["app", "mylib"]`
-- **AND** a test imports and uses `app.math_utils.add`
-- **THEN** the system SHALL mark `app.math_utils` as a test target
-- **AND** record the imported symbol `add`
+#### Scenario: Validate file pattern matching
 
-#### Scenario: Collect multiple targets
+- **WHEN** scanner initializes
+- **THEN** the system SHALL verify file pattern regex is valid
+- **AND** SHALL test pattern against sample paths
+- **AND** SHALL log pattern configuration if verbose mode enabled
+- **EXAMPLES**: Test patterns like `test*.py`, `*_test.py`, `test_*.py`
 
-- **WHEN** a test uses symbols from multiple modules in root_modules
-- **THEN** the system SHALL list all matching modules
-- **AND** group symbols by module
-- **EXAMPLE**:
-  ```yaml
-  targets:
-    - module: app.math_utils
-      symbols: [add, subtract]
-    - module: app.validators
-      symbols: [validate_email]
-  ```
+**Rationale**: Pattern configuration issues can silently break file discovery
 
-#### Scenario: Handle no matching targets
+### Requirement: Empty Output Prevention
 
-- **WHEN** a test does not use any symbols from root_modules
-- **THEN** the system SHALL set `targets: []`
-- **AND** still include the test in output
+The system SHALL produce meaningful output when tests exist but detection fails.
 
-#### Scenario: Handle wildcard imports
+#### Scenario: Differentiate "no tests" from "detection failed"
 
-- **WHEN** a test uses `from app.utils import *`
-- **AND** references a symbol that could come from that module
-- **THEN** the system SHALL include the module in targets
-- **AND** mark symbols as `["*"]` if specific imports cannot be determined
+- **WHEN** no tests are detected
+- **THEN** summary SHALL indicate whether:
+  - No test files matched patterns (legitimate empty)
+  - Files matched but no test functions found (possible pattern issue)
+  - Files matched but parsing failed (AST error)
+- **AND** SHALL provide actionable guidance in verbose mode
 
-### Requirement: Output Format
+**Rationale**: Users need to distinguish between "no tests in project" and "scanner malfunction"
 
-The system SHALL export test analysis results in structured YAML or JSON format grouped by file.
+#### Scenario: Warn on empty output for known test directories
 
-#### Scenario: YAML output structure
+- **WHEN** scanning a directory with path containing "test" or "tests"
+- **AND** no tests are detected
+- **THEN** the system SHOULD log warning
+- **AND** SHOULD suggest checking file patterns and ignore rules
 
-- **WHEN** exporting to YAML
-- **THEN** the output SHALL be a mapping of file paths to test lists
-- **AND** each test SHALL include: name, body_md5, assert_count, targets
-- **EXAMPLE**:
-  ```yaml
-  tests/test_math_utils.py:
-    - name: test_add_and_even
-      body_md5: "9b8c0f0c7c1f3e4f2a4a9d3d8a8c2b1f"
-      assert_count: 3
-      targets:
-        - module: app.math_utils
-          symbols:
-            - add
-            - is_even
-  ```
-
-#### Scenario: JSON output format
-
-- **WHEN** user specifies `--format json`
-- **THEN** the system SHALL export the same structure in JSON
-- **AND** use 2-space indentation
-- **AND** ensure UTF-8 encoding
-
-#### Scenario: Sort output consistently
-
-- **WHEN** exporting test results
-- **THEN** the system SHALL sort files alphabetically
-- **AND** sort tests within each file by line number
-- **AND** sort target modules alphabetically
-- **AND** sort symbols within each module alphabetically
-
-### Requirement: CLI Command Interface
-
-The system SHALL provide a `scan-unit-tests` command accessible via `upcast` CLI.
-
-#### Scenario: Basic usage
-
-- **WHEN** user runs `upcast scan-unit-tests <path> --root-modules app`
-- **THEN** the system SHALL scan the specified path for test files
-- **AND** analyze tests with `app` as root module
-- **AND** output results to stdout in YAML format
-
-#### Scenario: Multiple root modules
-
-- **WHEN** user runs `upcast scan-unit-tests <path> --root-modules app,mylib,utils`
-- **THEN** the system SHALL accept comma-separated root module list
-- **AND** match test targets against all specified modules
-
-#### Scenario: Output to file
-
-- **WHEN** user runs `upcast scan-unit-tests <path> -o output.yaml --root-modules app`
-- **THEN** the system SHALL write results to the specified file
-- **AND** create parent directories if needed
-
-#### Scenario: JSON output format
-
-- **WHEN** user runs `upcast scan-unit-tests <path> --format json --root-modules app`
-- **THEN** the system SHALL output in JSON format
-
-#### Scenario: File filtering with include
-
-- **WHEN** user runs `upcast scan-unit-tests <path> --include "tests/*.py" --root-modules app`
-- **THEN** the system SHALL only scan files matching the glob pattern
-- **AND** use `common.file_utils.collect_python_files()` with include option
-
-#### Scenario: File filtering with exclude
-
-- **WHEN** user runs `upcast scan-unit-tests <path> --exclude "*/integration/*" --root-modules app`
-- **THEN** the system SHALL skip files matching the exclude pattern
-
-#### Scenario: Verbose mode
-
-- **WHEN** user runs `upcast scan-unit-tests <path> -v --root-modules app`
-- **THEN** the system SHALL enable debug logging
-- **AND** show file processing details and target resolution steps
-
-#### Scenario: Missing root-modules argument
-
-- **WHEN** user runs `upcast scan-unit-tests <path>` without `--root-modules`
-- **THEN** the system SHALL show error message
-- **AND** explain that `--root-modules` is required
-- **AND** exit with non-zero status
-
-### Requirement: Common Utilities Integration
-
-The system SHALL use shared common utilities for consistency with other scanners.
-
-#### Scenario: Use common file discovery
-
-- **WHEN** collecting Python files to scan
-- **THEN** the system SHALL use `common.file_utils.collect_python_files()`
-- **AND** respect include/exclude patterns
-- **AND** apply default exclude patterns
-
-#### Scenario: Use common AST inference
-
-- **WHEN** inferring values or types from AST nodes
-- **THEN** the system SHALL use `common.ast_utils.infer_value_with_fallback()`
-- **AND** use `common.ast_utils.get_qualified_name()` for module resolution
-
-#### Scenario: Use common export functions
-
-- **WHEN** exporting to YAML or JSON
-- **THEN** the system SHALL use `common.export.export_to_yaml()` or equivalent
-- **AND** benefit from consistent sorting and formatting
-
-### Requirement: Test Case Location Tracking
-
-The system SHALL track the precise location of each test case for IDE navigation and reporting.
-
-#### Scenario: Record line number
-
-- **WHEN** detecting a test function
-- **THEN** the system SHALL record the line number where the function is defined
-- **AND** include it in output as `location: "file.py:line"`
-
-#### Scenario: Handle nested test classes
-
-- **WHEN** a unittest TestCase contains multiple test methods
-- **THEN** the system SHALL record each method's line number separately
-- **AND** include class name in test identification
-
-### Requirement: Assertion Detection Coverage
-
-The system SHALL detect assertions from multiple testing frameworks and styles.
-
-#### Scenario: Detect pytest plain assert
-
-- **WHEN** test contains `assert x == y`
-- **THEN** the system SHALL count it as one assertion
-
-#### Scenario: Detect unittest assertions
-
-- **WHEN** test contains `self.assertEqual(x, y)`
-- **THEN** the system SHALL count it as one assertion
-- **AND** recognize all unittest assert methods (assertTrue, assertFalse, assertIn, etc.)
-
-#### Scenario: Detect pytest raises
-
-- **WHEN** test contains `with pytest.raises(Exception):`
-- **THEN** the system SHALL count it as one assertion
-
-#### Scenario: Handle multiple assertions
-
-- **WHEN** test contains multiple assert statements
-- **THEN** the system SHALL count each one separately
-- **EXAMPLE**: Test with 3 asserts → `assert_count: 3`
-
-### Requirement: Error Handling
-
-The system SHALL handle parsing errors gracefully and continue scanning other files.
-
-#### Scenario: Handle syntax errors
-
-- **WHEN** a test file contains syntax errors
-- **THEN** the system SHALL log a warning with file path and error
-- **AND** skip that file
-- **AND** continue scanning remaining files
-
-#### Scenario: Handle import resolution failures
-
-- **WHEN** unable to resolve an imported module
-- **THEN** the system SHALL use `` `module_name` `` (backtick wrapped) as fallback
-- **AND** still include the test in output
-- **AND** log warning in verbose mode
-
-#### Scenario: Handle invalid paths
-
-- **WHEN** user provides nonexistent path
-- **THEN** the system SHALL show clear error message
-- **AND** exit with status code 1
-
-### Requirement: Body Normalization for MD5
-
-The system SHALL normalize test function bodies before hashing to ignore cosmetic changes.
-
-#### Scenario: Strip comments
-
-- **WHEN** calculating MD5
-- **THEN** the system SHALL remove all comment lines
-- **AND** remove inline comments
-
-#### Scenario: Normalize whitespace
-
-- **WHEN** calculating MD5
-- **THEN** the system SHALL normalize indentation to consistent spacing
-- **AND** strip trailing whitespace
-- **AND** ensure consistent line endings (LF)
-
-#### Scenario: Preserve semantic content
-
-- **WHEN** normalizing function body
-- **THEN** the system SHALL preserve all code statements
-- **AND** preserve string literals exactly
-- **AND** preserve operator spacing
-
-### Requirement: Module Path Resolution
-
-The system SHALL resolve relative imports to absolute module paths for accurate target matching.
-
-#### Scenario: Resolve relative imports
-
-- **WHEN** test file contains `from . import utils`
-- **THEN** the system SHALL resolve `.` to the package path
-- **AND** convert to absolute module path
-- **EXAMPLE**: In `tests/test_math.py` → `tests.utils`
-
-#### Scenario: Use package root detection
-
-- **WHEN** resolving module paths
-- **THEN** the system SHALL use `common.file_utils.find_package_root()`
-- **AND** build fully qualified module names
+**Rationale**: Empty output from tests directory is usually unexpected and worth investigating
