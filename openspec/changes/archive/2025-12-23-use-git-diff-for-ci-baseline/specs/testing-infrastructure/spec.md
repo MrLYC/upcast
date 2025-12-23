@@ -2,40 +2,7 @@
 
 ## REMOVED Requirements
 
-### Requirement: Result Baseline Management
-
-~~The system SHALL maintain baseline scan results for regression detection.~~
-
-**Rationale**: Replaced with Git-based comparison. Baseline directory is no longer needed.
-
-#### Scenario: Store baseline results
-
-~~- **WHEN** integration tests complete~~
-~~- **THEN** the system SHALL store results in `example/scan-results-baseline/`~~
-~~- **AND** SHALL version control baseline files~~
-~~- **AND** SHALL maintain one YAML file per scanner (12 total)~~
-
-**Rationale**: Results are now compared against Git-committed versions.
-
-#### Scenario: Update baseline
-
-~~- **WHEN** scanner behavior intentionally changes~~
-~~- **THEN** developer SHALL run `make test-integration`~~
-~~- **AND** SHALL copy new results to baseline directory~~
-~~- **AND** SHALL commit updated baseline files~~
-~~- **AND** SHALL document changes in commit message~~
-
-**Rationale**: Updating baseline now means simply committing the new results.
-
-#### Scenario: Validate baseline completeness
-
-~~- **WHEN** baseline is established~~
-~~- **THEN** all 12 scanner outputs SHALL be present~~
-~~- **AND** each file SHALL contain valid YAML~~
-~~- **AND** each file SHALL have a `results` section~~
-~~- **AND** no file SHALL be empty~~
-
-**Rationale**: Git history ensures completeness; no separate validation needed.
+- `## Requirement: Result Baseline Management` - Replaced with Git-based comparison. Baseline directory is no longer needed.
 
 ---
 
@@ -76,6 +43,37 @@ The system SHALL provide a GitHub Action to validate scan result consistency **u
 - **AND** SHALL include link to scan result artifacts
 
 **Rationale**: Simplified workflow - no baseline directory to manage.
+
+### Requirement: Documentation
+
+The system SHALL document integration testing **with Git-based comparison**.
+
+#### Scenario: Document testing workflow
+
+- **WHEN** developer needs to run integration tests
+- **THEN** README SHALL explain `make test-integration` command
+- **AND** SHALL describe Git-based comparison approach
+- **AND** SHALL provide examples of typical output
+
+**Rationale**: Documentation must reflect current implementation.
+
+#### Scenario: Document result updates
+
+- **WHEN** scanner behavior changes intentionally
+- **THEN** documentation SHALL explain to simply commit new results
+- **AND** SHALL provide step-by-step instructions
+- **AND** SHALL explain when updates are necessary
+
+**Rationale**: Simplified process, clearer instructions.
+
+#### Scenario: Document CI behavior
+
+- **WHEN** CI checks fail
+- **THEN** documentation SHALL explain Git-based comparison
+- **AND** SHALL provide troubleshooting steps
+- **AND** SHALL link to result update instructions
+
+**Rationale**: Developers need to understand the new approach.
 
 ---
 
@@ -124,38 +122,3 @@ The system SHALL use Git history as the source of truth for scan result baseline
 - **AND** SHALL ensure deterministic comparison
 
 **Rationale**: Metadata varies between runs, only results matter for regression detection.
-
----
-
-## MODIFIED Requirements
-
-### Requirement: Documentation
-
-The system SHALL document integration testing **with Git-based comparison**.
-
-#### Scenario: Document testing workflow
-
-- **WHEN** developer needs to run integration tests
-- **THEN** README SHALL explain `make test-integration` command
-- **AND** SHALL describe Git-based comparison approach
-- **AND** SHALL provide examples of typical output
-
-**Rationale**: Documentation must reflect current implementation.
-
-#### Scenario: Document result updates
-
-- **WHEN** scanner behavior changes intentionally
-- **THEN** documentation SHALL explain to simply commit new results
-- **AND** SHALL provide step-by-step instructions
-- **AND** SHALL explain when updates are necessary
-
-**Rationale**: Simplified process, clearer instructions.
-
-#### Scenario: Document CI behavior
-
-- **WHEN** CI checks fail
-- **THEN** documentation SHALL explain Git-based comparison
-- **AND** SHALL provide troubleshooting steps
-- **AND** SHALL link to result update instructions
-
-**Rationale**: Developers need to understand the new approach.

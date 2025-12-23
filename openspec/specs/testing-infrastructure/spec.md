@@ -39,42 +39,9 @@ The system SHALL provide a Makefile command to run all scanners on a real-world 
 
 **Rationale**: One failing scanner shouldn't block testing others.
 
-## Requirement: Result Baseline Management
-
-The system SHALL maintain baseline scan results for regression detection.
-
-### Scenario: Store baseline results
-
-- **WHEN** integration tests complete
-- **THEN** the system SHALL store results in `example/scan-results-baseline/`
-- **AND** SHALL version control baseline files
-- **AND** SHALL maintain one YAML file per scanner (12 total)
-
-**Rationale**: Baseline enables automatic detection of output regressions.
-
-### Scenario: Update baseline
-
-- **WHEN** scanner behavior intentionally changes
-- **THEN** developer SHALL run `make test-integration`
-- **AND** SHALL copy new results to baseline directory
-- **AND** SHALL commit updated baseline files
-- **AND** SHALL document changes in commit message
-
-**Rationale**: Explicit baseline updates prevent accidental regressions.
-
-### Scenario: Validate baseline completeness
-
-- **WHEN** baseline is established
-- **THEN** all 12 scanner outputs SHALL be present
-- **AND** each file SHALL contain valid YAML
-- **AND** each file SHALL have a `results` section
-- **AND** no file SHALL be empty
-
-**Rationale**: Incomplete baseline would cause false negatives.
-
 ## Requirement: CI Integration Test Workflow
 
-The system SHALL provide a GitHub Action to validate scan result consistency.
+The system SHALL provide a GitHub Action to validate scan result consistency using Git-based comparison.
 
 ### Scenario: Run integration tests in CI
 
@@ -89,32 +56,34 @@ The system SHALL provide a GitHub Action to validate scan result consistency.
 ### Scenario: Compare results against baseline
 
 - **WHEN** integration tests complete in CI
-- **THEN** the workflow SHALL extract `results` section from each YAML
-- **AND** SHALL compare against baseline using deterministic diff
+- **THEN** the workflow SHALL use `git show HEAD:<file>` to retrieve committed results
+- **AND** SHALL extract `results` section from both committed and current files
+- **AND** SHALL compare using diff
 - **AND** SHALL ignore metadata fields (scan_duration_ms, timestamps)
 - **AND** SHALL fail if results differ
 - **AND** SHALL display unified diff output
 
-**Rationale**: Only semantic changes should be detected, not timing variations.
+**Rationale**: Git provides built-in version tracking, eliminating need for separate baseline directory.
 
-### Scenario: Handle missing baseline
+### Scenario: Handle new scanner files
 
-- **WHEN** baseline file doesn't exist for a scanner
-- **THEN** the workflow SHALL skip comparison for that scanner
-- **AND** SHALL print warning message
+- **WHEN** a scanner result file is not in Git history
+- **THEN** the workflow SHALL detect this using `git ls-files --error-unmatch`
+- **AND** SHALL print informative message about new file
 - **AND** SHALL NOT fail the workflow
+- **AND** SHALL suggest committing the file to establish baseline
 
-**Rationale**: New scanners can be added without immediate baseline.
+**Rationale**: New scanners should not break CI.
 
 ### Scenario: Provide actionable failure output
 
 - **WHEN** results comparison fails
 - **THEN** the workflow SHALL show which scanner outputs changed
 - **AND** SHALL display unified diff for each change
-- **AND** SHALL provide instructions for updating baseline
+- **AND** SHALL provide instructions: "run make test-integration and commit results"
 - **AND** SHALL include link to scan result artifacts
 
-**Rationale**: Developers need clear information to resolve failures.
+**Rationale**: Simplified workflow - no baseline directory to manage.
 
 ## Requirement: Deterministic Scanner Output
 
@@ -171,31 +140,31 @@ The system SHALL track integration test performance.
 
 ## Requirement: Documentation
 
-The system SHALL document integration testing for developers.
+The system SHALL document integration testing with Git-based comparison.
 
 ### Scenario: Document testing workflow
 
 - **WHEN** developer needs to run integration tests
 - **THEN** README SHALL explain `make test-integration` command
-- **AND** SHALL describe purpose of integration testing
+- **AND** SHALL describe Git-based comparison approach
 - **AND** SHALL provide examples of typical output
 
-**Rationale**: Developers need to understand the testing system.
+**Rationale**: Documentation must reflect current implementation.
 
-### Scenario: Document baseline updates
+### Scenario: Document result updates
 
 - **WHEN** scanner behavior changes intentionally
-- **THEN** documentation SHALL explain how to update baseline
+- **THEN** documentation SHALL explain to simply commit new results
 - **AND** SHALL provide step-by-step instructions
 - **AND** SHALL explain when updates are necessary
 
-**Rationale**: Clear process prevents confusion and mistakes.
+**Rationale**: Simplified process, clearer instructions.
 
 ### Scenario: Document CI behavior
 
 - **WHEN** CI checks fail
-- **THEN** documentation SHALL explain what CI validates
+- **THEN** documentation SHALL explain Git-based comparison
 - **AND** SHALL provide troubleshooting steps
-- **AND** SHALL link to baseline update instructions
+- **AND** SHALL link to result update instructions
 
-**Rationale**: Reduces support burden and developer friction.
+**Rationale**: Developers need to understand the new approach.
