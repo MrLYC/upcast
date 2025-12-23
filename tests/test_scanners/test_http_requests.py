@@ -282,3 +282,114 @@ def make_request(item_id):
         assert "https://api.example.com/items/..." in output.results
         result = output.results["https://api.example.com/items/..."]
         assert result.method == "GET"
+
+    def test_scanner_excludes_request_exception(self, tmp_path):
+        """Test scanner does not identify RequestException as a request."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import RequestException
+
+def test_error():
+    raise RequestException("error")
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        # Should not identify RequestException as a request
+        assert output.summary.total_count == 0
+        assert len(output.results) == 0
+
+    def test_scanner_excludes_response_class(self, tmp_path):
+        """Test scanner does not identify Response as a request."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests import Response
+
+def mock_response():
+    resp = Response()
+    return resp
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        # Should not identify Response as a request
+        assert output.summary.total_count == 0
+        assert len(output.results) == 0
+
+    def test_scanner_excludes_auth_classes(self, tmp_path):
+        """Test scanner does not identify auth classes as requests."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from requests.auth import HTTPBasicAuth
+
+def setup_auth():
+    auth = HTTPBasicAuth('user', 'pass')
+    return auth
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        # Should not identify HTTPBasicAuth as a request
+        assert output.summary.total_count == 0
+        assert len(output.results) == 0
+
+    def test_scanner_excludes_instrumentor(self, tmp_path):
+        """Test scanner does not identify instrumentor as a request."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+
+def setup_tracing():
+    instrumentor = RequestsInstrumentor()
+    return instrumentor
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        # Should not identify RequestsInstrumentor as a request
+        assert output.summary.total_count == 0
+        assert len(output.results) == 0
+
+    def test_scanner_still_detects_real_requests(self, tmp_path):
+        """Test scanner still detects real requests after exclusion filter."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+import requests
+from requests import Response, RequestException
+
+def fetch_data():
+    # This should be detected
+    response = requests.get('https://api.example.com/data')
+
+    # These should NOT be detected
+    if isinstance(response, Response):
+        pass
+
+    try:
+        pass
+    except RequestException:
+        pass
+
+    return response
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        # Should only detect the real request, not Response or RequestException
+        assert output.summary.total_count == 1
+        assert "https://api.example.com/data" in output.results

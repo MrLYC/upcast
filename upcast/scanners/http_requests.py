@@ -23,6 +23,18 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         "urllib.request": ["urlopen", "Request"],
     }
 
+    # Patterns to exclude (these are not HTTP requests)
+    EXCLUDED_PATTERNS: ClassVar[list[str]] = [
+        "Exception",  # RequestException, HTTPException, etc.
+        "Error",  # HTTPError, ConnectionError, etc.
+        "Response",  # Response objects
+        "Session",  # Session objects (not direct requests)
+        "Adapter",  # HTTP adapters
+        "Auth",  # Authentication helpers (HTTPBasicAuth, etc.)
+        "Instrumentor",  # Tracing/instrumentation tools
+        "PreparedRequest",  # Internal request preparation
+    ]
+
     def scan(self, path: Path) -> HttpRequestOutput:
         """Scan for HTTP request patterns."""
         start_time = time.time()
@@ -145,7 +157,11 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         return None
 
     def _identify_request(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> tuple[str | None, str | None]:
-        """Identify HTTP library and method."""
+        """Identify HTTP library and method.
+
+        Returns:
+            Tuple of (library, method) or (None, None) if not a request
+        """
         if isinstance(func_node, nodes.Attribute):
             method = func_node.attrname
             if isinstance(func_node.expr, nodes.Name):
@@ -156,10 +172,27 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         elif isinstance(func_node, nodes.Name):
             func_name = func_node.name
             qualified = imports.get(func_name, func_name)
+
+            # Check if this matches an excluded pattern
+            if self._is_excluded(func_name):
+                return None, None
+
             for lib, methods in self.HTTP_LIBRARIES.items():
                 if lib in qualified and any(m in qualified for m in methods):
                     return lib, func_name
         return None, None
+
+    def _is_excluded(self, func_name: str) -> bool:
+        """Check if a function name matches excluded patterns.
+
+        Args:
+            func_name: Function or class name to check
+
+        Returns:
+            True if the name matches an excluded pattern
+        """
+        # Check if any excluded pattern is in the function name
+        return any(pattern in func_name for pattern in self.EXCLUDED_PATTERNS)
 
     def _is_request_constructor(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> bool:
         """Check if the call is a Request constructor.
