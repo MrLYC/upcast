@@ -491,6 +491,89 @@ results:
 
 ### Code Analysis Scanners
 
+#### scan-module-symbols
+
+Analyze Python modules to extract imports and symbol definitions including variables, functions, and classes with their metadata.
+
+```bash
+upcast scan-module-symbols /path/to/project
+```
+
+**Features:**
+
+- Extract all import types (import, from...import, from...import \*)
+- Track attribute access patterns on imported symbols
+- Extract module-level variables, functions, and classes
+- Capture decorators, docstrings, and function signatures
+- Track symbol definition context (module, if, try, except blocks)
+- Compute body MD5 hashes for functions and classes
+- Filter private symbols (configurable with `--include-private`)
+
+**Output example:**
+
+```yaml
+summary:
+  total_modules: 10
+  total_imports: 50
+  total_symbols: 100
+  files_scanned: 10
+  scan_duration_ms: 150
+
+results:
+  path/to/file.py:
+    imported_modules:
+      os:
+        module_path: os
+        attributes: ["path"]
+        blocks: ["module"]
+    imported_symbols:
+      Path:
+        module_path: pathlib
+        attributes: ["home"]
+        blocks: ["module"]
+    star_imported:
+      - module_path: typing
+        blocks: ["module"]
+    variables:
+      DEBUG:
+        module_path: path.to.file
+        attributes: []
+        value: "True"
+        statement: "DEBUG = True"
+        blocks: ["module"]
+    functions:
+      helper:
+        signature: "def helper(arg1: int, arg2: str) -> bool:"
+        docstring: "A helper function."
+        body_md5: "abc123..."
+        attributes: []
+        decorators:
+          - name: decorator_name
+            args: []
+            kwargs: {}
+        blocks: ["module"]
+    classes:
+      MyClass:
+        docstring: "My class documentation"
+        body_md5: "def456..."
+        attributes: ["attr1", "attr2"]
+        methods: ["method1", "method2"]
+        bases: ["BaseClass"]
+        decorators:
+          - name: dataclass
+            args: []
+            kwargs: {}
+        blocks: ["module"]
+```
+
+**Options:**
+
+- `--include-private`: Include private symbols (starting with `_`)
+- `--exclude`: Exclude specific file patterns
+- `--format`: Output format (yaml or json)
+
+---
+
 #### scan-concurrency-patterns
 
 Identify concurrency patterns including async/await, threading, and multiprocessing with detailed context and parameter extraction.

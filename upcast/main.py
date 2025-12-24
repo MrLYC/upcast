@@ -15,6 +15,7 @@ from upcast.scanners import (
     ExceptionHandlerScanner,
     HttpRequestsScanner,
     MetricsScanner,
+    ModuleSymbolScanner,
     RedisUsageScanner,
     UnitTestScanner,
 )
@@ -784,6 +785,64 @@ def scan_redis_usage_cmd(
 
             traceback.print_exc()
         sys.exit(1)
+
+
+@main.command(name="scan-module-symbols")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.option("--include-private", is_flag=True, help="Include private symbols (starting with _)")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_module_symbols_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+    include_private: bool,
+) -> None:
+    """Scan Python modules for imports and symbol definitions.
+
+    Extracts:
+    - Import statements (import, from...import, from...import *)
+    - Module-level variables, functions, and classes
+    - Decorators, docstrings, and signatures
+    - Attribute access patterns
+    - Block context (module, if, try, except)
+
+    PATH can be a Python file or directory.
+    """
+    try:
+        scanner = ModuleSymbolScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+            include_private=include_private,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
 
 
 if __name__ == "__main__":

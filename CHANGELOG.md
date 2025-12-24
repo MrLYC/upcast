@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Module Symbol Scanner**: New `scan-module-symbols` command for analyzing Python module imports and symbol definitions
+  - Extracts import statements (import, from...import, from...import \*)
+  - Tracks attribute access patterns on imported symbols
+  - Extracts module-level variables, functions, and classes
+  - Captures decorators, docstrings, and function signatures
+  - Tracks symbol definition context (module, if, try, except blocks)
+  - Computes body MD5 hashes for functions and classes
+  - Supports filtering private symbols with `--include-private` option
+
 ### Changed
 
 #### signal-scanner: New Flat List Output Format (Breaking Change)
