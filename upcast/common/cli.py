@@ -23,7 +23,9 @@ def add_scanner_arguments(func):
 
     Adds the following options to a Click command:
     - -o/--output: Output file path
-    - --format: Output format (yaml/json)
+    - --format: Output format (yaml/json/markdown)
+    - --markdown-language: Language for markdown output
+    - --markdown-title: Title for markdown output
     - --include: File patterns to include (multiple)
     - --exclude: File patterns to exclude (multiple)
     - --no-default-excludes: Disable default exclusions
@@ -52,8 +54,19 @@ def add_scanner_arguments(func):
         help="File patterns to include (can be specified multiple times)",
     )(func)
     func = click.option(
+        "--markdown-title",
+        type=str,
+        help="Title for markdown output (only used when format is markdown)",
+    )(func)
+    func = click.option(
+        "--markdown-language",
+        type=click.Choice(["en", "zh"], case_sensitive=False),
+        default="en",
+        help="Language for markdown output (default: en)",
+    )(func)
+    func = click.option(
         "--format",
-        type=click.Choice(["yaml", "json"], case_sensitive=False),
+        type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
         default="yaml",
         help="Output format (default: yaml)",
     )(func)
@@ -101,6 +114,8 @@ def run_scanner_cli(
     exclude: tuple[str, ...] = (),
     no_default_excludes: bool = False,
     verbose: bool = False,
+    markdown_title: str | None = None,
+    markdown_language: str = "en",
 ) -> None:
     """Execute scanner with common CLI logic.
 
@@ -115,11 +130,13 @@ def run_scanner_cli(
         scanner: Scanner instance (must extend BaseScanner)
         path: Directory or file to scan
         output: Optional output file path
-        format: Output format ("yaml" or "json")
+        format: Output format ("yaml", "json", or "markdown")
         include: File patterns to include
         exclude: File patterns to exclude
         no_default_excludes: Whether to disable default exclusions
         verbose: Enable verbose output
+        markdown_title: Title for markdown output (only used when format is "markdown")
+        markdown_language: Language for markdown output (default: "en")
 
     Raises:
         SystemExit: If path doesn't exist or no files found
@@ -161,15 +178,45 @@ def run_scanner_cli(
     if output:
         if format.lower() == "json":
             export_to_json(formatted_data, output)
+            click.echo(f"Results written to: {output}")
+        elif format.lower() == "markdown":
+            from upcast.render import render_to_file
+
+            # Generate title if not provided
+            if markdown_title is None:
+                scanner_name = scanner.__class__.__name__.replace("Scanner", "")
+                markdown_title = f"{scanner_name} Analysis"
+
+            render_to_file(
+                scanner_output,
+                output,
+                language=markdown_language,
+                title=markdown_title,
+            )
+            click.echo(f"Markdown report written to: {output}")
         else:
             export_to_yaml(formatted_data, output)
-        click.echo(f"Results written to: {output}")
+            click.echo(f"Results written to: {output}")
     else:
         # Print to stdout
         if format.lower() == "json":
             import json
 
             click.echo(json.dumps(formatted_data, indent=2))
+        elif format.lower() == "markdown":
+            from upcast.render import render_to_markdown
+
+            # Generate title if not provided
+            if markdown_title is None:
+                scanner_name = scanner.__class__.__name__.replace("Scanner", "")
+                markdown_title = f"{scanner_name} Analysis"
+
+            markdown_output = render_to_markdown(
+                scanner_output,
+                language=markdown_language,
+                title=markdown_title,
+            )
+            click.echo(markdown_output)
         else:
             yaml_str = export_to_yaml_string(formatted_data)
             click.echo(yaml_str)
@@ -242,9 +289,9 @@ def validate_scanner_arguments(
     validated = {}
 
     # Validate format
-    if format.lower() not in ["yaml", "json"]:
+    if format.lower() not in ["yaml", "json", "markdown"]:
         raise click.BadParameter(
-            f"Invalid format '{format}'. Must be 'yaml' or 'json'.",
+            f"Invalid format '{format}'. Must be 'yaml', 'json', or 'markdown'.",
             param_hint="--format",
         )
     validated["format"] = format.lower()

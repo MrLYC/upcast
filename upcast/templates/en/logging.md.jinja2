@@ -1,0 +1,67 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Log Calls**: {{ summary.total_log_calls }}
+- **Sensitive Calls**: {{ summary.sensitive_calls }}
+
+### Calls by Library
+{% for library, count in summary.by_library.items() %}
+- **{{ library }}**: {{ count }} calls
+{% endfor %}
+
+### Calls by Level
+{% for level, count in summary.by_level.items() %}
+- **{{ level }}**: {{ count }} calls
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for file_path, file_info in results.items() %}
+
+### File: {{ file_path }}
+
+{% if file_info.logging %}
+#### Standard Library Logging
+
+| Line | Level | Logger | Message | Type | Block | Sensitive |
+|------|-------|--------|---------|------|-------|-----------|
+{% for call in file_info.logging %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ 'Yes' if call.sensitive_patterns else 'No' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.loguru %}
+#### Loguru Logging
+
+| Line | Level | Logger | Message | Type | Block | Sensitive |
+|------|-------|--------|---------|------|-------|-----------|
+{% for call in file_info.loguru %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ 'Yes' if call.sensitive_patterns else 'No' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.structlog %}
+#### Structlog Logging
+
+| Line | Level | Logger | Message | Type | Block | Sensitive |
+|------|-------|--------|---------|------|-------|-----------|
+{% for call in file_info.structlog %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ 'Yes' if call.sensitive_patterns else 'No' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.django %}
+#### Django Logging
+
+| Line | Level | Logger | Message | Type | Block | Sensitive |
+|------|-------|--------|---------|------|-------|-----------|
+{% for call in file_info.django %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ 'Yes' if call.sensitive_patterns else 'No' }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

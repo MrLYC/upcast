@@ -1,0 +1,50 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **High Complexity Count**: {{ summary.high_complexity_count }}
+
+### Functions by Severity
+{% for severity, count in summary.by_severity.items() %}
+- **{{ severity }}**: {{ count }} functions
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for module_path, functions in results.items() %}
+
+### Module: {{ module_path }}
+
+{% for func in functions %}
+
+#### {{ func.name }}
+
+**Complexity Score**: {{ func.complexity }}  
+**Severity**: {{ func.severity }}  
+**Lines**: {{ func.line }}-{{ func.end_line }} ({{ func.code_lines }} total, {{ func.comment_lines }} comments)  
+{% if func.description %}
+**Description**: {{ func.description }}
+{% endif %}
+
+**Signature**:
+```python
+{{ func.signature }}
+```
+
+{% if func.message %}
+**Message**: {{ func.message }}
+{% endif %}
+
+<details>
+<summary>View Source Code</summary>
+
+```python
+{{ func.code }}
+```
+</details>
+
+---
+
+{% endfor %}
+{% endfor %}
+{% endblock %}

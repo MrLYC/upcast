@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Redis Usage Statistics
+Additional summary statistics based on RedisUsageSummary fields.
+{% endblock %}
+
+{% block results %}
+{% for usage_type, usages in results.items() %}
+
+### Usage Type: {{ usage_type }}
+
+Details of Redis usage would be rendered here based on the specific structure.
+
+---
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### 指标统计
+根据 PrometheusMetricSummary 字段的额外汇总统计信息。
+{% endblock %}
+
+{% block results %}
+{% for metric_name, metric_info in results.items() %}
+
+### 指标: {{ metric_name }}
+
+将根据具体结构渲染 Prometheus 指标的详细信息。
+
+---
+
+{% endfor %}
+{% endblock %}

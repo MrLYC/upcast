@@ -1,0 +1,23 @@
+# {{ title }}
+
+## 元数据
+{% if metadata %}
+{% for key, value in metadata.items() %}
+- **{{ key }}**: {{ value }}
+{% endfor %}
+{% else %}
+暂无元数据。
+{% endif %}
+
+## 概要信息
+{% block summary %}
+- **总数量**: {{ summary.total_count }}
+- **已扫描文件数**: {{ summary.files_scanned }}
+{% if summary.scan_duration_ms %}
+- **扫描耗时**: {{ summary.scan_duration_ms }} 毫秒
+{% endif %}
+{% endblock %}
+
+## 结果详情
+{% block results %}
+{% endblock %}

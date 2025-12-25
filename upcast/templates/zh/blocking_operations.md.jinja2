@@ -1,0 +1,26 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### 按类别统计操作
+{% for category, count in summary.by_category.items() %}
+- **{{ category }}**: {{ count }} 个操作
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for category, operations in results.items() %}
+
+### 类别: {{ category }}
+
+| 文件 | 行号 | 操作 | 语句 | 函数 | 类 |
+|------|------|------|------|------|-----|
+{% for op in operations %}
+| {{ op.file }} | {{ op.line or '不适用' }} | {{ op.operation }} | {{ op.statement or '不适用' }} | {{ op.function or '不适用' }} | {{ op.class_name or '不适用' }} |
+{% endfor %}
+
+---
+
+{% endfor %}
+{% endblock %}

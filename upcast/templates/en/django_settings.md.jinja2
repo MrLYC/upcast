@@ -1,0 +1,22 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Settings Statistics
+Additional summary statistics would go here based on DjangoSettingsSummary fields.
+{% endblock %}
+
+{% block results %}
+{% for setting_name, setting_info in results.items() %}
+
+### Setting: {{ setting_name }}
+
+**Type**: {{ setting_info.__class__.__name__ }}
+
+Details of the setting would be rendered here based on the specific structure.
+
+---
+
+{% endfor %}
+{% endblock %}

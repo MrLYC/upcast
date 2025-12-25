@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Redis 使用统计
+根据 RedisUsageSummary 字段的额外汇总统计信息。
+{% endblock %}
+
+{% block results %}
+{% for usage_type, usages in results.items() %}
+
+### 使用类型: {{ usage_type }}
+
+将根据具体结构渲染 Redis 使用的详细信息。
+
+---
+
+{% endfor %}
+{% endblock %}

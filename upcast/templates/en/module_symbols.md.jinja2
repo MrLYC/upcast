@@ -1,0 +1,78 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Modules**: {{ summary.total_modules }}
+- **Total Imports**: {{ summary.total_imports }}
+- **Total Symbols**: {{ summary.total_symbols }}
+{% endblock %}
+
+{% block results %}
+{% for file_path, module in results.items() %}
+
+### Module: {{ file_path }}
+
+{% if module.imported_modules %}
+#### Imported Modules
+
+| Module Path | Accessed Attributes | Blocks |
+|-------------|---------------------|--------|
+{% for name, imported in module.imported_modules.items() %}
+| {{ imported.module_path }} | {{ imported.attributes | join(', ') if imported.attributes else 'N/A' }} | {{ imported.blocks | join(', ') if imported.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.imported_symbols %}
+#### Imported Symbols
+
+| Symbol Name | From Module | Accessed Attributes | Blocks |
+|-------------|-------------|---------------------|--------|
+{% for name, symbol in module.imported_symbols.items() %}
+| {{ name }} | {{ symbol.module_path }} | {{ symbol.attributes | join(', ') if symbol.attributes else 'N/A' }} | {{ symbol.blocks | join(', ') if symbol.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.star_imported %}
+#### Star Imports
+
+| Module Path | Blocks |
+|-------------|--------|
+{% for star in module.star_imported %}
+| {{ star.module_path }} | {{ star.blocks | join(', ') if star.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.variables %}
+#### Module Variables
+
+| Variable Name | Value | Statement | Blocks |
+|---------------|-------|-----------|--------|
+{% for name, var in module.variables.items() %}
+| {{ name }} | {{ var.value or 'N/A' }} | `{{ var.statement }}` | {{ var.blocks | join(', ') if var.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.functions %}
+#### Functions
+
+| Function Name | Signature | Decorators | Docstring |
+|---------------|-----------|------------|-----------|
+{% for name, func in module.functions.items() %}
+| {{ name }} | `{{ func.signature }}` | {{ func.decorators | map(attribute='name') | join(', ') if func.decorators else 'None' }} | {{ func.docstring[:50] + '...' if func.docstring and func.docstring|length > 50 else (func.docstring or 'N/A') }} |
+{% endfor %}
+{% endif %}
+
+{% if module.classes %}
+#### Classes
+
+| Class Name | Base Classes | Methods | Attributes | Decorators | Docstring |
+|------------|--------------|---------|------------|------------|-----------|
+{% for name, cls in module.classes.items() %}
+| {{ name }} | {{ cls.bases | join(', ') if cls.bases else 'None' }} | {{ cls.methods | join(', ') if cls.methods else 'None' }} | {{ cls.attributes | join(', ') if cls.attributes else 'None' }} | {{ cls.decorators | map(attribute='name') | join(', ') if cls.decorators else 'None' }} | {{ cls.docstring[:50] + '...' if cls.docstring and cls.docstring|length > 50 else (cls.docstring or 'N/A') }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### 异常处理器统计
+根据 ExceptionHandlerSummary 字段的额外汇总统计信息。
+{% endblock %}
+
+{% block results %}
+{% for file_path, handlers in results.items() %}
+
+### 文件: {{ file_path }}
+
+将根据具体结构渲染异常处理器的详细信息。
+
+---
+
+{% endfor %}
+{% endblock %}
