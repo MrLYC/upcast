@@ -26,6 +26,7 @@ from upcast.models.django_urls import DjangoUrlOutput
 from upcast.models.env_vars import EnvVarOutput
 from upcast.models.exceptions import ExceptionHandlerOutput
 from upcast.models.http_requests import HttpRequestOutput
+from upcast.models.logging import LoggingOutput
 from upcast.models.metrics import PrometheusMetricOutput
 from upcast.models.module_symbols import ModuleSymbolOutput
 from upcast.models.redis_usage import RedisUsageOutput
@@ -51,6 +52,7 @@ MODEL_TEMPLATE_MAP = {
     RedisUsageOutput: "redis_usage.md.jinja2",
     UnitTestOutput: "unit_tests.md.jinja2",
     ModuleSymbolOutput: "module_symbols.md.jinja2",
+    LoggingOutput: "logging.md.jinja2",
 }
 
 

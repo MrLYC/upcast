@@ -309,9 +309,20 @@ def scan_metrics_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -326,6 +337,8 @@ def scan_logging_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
@@ -363,6 +376,8 @@ def scan_logging_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
