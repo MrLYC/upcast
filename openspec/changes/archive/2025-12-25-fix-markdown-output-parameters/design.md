@@ -1,3 +1,4 @@
+````markdown
 # Design: Fix Markdown Output Parameters
 
 ## Context
@@ -166,3 +167,4 @@ Since this is a bug fix for broken functionality:
 2. Update integration test baselines if needed
 3. No feature flag or gradual rollout needed
 4. Changes are backward compatible (new optional parameters)
+````
