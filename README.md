@@ -1182,9 +1182,87 @@ Benefits:
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
 - **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
+- **Markdown Rendering**: Convert scanner outputs to readable markdown documentation
+- **Multi-Language Support**: Render documentation in English, Chinese, and more
 - **Aggregated Results**: Group findings by variable/model/metric name
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Well-Tested**: Comprehensive test suite with high coverage
+
+## Markdown Rendering
+
+Upcast can convert scanner output files (YAML or JSON) into readable markdown documentation with support for multiple languages.
+
+### Basic Usage
+
+```bash
+# Render scanner output to markdown (English)
+upcast render-markdown results.yaml
+
+# Render with Chinese language
+upcast render-markdown results.yaml --language zh
+
+# Specify output file and custom title
+upcast render-markdown results.yaml -o report.md --title "Analysis Report"
+
+# Render JSON input
+upcast render-markdown results.json
+```
+
+### Features
+
+- **Multi-Language Support**: Templates available in English (`en`) and Chinese (`zh`)
+- **Auto-Detection**: Automatically detects scanner output type from input file
+- **Structured Output**: Consistent format with metadata, summary, and detailed results
+- **Readable Tables**: Field details presented in organized markdown tables
+- **Customizable**: Override output filename and document title
+
+### Example Outputs
+
+See [`example/markdown-examples/`](example/markdown-examples/) for rendered markdown examples:
+
+- **English**: `http-requests-en.md`, `django-models-en.md`, `complexity-patterns-en.md`
+- **Chinese**: `http-requests-zh.md`, `django-models-zh.md`, `complexity-patterns-zh.md`
+
+### Programmatic Usage
+
+You can also use the render module programmatically:
+
+```python
+from upcast.models.http_requests import HttpRequestOutput
+from upcast.render import render_to_markdown, render_to_file
+
+# Load scanner output
+output = HttpRequestOutput(...)
+
+# Render to string
+markdown = render_to_markdown(output, language='en', title='HTTP Requests')
+
+# Or render directly to file
+render_to_file(output, 'output.md', language='en', title='HTTP Requests')
+```
+
+### Supported Scanner Types
+
+All scanner outputs can be rendered to markdown:
+
+- HTTP Requests (`HttpRequestOutput`)
+- Django Models (`DjangoModelOutput`)
+- Code Complexity (`ComplexityOutput`)
+- Environment Variables (`EnvVarOutput`)
+- Signal Usage (`SignalOutput`)
+- And all other scanner types...
+
+### Template Customization
+
+Templates are located in `upcast/templates/{language}/`:
+
+- `base.md.jinja2` - Base template for all scanners
+- `http_requests.md.jinja2` - HTTP request analysis template
+- `django_models.md.jinja2` - Django model analysis template
+- `complexity.md.jinja2` - Complexity analysis template
+- And more...
+
+You can create custom templates for new languages by adding a new language directory with the required templates.
 
 ## Integration Testing
 
