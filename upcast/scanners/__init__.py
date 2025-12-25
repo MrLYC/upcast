@@ -9,6 +9,7 @@ from upcast.scanners.django_urls import DjangoUrlScanner
 from upcast.scanners.env_vars import EnvVarScanner
 from upcast.scanners.exceptions import ExceptionHandlerScanner
 from upcast.scanners.http_requests import HttpRequestsScanner
+from upcast.scanners.logging_scanner import LoggingScanner
 from upcast.scanners.metrics import MetricsScanner
 from upcast.scanners.module_symbols import ModuleSymbolScanner
 from upcast.scanners.redis_usage import RedisUsageScanner
@@ -25,6 +26,7 @@ __all__ = [
     "EnvVarScanner",
     "ExceptionHandlerScanner",
     "HttpRequestsScanner",
+    "LoggingScanner",
     "MetricsScanner",
     "ModuleSymbolScanner",
     "RedisUsageScanner",

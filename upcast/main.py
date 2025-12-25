@@ -14,6 +14,7 @@ from upcast.scanners import (
     EnvVarScanner,
     ExceptionHandlerScanner,
     HttpRequestsScanner,
+    LoggingScanner,
     MetricsScanner,
     ModuleSymbolScanner,
     RedisUsageScanner,
@@ -244,6 +245,72 @@ def scan_metrics_cmd(
             include_patterns=list(include) if include else None,
             exclude_patterns=list(exclude) if exclude else None,
             verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-logging")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml or json)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.option(
+    "--sensitive-keywords",
+    multiple=True,
+    help="Custom sensitive keywords to detect (can be specified multiple times)",
+)
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_logging_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+    sensitive_keywords: tuple[str, ...],
+) -> None:
+    """Scan Python files for logging statements across all logging libraries.
+
+    Detects logging calls from standard library logging, loguru, structlog, and Django.
+    Analyzes logger creation, log messages, and sensitive data patterns.
+
+    Examples:
+
+        upcast scan-logging ./src
+
+        upcast scan-logging ./myproject --output logs.yaml
+
+        upcast scan-logging ./app --format json --verbose
+
+        upcast scan-logging ./src --sensitive-keywords password --sensitive-keywords token
+    """
+    try:
+        scanner = LoggingScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+            sensitive_keywords=list(sensitive_keywords) if sensitive_keywords else None,
         )
         run_scanner_cli(
             scanner=scanner,
