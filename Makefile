@@ -29,10 +29,30 @@ build: clean-build ## Build wheel file using UV
 clean-build: ## clean build artifacts
 	@rm -rf dist
 
+.PHONY: clean
+clean: ## Clean all generated files and caches
+	@echo "🧹 Cleaning up..."
+	@rm -rf dist/
+	@rm -rf build/
+	@rm -rf *.egg-info
+	@rm -rf .pytest_cache
+	@rm -rf .mypy_cache
+	@rm -rf .ruff_cache
+	@rm -rf htmlcov/
+	@rm -rf .coverage
+	@rm -rf coverage.xml
+	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@find . -type f -name "*.pyc" -delete
+	@find . -type f -name "*.pyo" -delete
+	@find . -type f -name "*.backup" -delete
+	@find . -type f -name "*~" -delete
+	@echo "✓ Cleanup complete"
+
 .PHONY: publish
-publish: ## publish a release to pypi.
-	@echo "🚀 Publishing."
+publish: clean build ## Clean, build and publish a release to PyPI
+	@echo "🚀 Publishing to PyPI..."
 	@uv publish
+	@echo "✓ Published successfully"
 
 .PHONY: test-integration
 test-integration: ## Run integration tests on example project
