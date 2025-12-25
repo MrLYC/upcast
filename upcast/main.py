@@ -845,5 +845,146 @@ def scan_module_symbols_cmd(
         handle_scan_error(e, verbose=verbose)
 
 
+@main.command(name="render-markdown")
+@click.argument("input_file", type=click.Path(exists=True))
+@click.option("-o", "--output", type=click.Path(), help="Output markdown file path (default: <input>-<lang>.md)")
+@click.option(
+    "-l",
+    "--language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Output language (default: en)",
+)
+@click.option("-t", "--title", type=str, help="Document title (auto-generated if not provided)")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+def render_markdown_cmd(
+    input_file: str,
+    output: str | None,
+    language: str,
+    title: str | None,
+    verbose: bool,
+) -> None:
+    """Render scanner output (YAML/JSON) to markdown format.
+
+    Converts scanner output files to readable markdown documentation with support
+    for multiple languages.
+
+    INPUT_FILE: Path to scanner output file (YAML or JSON format)
+
+    Examples:
+
+        \b
+        # Render to English markdown
+        upcast render-markdown results.yaml
+
+        \b
+        # Render to Chinese markdown
+        upcast render-markdown results.yaml --language zh
+
+        \b
+        # Specify output file and title
+        upcast render-markdown results.yaml -o report.md --title "Analysis Report"
+
+        \b
+        # Render JSON input to markdown
+        upcast render-markdown results.json -o report.md
+    """
+    import json
+    from pathlib import Path
+
+    import yaml
+
+    from upcast.models.base import ScannerOutput
+    from upcast.models.blocking_operations import BlockingOperationsOutput
+    from upcast.models.complexity import ComplexityOutput
+    from upcast.models.concurrency import ConcurrencyPatternOutput
+    from upcast.models.django_models import DjangoModelOutput
+    from upcast.models.django_settings import DjangoSettingsOutput
+    from upcast.models.django_urls import DjangoUrlOutput
+    from upcast.models.env_vars import EnvVarOutput
+    from upcast.models.exceptions import ExceptionHandlerOutput
+    from upcast.models.http_requests import HttpRequestOutput
+    from upcast.models.metrics import PrometheusMetricOutput
+    from upcast.models.redis_usage import RedisUsageOutput
+    from upcast.models.signals import SignalOutput
+    from upcast.models.unit_tests import UnitTestOutput
+    from upcast.render import render_to_file
+
+    try:
+        input_path = Path(input_file)
+
+        if verbose:
+            click.echo(f"Reading input file: {input_path}", err=True)
+
+        # Load input data
+        with open(input_path) as f:
+            if input_path.suffix.lower() in [".yaml", ".yml"]:
+                data = yaml.safe_load(f)
+            elif input_path.suffix.lower() == ".json":
+                data = json.load(f)
+            else:
+                raise ValueError(f"Unsupported file format: {input_path.suffix}. Use .yaml, .yml, or .json")
+
+        # Try to detect the model type and create appropriate instance
+        model_classes = [
+            HttpRequestOutput,
+            DjangoModelOutput,
+            ComplexityOutput,
+            EnvVarOutput,
+            SignalOutput,
+            BlockingOperationsOutput,
+            ConcurrencyPatternOutput,
+            DjangoSettingsOutput,
+            DjangoUrlOutput,
+            ExceptionHandlerOutput,
+            PrometheusMetricOutput,
+            RedisUsageOutput,
+            UnitTestOutput,
+        ]
+
+        scanner_output: ScannerOutput | None = None
+        for model_class in model_classes:
+            try:
+                scanner_output = model_class(**data)
+                if verbose:
+                    click.echo(f"Detected model type: {model_class.__name__}", err=True)
+                break
+            except Exception:
+                continue
+
+        if scanner_output is None:
+            raise ValueError(
+                "Could not determine scanner output type. "
+                "Please ensure the input file is a valid scanner output."
+            )
+
+        # Generate output filename if not provided
+        if output is None:
+            output = str(input_path.with_suffix("")) + f"-{language}.md"
+
+        # Generate title if not provided
+        if title is None:
+            # Use filename without extension as title
+            title = input_path.stem.replace("-", " ").replace("_", " ").title()
+
+        if verbose:
+            click.echo(f"Rendering to markdown: {output}", err=True)
+            click.echo(f"Language: {language}", err=True)
+            click.echo(f"Title: {title}", err=True)
+
+        # Render to markdown
+        render_to_file(scanner_output, output, language=language, title=title)
+
+        click.echo(f"✓ Successfully rendered markdown to: {output}")
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        if verbose:
+            import traceback
+
+            traceback.print_exc()
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     main()
