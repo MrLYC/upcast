@@ -1,0 +1,61 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Requests**: {{ summary.total_requests }}
+- **Unique URLs**: {{ summary.unique_urls }}
+
+### Requests by Library
+{% for library, count in summary.by_library.items() %}
+- **{{ library }}**: {{ count }} requests
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for url, info in results.items() %}
+
+### {{ url }}
+
+**Primary Method**: {{ info.method }}  
+**Primary Library**: {{ info.library }}
+
+#### Request Details
+
+| File | Line | Method | Statement | Async | Session-Based | Timeout |
+|------|------|--------|-----------|-------|---------------|---------|
+{% for usage in info.usages %}
+| {{ usage.file }} | {{ usage.line or 'N/A' }} | {{ usage.method }} | `{{ usage.statement }}` | {{ 'Yes' if usage.is_async else 'No' }} | {{ 'Yes' if usage.session_based else 'No' }} | {{ usage.timeout or 'N/A' }} |
+{% endfor %}
+
+{% if info.usages[0].params or info.usages[0].headers or info.usages[0].json_body or info.usages[0].data %}
+#### Additional Parameters
+{% for usage in info.usages %}
+{% if usage.params %}
+**Query Parameters** (Line {{ usage.line }}):
+```
+{{ usage.params }}
+```
+{% endif %}
+{% if usage.headers %}
+**Headers** (Line {{ usage.line }}):
+```
+{{ usage.headers }}
+```
+{% endif %}
+{% if usage.json_body %}
+**JSON Body** (Line {{ usage.line }}):
+```
+{{ usage.json_body }}
+```
+{% endif %}
+{% if usage.data %}
+**Form Data** (Line {{ usage.line }}):
+```
+{{ usage.data }}
+```
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endblock %}

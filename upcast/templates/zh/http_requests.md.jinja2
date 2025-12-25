@@ -1,0 +1,61 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **请求总数**: {{ summary.total_requests }}
+- **唯一 URL 数**: {{ summary.unique_urls }}
+
+### 按库统计请求数
+{% for library, count in summary.by_library.items() %}
+- **{{ library }}**: {{ count }} 次请求
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for url, info in results.items() %}
+
+### {{ url }}
+
+**主要方法**: {{ info.method }}  
+**主要库**: {{ info.library }}
+
+#### 请求详情
+
+| 文件 | 行号 | 方法 | 语句 | 异步 | 基于会话 | 超时 |
+|------|------|------|------|------|----------|------|
+{% for usage in info.usages %}
+| {{ usage.file }} | {{ usage.line or '不适用' }} | {{ usage.method }} | `{{ usage.statement }}` | {{ '是' if usage.is_async else '否' }} | {{ '是' if usage.session_based else '否' }} | {{ usage.timeout or '不适用' }} |
+{% endfor %}
+
+{% if info.usages[0].params or info.usages[0].headers or info.usages[0].json_body or info.usages[0].data %}
+#### 额外参数
+{% for usage in info.usages %}
+{% if usage.params %}
+**查询参数** (行 {{ usage.line }}):
+```
+{{ usage.params }}
+```
+{% endif %}
+{% if usage.headers %}
+**请求头** (行 {{ usage.line }}):
+```
+{{ usage.headers }}
+```
+{% endif %}
+{% if usage.json_body %}
+**JSON 主体** (行 {{ usage.line }}):
+```
+{{ usage.json_body }}
+```
+{% endif %}
+{% if usage.data %}
+**表单数据** (行 {{ usage.line }}):
+```
+{{ usage.data }}
+```
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endblock %}

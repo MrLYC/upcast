@@ -1,0 +1,23 @@
+# {{ title }}
+
+## Metadata
+{% if metadata %}
+{% for key, value in metadata.items() %}
+- **{{ key }}**: {{ value }}
+{% endfor %}
+{% else %}
+No metadata available.
+{% endif %}
+
+## Summary
+{% block summary %}
+- **Total Count**: {{ summary.total_count }}
+- **Files Scanned**: {{ summary.files_scanned }}
+{% if summary.scan_duration_ms %}
+- **Scan Duration**: {{ summary.scan_duration_ms }} ms
+{% endif %}
+{% endblock %}
+
+## Results
+{% block results %}
+{% endblock %}

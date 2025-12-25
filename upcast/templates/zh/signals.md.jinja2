@@ -1,0 +1,47 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Django 接收器**: {{ summary.django_receivers }}
+- **Django 发送器**: {{ summary.django_senders }}
+- **Celery 接收器**: {{ summary.celery_receivers }}
+- **Celery 发送器**: {{ summary.celery_senders }}
+- **自定义信号定义**: {{ summary.custom_signals_defined }}
+- **未使用的自定义信号**: {{ summary.unused_custom_signals }}
+{% endblock %}
+
+{% block results %}
+{% for signal_info in results %}
+
+### {{ signal_info.signal }}
+
+**类型**: {{ signal_info.type }}  
+**类别**: {{ signal_info.category }}  
+{% if signal_info.status %}
+**状态**: {{ signal_info.status }}
+{% endif %}
+
+{% if signal_info.receivers %}
+#### 接收器
+
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+{% for receiver in signal_info.receivers %}
+| {{ receiver.file }} | {{ receiver.line }} | {{ receiver.handler or '不适用' }} | {{ receiver.pattern or '不适用' }} | {{ receiver.sender or '不适用' }} | {{ receiver.code or '不适用' }} |
+{% endfor %}
+{% endif %}
+
+{% if signal_info.senders %}
+#### 发送器
+
+| 文件 | 行号 | 模式 | 发送器 | 代码 |
+|------|------|------|--------|------|
+{% for sender in signal_info.senders %}
+| {{ sender.file }} | {{ sender.line }} | {{ sender.pattern or '不适用' }} | {{ sender.sender or '不适用' }} | {{ sender.code or '不适用' }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}
