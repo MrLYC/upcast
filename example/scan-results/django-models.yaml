@@ -10,7 +10,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.SlugField
           validators:
           - '`validate_app_name`'
         type: models.SlugField
@@ -19,14 +18,12 @@ results:
         name: owner
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
@@ -35,7 +32,6 @@ results:
           db_index: true
           default: '`WlAppType.DEFAULT.value`'
           max_length: 16
-          type: models.CharField
           verbose_name: 应用类型
         type: models.CharField
     line: 1
@@ -56,7 +52,6 @@ results:
         name: application_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: 所属应用
         type: models.UUIDField
       artifact_deleted:
@@ -65,7 +60,6 @@ results:
         parameters:
           default: false
           help_text: slug/镜像是否已被清理
-          type: models.BooleanField
         type: models.BooleanField
       artifact_detail:
         line: 1
@@ -73,7 +67,6 @@ results:
         parameters:
           default: {}
           help_text: 构件详情(展示信息)
-          type: models.JSONField
         type: models.JSONField
       artifact_metadata:
         line: 1
@@ -81,7 +74,6 @@ results:
         parameters:
           default: {}
           help_text: 构件元信息, 包括 entrypoint/use_cnb/use_dockerfile 等信息
-          type: models.JSONField
         type: models.JSONField
       artifact_type:
         line: 1
@@ -90,7 +82,6 @@ results:
           default: '`ArtifactType.SLUG`'
           help_text: 构件类型
           max_length: 16
-          type: models.CharField
         type: models.CharField
       bkapp_revision_id:
         line: 1
@@ -98,7 +89,6 @@ results:
         parameters:
           help_text: 与本次构建关联的 BkApp Revision id
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
       branch:
         line: 1
@@ -107,7 +97,6 @@ results:
           help_text: readable version, such as trunk/master
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       image:
         line: 1
@@ -116,14 +105,12 @@ results:
           help_text: 运行 Build 的镜像地址. 如果构件类型为 image，该值即构建产物; 如果构建产物是 Slug, 则返回 SlugRunner
             的镜像
           'null': true
-          type: models.TextField
         type: models.TextField
       module_id:
         line: 1
         name: module_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: 所属模块
         type: models.UUIDField
       owner:
@@ -131,7 +118,6 @@ results:
         name: owner
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       revision:
         line: 1
@@ -140,7 +126,6 @@ results:
           help_text: unique version, such as sha256
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       slug_path:
         line: 1
@@ -148,7 +133,6 @@ results:
         parameters:
           help_text: slug path 形如 {region}/home/{name}:{branch}:{revision}/push
           'null': true
-          type: models.TextField
         type: models.TextField
       source_type:
         line: 1
@@ -156,7 +140,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -181,7 +164,6 @@ results:
         name: application_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: 所属应用
         type: models.UUIDField
       branch:
@@ -190,7 +172,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       completed_at:
         line: 1
@@ -198,7 +179,6 @@ results:
         parameters:
           help_text: failed/successful/interrupted 都是完成
           'null': true
-          type: models.DateTimeField
           verbose_name: 完成时间
         type: models.DateTimeField
       generation:
@@ -206,7 +186,6 @@ results:
         name: generation
         parameters:
           help_text: 每个应用独立的自增ID
-          type: models.PositiveBigIntegerField
           verbose_name: 自增ID
         type: models.PositiveBigIntegerField
       image:
@@ -216,7 +195,6 @@ results:
           help_text: builder image
           max_length: 512
           'null': true
-          type: models.CharField
         type: models.CharField
       int_requested_at:
         line: 1
@@ -224,7 +202,6 @@ results:
         parameters:
           help_text: 用户请求中断的时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       invoke_message:
         line: 1
@@ -234,7 +211,6 @@ results:
           help_text: 触发信息
           max_length: 255
           'null': true
-          type: models.CharField
         type: models.CharField
       logs_was_ready_at:
         line: 1
@@ -242,14 +218,12 @@ results:
         parameters:
           help_text: Pod 状态就绪允许读取日志的时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       module_id:
         line: 1
         name: module_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: 所属模块
         type: models.UUIDField
       owner:
@@ -257,7 +231,6 @@ results:
         name: owner
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       revision:
         line: 1
@@ -265,14 +238,12 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       source_tar_path:
         line: 1
         name: source_tar_path
         parameters:
           max_length: 2048
-          type: models.CharField
         type: models.CharField
       status:
         line: 1
@@ -281,7 +252,6 @@ results:
           choices: '`make_enum_choices(BuildStatus)`'
           default: '`BuildStatus.PENDING.value`'
           max_length: 12
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -318,7 +288,6 @@ results:
           blank: true
           default: ''
           max_length: 64
-          type: models.CharField
         type: models.CharField
       domain:
         line: 1
@@ -326,7 +295,6 @@ results:
         parameters:
           default: ''
           max_length: 64
-          type: models.CharField
         type: models.CharField
       image:
         line: 1
@@ -334,7 +302,6 @@ results:
         parameters:
           max_length: 256
           'null': true
-          type: models.CharField
         type: models.CharField
       mount_log_to_host:
         line: 1
@@ -342,14 +309,12 @@ results:
         parameters:
           default: true
           help_text: Whether mount app logs to host
-          type: models.BooleanField
         type: models.BooleanField
       owner:
         line: 1
         name: owner
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -377,27 +342,23 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       line:
         line: 1
         name: line
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
       stream:
         line: 1
         name: stream
         parameters:
           max_length: 16
-          type: models.CharField
         type: models.CharField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -421,14 +382,12 @@ results:
         name: failed
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       owner:
         line: 1
         name: owner
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       summary:
         line: 1
@@ -436,13 +395,11 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.TextField
         type: models.TextField
       version:
         line: 1
         name: version
-        parameters:
-          type: models.PositiveIntegerField
+        parameters: {}
         type: models.PositiveIntegerField
     line: 1
     meta:
@@ -480,7 +437,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       environment_name:
@@ -490,7 +446,6 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': false
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       last_transition_time:
@@ -498,7 +453,6 @@ results:
         name: last_transition_time
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: '`_(''状态最近变更时间'')`'
         type: models.DateTimeField
       message:
@@ -507,7 +461,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.TextField
           verbose_name: '`_(''状态描述文字'')`'
         type: models.TextField
       module_id:
@@ -515,7 +468,6 @@ results:
         name: module_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
       name:
@@ -523,7 +475,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: '`_(''Deploy 名称'')`'
         type: models.CharField
       reason:
@@ -533,7 +484,6 @@ results:
           blank: true
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: '`_(''状态原因'')`'
         type: models.CharField
       status:
@@ -544,7 +494,6 @@ results:
           choices: '`DeployStatus.get_choices()`'
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: '`_(''状态'')`'
         type: models.CharField
     line: 1
@@ -572,7 +521,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       module_id:
@@ -580,7 +528,6 @@ results:
         name: module_id
         parameters:
           'null': false
-          type: models.UUIDField
           unique: true
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
@@ -606,7 +553,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       deployed_value:
@@ -614,7 +560,6 @@ results:
         name: deployed_value
         parameters:
           'null': true
-          type: models.JSONField
           verbose_name: '`_(''已部署的应用模型（JSON 格式）'')`'
         type: models.JSONField
       has_deployed:
@@ -622,7 +567,6 @@ results:
         name: has_deployed
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: '`_(''是否已部署'')`'
         type: models.BooleanField
       is_deleted:
@@ -630,7 +574,6 @@ results:
         name: is_deleted
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: '`_(''是否已删除'')`'
         type: models.BooleanField
       is_draft:
@@ -638,14 +581,12 @@ results:
         name: is_draft
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: '`_(''是否草稿'')`'
         type: models.BooleanField
       json_value:
         line: 1
         name: json_value
         parameters:
-          type: models.JSONField
           verbose_name: '`_(''应用模型（JSON 格式）'')`'
         type: models.JSONField
       module_id:
@@ -653,7 +594,6 @@ results:
         name: module_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
       version:
@@ -661,14 +601,12 @@ results:
         name: version
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: '`_(''模型版本'')`'
         type: models.CharField
       yaml_value:
         line: 1
         name: yaml_value
         parameters:
-          type: models.TextField
           verbose_name: '`_(''应用模型（YAML 格式）'')`'
         type: models.TextField
     line: 1
@@ -688,7 +626,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       data:
@@ -696,7 +633,6 @@ results:
         name: data
         parameters:
           default: '`dict`'
-          type: models.JSONField
         type: models.JSONField
       display_name:
         line: 1
@@ -705,7 +641,6 @@ results:
           help_text: '`_(''挂载资源展示名称'')`'
           max_length: 63
           'null': true
-          type: models.CharField
         type: models.CharField
       environment_name:
         line: 1
@@ -714,7 +649,6 @@ results:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       module_id:
@@ -722,7 +656,6 @@ results:
         name: module_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
       name:
@@ -731,7 +664,6 @@ results:
         parameters:
           help_text: '`_(''挂载资源名'')`'
           max_length: 63
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -754,7 +686,6 @@ results:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       module_id:
@@ -762,7 +693,6 @@ results:
         name: module_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
       mount_path:
@@ -770,7 +700,6 @@ results:
         name: mount_path
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
       name:
         line: 1
@@ -778,7 +707,6 @@ results:
         parameters:
           help_text: '`_(''挂载点的名称'')`'
           max_length: 63
-          type: models.CharField
         type: models.CharField
       source_type:
         line: 1
@@ -786,7 +714,6 @@ results:
         parameters:
           choices: '`VolumeSourceType.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -807,7 +734,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       display_name:
@@ -817,7 +743,6 @@ results:
           help_text: '`_(''挂载资源展示名称'')`'
           max_length: 63
           'null': true
-          type: models.CharField
         type: models.CharField
       environment_name:
         line: 1
@@ -826,7 +751,6 @@ results:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       module_id:
@@ -834,7 +758,6 @@ results:
         name: module_id
         parameters:
           'null': true
-          type: models.UUIDField
           verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
       name:
@@ -843,21 +766,18 @@ results:
         parameters:
           help_text: '`_(''挂载资源名'')`'
           max_length: 63
-          type: models.CharField
         type: models.CharField
       storage_class_name:
         line: 1
         name: storage_class_name
         parameters:
           max_length: 63
-          type: models.CharField
         type: models.CharField
       storage_size:
         line: 1
         name: storage_size
         parameters:
           max_length: 63
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -879,21 +799,18 @@ results:
         parameters:
           default: true
           help_text: 是否启动 AppMetrics
-          type: models.BooleanField
         type: models.BooleanField
       port:
         line: 1
         name: port
         parameters:
           help_text: Service 端口
-          type: models.IntegerField
         type: models.IntegerField
       target_port:
         line: 1
         name: target_port
         parameters:
           help_text: 容器内的端口
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -915,21 +832,18 @@ results:
         name: failure_threshold
         parameters:
           default: 3
-          type: models.PositiveIntegerField
         type: models.PositiveIntegerField
       initial_delay_seconds:
         line: 1
         name: initial_delay_seconds
         parameters:
           default: 0
-          type: models.IntegerField
         type: models.IntegerField
       period_seconds:
         line: 1
         name: period_seconds
         parameters:
           default: 10
-          type: models.PositiveIntegerField
         type: models.PositiveIntegerField
       probe_type:
         line: 1
@@ -937,28 +851,24 @@ results:
         parameters:
           choices: '`ProbeType.get_django_choices()`'
           max_length: 255
-          type: models.CharField
         type: models.CharField
       process_type:
         line: 1
         name: process_type
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
       success_threshold:
         line: 1
         name: success_threshold
         parameters:
           default: 1
-          type: models.PositiveIntegerField
         type: models.PositiveIntegerField
       timeout_seconds:
         line: 1
         name: timeout_seconds
         parameters:
           default: 1
-          type: models.PositiveIntegerField
         type: models.PositiveIntegerField
     line: 1
     meta:
@@ -984,14 +894,12 @@ results:
         name: autoscaling
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       port:
         line: 1
@@ -999,7 +907,6 @@ results:
         parameters:
           help_text: 容器端口
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
       proc_command:
         line: 1
@@ -1007,14 +914,12 @@ results:
         parameters:
           help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
-          type: models.TextField
         type: models.TextField
       target_replicas:
         line: 1
         name: target_replicas
         parameters:
           default: 1
-          type: models.IntegerField
         type: models.IntegerField
       target_status:
         line: 1
@@ -1022,14 +927,12 @@ results:
         parameters:
           default: start
           max_length: 32
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
         name: type
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -1056,21 +959,18 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       is_active:
         line: 1
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否可用
         type: models.BooleanField
       max_replicas:
         line: 1
         name: max_replicas
-        parameters:
-          type: models.IntegerField
+        parameters: {}
         type: models.IntegerField
       name:
         line: 1
@@ -1078,14 +978,12 @@ results:
         parameters:
           db_index: true
           max_length: 32
-          type: models.CharField
         type: models.CharField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -1104,7 +1002,6 @@ results:
         parameters:
           help_text: API Server 的后端地址
           max_length: 255
-          type: models.CharField
         type: models.CharField
       overridden_hostname:
         line: 1
@@ -1115,7 +1012,6 @@ results:
           help_text: 在请求该 APIServer 时, 使用该 hostname 替换具体的 backend 中的 hostname
           max_length: 255
           'null': true
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1141,7 +1037,6 @@ results:
         parameters:
           blank: true
           help_text: 描述信息
-          type: models.TextField
         type: models.TextField
       is_default:
         line: 1
@@ -1150,7 +1045,6 @@ results:
           default: false
           help_text: 是否为默认集群
           'null': true
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
@@ -1158,7 +1052,6 @@ results:
         parameters:
           help_text: name of the cluster
           max_length: 32
-          type: models.CharField
           unique: true
         type: models.CharField
       region:
@@ -1167,14 +1060,12 @@ results:
         parameters:
           db_index: true
           max_length: 32
-          type: models.CharField
         type: models.CharField
       token_type:
         line: 1
         name: token_type
         parameters:
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
       type:
         line: 1
@@ -1183,7 +1074,6 @@ results:
           default: '`ClusterType.NORMAL`'
           help_text: cluster type
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -1200,13 +1090,11 @@ results:
         name: enabled
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       spec:
         line: 1
         name: spec
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
     line: 1
     meta: {}
@@ -1233,34 +1121,29 @@ results:
         name: enabled
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       spec:
         line: 1
         name: spec
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
       type:
         line: 1
         name: type
         parameters:
           default: '`AppAddOnType.SIMPLE_SIDECAR.value`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -1280,14 +1163,12 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -1305,7 +1186,6 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       region:
         line: 1
@@ -1313,14 +1193,12 @@ results:
         parameters:
           help_text: 部署区域
           max_length: 32
-          type: models.CharField
         type: models.CharField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -1341,7 +1219,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
     line: 1
@@ -1361,7 +1238,6 @@ results:
         name: registry
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
       username:
         line: 1
@@ -1369,7 +1245,6 @@ results:
         parameters:
           blank: false
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1394,7 +1269,6 @@ results:
         name: application_id
         parameters:
           'null': false
-          type: models.UUIDField
           verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
       description:
@@ -1402,7 +1276,6 @@ results:
         name: description
         parameters:
           help_text: 描述
-          type: models.TextField
         type: models.TextField
       name:
         line: 1
@@ -1410,7 +1283,6 @@ results:
         parameters:
           help_text: 凭证名称
           max_length: 32
-          type: models.CharField
         type: models.CharField
       username:
         line: 1
@@ -1418,7 +1290,6 @@ results:
         parameters:
           help_text: 账号
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1436,15 +1307,13 @@ results:
       dst_port:
         line: 1
         name: dst_port
-        parameters:
-          type: models.IntegerField
+        parameters: {}
         type: models.IntegerField
       host:
         line: 1
         name: host
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
       protocol:
         line: 1
@@ -1452,20 +1321,17 @@ results:
         parameters:
           choices: '`NetworkProtocol.get_django_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
       service:
         line: 1
         name: service
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
       src_port:
         line: 1
         name: src_port
-        parameters:
-          type: models.IntegerField
+        parameters: {}
         type: models.IntegerField
     line: 1
     meta: {}
@@ -1487,21 +1353,18 @@ results:
         name: cpu_limit
         parameters:
           max_length: 16
-          type: models.CharField
         type: models.CharField
       memory_limit:
         line: 1
         name: memory_limit
         parameters:
           max_length: 16
-          type: models.CharField
         type: models.CharField
       replicas:
         line: 1
         name: replicas
         parameters:
           default: 1
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -1546,21 +1409,18 @@ results:
         parameters:
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       name:
         line: 1
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       nodes_cnt:
         line: 1
         name: nodes_cnt
         parameters:
           default: 0
-          type: models.IntegerField
         type: models.IntegerField
       nodes_digest:
         line: 1
@@ -1568,14 +1428,12 @@ results:
         parameters:
           db_index: true
           max_length: 64
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1600,21 +1458,18 @@ results:
         name: host
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
       https_auto_redirection:
         line: 1
         name: https_auto_redirection
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       https_enabled:
         line: 1
         name: https_enabled
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       path_prefix:
         line: 1
@@ -1623,21 +1478,18 @@ results:
           default: /
           help_text: the accessable path for current domain
           max_length: 64
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       source:
         line: 1
         name: source
         parameters:
           choices: '`make_enum_choices(AppDomainSource)`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -1675,14 +1527,12 @@ results:
         name: auto_match_cns
         parameters:
           max_length: 2048
-          type: models.TextField
         type: models.TextField
       name:
         line: 1
         name: name
         parameters:
           max_length: 128
-          type: models.CharField
           unique: true
           validators:
           - '`RegexValidator(DNS_SAFE_PATTERN)`'
@@ -1692,7 +1542,6 @@ results:
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1710,27 +1559,23 @@ results:
         name: cluster_name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       source:
         line: 1
         name: source
-        parameters:
-          type: models.IntegerField
+        parameters: {}
         type: models.IntegerField
       subpath:
         line: 1
         name: subpath
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1756,7 +1601,6 @@ results:
         name: name
         parameters:
           max_length: 128
-          type: models.CharField
           unique: true
           validators:
           - '`RegexValidator(DNS_SAFE_PATTERN)`'
@@ -1766,7 +1610,6 @@ results:
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1785,7 +1628,6 @@ results:
         parameters:
           help_text: 关联的环境 ID
           'null': false
-          type: models.BigIntegerField
         type: models.BigIntegerField
       https_enabled:
         line: 1
@@ -1794,7 +1636,6 @@ results:
           default: false
           help_text: 该域名是否开启 https
           'null': true
-          type: models.BooleanField
         type: models.BooleanField
       module_id:
         line: 1
@@ -1802,7 +1643,6 @@ results:
         parameters:
           help_text: 关联的模块 ID
           'null': false
-          type: models.UUIDField
         type: models.UUIDField
       name:
         line: 1
@@ -1811,7 +1651,6 @@ results:
           help_text: 域名
           max_length: 253
           'null': false
-          type: models.CharField
         type: models.CharField
       path_prefix:
         line: 1
@@ -1820,7 +1659,6 @@ results:
           default: /
           help_text: the accessable path for current domain
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -1842,8 +1680,7 @@ results:
       command:
         line: 1
         name: command
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
       exit_code:
         line: 1
@@ -1851,7 +1688,6 @@ results:
         parameters:
           help_text: 容器结束状态码, -1 表示未知
           'null': true
-          type: models.SmallIntegerField
         type: models.SmallIntegerField
       int_requested_at:
         line: 1
@@ -1859,7 +1695,6 @@ results:
         parameters:
           help_text: 用户请求中断的时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       logs_was_ready_at:
         line: 1
@@ -1867,7 +1702,6 @@ results:
         parameters:
           help_text: Pod 状态就绪允许读取日志的时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       operator:
         line: 1
@@ -1875,7 +1709,6 @@ results:
         parameters:
           help_text: 操作者(被编码的 username), 目前该字段无意义
           max_length: 64
-          type: models.CharField
         type: models.CharField
       status:
         line: 1
@@ -1884,7 +1717,6 @@ results:
           choices: '`CommandStatus.get_choices()`'
           default: '`CommandStatus.PENDING.value`'
           max_length: 12
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
@@ -1892,13 +1724,11 @@ results:
         parameters:
           choices: '`CommandType.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
       version:
         line: 1
         name: version
-        parameters:
-          type: models.PositiveIntegerField
+        parameters: {}
         type: models.PositiveIntegerField
     line: 1
     meta:
@@ -1939,7 +1769,6 @@ results:
         parameters:
           choices: '`CIBackend.get_django_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: CI引擎
         type: models.CharField
       enabled:
@@ -1947,7 +1776,6 @@ results:
         name: enabled
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否启用
         type: models.BooleanField
     line: 1
@@ -1972,7 +1800,6 @@ results:
         parameters:
           choices: '`CIBackend.get_django_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: CI引擎
         type: models.CharField
       enabled:
@@ -1980,7 +1807,6 @@ results:
         name: enabled
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否启用
         type: models.BooleanField
       id:
@@ -1990,7 +1816,6 @@ results:
           db_index: true
           max_length: 64
           primary_key: true
-          type: models.CharField
           unique: true
         type: models.CharField
       name:
@@ -1998,7 +1823,6 @@ results:
         name: name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2045,7 +1869,6 @@ results:
         parameters:
           help_text: 沙箱标识
           max_length: 8
-          type: models.CharField
           unique: true
         type: models.CharField
       expired_at:
@@ -2054,7 +1877,6 @@ results:
         parameters:
           help_text: 到期时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       status:
         line: 1
@@ -2062,7 +1884,6 @@ results:
         parameters:
           choices: '`DevSandboxStatus.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 沙箱状态
         type: models.CharField
     line: 1
@@ -2086,8 +1907,7 @@ results:
       bk_data_id:
         line: 1
         name: bk_data_id
-        parameters:
-          type: models.BigIntegerField
+        parameters: {}
         type: models.BigIntegerField
       collector_config_id:
         line: 1
@@ -2095,7 +1915,6 @@ results:
         parameters:
           db_index: true
           help_text: 采集配置ID
-          type: models.BigIntegerField
         type: models.BigIntegerField
       index_set_id:
         line: 1
@@ -2103,34 +1922,29 @@ results:
         parameters:
           help_text: 查询时使用
           'null': true
-          type: models.BigIntegerField
         type: models.BigIntegerField
       is_builtin:
         line: 1
         name: is_builtin
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       is_enabled:
         line: 1
         name: is_enabled
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       log_paths:
         line: 1
         name: log_paths
-        parameters:
-          type: models.JSONField
+        parameters: {}
         type: models.JSONField
       log_type:
         line: 1
         name: log_type
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       name_en:
         line: 1
@@ -2139,7 +1953,6 @@ results:
           db_index: true
           help_text: 5-50个字符，仅包含字母数字下划线, 查询索引是 name_en-*
           max_length: 50
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2165,7 +1978,6 @@ results:
         parameters:
           help_text: '日志后端类型, 可选 ''es'', ''bkLog'' '
           max_length: 16
-          type: models.CharField
         type: models.CharField
       collector_config_id:
         line: 1
@@ -2173,7 +1985,6 @@ results:
         parameters:
           help_text: 采集配置ID
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
     line: 1
@@ -2193,7 +2004,6 @@ results:
           blank: true
           max_length: 16
           'null': true
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2233,7 +2043,6 @@ results:
         name: collector_config_id
         parameters:
           primary_key: true
-          type: models.BigAutoField
         type: models.BigAutoField
       process_type:
         line: 1
@@ -2241,7 +2050,6 @@ results:
         parameters:
           help_text: 进程类型(名称)
           max_length: 16
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -2270,7 +2078,6 @@ results:
           blank: true
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       height:
         line: 1
@@ -2278,14 +2085,12 @@ results:
         parameters:
           default: 550
           help_text: 应用页面高度，必须为整数，单位为px
-          type: models.IntegerField
         type: models.IntegerField
       is_win_maximize:
         line: 1
         name: is_win_maximize
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       open_mode:
         line: 1
@@ -2294,7 +2099,6 @@ results:
           choices: '`constant.OpenMode.get_django_choices()`'
           default: '`constant.OpenMode.NEW_TAB.value`'
           max_length: 20
-          type: models.CharField
         type: models.CharField
       resizable:
         line: 1
@@ -2302,7 +2106,6 @@ results:
         parameters:
           default: true
           help_text: 选项：true(可以拉伸)，false(不可以拉伸)
-          type: models.BooleanField
         type: models.BooleanField
       visible:
         line: 1
@@ -2310,7 +2113,6 @@ results:
         parameters:
           default: true
           help_text: '选项: true(是)，false(否)'
-          type: models.BooleanField
         type: models.BooleanField
       width:
         line: 1
@@ -2318,7 +2120,6 @@ results:
         parameters:
           default: 890
           help_text: 应用页面宽度，必须为整数，单位为px
-          type: models.IntegerField
         type: models.IntegerField
       win_bars:
         line: 1
@@ -2326,7 +2127,6 @@ results:
         parameters:
           default: true
           help_text: '选项: true(on)，false(off)'
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -2348,7 +2148,6 @@ results:
         name: auto_enable_when_deploy
         parameters:
           'null': true
-          type: models.BooleanField
           verbose_name: 成功部署主模块正式环境后, 是否自动打开市场
         type: models.BooleanField
       custom_domain_url:
@@ -2357,14 +2156,12 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.URLField
           verbose_name: 绑定的独立域名访问地址
         type: models.URLField
       enabled:
         line: 1
         name: enabled
         parameters:
-          type: models.BooleanField
           verbose_name: 是否开启
         type: models.BooleanField
       prefer_https:
@@ -2372,7 +2169,6 @@ results:
         name: prefer_https
         parameters:
           'null': true
-          type: models.BooleanField
           verbose_name: '[deprecated] 仅为 False 时强制使用 http, 否则保持与集群 https_enabled 状态一致'
         type: models.BooleanField
       source_tp_url:
@@ -2381,14 +2177,12 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.URLField
           verbose_name: 第三方访问地址
         type: models.URLField
       source_url_type:
         line: 1
         name: source_url_type
         parameters:
-          type: models.SmallIntegerField
           verbose_name: 访问地址类型
         type: models.SmallIntegerField
     line: 1
@@ -2417,7 +2211,6 @@ results:
         parameters:
           help_text: 应用编码
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       state:
@@ -2427,7 +2220,6 @@ results:
           choices: '`constant.AppState.get_choices()`'
           default: 1
           help_text: 应用状态
-          type: models.SmallIntegerField
         type: models.SmallIntegerField
       type:
         line: 1
@@ -2435,7 +2227,6 @@ results:
         parameters:
           choices: '`constant.AppType.get_choices()`'
           help_text: 按实现方式分类
-          type: models.SmallIntegerField
         type: models.SmallIntegerField
     line: 1
     meta: {}
@@ -2463,7 +2254,6 @@ results:
         parameters:
           default: true
           help_text: 创建应用时是否可选择该分类
-          type: models.BooleanField
         type: models.BooleanField
       index:
         line: 1
@@ -2471,7 +2261,6 @@ results:
         parameters:
           default: 0
           help_text: 显示排序字段
-          type: models.IntegerField
         type: models.IntegerField
       name:
         line: 1
@@ -2479,7 +2268,6 @@ results:
         parameters:
           help_text: 分类名称
           max_length: 64
-          type: models.CharField
         type: models.CharField
       region:
         line: 1
@@ -2487,7 +2275,6 @@ results:
         parameters:
           help_text: 部署区域
           max_length: 32
-          type: models.CharField
         type: models.CharField
       remark:
         line: 1
@@ -2497,7 +2284,6 @@ results:
           help_text: 备注
           max_length: 255
           'null': true
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2522,7 +2308,6 @@ results:
         name: remote_id
         parameters:
           db_index: true
-          type: django_models.IntegerField
         type: django_models.IntegerField
     line: 1
     meta: {}
@@ -2544,21 +2329,18 @@ results:
         name: credentials_enabled
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否使用凭证
         type: models.BooleanField
       plan_id:
         line: 1
         name: plan_id
         parameters:
-          type: models.UUIDField
           verbose_name: 远程增强服务 Plan ID
         type: models.UUIDField
       service_id:
         line: 1
         name: service_id
         parameters:
-          type: models.UUIDField
           verbose_name: 远程增强服务 ID
         type: models.UUIDField
       service_instance_id:
@@ -2566,7 +2348,6 @@ results:
         name: service_instance_id
         parameters:
           'null': true
-          type: models.UUIDField
         type: models.UUIDField
     line: 1
     meta:
@@ -2590,7 +2371,6 @@ results:
         line: 1
         name: service_id
         parameters:
-          type: models.UUIDField
           verbose_name: 远程增强服务 ID
         type: models.UUIDField
     line: 1
@@ -2616,7 +2396,6 @@ results:
         name: credentials_enabled
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否使用凭证
         type: models.BooleanField
     line: 1
@@ -2679,14 +2458,12 @@ results:
         line: 1
         name: ref_attachment_pk
         parameters:
-          type: models.IntegerField
           verbose_name: 被共享的服务绑定关系主键
         type: models.IntegerField
       service_id:
         line: 1
         name: service_id
         parameters:
-          type: models.UUIDField
           verbose_name: 增强服务 ID
         type: models.UUIDField
       service_type:
@@ -2694,7 +2471,6 @@ results:
         name: service_type
         parameters:
           max_length: 16
-          type: models.CharField
           verbose_name: 增强服务类型
         type: models.CharField
     line: 1
@@ -2722,7 +2498,6 @@ results:
         parameters:
           blank: true
           max_length: 1024
-          type: models.CharField
           verbose_name: 方案简介
         type: models.CharField
       is_active:
@@ -2730,7 +2505,6 @@ results:
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否可用
         type: models.BooleanField
       name:
@@ -2738,7 +2512,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2764,7 +2537,6 @@ results:
         parameters:
           default: false
           help_text: 实例是否已被分配
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -2786,7 +2558,6 @@ results:
         name: namespace
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       uid:
         line: 1
@@ -2795,7 +2566,6 @@ results:
           db_index: true
           max_length: 64
           'null': false
-          type: models.CharField
           unique: true
         type: models.CharField
     line: 1
@@ -2818,7 +2588,6 @@ results:
           blank: true
           max_length: 1024
           'null': true
-          type: models.CharField
           verbose_name: 支持编程语言
         type: models.CharField
       is_active:
@@ -2826,7 +2595,6 @@ results:
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否可用
         type: models.BooleanField
       is_visible:
@@ -2834,7 +2602,6 @@ results:
         name: is_visible
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否可见
         type: models.BooleanField
       logo_b64:
@@ -2843,7 +2610,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.TextField
           verbose_name: 服务 logo 的地址, 支持base64格式
         type: models.TextField
       name:
@@ -2851,7 +2617,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 服务名称
         type: models.CharField
       region:
@@ -2859,7 +2624,6 @@ results:
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2884,7 +2648,6 @@ results:
         name: sort_priority
         parameters:
           default: 0
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -2901,7 +2664,6 @@ results:
         name: to_be_deleted
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -2929,7 +2691,6 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       source:
         line: 1
@@ -2937,7 +2698,6 @@ results:
         parameters:
           blank: false
           max_length: 32
-          type: models.CharField
         type: models.CharField
       tag_str:
         line: 1
@@ -2945,7 +2705,6 @@ results:
         parameters:
           blank: false
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -2970,7 +2729,6 @@ results:
         name: created
         parameters:
           default: '`timezone.now`'
-          type: models.DateTimeField
         type: models.DateTimeField
       tag_str:
         line: 1
@@ -2978,14 +2736,12 @@ results:
         parameters:
           blank: false
           max_length: 128
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
         name: type
         parameters:
           default: '`DeployFailurePatternType.REGULAR_EXPRESSION`'
-          type: models.IntegerField
         type: models.IntegerField
       value:
         line: 1
@@ -2993,7 +2749,6 @@ results:
         parameters:
           blank: false
           max_length: 2048
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -3011,7 +2766,6 @@ results:
         name: created
         parameters:
           default: '`timezone.now`'
-          type: models.DateTimeField
         type: models.DateTimeField
       location:
         line: 1
@@ -3019,14 +2773,12 @@ results:
         parameters:
           blank: false
           max_length: 256
-          type: models.CharField
         type: models.CharField
       priority:
         line: 1
         name: priority
         parameters:
           default: 1
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -3045,7 +2797,6 @@ results:
         parameters:
           help_text: 插件使用方所绑定的蓝鲸应用代号
           max_length: 20
-          type: models.CharField
           unique: true
         type: models.CharField
       code_name:
@@ -3054,7 +2805,6 @@ results:
         parameters:
           help_text: 插件使用方的英文代号，可替代主键使用
           max_length: 32
-          type: models.CharField
           unique: true
         type: models.CharField
       introduction:
@@ -3064,7 +2814,6 @@ results:
           blank: true
           max_length: 512
           'null': true
-          type: models.CharField
         type: models.CharField
       name:
         line: 1
@@ -3072,7 +2821,6 @@ results:
         parameters:
           help_text: 插件使用方名称
           max_length: 32
-          type: models.CharField
           unique: true
         type: models.CharField
     line: 1
@@ -3095,14 +2843,12 @@ results:
         name: api_gw_id
         parameters:
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
       api_gw_last_synced_at:
         line: 1
         name: api_gw_last_synced_at
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       api_gw_name:
         line: 1
@@ -3112,7 +2858,6 @@ results:
           help_text: 为空时表示从未成功同步过，暂无已绑定网关
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       contact:
         line: 1
@@ -3122,7 +2867,6 @@ results:
           help_text: 使用 ; 分隔的用户名
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       introduction:
         line: 1
@@ -3132,7 +2876,6 @@ results:
           help_text: 插件简介
           max_length: 512
           'null': true
-          type: models.CharField
         type: models.CharField
       pre_distributor_codes:
         line: 1
@@ -3140,7 +2883,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
         type: models.JSONField
     line: 1
     meta: {}
@@ -3169,7 +2911,6 @@ results:
         parameters:
           help_text: 分类英文名称，可替代主键使用
           max_length: 32
-          type: models.CharField
           unique: true
         type: models.CharField
       name:
@@ -3178,7 +2919,6 @@ results:
         parameters:
           help_text: 插件使用方名称
           max_length: 32
-          type: models.CharField
           unique: true
         type: models.CharField
       priority:
@@ -3187,7 +2927,6 @@ results:
         parameters:
           default: 0
           help_text: 数字越大，优先级越高
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -3207,7 +2946,6 @@ results:
         name: grade_manager_id
         parameters:
           help_text: 分级管理员 ID
-          type: models.IntegerField
         type: models.IntegerField
       pd_id:
         line: 1
@@ -3215,7 +2953,6 @@ results:
         parameters:
           help_text: 插件类型标识
           max_length: 64
-          type: models.CharField
         type: models.CharField
       plugin_id:
         line: 1
@@ -3223,7 +2960,6 @@ results:
         parameters:
           help_text: 插件标识
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -3245,7 +2981,6 @@ results:
         parameters:
           help_text: 插件类型标识
           max_length: 64
-          type: models.CharField
         type: models.CharField
       plugin_id:
         line: 1
@@ -3253,21 +2988,18 @@ results:
         parameters:
           help_text: 插件标识
           max_length: 32
-          type: models.CharField
         type: models.CharField
       role:
         line: 1
         name: role
         parameters:
           default: '`PluginRole.DEVELOPER.value`'
-          type: models.IntegerField
         type: models.IntegerField
       user_group_id:
         line: 1
         name: user_group_id
         parameters:
           help_text: 权限中心用户组 ID
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -3289,7 +3021,6 @@ results:
         parameters:
           default: '`PluginBasicInfoAccessMode.READWRITE`'
           max_length: 16
-          type: models.CharField
           verbose_name: 基本信息查看模式
         type: models.CharField
       extra_fields_order:
@@ -3297,14 +3028,12 @@ results:
         name: extra_fields_order
         parameters:
           default: '`list`'
-          type: models.JSONField
         type: models.JSONField
       release_method:
         line: 1
         name: release_method
         parameters:
           max_length: 16
-          type: models.CharField
           verbose_name: 发布方式
         type: models.CharField
       repository_group:
@@ -3312,7 +3041,6 @@ results:
         name: repository_group
         parameters:
           max_length: 255
-          type: models.CharField
           verbose_name: 插件代码初始化仓库组
         type: models.CharField
     line: 1
@@ -3336,7 +3064,6 @@ results:
         parameters:
           default: ''
           max_length: 255
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -3356,22 +3083,19 @@ results:
       administrator:
         line: 1
         name: administrator
-        parameters:
-          type: models.JSONField
+        parameters: {}
         type: models.JSONField
       docs:
         line: 1
         name: docs
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
       identifier:
         line: 1
         name: identifier
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       logo:
@@ -3379,7 +3103,6 @@ results:
         name: logo
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -3396,14 +3119,12 @@ results:
         name: extra_fields_order
         parameters:
           default: '`list`'
-          type: models.JSONField
         type: models.JSONField
       storage:
         line: 1
         name: storage
         parameters:
           max_length: 16
-          type: models.CharField
           verbose_name: 存储方式
         type: models.CharField
     line: 1
@@ -3441,7 +3162,6 @@ results:
         name: service_id
         parameters:
           help_text: 用于在 ITSM 上提申请单据
-          type: models.IntegerField
           verbose_name: 审批服务ID
         type: models.IntegerField
       service_name:
@@ -3449,7 +3169,6 @@ results:
         name: service_name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
           verbose_name: 审批服务名称
         type: models.CharField
@@ -3469,7 +3188,6 @@ results:
         parameters:
           choices: '`constants.ActionTypes.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
       specific:
         line: 1
@@ -3477,7 +3195,6 @@ results:
         parameters:
           max_length: 255
           'null': true
-          type: models.CharField
         type: models.CharField
       subject:
         line: 1
@@ -3485,7 +3202,6 @@ results:
         parameters:
           choices: '`constants.SubjectTypes.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -3507,7 +3223,6 @@ results:
         name: row
         parameters:
           default: '`dict`'
-          type: models.JSONField
           verbose_name: '配置内容(1行), 格式 {''column_key'': ''value''}'
         type: models.JSONField
       unique_key:
@@ -3515,7 +3230,6 @@ results:
         name: unique_key
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 唯一标识
         type: models.CharField
     line: 1
@@ -3540,7 +3254,6 @@ results:
         line: 1
         name: extra_fields
         parameters:
-          type: models.JSONField
           verbose_name: 额外字段
         type: models.JSONField
       id:
@@ -3549,7 +3262,6 @@ results:
         parameters:
           help_text: 插件id
           max_length: 32
-          type: models.CharField
         type: models.CharField
       is_deleted:
         line: 1
@@ -3557,7 +3269,6 @@ results:
         parameters:
           default: false
           help_text: 是否已删除
-          type: models.BooleanField
         type: models.BooleanField
       language:
         line: 1
@@ -3565,7 +3276,6 @@ results:
         parameters:
           help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          type: models.CharField
           verbose_name: 开发语言
         type: models.CharField
       publisher:
@@ -3574,7 +3284,6 @@ results:
         parameters:
           default: ''
           max_length: 64
-          type: models.CharField
           verbose_name: 插件发布者
         type: models.CharField
       repo_type:
@@ -3583,7 +3292,6 @@ results:
         parameters:
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 源码托管类型
         type: models.CharField
       repository:
@@ -3591,7 +3299,6 @@ results:
         name: repository
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
       status:
         line: 1
@@ -3600,7 +3307,6 @@ results:
           choices: '`constants.PluginStatus.get_choices()`'
           default: '`constants.PluginStatus.WAITING_APPROVAL`'
           max_length: 16
-          type: models.CharField
           verbose_name: 插件状态
         type: models.CharField
     line: 1
@@ -3627,7 +3333,6 @@ results:
         parameters:
           db_index: true
           max_length: 64
-          type: models.CharField
           verbose_name: 分类
         type: models.CharField
       contact:
@@ -3635,14 +3340,12 @@ results:
         name: contact
         parameters:
           help_text: 以分号(;)分割
-          type: models.TextField
           verbose_name: 联系人
         type: models.TextField
       extra_fields:
         line: 1
         name: extra_fields
         parameters:
-          type: models.JSONField
           verbose_name: 额外字段
         type: models.JSONField
     line: 1
@@ -3664,14 +3367,12 @@ results:
         line: 1
         name: comment
         parameters:
-          type: models.TextField
           verbose_name: 版本日志
         type: models.TextField
       extra_fields:
         line: 1
         name: extra_fields
         parameters:
-          type: models.JSONField
           verbose_name: 额外字段
         type: models.JSONField
       gray_status:
@@ -3680,7 +3381,6 @@ results:
         parameters:
           default: '`constants.GrayReleaseStatus.IN_GRAY`'
           max_length: 32
-          type: models.CharField
           verbose_name: 灰度发布状态
         type: models.CharField
       is_rolled_back:
@@ -3689,7 +3389,6 @@ results:
         parameters:
           default: false
           help_text: 是否已回滚
-          type: models.BooleanField
         type: models.BooleanField
       retryable:
         line: 1
@@ -3697,7 +3396,6 @@ results:
         parameters:
           default: true
           help_text: 失败后是否可重试
-          type: models.BooleanField
         type: models.BooleanField
       semver_type:
         line: 1
@@ -3706,7 +3404,6 @@ results:
           help_text: 该字段只用于自动生成版本号的插件
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 语义化版本类型
         type: models.CharField
       source_hash:
@@ -3714,7 +3411,6 @@ results:
         name: source_hash
         parameters:
           max_length: 128
-          type: models.CharField
           verbose_name: 代码提交哈希
         type: models.CharField
       source_location:
@@ -3722,7 +3418,6 @@ results:
         name: source_location
         parameters:
           max_length: 2048
-          type: models.CharField
           verbose_name: 代码仓库地址
         type: models.CharField
       source_version_name:
@@ -3731,7 +3426,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: 代码分支名/tag名
         type: models.CharField
       source_version_type:
@@ -3740,7 +3434,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: 代码版本类型(branch/tag)
         type: models.CharField
       status:
@@ -3749,7 +3442,6 @@ results:
         parameters:
           default: '`constants.PluginReleaseStatus.INITIAL`'
           max_length: 16
-          type: models.CharField
         type: models.CharField
       tag:
         line: 1
@@ -3758,7 +3450,6 @@ results:
           db_index: true
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 标签
         type: models.CharField
       type:
@@ -3767,7 +3458,6 @@ results:
         parameters:
           choices: '`constants.PluginReleaseType.get_choices()`'
           max_length: 16
-          type: models.CharField
           verbose_name: 版本类型(正式/测试)
         type: models.CharField
       version:
@@ -3775,7 +3465,6 @@ results:
         name: version
         parameters:
           max_length: 255
-          type: models.CharField
           verbose_name: 版本号
         type: models.CharField
     line: 1
@@ -3804,14 +3493,12 @@ results:
         parameters:
           help_text: 该字段仅 invoke_method = api 时可用
           'null': true
-          type: models.JSONField
           verbose_name: API 详情
         type: models.JSONField
       fail_message:
         line: 1
         name: fail_message
         parameters:
-          type: models.TextField
           verbose_name: 错误原因
         type: models.TextField
       invoke_method:
@@ -3820,7 +3507,6 @@ results:
         parameters:
           help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          type: models.CharField
           verbose_name: 触发方式
         type: models.CharField
       operator:
@@ -3829,7 +3515,6 @@ results:
         parameters:
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 操作人
         type: models.CharField
       pipeline_detail:
@@ -3839,7 +3524,6 @@ results:
           default: null
           help_text: 该字段仅 invoke_method = pipeline 时可用
           'null': true
-          type: models.JSONField
           verbose_name: 流水线构建详情
         type: models.JSONField
       stage_id:
@@ -3847,7 +3531,6 @@ results:
         name: stage_id
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 阶段标识
         type: models.CharField
       stage_name:
@@ -3856,7 +3539,6 @@ results:
         parameters:
           help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          type: models.CharField
           verbose_name: 阶段名称
         type: models.CharField
       status:
@@ -3865,7 +3547,6 @@ results:
         parameters:
           default: '`constants.PluginReleaseStatus.INITIAL`'
           max_length: 16
-          type: models.CharField
           verbose_name: 发布状态
         type: models.CharField
       status_polling_method:
@@ -3875,7 +3556,6 @@ results:
           default: '`constants.StatusPollingMethod.API`'
           help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          type: models.CharField
           verbose_name: 阶段的状态轮询方式
         type: models.CharField
     line: 1
@@ -3908,7 +3588,6 @@ results:
           blank: true
           help_text: 格式：['1111', '222222']
           'null': true
-          type: models.JSONField
           verbose_name: 蓝盾项目ID
         type: models.JSONField
       organization:
@@ -3917,7 +3596,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 组织架构
         type: models.JSONField
       strategy:
@@ -3926,7 +3604,6 @@ results:
         parameters:
           choices: '`constants.ReleaseStrategy.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 发布策略
         type: models.CharField
     line: 1
@@ -3949,7 +3626,6 @@ results:
         name: bkci_project
         parameters:
           default: '`list`'
-          type: models.JSONField
           verbose_name: 蓝盾项目ID
         type: models.JSONField
       is_in_approval:
@@ -3957,7 +3633,6 @@ results:
         name: is_in_approval
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否在审批中
         type: models.BooleanField
       organization:
@@ -3966,7 +3641,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 组织架构
         type: models.JSONField
     line: 1
@@ -3989,14 +3663,12 @@ results:
         name: effect
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -4014,7 +3686,6 @@ results:
         name: bk_app_code
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       is_active:
@@ -4022,7 +3693,6 @@ results:
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -4045,21 +3715,18 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       provider:
         line: 1
         name: provider
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       token_type:
         line: 1
         name: token_type
         parameters:
           max_length: 16
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -4082,14 +3749,12 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       provider:
         line: 1
         name: provider
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -4113,21 +3778,18 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       is_active:
         line: 1
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       token:
         line: 1
         name: token
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
     line: 1
@@ -4151,14 +3813,12 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.TextField
         type: models.TextField
       role:
         line: 1
         name: role
         parameters:
           default: '`SiteRole.USER.value`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -4175,13 +3835,11 @@ results:
         name: extra_info
         parameters:
           help_text: 蓝鲸监控API-metadata_get_space_detail 的原始返回值
-          type: models.JSONField
         type: models.JSONField
       id:
         line: 1
         name: id
         parameters:
-          type: models.IntegerField
           verbose_name: 蓝鲸监控空间 id
         type: models.IntegerField
       space_id:
@@ -4190,7 +3848,6 @@ results:
         parameters:
           help_text: 同一空间类型下唯一
           max_length: 48
-          type: models.CharField
           verbose_name: 空间id
         type: models.CharField
       space_name:
@@ -4198,7 +3855,6 @@ results:
         name: space_name
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 空间名称
         type: models.CharField
       space_type_id:
@@ -4206,7 +3862,6 @@ results:
         name: space_type_id
         parameters:
           max_length: 48
-          type: models.CharField
           verbose_name: 空间类型id
         type: models.CharField
       space_uid:
@@ -4215,7 +3870,6 @@ results:
         parameters:
           help_text: '{space_type_id}__{space_id}'
           max_length: 48
-          type: models.CharField
           verbose_name: 蓝鲸监控空间 uid
         type: models.CharField
     line: 1
@@ -4242,14 +3896,12 @@ results:
         parameters:
           help_text: 应用代号
           max_length: 20
-          type: models.CharField
         type: models.CharField
       grade_manager_id:
         line: 1
         name: grade_manager_id
         parameters:
           help_text: 分级管理员 ID
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -4270,21 +3922,18 @@ results:
         parameters:
           help_text: 应用代号
           max_length: 20
-          type: models.CharField
         type: models.CharField
       role:
         line: 1
         name: role
         parameters:
           default: '`ApplicationRole.DEVELOPER.value`'
-          type: models.IntegerField
         type: models.IntegerField
       user_group_id:
         line: 1
         name: user_group_id
         parameters:
           help_text: 权限中心用户组 ID
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -4304,7 +3953,6 @@ results:
         name: bk_app_code
         parameters:
           max_length: 20
-          type: models.CharField
           unique: true
         type: models.CharField
       bk_app_secret_id:
@@ -4312,7 +3960,6 @@ results:
         name: bk_app_secret_id
         parameters:
           help_text: 不存储密钥的信息，仅存储密钥 ID
-          type: models.IntegerField
           verbose_name: 应用密钥的 ID
         type: models.IntegerField
     line: 1
@@ -4330,7 +3977,6 @@ results:
         name: client_id
         parameters:
           max_length: 20
-          type: models.CharField
           unique: true
           verbose_name: 应用编码
         type: models.CharField
@@ -4350,7 +3996,6 @@ results:
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          type: models.IntegerField
           verbose_name: 访问方式
         type: models.IntegerField
       app_code:
@@ -4360,7 +4005,6 @@ results:
           blank: true
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 应用ID, 非必填
         type: models.CharField
       attribute:
@@ -4371,7 +4015,6 @@ results:
           help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 对象属性
         type: models.CharField
       data_after:
@@ -4380,7 +4023,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作后的数据
         type: models.JSONField
       data_before:
@@ -4389,7 +4031,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作前的数据
         type: models.JSONField
       end_time:
@@ -4398,7 +4039,6 @@ results:
         parameters:
           help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       environment:
         line: 1
@@ -4408,7 +4048,6 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 环境，非必填
         type: models.CharField
       module_name:
@@ -4418,7 +4057,6 @@ results:
           blank: true
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 模块名，非必填
         type: models.CharField
       operation:
@@ -4427,7 +4065,6 @@ results:
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作类型
         type: models.CharField
       result_code:
@@ -4436,7 +4073,6 @@ results:
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          type: models.IntegerField
           verbose_name: 操作结果
         type: models.IntegerField
       start_time:
@@ -4445,7 +4081,6 @@ results:
         parameters:
           auto_now_add: true
           db_index: true
-          type: models.DateTimeField
           verbose_name: 开始时间
         type: models.DateTimeField
       target:
@@ -4454,7 +4089,6 @@ results:
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作对象
         type: models.CharField
     line: 1
@@ -4472,7 +4106,6 @@ results:
         name: latest_operated_at
         parameters:
           db_index: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta: {}
@@ -4500,7 +4133,6 @@ results:
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          type: models.IntegerField
           verbose_name: 访问方式
         type: models.IntegerField
       action_id:
@@ -4512,14 +4144,12 @@ results:
           help_text: action_id 为空则不会将数据上报到审计中心
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       app_code:
         line: 1
         name: app_code
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 应用ID, 必填
         type: models.CharField
       attribute:
@@ -4530,7 +4160,6 @@ results:
           help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 对象属性
         type: models.CharField
       data_after:
@@ -4539,7 +4168,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作后的数据
         type: models.JSONField
       data_before:
@@ -4548,7 +4176,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作前的数据
         type: models.JSONField
       end_time:
@@ -4557,7 +4184,6 @@ results:
         parameters:
           help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       environment:
         line: 1
@@ -4567,7 +4193,6 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 环境，非必填
         type: models.CharField
       module_name:
@@ -4577,7 +4202,6 @@ results:
           blank: true
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 模块名，非必填
         type: models.CharField
       operation:
@@ -4586,7 +4210,6 @@ results:
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作类型
         type: models.CharField
       resource_type_id:
@@ -4597,7 +4220,6 @@ results:
           default: '`ResourceType.Application`'
           help_text: 开发者中心注册的资源都为蓝鲸应用
           max_length: 32
-          type: models.CharField
         type: models.CharField
       result_code:
         line: 1
@@ -4605,7 +4227,6 @@ results:
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          type: models.IntegerField
           verbose_name: 操作结果
         type: models.IntegerField
       start_time:
@@ -4614,7 +4235,6 @@ results:
         parameters:
           auto_now_add: true
           db_index: true
-          type: models.DateTimeField
           verbose_name: 开始时间
         type: models.DateTimeField
       target:
@@ -4623,7 +4243,6 @@ results:
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作对象
         type: models.CharField
     line: 1
@@ -4642,7 +4261,6 @@ results:
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          type: models.IntegerField
           verbose_name: 访问方式
         type: models.IntegerField
       attribute:
@@ -4653,7 +4271,6 @@ results:
           help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 对象属性
         type: models.CharField
       data_after:
@@ -4662,7 +4279,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作后的数据
         type: models.JSONField
       data_before:
@@ -4671,7 +4287,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.JSONField
           verbose_name: 操作前的数据
         type: models.JSONField
       end_time:
@@ -4680,7 +4295,6 @@ results:
         parameters:
           help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       environment:
         line: 1
@@ -4690,7 +4304,6 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 环境，非必填
         type: models.CharField
       module_name:
@@ -4700,7 +4313,6 @@ results:
           blank: true
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: 模块名，非必填
         type: models.CharField
       operation:
@@ -4709,7 +4321,6 @@ results:
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作类型
         type: models.CharField
       result_code:
@@ -4718,7 +4329,6 @@ results:
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          type: models.IntegerField
           verbose_name: 操作结果
         type: models.IntegerField
       start_time:
@@ -4727,7 +4337,6 @@ results:
         parameters:
           auto_now_add: true
           db_index: true
-          type: models.DateTimeField
           verbose_name: 开始时间
         type: models.DateTimeField
       target:
@@ -4736,7 +4345,6 @@ results:
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 操作对象
         type: models.CharField
     line: 1
@@ -4756,28 +4364,24 @@ results:
         parameters:
           help_text: alert rule code e.g. high_cpu_usage
           max_length: 64
-          type: models.CharField
         type: models.CharField
       display_name:
         line: 1
         name: display_name
         parameters:
           max_length: 512
-          type: models.CharField
         type: models.CharField
       enabled:
         line: 1
         name: enabled
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       environment:
         line: 1
         name: environment
         parameters:
           max_length: 16
-          type: models.CharField
           verbose_name: 部署环境
         type: models.CharField
       receivers:
@@ -4785,14 +4389,12 @@ results:
         name: receivers
         parameters:
           default: '`list`'
-          type: models.JSONField
         type: models.JSONField
       threshold_expr:
         line: 1
         name: threshold_expr
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -4820,14 +4422,12 @@ results:
         parameters:
           help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
           max_length: 512
-          type: models.CharField
         type: models.CharField
       language:
         line: 1
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 仪表盘所属语言
         type: models.CharField
       name:
@@ -4836,7 +4436,6 @@ results:
         parameters:
           help_text: 仪表盘名称，如：bksaas/framework-python
           max_length: 64
-          type: models.CharField
         type: models.CharField
       template_version:
         line: 1
@@ -4844,7 +4443,6 @@ results:
         parameters:
           help_text: 模板版本更新时，可以根据该字段作为批量刷新仪表盘
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -4870,21 +4468,18 @@ results:
         parameters:
           help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
           max_length: 512
-          type: models.CharField
         type: models.CharField
       is_plugin_template:
         line: 1
         name: is_plugin_template
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       language:
         line: 1
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 仪表盘所属语言
         type: models.CharField
       name:
@@ -4893,7 +4488,6 @@ results:
         parameters:
           help_text: 与蓝鲸监控约定的仪表盘名称，如：bksaas/framework-python，需要提前将仪表盘的 JSON 文件内置到监控的代码目录中
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       version:
@@ -4901,7 +4495,6 @@ results:
         name: version
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -4918,14 +4511,12 @@ results:
         name: latest_operated_at
         parameters:
           db_index: true
-          type: models.DateTimeField
         type: models.DateTimeField
       operation_type:
         line: 1
         name: operation_type
         parameters:
           help_text: 操作类型
-          type: models.SmallIntegerField
         type: models.SmallIntegerField
     line: 1
     meta: {}
@@ -4953,7 +4544,6 @@ results:
         parameters:
           auto_now_add: true
           db_index: true
-          type: models.DateTimeField
         type: models.DateTimeField
       is_hidden:
         line: 1
@@ -4961,7 +4551,6 @@ results:
         parameters:
           default: false
           help_text: 隐藏起来
-          type: models.BooleanField
         type: models.BooleanField
       module_name:
         line: 1
@@ -4969,7 +4558,6 @@ results:
         parameters:
           max_length: 20
           'null': true
-          type: models.CharField
           verbose_name: 关联 Module
         type: models.CharField
       region:
@@ -4978,7 +4566,6 @@ results:
         parameters:
           help_text: 部署区域
           max_length: 32
-          type: models.CharField
         type: models.CharField
       source_object_id:
         line: 1
@@ -4989,7 +4576,6 @@ results:
           help_text: 事件来源对象ID，具体指向需要根据操作类型解析
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
@@ -4997,7 +4583,6 @@ results:
         parameters:
           db_index: true
           help_text: 操作类型
-          type: models.SmallIntegerField
         type: models.SmallIntegerField
     line: 1
     meta: {}
@@ -5019,7 +4604,6 @@ results:
         name: code
         parameters:
           max_length: 20
-          type: models.CharField
           unique: true
           verbose_name: 应用代号
         type: models.CharField
@@ -5031,7 +4615,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
       is_active:
@@ -5039,7 +4622,6 @@ results:
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否活跃
         type: models.BooleanField
       is_ai_agent_app:
@@ -5047,7 +4629,6 @@ results:
         name: is_ai_agent_app
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否为 AI Agent 插件应用
         type: models.BooleanField
       is_deleted:
@@ -5055,7 +4636,6 @@ results:
         name: is_deleted
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       is_plugin_app:
         line: 1
@@ -5063,7 +4643,6 @@ results:
         parameters:
           default: false
           help_text: 蓝鲸应用插件：供标准运维、ITSM 等 SaaS 使用，有特殊逻辑
-          type: models.BooleanField
           verbose_name: 是否为插件应用
         type: models.BooleanField
       is_scene_app:
@@ -5071,7 +4650,6 @@ results:
         name: is_scene_app
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否为场景 SaaS 应用
         type: models.BooleanField
       is_smart_app:
@@ -5079,7 +4657,6 @@ results:
         name: is_smart_app
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否为 S-Mart 应用
         type: models.BooleanField
       language:
@@ -5087,7 +4664,6 @@ results:
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 编程语言
         type: models.CharField
       last_deployed_date:
@@ -5095,7 +4671,6 @@ results:
         name: last_deployed_date
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 最近部署时间
         type: models.DateTimeField
       name:
@@ -5103,7 +4678,6 @@ results:
         name: name
         parameters:
           max_length: 20
-          type: models.CharField
           unique: true
           verbose_name: 应用名称
         type: models.CharField
@@ -5113,7 +4687,6 @@ results:
         parameters:
           help_text: 目前仅用于 S-Mart 应用
           max_length: 20
-          type: models.CharField
           verbose_name: 应用名称(英文)
         type: models.CharField
       type:
@@ -5124,7 +4697,6 @@ results:
           default: '`ApplicationType.DEFAULT.value`'
           help_text: 与应用部署方式相关的类型信息
           max_length: 16
-          type: models.CharField
           verbose_name: 应用类型
         type: models.CharField
     line: 1
@@ -5141,7 +4713,6 @@ results:
         line: 1
         name: order
         parameters:
-          type: models.IntegerField
           verbose_name: 顺序
         type: models.IntegerField
     line: 1
@@ -5165,7 +4736,6 @@ results:
         name: environment
         parameters:
           max_length: 16
-          type: models.CharField
           verbose_name: 部署环境
         type: models.CharField
       is_offlined:
@@ -5174,7 +4744,6 @@ results:
         parameters:
           default: false
           help_text: 是否已经下线，仅成功下线后变为False
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta:
@@ -5209,14 +4778,12 @@ results:
         name: effect
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 30
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -5238,7 +4805,6 @@ results:
         name: role
         parameters:
           default: '`ApplicationRole.DEVELOPER.value`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -5284,7 +4850,6 @@ results:
         parameters:
           default: []
           help_text: 所管理的字段
-          type: models.JSONField
         type: models.JSONField
       manager:
         line: 1
@@ -5292,7 +4857,6 @@ results:
         parameters:
           help_text: 管理者类型
           max_length: 20
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -5333,7 +4897,6 @@ results:
         parameters:
           default: false
           help_text: 是否已开启
-          type: models.BooleanField
         type: models.BooleanField
       proc_command:
         line: 1
@@ -5341,7 +4904,6 @@ results:
         parameters:
           help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
-          type: models.TextField
         type: models.TextField
       type:
         line: 1
@@ -5350,7 +4912,6 @@ results:
           choices: '`DeployHookType.get_choices()`'
           help_text: 钩子类型
           max_length: 20
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -5375,14 +4936,12 @@ results:
         name: autoscaling
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       plan_name:
         line: 1
@@ -5390,7 +4949,6 @@ results:
         parameters:
           help_text: 仅存储方案名称
           max_length: 32
-          type: models.CharField
         type: models.CharField
       port:
         line: 1
@@ -5398,7 +4956,6 @@ results:
         parameters:
           help_text: '[deprecated] 容器端口'
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
       proc_command:
         line: 1
@@ -5406,14 +4963,12 @@ results:
         parameters:
           help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
-          type: models.TextField
         type: models.TextField
       target_replicas:
         line: 1
         name: target_replicas
         parameters:
           default: 1
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -5455,7 +5010,6 @@ results:
         name: implicit_needed
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -5477,7 +5031,6 @@ results:
         name: autoscaling
         parameters:
           'null': true
-          type: models.BooleanField
         type: models.BooleanField
       environment_name:
         line: 1
@@ -5486,7 +5039,6 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': false
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       plan_name:
@@ -5497,14 +5049,12 @@ results:
           help_text: 仅存储方案名称
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       target_replicas:
         line: 1
         name: target_replicas
         parameters:
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -5545,7 +5095,6 @@ results:
         parameters:
           db_index: true
           max_length: 20
-          type: models.CharField
           verbose_name: ID of application
         type: models.CharField
       is_creation:
@@ -5553,7 +5102,6 @@ results:
         name: is_creation
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: whether current description creates an application
         type: models.BooleanField
     line: 1
@@ -5594,7 +5142,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
       is_active:
@@ -5602,7 +5149,6 @@ results:
         name: is_active
         parameters:
           default: true
-          type: models.BooleanField
           verbose_name: 是否活跃
         type: models.BooleanField
       name:
@@ -5610,7 +5156,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       region:
@@ -5618,7 +5163,6 @@ results:
         name: region
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -5638,21 +5182,18 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
       source_comment:
         line: 1
         name: source_comment
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
       source_location:
         line: 1
         name: source_location
         parameters:
           max_length: 2048
-          type: models.CharField
         type: models.CharField
       source_revision:
         line: 1
@@ -5660,7 +5201,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       source_type:
         line: 1
@@ -5668,7 +5208,6 @@ results:
         parameters:
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 源码托管类型
         type: models.CharField
       source_version_name:
@@ -5676,14 +5215,12 @@ results:
         name: source_version_name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       source_version_type:
         line: 1
         name: source_version_type
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -5702,7 +5239,6 @@ results:
         parameters:
           max_length: 512
           'null': false
-          type: models.CharField
           verbose_name: 描述
         type: models.CharField
       key:
@@ -5711,7 +5247,6 @@ results:
         parameters:
           max_length: 128
           'null': false
-          type: models.CharField
           unique: true
           verbose_name: 环境变量名
         type: models.CharField
@@ -5721,7 +5256,6 @@ results:
         parameters:
           max_length: 512
           'null': false
-          type: models.TextField
           verbose_name: 环境变量值
         type: models.TextField
     line: 1
@@ -5740,21 +5274,18 @@ results:
         parameters:
           max_length: 200
           'null': true
-          type: models.CharField
         type: models.CharField
       is_builtin:
         line: 1
         name: is_builtin
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       is_global:
         line: 1
         name: is_global
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       key:
         line: 1
@@ -5762,14 +5293,12 @@ results:
         parameters:
           max_length: 128
           'null': false
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
         name: value
         parameters:
           'null': false
-          type: models.TextField
         type: models.TextField
     line: 1
     meta:
@@ -5803,14 +5332,12 @@ results:
           blank: true
           default: ''
           'null': true
-          type: models.URLField
         type: models.URLField
       is_enabled:
         line: 1
         name: is_enabled
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       lb_plan:
         line: 1
@@ -5820,7 +5347,6 @@ results:
           default: '`LBPlans.LBDefaultPlan.value`'
           help_text: which one-level load balancer plan the domain use
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -5845,7 +5371,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
       object_uid:
@@ -5854,7 +5379,6 @@ results:
         parameters:
           default: '`uuid.uuid4`'
           editable: false
-          type: models.UUIDField
         type: models.UUIDField
       operation_type:
         line: 1
@@ -5862,7 +5386,6 @@ results:
         parameters:
           choices: '`OperationTypes.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
       status:
         line: 1
@@ -5871,7 +5394,6 @@ results:
           choices: '`JobStatus.get_choices()`'
           default: '`JobStatus.PENDING.value`'
           max_length: 16
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -5899,14 +5421,12 @@ results:
         name: complete_time
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       start_time:
         line: 1
         name: start_time
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       status:
         line: 1
@@ -5915,7 +5435,6 @@ results:
           choices: '`JobStatus.get_choices()`'
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
       type:
         line: 1
@@ -5923,7 +5442,6 @@ results:
         parameters:
           choices: '`DeployPhaseTypes.get_choices()`'
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -5953,7 +5471,6 @@ results:
         parameters:
           choices: '`ConfigVarEnvName.get_choices()`'
           max_length: 16
-          type: models.CharField
           verbose_name: '`_(''环境名称'')`'
         type: models.CharField
       key:
@@ -5962,7 +5479,6 @@ results:
         parameters:
           max_length: 128
           'null': false
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -5989,7 +5505,6 @@ results:
         name: complete_time
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       name:
         line: 1
@@ -5997,21 +5512,18 @@ results:
         parameters:
           db_index: true
           max_length: 32
-          type: models.CharField
         type: models.CharField
       skipped:
         line: 1
         name: skipped
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       start_time:
         line: 1
         name: start_time
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       status:
         line: 1
@@ -6020,7 +5532,6 @@ results:
           choices: '`JobStatus.get_choices()`'
           max_length: 32
           'null': true
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -6050,7 +5561,6 @@ results:
         parameters:
           db_index: true
           max_length: 32
-          type: models.CharField
         type: models.CharField
       phase:
         line: 1
@@ -6058,7 +5568,6 @@ results:
         parameters:
           choices: '`DeployPhaseTypes.get_choices()`'
           max_length: 16
-          type: models.CharField
           verbose_name: '`_(''关联阶段'')`'
         type: models.CharField
     line: 1
@@ -6078,14 +5587,12 @@ results:
         name: is_default
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       name:
         line: 1
         name: name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -6109,7 +5616,6 @@ results:
         name: allowed_role
         parameters:
           choices: '`ApplicationRole.get_django_choices()`'
-          type: models.IntegerField
         type: models.IntegerField
       operation:
         line: 1
@@ -6117,7 +5623,6 @@ results:
         parameters:
           choices: '`EnvRoleOperation.get_choices()`'
           max_length: 64
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -6139,7 +5644,6 @@ results:
         name: end_at
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 任务结束时间
         type: models.DateTimeField
       failed_count:
@@ -6147,7 +5651,6 @@ results:
         name: failed_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 采集失败数
         type: models.IntegerField
       failed_usernames:
@@ -6155,7 +5658,6 @@ results:
         name: failed_usernames
         parameters:
           default: '`list`'
-          type: models.JSONField
           verbose_name: 通知失败的应用数量
         type: models.JSONField
       notification_type:
@@ -6163,7 +5665,6 @@ results:
         name: notification_type
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 通知类型
         type: models.CharField
       start_at:
@@ -6171,7 +5672,6 @@ results:
         name: start_at
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
           verbose_name: 任务开始时间
         type: models.DateTimeField
       status:
@@ -6181,7 +5681,6 @@ results:
           choices: '`BatchTaskStatus.get_choices()`'
           default: '`BatchTaskStatus.RUNNING`'
           max_length: 32
-          type: models.CharField
           verbose_name: 任务状态
         type: models.CharField
       succeed_count:
@@ -6189,7 +5688,6 @@ results:
         name: succeed_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 采集成功数
         type: models.IntegerField
       total_count:
@@ -6197,7 +5695,6 @@ results:
         name: total_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 应用总数
         type: models.IntegerField
     line: 1
@@ -6215,14 +5712,12 @@ results:
         name: administrators
         parameters:
           default: '`list`'
-          type: models.JSONField
           verbose_name: 应用管理员
         type: models.JSONField
       collected_at:
         line: 1
         name: collected_at
         parameters:
-          type: models.DateTimeField
           verbose_name: 采集时间
         type: models.DateTimeField
       cpu_limits:
@@ -6230,7 +5725,6 @@ results:
         name: cpu_limits
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: CPU 限制
         type: models.IntegerField
       cpu_requests:
@@ -6238,7 +5732,6 @@ results:
         name: cpu_requests
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: CPU 请求
         type: models.IntegerField
       cpu_usage_avg:
@@ -6246,7 +5739,6 @@ results:
         name: cpu_usage_avg
         parameters:
           default: 0
-          type: models.FloatField
           verbose_name: CPU 平均使用率
         type: models.FloatField
       deploy_summary:
@@ -6254,7 +5746,6 @@ results:
         name: deploy_summary
         parameters:
           default: '`dict`'
-          type: models.JSONField
           verbose_name: 部署详情汇总
         type: models.JSONField
       developers:
@@ -6262,7 +5753,6 @@ results:
         name: developers
         parameters:
           default: '`list`'
-          type: models.JSONField
           verbose_name: 应用开发者
         type: models.JSONField
       evaluate_result:
@@ -6270,7 +5760,6 @@ results:
         name: evaluate_result
         parameters:
           default: '`dict`'
-          type: models.JSONField
           verbose_name: 评估结果
         type: models.JSONField
       issue_type:
@@ -6279,7 +5768,6 @@ results:
         parameters:
           default: '`OperationIssueType.NONE`'
           max_length: 32
-          type: models.CharField
           verbose_name: 问题类型
         type: models.CharField
       latest_deployed_at:
@@ -6287,7 +5775,6 @@ results:
         name: latest_deployed_at
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 最新部署时间
         type: models.DateTimeField
       latest_deployer:
@@ -6296,7 +5783,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: 最新部署人
         type: models.CharField
       latest_operated_at:
@@ -6304,7 +5790,6 @@ results:
         name: latest_operated_at
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 最新操作时间
         type: models.DateTimeField
       latest_operation:
@@ -6313,7 +5798,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: 最新操作内容
         type: models.CharField
       latest_operator:
@@ -6322,7 +5806,6 @@ results:
         parameters:
           max_length: 128
           'null': true
-          type: models.CharField
           verbose_name: 最新操作人
         type: models.CharField
       mem_limits:
@@ -6330,7 +5813,6 @@ results:
         name: mem_limits
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 内存限制
         type: models.IntegerField
       mem_requests:
@@ -6338,7 +5820,6 @@ results:
         name: mem_requests
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 内存请求
         type: models.IntegerField
       mem_usage_avg:
@@ -6346,7 +5827,6 @@ results:
         name: mem_usage_avg
         parameters:
           default: 0
-          type: models.FloatField
           verbose_name: 内存平均使用率
         type: models.FloatField
       pv:
@@ -6354,7 +5834,6 @@ results:
         name: pv
         parameters:
           default: 0
-          type: models.BigIntegerField
           verbose_name: 近 30 天页面访问量
         type: models.BigIntegerField
       res_summary:
@@ -6362,7 +5841,6 @@ results:
         name: res_summary
         parameters:
           default: '`dict`'
-          type: models.JSONField
           verbose_name: 资源使用详情汇总
         type: models.JSONField
       uv:
@@ -6370,7 +5848,6 @@ results:
         name: uv
         parameters:
           default: 0
-          type: models.BigIntegerField
           verbose_name: 近 30 天访问用户数
         type: models.BigIntegerField
       visit_summary:
@@ -6378,7 +5855,6 @@ results:
         name: visit_summary
         parameters:
           default: '`dict`'
-          type: models.JSONField
           verbose_name: 用户访问详情汇总
         type: models.JSONField
     line: 1
@@ -6401,7 +5877,6 @@ results:
         name: end_at
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 任务结束时间
         type: models.DateTimeField
       failed_app_codes:
@@ -6409,7 +5884,6 @@ results:
         name: failed_app_codes
         parameters:
           default: '`list`'
-          type: models.JSONField
           verbose_name: 采集失败应用 Code 列表
         type: models.JSONField
       failed_count:
@@ -6417,7 +5891,6 @@ results:
         name: failed_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 采集失败数
         type: models.IntegerField
       start_at:
@@ -6425,7 +5898,6 @@ results:
         name: start_at
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
           verbose_name: 任务开始时间
         type: models.DateTimeField
       status:
@@ -6435,7 +5907,6 @@ results:
           choices: '`BatchTaskStatus.get_choices()`'
           default: '`BatchTaskStatus.RUNNING`'
           max_length: 32
-          type: models.CharField
           verbose_name: 任务状态
         type: models.CharField
       succeed_count:
@@ -6443,7 +5914,6 @@ results:
         name: succeed_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 采集成功数
         type: models.IntegerField
       total_count:
@@ -6451,7 +5921,6 @@ results:
         name: total_count
         parameters:
           default: 0
-          type: models.IntegerField
           verbose_name: 应用总数
         type: models.IntegerField
     line: 1
@@ -6469,27 +5938,23 @@ results:
         name: app_code
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       environment:
         line: 1
         name: environment
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       expired_at:
         line: 1
         name: expired_at
-        parameters:
-          type: models.DateTimeField
+        parameters: {}
         type: models.DateTimeField
       module_name:
         line: 1
         name: module_name
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -6512,7 +5977,6 @@ results:
         parameters:
           help_text: 用户确认的时间
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       created_at:
         line: 1
@@ -6520,7 +5984,6 @@ results:
         parameters:
           auto_now_add: true
           help_text: 操作记录的创建时间
-          type: models.DateTimeField
         type: models.DateTimeField
       status:
         line: 1
@@ -6529,7 +5992,6 @@ results:
           choices: '`CNativeMigrationStatus.get_choices()`'
           default: '`CNativeMigrationStatus.DEFAULT.value`'
           max_length: 20
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -6554,34 +6016,29 @@ results:
         name: confirmed_date
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       failed_date:
         line: 1
         name: failed_date
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       legacy_app_has_all_deployed:
         line: 1
         name: legacy_app_has_all_deployed
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       legacy_app_id:
         line: 1
         name: legacy_app_id
-        parameters:
-          type: models.IntegerField
+        parameters: {}
         type: models.IntegerField
       legacy_app_is_already_online:
         line: 1
         name: legacy_app_is_already_online
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       legacy_app_logo:
         line: 1
@@ -6590,28 +6047,24 @@ results:
           default: null
           max_length: 500
           'null': true
-          type: models.CharField
         type: models.CharField
       legacy_app_state:
         line: 1
         name: legacy_app_state
         parameters:
           default: 4
-          type: models.IntegerField
         type: models.IntegerField
       migrated_date:
         line: 1
         name: migrated_date
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       rollbacked_date:
         line: 1
         name: rollbacked_date
         parameters:
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       status:
         line: 1
@@ -6619,7 +6072,6 @@ results:
         parameters:
           choices: '`MigrationStatus.get_choices()`'
           default: '`MigrationStatus.DEFAULT.value`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -6640,14 +6092,12 @@ results:
         line: 1
         name: backup_id
         parameters:
-          type: models.UUIDField
           verbose_name: 对应备份的 WlApp uuid
         type: models.UUIDField
       original_id:
         line: 1
         name: original_id
         parameters:
-          type: models.UUIDField
           verbose_name: 原 WlApp uuid
         type: models.UUIDField
     line: 1
@@ -6671,7 +6121,6 @@ results:
         parameters:
           default: '`RuntimeType.BUILDPACK`'
           max_length: 32
-          type: models.CharField
           verbose_name: '`_(''构建方式'')`'
         type: models.CharField
       dockerfile_path:
@@ -6681,7 +6130,6 @@ results:
           help_text: '`_(''Dockerfile文件路径, 必须保证 Dockerfile 在构建目录下, 填写时无需包含构建目录'')`'
           max_length: 512
           'null': true
-          type: models.CharField
         type: models.CharField
       image_credential_name:
         line: 1
@@ -6689,7 +6137,6 @@ results:
         parameters:
           max_length: 32
           'null': true
-          type: models.CharField
           verbose_name: '`_(''镜像凭证名称'')`'
         type: models.CharField
       image_repository:
@@ -6697,7 +6144,6 @@ results:
         name: image_repository
         parameters:
           'null': true
-          type: models.TextField
           verbose_name: '`_(''镜像仓库'')`'
         type: models.TextField
       use_bk_ci_pipeline:
@@ -6706,7 +6152,6 @@ results:
         parameters:
           default: false
           help_text: 是否使用蓝盾流水线构建
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -6758,7 +6203,6 @@ results:
         name: exposed_url_type
         parameters:
           'null': true
-          type: models.IntegerField
           verbose_name: 访问 URL 版本
         type: models.IntegerField
       id:
@@ -6769,7 +6213,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
       is_default:
@@ -6777,7 +6220,6 @@ results:
         name: is_default
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否为默认模块
         type: models.BooleanField
       language:
@@ -6785,7 +6227,6 @@ results:
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 编程语言
         type: models.CharField
       last_deployed_date:
@@ -6793,7 +6234,6 @@ results:
         name: last_deployed_date
         parameters:
           'null': true
-          type: models.DateTimeField
           verbose_name: 最近部署时间
         type: models.DateTimeField
       name:
@@ -6801,7 +6241,6 @@ results:
         name: name
         parameters:
           max_length: 20
-          type: models.CharField
           verbose_name: 模块名称
         type: models.CharField
       source_init_template:
@@ -6809,7 +6248,6 @@ results:
         name: source_init_template
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 初始化模板类型
         type: models.CharField
       source_origin:
@@ -6817,7 +6255,6 @@ results:
         name: source_origin
         parameters:
           'null': true
-          type: models.SmallIntegerField
           verbose_name: 源码来源
         type: models.SmallIntegerField
       source_repo_id:
@@ -6825,7 +6262,6 @@ results:
         name: source_repo_id
         parameters:
           'null': true
-          type: models.IntegerField
           verbose_name: 源码 ID
         type: models.IntegerField
       source_type:
@@ -6834,7 +6270,6 @@ results:
         parameters:
           max_length: 16
           'null': true
-          type: models.CharField
           verbose_name: 源码托管类型
         type: models.CharField
       user_preferred_root_domain:
@@ -6843,7 +6278,6 @@ results:
         parameters:
           max_length: 255
           'null': true
-          type: models.CharField
           verbose_name: 用户偏好的根域名
         type: models.CharField
     line: 1
@@ -6869,7 +6303,6 @@ results:
         name: address
         parameters:
           max_length: 2048
-          type: models.CharField
           verbose_name: 地址
         type: models.CharField
       is_hidden:
@@ -6877,7 +6310,6 @@ results:
         name: is_hidden
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否隐藏
         type: models.BooleanField
       language:
@@ -6885,7 +6317,6 @@ results:
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 编程语言
         type: models.CharField
       name:
@@ -6893,7 +6324,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 名称
         type: models.CharField
       type:
@@ -6902,7 +6332,6 @@ results:
         parameters:
           choices: '`BuildPackType.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 引用类型
         type: models.CharField
       version:
@@ -6910,7 +6339,6 @@ results:
         name: version
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 版本
         type: models.CharField
     line: 1
@@ -6933,7 +6361,6 @@ results:
         name: image
         parameters:
           max_length: 256
-          type: models.CharField
           verbose_name: 镜像
         type: models.CharField
       is_default:
@@ -6942,7 +6369,6 @@ results:
         parameters:
           default: false
           'null': true
-          type: models.BooleanField
           verbose_name: 是否为默认运行时
         type: models.BooleanField
       is_hidden:
@@ -6950,7 +6376,6 @@ results:
         name: is_hidden
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否隐藏
         type: models.BooleanField
       name:
@@ -6958,7 +6383,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
           verbose_name: 名称
         type: models.CharField
@@ -6967,7 +6391,6 @@ results:
         name: tag
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 标签
         type: models.CharField
       type:
@@ -6976,7 +6399,6 @@ results:
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 镜像类型
         type: models.CharField
     line: 1
@@ -6995,7 +6417,6 @@ results:
         name: image
         parameters:
           max_length: 256
-          type: models.CharField
           verbose_name: 镜像
         type: models.CharField
       is_default:
@@ -7004,7 +6425,6 @@ results:
         parameters:
           default: false
           'null': true
-          type: models.BooleanField
           verbose_name: 是否为默认运行时
         type: models.BooleanField
       is_hidden:
@@ -7012,7 +6432,6 @@ results:
         name: is_hidden
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否隐藏
         type: models.BooleanField
       name:
@@ -7020,7 +6439,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
           verbose_name: 名称
         type: models.CharField
@@ -7029,7 +6447,6 @@ results:
         name: tag
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 标签
         type: models.CharField
       type:
@@ -7038,7 +6455,6 @@ results:
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 镜像类型
         type: models.CharField
     line: 1
@@ -7071,7 +6487,6 @@ results:
         name: image
         parameters:
           max_length: 256
-          type: models.CharField
           verbose_name: 镜像
         type: models.CharField
       is_default:
@@ -7080,7 +6495,6 @@ results:
         parameters:
           default: false
           'null': true
-          type: models.BooleanField
           verbose_name: 是否为默认运行时
         type: models.BooleanField
       is_hidden:
@@ -7088,7 +6502,6 @@ results:
         name: is_hidden
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否隐藏
         type: models.BooleanField
       name:
@@ -7096,7 +6509,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
           verbose_name: 名称
         type: models.CharField
@@ -7105,7 +6517,6 @@ results:
         name: tag
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 标签
         type: models.CharField
       type:
@@ -7114,7 +6525,6 @@ results:
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          type: models.CharField
           verbose_name: 镜像类型
         type: models.CharField
     line: 1
@@ -7139,7 +6549,6 @@ results:
         parameters:
           help_text: 形如 registry.hub.docker.com/library/python, 也可省略 registry 地址
           max_length: 2048
-          type: models.CharField
           verbose_name: 项目地址
         type: models.CharField
       server_name:
@@ -7147,7 +6556,6 @@ results:
         name: server_name
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: DockerRegistry 服务名称
         type: models.CharField
       source_dir:
@@ -7156,7 +6564,6 @@ results:
         parameters:
           max_length: 2048
           'null': true
-          type: models.CharField
           verbose_name: 源码目录
         type: models.CharField
     line: 1
@@ -7175,7 +6582,6 @@ results:
         name: repo_url
         parameters:
           max_length: 2048
-          type: models.CharField
           verbose_name: 项目地址
         type: models.CharField
       server_name:
@@ -7183,7 +6589,6 @@ results:
         name: server_name
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: GIT 服务名称
         type: models.CharField
       source_dir:
@@ -7192,7 +6597,6 @@ results:
         parameters:
           max_length: 2048
           'null': true
-          type: models.CharField
           verbose_name: 源码目录
         type: models.CharField
     line: 1
@@ -7209,7 +6613,6 @@ results:
         line: 1
         name: repo_id
         parameters:
-          type: models.IntegerField
           verbose_name: 关联仓库
         type: models.IntegerField
       repo_type:
@@ -7217,7 +6620,6 @@ results:
         name: repo_type
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: 仓库类型
         type: models.CharField
       username:
@@ -7225,7 +6627,6 @@ results:
         name: username
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 仓库用户名
         type: models.CharField
     line: 1
@@ -7249,7 +6650,6 @@ results:
         parameters:
           default: false
           help_text: 如果 SourcePackage 指向的源码包已被清理, 则设置该值为 True
-          type: models.BooleanField
           verbose_name: 源码包是否已被清理
         type: models.BooleanField
       package_name:
@@ -7257,14 +6657,12 @@ results:
         name: package_name
         parameters:
           max_length: 128
-          type: models.CharField
           verbose_name: 源码包原始文件名
         type: models.CharField
       package_size:
         line: 1
         name: package_size
         parameters:
-          type: models.BigIntegerField
           verbose_name: 源码包大小, bytes
         type: models.BigIntegerField
       relative_path:
@@ -7273,7 +6671,6 @@ results:
         parameters:
           help_text: 如果压缩时将目录也打包进来, 入目录名是 foo, 那么 relative_path = 'foo/'
           max_length: 255
-          type: models.CharField
           verbose_name: 源码入口的相对路径
         type: models.CharField
       sha256_signature:
@@ -7282,7 +6679,6 @@ results:
         parameters:
           max_length: 64
           'null': true
-          type: models.CharField
           verbose_name: sha256数字签名
         type: models.CharField
       storage_engine:
@@ -7291,7 +6687,6 @@ results:
         parameters:
           help_text: 源码包真实存放的存储服务类型
           max_length: 64
-          type: models.CharField
           verbose_name: 存储引擎
         type: models.CharField
       storage_path:
@@ -7300,7 +6695,6 @@ results:
         parameters:
           help_text: '[deprecated] 源码包在存储服务中存放的位置'
           max_length: 1024
-          type: models.CharField
           verbose_name: 存储路径
         type: models.CharField
       storage_url:
@@ -7309,7 +6703,6 @@ results:
         parameters:
           help_text: 可获取到源码包的 URL 地址
           max_length: 1024
-          type: models.CharField
           verbose_name: 存储地址
         type: models.CharField
       version:
@@ -7317,7 +6710,6 @@ results:
         name: version
         parameters:
           max_length: 128
-          type: models.CharField
           verbose_name: 版本号
         type: models.CharField
     line: 1
@@ -7345,7 +6737,6 @@ results:
           blank: true
           default: ''
           max_length: 256
-          type: models.CharField
           verbose_name: OAuth 授权链接
         type: models.CharField
       client_id:
@@ -7355,7 +6746,6 @@ results:
           blank: true
           default: ''
           max_length: 256
-          type: models.CharField
           verbose_name: OAuth App Client ID
         type: models.CharField
       enabled:
@@ -7363,7 +6753,6 @@ results:
         name: enabled
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: 是否启用
         type: models.BooleanField
       name:
@@ -7371,7 +6760,6 @@ results:
         name: name
         parameters:
           max_length: 32
-          type: models.CharField
           unique: true
           verbose_name: '`_(''服务名称'')`'
         type: models.CharField
@@ -7382,7 +6770,6 @@ results:
           blank: true
           default: ''
           max_length: 256
-          type: models.CharField
           verbose_name: 重定向（回调）地址
         type: models.CharField
       server_config:
@@ -7391,7 +6778,6 @@ results:
         parameters:
           blank: true
           default: '`dict`'
-          type: models.JSONField
           verbose_name: 服务配置
         type: models.JSONField
       spec_cls:
@@ -7399,7 +6785,6 @@ results:
         name: spec_cls
         parameters:
           max_length: 128
-          type: models.CharField
           verbose_name: 配置类路径
         type: models.CharField
       token_base_url:
@@ -7409,7 +6794,6 @@ results:
           blank: true
           default: ''
           max_length: 256
-          type: models.CharField
           verbose_name: 获取 Token 链接
         type: models.CharField
     line: 1
@@ -7428,7 +6812,6 @@ results:
         parameters:
           help_text: 目前仅支持固定格式
           max_length: 64
-          type: models.CharField
           unique: true
         type: models.CharField
       synced_from_paas20:
@@ -7437,7 +6820,6 @@ results:
         parameters:
           default: false
           help_text: 账户信息是否从 PaaS 2.0 同步过来
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta: {}
@@ -7455,7 +6837,6 @@ results:
         name: repo_url
         parameters:
           max_length: 2048
-          type: models.CharField
           verbose_name: 项目地址
         type: models.CharField
       server_name:
@@ -7463,7 +6844,6 @@ results:
         name: server_name
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: SVN 服务名称
         type: models.CharField
       source_dir:
@@ -7472,7 +6852,6 @@ results:
         parameters:
           max_length: 2048
           'null': true
-          type: models.CharField
           verbose_name: 源码目录
         type: models.CharField
     line: 1
@@ -7489,7 +6868,6 @@ results:
         line: 1
         name: blob_url
         parameters:
-          type: models.JSONField
           verbose_name: '`_(''不同版本二进制包存储路径'')`'
         type: models.JSONField
       enabled_regions:
@@ -7498,7 +6876,6 @@ results:
         parameters:
           blank: true
           default: '`list`'
-          type: models.JSONField
           verbose_name: '`_(''允许被使用的版本'')`'
         type: models.JSONField
       language:
@@ -7506,7 +6883,6 @@ results:
         name: language
         parameters:
           max_length: 32
-          type: models.CharField
           verbose_name: '`_(''开发语言'')`'
         type: models.CharField
       market_ready:
@@ -7514,7 +6890,6 @@ results:
         name: market_ready
         parameters:
           default: false
-          type: models.BooleanField
           verbose_name: '`_(''能否发布到应用集市'')`'
         type: models.BooleanField
       name:
@@ -7522,7 +6897,6 @@ results:
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
           unique: true
           verbose_name: '`_(''模板名称'')`'
         type: models.CharField
@@ -7532,7 +6906,6 @@ results:
         parameters:
           blank: true
           default: '`dict`'
-          type: models.JSONField
           verbose_name: '`_(''预设增强服务配置'')`'
         type: models.JSONField
       processes:
@@ -7541,7 +6914,6 @@ results:
         parameters:
           blank: true
           default: '`dict`'
-          type: models.JSONField
           verbose_name: '`_(''进程配置'')`'
         type: models.JSONField
       repo_url:
@@ -7551,7 +6923,6 @@ results:
           blank: true
           default: ''
           max_length: 256
-          type: models.CharField
           verbose_name: '`_(''代码仓库信息'')`'
         type: models.CharField
       required_buildpacks:
@@ -7560,7 +6931,6 @@ results:
         parameters:
           blank: true
           default: '`list`'
-          type: models.JSONField
           verbose_name: '`_(''必须的构建工具'')`'
         type: models.JSONField
       runtime_type:
@@ -7569,7 +6939,6 @@ results:
         parameters:
           default: '`RuntimeType.BUILDPACK`'
           max_length: 32
-          type: models.CharField
           verbose_name: '`_(''运行时类型'')`'
         type: models.CharField
       tags:
@@ -7578,7 +6947,6 @@ results:
         parameters:
           blank: true
           default: '`list`'
-          type: models.JSONField
           verbose_name: '`_(''标签'')`'
         type: models.JSONField
       type:
@@ -7587,7 +6955,6 @@ results:
         parameters:
           choices: '`TemplateType.get_django_choices()`'
           max_length: 16
-          type: models.CharField
           verbose_name: '`_(''模板类型'')`'
         type: models.CharField
     line: 1
@@ -7607,14 +6974,12 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -7643,7 +7008,6 @@ results:
         name: created
         parameters:
           auto_now_add: true
-          type: models.DateTimeField
         type: models.DateTimeField
       region:
         line: 1
@@ -7651,14 +7015,12 @@ results:
         parameters:
           help_text: 部署区域
           max_length: 32
-          type: models.CharField
         type: models.CharField
       updated:
         line: 1
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -7679,7 +7041,6 @@ results:
           default: '`uuid.uuid4`'
           editable: false
           primary_key: true
-          type: models.UUIDField
           unique: true
         type: models.UUIDField
     line: 1
@@ -7699,7 +7060,6 @@ results:
         parameters:
           help_text: 单位字节，值为 nul 时表示未设置仓库配额
           'null': true
-          type: models.BigIntegerField
           verbose_name: 仓库最大配额
         type: models.BigIntegerField
       repo_name:
@@ -7707,7 +7067,6 @@ results:
         name: repo_name
         parameters:
           max_length: 64
-          type: models.CharField
           verbose_name: 仓库名称
         type: models.CharField
       updated:
@@ -7715,7 +7074,6 @@ results:
         name: updated
         parameters:
           auto_now: true
-          type: models.DateTimeField
         type: models.DateTimeField
       used:
         line: 1
@@ -7723,7 +7081,6 @@ results:
         parameters:
           default: 0
           help_text: 单位字节
-          type: models.BigIntegerField
           verbose_name: 仓库已使用容量
         type: models.BigIntegerField
     line: 1
@@ -7746,35 +7103,30 @@ results:
         name: app_name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       bk_app_code:
         line: 1
         name: bk_app_code
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       data_token:
         line: 1
         name: data_token
         parameters:
           max_length: 255
-          type: models.CharField
         type: models.CharField
       env:
         line: 1
         name: env
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       is_delete:
         line: 1
         name: is_delete
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
     line: 1
     meta:
@@ -7794,13 +7146,11 @@ results:
         name: enabled
         parameters:
           default: false
-          type: models.BooleanField
         type: models.BooleanField
       interval:
         line: 1
         name: interval
-        parameters:
-          type: models.DurationField
+        parameters: {}
         type: models.DurationField
       last_run_time:
         line: 1
@@ -7808,14 +7158,12 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
       name:
         line: 1
         name: name
         parameters:
           max_length: 255
-          type: models.CharField
           unique: true
         type: models.CharField
       next_run_time:
@@ -7826,7 +7174,6 @@ results:
           db_index: true
           default: '`get_now`'
           'null': true
-          type: models.DateTimeField
         type: models.DateTimeField
     line: 1
     meta:
@@ -7846,48 +7193,41 @@ results:
         name: admin
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       enable:
         line: 1
         name: enable
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       host:
         line: 1
         name: host
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       management_api:
         line: 1
         name: management_api
-        parameters:
-          type: models.TextField
+        parameters: {}
         type: models.TextField
       name:
         line: 1
         name: name
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       port:
         line: 1
         name: port
         parameters:
           default: 5672
-          type: models.IntegerField
         type: models.IntegerField
       version:
         line: 1
         name: version
         parameters:
           max_length: 16
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -7904,14 +7244,12 @@ results:
         name: key
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
         name: value
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -7933,14 +7271,12 @@ results:
         name: action
         parameters:
           max_length: 32
-          type: models.CharField
         type: models.CharField
       name:
         line: 1
         name: name
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -7958,14 +7294,12 @@ results:
         parameters:
           blank: true
           default: null
-          type: models.IntegerField
         type: models.IntegerField
       enable:
         line: 1
         name: enable
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       limit:
         line: 1
@@ -7975,7 +7309,6 @@ results:
           choices: '`[(i.value, i.name) for i in LimitType]`'
           max_length: 64
           'null': true
-          type: models.CharField
         type: models.CharField
       link_type:
         line: 1
@@ -7983,7 +7316,6 @@ results:
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
-          type: models.IntegerField
         type: models.IntegerField
       name:
         line: 1
@@ -7991,7 +7323,6 @@ results:
         parameters:
           max_length: 64
           'null': true
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
@@ -7999,7 +7330,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -8021,14 +7351,12 @@ results:
         name: key
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
         name: value
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -8051,7 +7379,6 @@ results:
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta:
@@ -8074,14 +7401,12 @@ results:
         name: key
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
         name: value
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta:
@@ -8102,7 +7427,6 @@ results:
           choices: '`[(i.value, i.name) for i in PolicyTarget]`'
           max_length: 64
           'null': true
-          type: models.CharField
         type: models.CharField
       cluster_id:
         line: 1
@@ -8110,14 +7434,12 @@ results:
         parameters:
           blank: true
           default: null
-          type: models.IntegerField
         type: models.IntegerField
       enable:
         line: 1
         name: enable
         parameters:
           default: true
-          type: models.BooleanField
         type: models.BooleanField
       link_type:
         line: 1
@@ -8125,7 +7447,6 @@ results:
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
-          type: models.IntegerField
         type: models.IntegerField
       name:
         line: 1
@@ -8133,7 +7454,6 @@ results:
         parameters:
           max_length: 64
           'null': true
-          type: models.CharField
         type: models.CharField
       pattern:
         line: 1
@@ -8142,7 +7462,6 @@ results:
           blank: true
           max_length: 128
           'null': true
-          type: models.CharField
         type: models.CharField
       priority:
         line: 1
@@ -8150,7 +7469,6 @@ results:
         parameters:
           blank: true
           'null': true
-          type: models.IntegerField
         type: models.IntegerField
     line: 1
     meta: {}
@@ -8172,14 +7490,12 @@ results:
         name: key
         parameters:
           max_length: 64
-          type: models.CharField
         type: models.CharField
       value:
         line: 1
         name: value
         parameters:
           max_length: 128
-          type: models.CharField
         type: models.CharField
     line: 1
     meta: {}
@@ -8193,7 +7509,7 @@ results:
       type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 2054
+  scan_duration_ms: 2053
   total_count: 167
   total_fields: 684
   total_models: 167

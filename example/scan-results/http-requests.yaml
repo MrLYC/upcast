@@ -681,7 +681,7 @@ summary:
   by_library:
     requests: 56
   files_scanned: 14
-  scan_duration_ms: 10908
+  scan_duration_ms: 6911
   total_count: 56
   total_requests: 56
   unique_urls: 8

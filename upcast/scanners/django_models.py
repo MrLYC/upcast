@@ -148,10 +148,14 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             for field_name, field_info in model_data.get("fields", {}).items():
                 # Get line number from field_info or default to model line
                 line = field_info.get("line", model_data.get("line", 1))
+
+                # Extract parameters, excluding fields that are already DjangoField attributes
+                parameters = {k: v for k, v in field_info.items() if k not in ("type", "name", "line")}
+
                 fields[field_name] = DjangoField(
                     name=field_name,
                     type=field_info.get("type", "Unknown"),
-                    parameters=field_info,
+                    parameters=parameters,
                     line=line,
                 )
 
