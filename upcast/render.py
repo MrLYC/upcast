@@ -27,6 +27,7 @@ from upcast.models.env_vars import EnvVarOutput
 from upcast.models.exceptions import ExceptionHandlerOutput
 from upcast.models.http_requests import HttpRequestOutput
 from upcast.models.metrics import PrometheusMetricOutput
+from upcast.models.module_symbols import ModuleSymbolOutput
 from upcast.models.redis_usage import RedisUsageOutput
 from upcast.models.signals import SignalOutput
 from upcast.models.unit_tests import UnitTestOutput
@@ -41,14 +42,15 @@ MODEL_TEMPLATE_MAP = {
     ComplexityOutput: "complexity.md.jinja2",
     EnvVarOutput: "env_vars.md.jinja2",
     SignalOutput: "signals.md.jinja2",
-    BlockingOperationsOutput: "base.md.jinja2",  # Use base template for now
+    BlockingOperationsOutput: "blocking_operations.md.jinja2",
     ConcurrencyPatternOutput: "base.md.jinja2",
-    DjangoSettingsOutput: "base.md.jinja2",
-    DjangoUrlOutput: "base.md.jinja2",
-    ExceptionHandlerOutput: "base.md.jinja2",
-    PrometheusMetricOutput: "base.md.jinja2",
-    RedisUsageOutput: "base.md.jinja2",
-    UnitTestOutput: "base.md.jinja2",
+    DjangoSettingsOutput: "django_settings.md.jinja2",
+    DjangoUrlOutput: "django_urls.md.jinja2",
+    ExceptionHandlerOutput: "exception_handlers.md.jinja2",
+    PrometheusMetricOutput: "metrics.md.jinja2",
+    RedisUsageOutput: "redis_usage.md.jinja2",
+    UnitTestOutput: "unit_tests.md.jinja2",
+    ModuleSymbolOutput: "module_symbols.md.jinja2",
 }
 
 

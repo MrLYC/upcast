@@ -1,0 +1,24 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Tests**: {{ summary.total_tests }}
+- **Total Test Files**: {{ summary.total_files }}
+- **Total Assertions**: {{ summary.total_assertions }}
+{% endblock %}
+
+{% block results %}
+{% for file_path, tests in results.items() %}
+
+### Test File: {{ file_path }}
+
+| Test Name | Lines | Assertions | Body MD5 | Targets |
+|-----------|-------|------------|----------|---------|
+{% for test in tests %}
+| {{ test.name }} | {{ test.line_range[0] }}-{{ test.line_range[1] }} | {{ test.assert_count }} | {{ test.body_md5[:8] }}... | {% for target in test.targets %}{{ target.module }}{% if target.symbols %} ({{ target.symbols | join(', ') }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %} |
+{% endfor %}
+
+---
+
+{% endfor %}
+{% endblock %}

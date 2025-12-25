@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Metrics Statistics
+Additional summary statistics based on PrometheusMetricSummary fields.
+{% endblock %}
+
+{% block results %}
+{% for metric_name, metric_info in results.items() %}
+
+### Metric: {{ metric_name }}
+
+Details of Prometheus metrics would be rendered here based on the specific structure.
+
+---
+
+{% endfor %}
+{% endblock %}

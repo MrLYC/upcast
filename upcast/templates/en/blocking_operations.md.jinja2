@@ -1,0 +1,26 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Operations by Category
+{% for category, count in summary.by_category.items() %}
+- **{{ category }}**: {{ count }} operations
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for category, operations in results.items() %}
+
+### Category: {{ category }}
+
+| File | Line | Operation | Statement | Function | Class |
+|------|------|-----------|-----------|----------|-------|
+{% for op in operations %}
+| {{ op.file }} | {{ op.line or 'N/A' }} | {{ op.operation }} | {{ op.statement or 'N/A' }} | {{ op.function or 'N/A' }} | {{ op.class_name or 'N/A' }} |
+{% endfor %}
+
+---
+
+{% endfor %}
+{% endblock %}

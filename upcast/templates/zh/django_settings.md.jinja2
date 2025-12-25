@@ -1,0 +1,22 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### 设置统计
+根据 DjangoSettingsSummary 字段，此处将显示额外的汇总统计信息。
+{% endblock %}
+
+{% block results %}
+{% for setting_name, setting_info in results.items() %}
+
+### 设置: {{ setting_name }}
+
+**类型**: {{ setting_info.__class__.__name__ }}
+
+将根据具体结构渲染设置的详细信息。
+
+---
+
+{% endfor %}
+{% endblock %}

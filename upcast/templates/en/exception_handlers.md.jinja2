@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### Exception Handlers Statistics
+Additional summary statistics based on ExceptionHandlerSummary fields.
+{% endblock %}
+
+{% block results %}
+{% for file_path, handlers in results.items() %}
+
+### File: {{ file_path }}
+
+Details of exception handlers would be rendered here based on the specific structure.
+
+---
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **测试总数**: {{ summary.total_tests }}
+- **测试文件总数**: {{ summary.total_files }}
+- **断言总数**: {{ summary.total_assertions }}
+{% endblock %}
+
+{% block results %}
+{% for file_path, tests in results.items() %}
+
+### 测试文件: {{ file_path }}
+
+| 测试名称 | 行数 | 断言数 | 主体MD5 | 目标 |
+|---------|------|--------|---------|------|
+{% for test in tests %}
+| {{ test.name }} | {{ test.line_range[0] }}-{{ test.line_range[1] }} | {{ test.assert_count }} | {{ test.body_md5[:8] }}... | {% for target in test.targets %}{{ target.module }}{% if target.symbols %} ({{ target.symbols | join(', ') }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %} |
+{% endfor %}
+
+---
+
+{% endfor %}
+{% endblock %}
