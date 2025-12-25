@@ -11,7 +11,6 @@ Usage:
     markdown = render_to_markdown(output, language='en', title='HTTP Requests')
 """
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -181,8 +180,8 @@ def render_to_file(
 
 
 __all__ = [
-    "render_to_markdown",
-    "render_to_file",
-    "get_template_name",
     "create_jinja_env",
+    "get_template_name",
+    "render_to_file",
+    "render_to_markdown",
 ]
