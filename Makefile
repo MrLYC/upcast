@@ -52,6 +52,7 @@ test-integration: ## Run integration tests on example project
 	@uv run upcast scan-unit-tests example/blueking-paas -o example/scan-results/unit-tests.yaml || true
 	@uv run upcast scan-redis-usage example/blueking-paas -o example/scan-results/redis-usage.yaml || true
 	@uv run upcast scan-module-symbols example/blueking-paas -o example/scan-results/module-symbols.yaml || true
+	@uv run upcast scan-logging example/blueking-paas -o example/scan-results/logging.yaml || true
 
 	@echo "✓ Integration tests complete. Results in example/scan-results/"
 
