@@ -26972,7 +26972,7 @@ results:
       - configure_regions
 summary:
   files_scanned: 331
-  scan_duration_ms: 3333
+  scan_duration_ms: 3422
   total_assertions: 3658
   total_count: 1607
   total_files: 331

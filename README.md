@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 13 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, code complexity, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 14 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -21,6 +21,9 @@ pip install upcast
 
 # Scan environment variables
 upcast scan-env-vars /path/to/project
+
+# Analyze logging patterns
+upcast scan-logging /path/to/project
 
 # Analyze Django models
 upcast scan-django-models /path/to/django/project
@@ -67,7 +70,7 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 
 ## Scanners
 
-Upcast provides 13 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 14 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
 
@@ -511,29 +514,36 @@ upcast scan-module-symbols /path/to/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/module-symbols.yaml`](example/scan-results/module-symbols.yaml)
+
 ```yaml
-summary:
-  total_modules: 10
-  total_imports: 50
-  total_symbols: 100
-  files_scanned: 10
-  scan_duration_ms: 150
+metadata:
+  scanner_name: module_symbols
 
 results:
   path/to/file.py:
     imported_modules:
       os:
         module_path: os
-        attributes: ["path"]
+        attributes: ["path", "environ"]
         blocks: ["module"]
+      django:
+        module_path: django
+        attributes: []
+        blocks: ["module"]
+
     imported_symbols:
       Path:
         module_path: pathlib
         attributes: ["home"]
         blocks: ["module"]
-    star_imported:
-      - module_path: typing
+      execute_from_command_line:
+        module_path: django.core.management.execute_from_command_line
+        attributes: []
         blocks: ["module"]
+
+    star_imported: []
+
     variables:
       DEBUG:
         module_path: path.to.file
@@ -541,6 +551,7 @@ results:
         value: "True"
         statement: "DEBUG = True"
         blocks: ["module"]
+
     functions:
       helper:
         signature: "def helper(arg1: int, arg2: str) -> bool:"
@@ -552,6 +563,7 @@ results:
             args: []
             kwargs: {}
         blocks: ["module"]
+
     classes:
       MyClass:
         docstring: "My class documentation"
@@ -971,6 +983,116 @@ https://api.example.com/api/v2/data:
 - **Detects async requests** and session-based calls
 - **Extracts request parameters**: data, json_body, headers, params
 
+#### scan-logging
+
+Detect and analyze all logging statements in your Python codebase, supporting multiple logging libraries.
+
+```bash
+upcast scan-logging /path/to/project
+
+# Use custom sensitive keywords
+upcast scan-logging /path/to/project --sensitive-keywords password --sensitive-keywords api_key
+
+# Combine with other options
+upcast scan-logging /path/to/project --sensitive-keywords db_password --format json -o logs.json
+```
+
+**Output example:**
+
+> See full output: [`example/scan-results/logging.yaml`](example/scan-results/logging.yaml)
+
+```yaml
+metadata:
+  scanner_name: logging
+
+results:
+  src/auth/login.py:
+    logging:
+      - logger_name: auth.login
+        lineno: 45
+        level: info
+        message: "User {} logged in successfully"
+        args: ["username"]
+        type: fstring
+        block: function
+        sensitive_patterns: []
+      - logger_name: auth.login
+        lineno: 52
+        level: warning
+        message: "Failed login attempt for user %s"
+        args: ["username"]
+        type: percent
+        block: if
+        sensitive_patterns: []
+      - logger_name: auth.login
+        lineno: 67
+        level: error
+        message: "Password validation failed"
+        args: []
+        type: string
+        block: except
+        sensitive_patterns: ["password"]
+
+    loguru:
+      - logger_name: loguru
+        lineno: 89
+        level: info
+        message: "Application started on port {}"
+        args: ["port"]
+        type: format
+        block: module
+        sensitive_patterns: []
+
+    django: []
+    structlog: []
+
+  src/api/client.py:
+    structlog:
+      - logger_name: api.client
+        lineno: 23
+        level: info
+        message: "API request completed"
+        args: ["user_id", "status_code"]
+        type: string
+        block: function
+        sensitive_patterns: []
+      - logger_name: api.client
+        lineno: 78
+        level: error
+        message: "API token expired: {}"
+        args: ["token"]
+        type: format
+        block: except
+        sensitive_patterns: ["token"]
+
+    logging: []
+    loguru: []
+    django: []
+```
+
+**Key features:**
+
+- **Multi-Library Support**: Detects logging from `logging`, `loguru`, `structlog`, and Django
+- **Logger Name Resolution**: Resolves logger names from `getLogger(__name__)` to actual module paths
+- **Message Format Detection**: Identifies format types (string literal, f-string, % formatting, .format())
+- **Argument Extraction**: Captures all arguments passed to log calls
+- **Block Type Detection**: Identifies code block context for each log call
+  - Detects block types: `function`, `class`, `try`, `except`, `finally`, `for`, `while`, `if`, `else`, `with`, `module`
+  - Helps understand log context and control flow
+- **Sensitive Data Detection**: Automatically flags potentially sensitive information in logs
+  - **Default keywords**: password, token, api_key, secret, ssn, credit_card, private_key, etc.
+  - **Custom keywords**: Use `--sensitive-keywords` to specify your own list (can be repeated)
+  - Identifies JWT tokens (eyJ... pattern)
+  - Lists matched patterns for review
+- **Smart Library Detection**: Uses import analysis to correctly categorize logging calls
+
+**CLI Options:**
+
+- `--sensitive-keywords KEYWORD`: Add custom sensitive keyword patterns (can be repeated)
+- `-o, --output FILE`: Save results to file
+- `--format FORMAT`: Output format (yaml or json)
+- `-v, --verbose`: Enable detailed logging
+
 #### scan-exception-handlers
 
 Analyze exception handling patterns in your code.
@@ -1178,7 +1300,7 @@ Benefits:
 ## Key Features
 
 - **Static Analysis**: No code execution - safe for any codebase
-- **13 Specialized Scanners**: Comprehensive project analysis
+- **14 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
 - **Multiple Output Formats**: YAML, JSON, and Markdown with multi-language support

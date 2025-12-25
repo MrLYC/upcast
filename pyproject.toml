@@ -170,7 +170,12 @@ ignore = [
     "E731",
     "SIM115",
     "TRY003",
+    # Module shadows standard library - OK in submodules like models.logging
+    "A005",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ALL"]
 
 [tool.ruff.format]
 preview = true
