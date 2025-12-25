@@ -949,7 +949,8 @@ def render_markdown_cmd(
                 if verbose:
                     click.echo(f"Detected model type: {model_class.__name__}", err=True)
                 break
-            except Exception:
+            except (TypeError, ValueError, KeyError):
+                # Expected exceptions during model instantiation
                 continue
 
         if scanner_output is None:
