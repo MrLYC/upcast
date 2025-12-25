@@ -31,9 +31,20 @@ def main():
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
 )
 @click.option("--threshold", type=int, default=11, help="Minimum complexity to report (default: 11)")
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
@@ -44,6 +55,8 @@ def scan_complexity_patterns_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     threshold: int,
     path: str,
     include: tuple[str, ...],
@@ -70,6 +83,8 @@ def scan_complexity_patterns_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -82,9 +97,20 @@ def scan_complexity_patterns_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -94,6 +120,8 @@ def scan_env_vars_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
@@ -119,6 +147,8 @@ def scan_env_vars_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -131,9 +161,9 @@ def scan_env_vars_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -147,6 +177,8 @@ def scan_blocking_operations_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for blocking operations (sleep, locks, subprocess, DB queries)."""
     try:
@@ -164,6 +196,8 @@ def scan_blocking_operations_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -176,9 +210,9 @@ def scan_blocking_operations_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -192,6 +226,8 @@ def scan_http_requests_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for HTTP request patterns (requests, httpx, aiohttp)."""
     try:
@@ -209,6 +245,8 @@ def scan_http_requests_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -221,9 +259,9 @@ def scan_http_requests_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -237,6 +275,8 @@ def scan_metrics_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for Prometheus metrics (Counter, Gauge, Histogram, Summary)."""
     try:
@@ -254,6 +294,8 @@ def scan_metrics_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -266,9 +308,9 @@ def scan_metrics_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -282,6 +324,8 @@ def scan_concurrency_patterns_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for concurrency patterns (threading, multiprocessing, asyncio)."""
     try:
@@ -299,6 +343,8 @@ def scan_concurrency_patterns_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -311,9 +357,9 @@ def scan_concurrency_patterns_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -327,6 +373,8 @@ def scan_exception_handlers_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for exception handlers (try/except/else/finally)."""
     try:
@@ -344,6 +392,8 @@ def scan_exception_handlers_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
@@ -356,7 +406,7 @@ def scan_exception_handlers_cmd(
 @click.option(
     "--format",
     "output_format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
     help="Output format (default: yaml)",
 )
@@ -380,6 +430,8 @@ def scan_unit_tests_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan Python code for unit tests.
 
@@ -421,6 +473,8 @@ def scan_unit_tests_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
 
     except Exception as e:
@@ -434,7 +488,7 @@ def scan_unit_tests_cmd(
 @click.option(
     "--format",
     "output_format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
     help="Output format (default: yaml)",
 )
@@ -451,6 +505,8 @@ def scan_django_urls_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan Django URLconf files for URL patterns.
 
@@ -486,6 +542,8 @@ def scan_django_urls_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
 
     except Exception as e:
@@ -499,7 +557,7 @@ def scan_django_urls_cmd(
 @click.option(
     "--format",
     "output_format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
     help="Output format (default: yaml)",
 )
@@ -516,6 +574,8 @@ def scan_django_models_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan Django model files for model definitions.
 
@@ -551,6 +611,8 @@ def scan_django_models_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
 
     except Exception as e:
@@ -564,9 +626,9 @@ def scan_django_models_cmd(
 @click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
@@ -592,6 +654,8 @@ def scan_signals_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for Django and Celery signal usage.
 
@@ -649,6 +713,8 @@ def scan_signals_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
 
     except Exception as e:
@@ -665,9 +731,9 @@ def scan_signals_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -681,6 +747,8 @@ def scan_django_settings_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan Django code for settings definitions and usages.
 
@@ -725,9 +793,9 @@ def scan_django_settings_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -741,6 +809,8 @@ def scan_redis_usage_cmd(
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan for Redis usage patterns in Django projects.
 
@@ -792,9 +862,9 @@ def scan_redis_usage_cmd(
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
     "--format",
-    type=click.Choice(["yaml", "json"], case_sensitive=False),
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
-    help="Output format (yaml or json)",
+    help="Output format (yaml, json, or markdown)",
 )
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
@@ -810,6 +880,8 @@ def scan_module_symbols_cmd(
     exclude: tuple[str, ...],
     no_default_excludes: bool,
     include_private: bool,
+    markdown_language: str,
+    markdown_title: Optional[str],
 ) -> None:
     """Scan Python modules for imports and symbol definitions.
 
@@ -838,153 +910,13 @@ def scan_module_symbols_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
+        markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
 
         handle_scan_error(e, verbose=verbose)
-
-
-@main.command(name="render-markdown")
-@click.argument("input_file", type=click.Path(exists=True))
-@click.option("-o", "--output", type=click.Path(), help="Output markdown file path (default: <input>-<lang>.md)")
-@click.option(
-    "-l",
-    "--language",
-    type=click.Choice(["en", "zh"], case_sensitive=False),
-    default="en",
-    help="Output language (default: en)",
-)
-@click.option("-t", "--title", type=str, help="Document title (auto-generated if not provided)")
-@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
-def render_markdown_cmd(
-    input_file: str,
-    output: str | None,
-    language: str,
-    title: str | None,
-    verbose: bool,
-) -> None:
-    """Render scanner output (YAML/JSON) to markdown format.
-
-    Converts scanner output files to readable markdown documentation with support
-    for multiple languages.
-
-    INPUT_FILE: Path to scanner output file (YAML or JSON format)
-
-    Examples:
-
-        \b
-        # Render to English markdown
-        upcast render-markdown results.yaml
-
-        \b
-        # Render to Chinese markdown
-        upcast render-markdown results.yaml --language zh
-
-        \b
-        # Specify output file and title
-        upcast render-markdown results.yaml -o report.md --title "Analysis Report"
-
-        \b
-        # Render JSON input to markdown
-        upcast render-markdown results.json -o report.md
-    """
-    import json
-    from pathlib import Path
-
-    import yaml
-
-    from upcast.models.base import ScannerOutput
-    from upcast.models.blocking_operations import BlockingOperationsOutput
-    from upcast.models.complexity import ComplexityOutput
-    from upcast.models.concurrency import ConcurrencyPatternOutput
-    from upcast.models.django_models import DjangoModelOutput
-    from upcast.models.django_settings import DjangoSettingsOutput
-    from upcast.models.django_urls import DjangoUrlOutput
-    from upcast.models.env_vars import EnvVarOutput
-    from upcast.models.exceptions import ExceptionHandlerOutput
-    from upcast.models.http_requests import HttpRequestOutput
-    from upcast.models.metrics import PrometheusMetricOutput
-    from upcast.models.redis_usage import RedisUsageOutput
-    from upcast.models.signals import SignalOutput
-    from upcast.models.unit_tests import UnitTestOutput
-    from upcast.render import render_to_file
-
-    try:
-        input_path = Path(input_file)
-
-        if verbose:
-            click.echo(f"Reading input file: {input_path}", err=True)
-
-        # Load input data
-        with open(input_path) as f:
-            if input_path.suffix.lower() in [".yaml", ".yml"]:
-                data = yaml.safe_load(f)
-            elif input_path.suffix.lower() == ".json":
-                data = json.load(f)
-            else:
-                raise ValueError(f"Unsupported file format: {input_path.suffix}. Use .yaml, .yml, or .json")
-
-        # Try to detect the model type and create appropriate instance
-        model_classes = [
-            HttpRequestOutput,
-            DjangoModelOutput,
-            ComplexityOutput,
-            EnvVarOutput,
-            SignalOutput,
-            BlockingOperationsOutput,
-            ConcurrencyPatternOutput,
-            DjangoSettingsOutput,
-            DjangoUrlOutput,
-            ExceptionHandlerOutput,
-            PrometheusMetricOutput,
-            RedisUsageOutput,
-            UnitTestOutput,
-        ]
-
-        scanner_output: ScannerOutput | None = None
-        for model_class in model_classes:
-            try:
-                scanner_output = model_class(**data)
-                if verbose:
-                    click.echo(f"Detected model type: {model_class.__name__}", err=True)
-                break
-            except (TypeError, ValueError, KeyError):
-                # Expected exceptions during model instantiation
-                continue
-
-        if scanner_output is None:
-            raise ValueError(
-                "Could not determine scanner output type. "
-                "Please ensure the input file is a valid scanner output."
-            )
-
-        # Generate output filename if not provided
-        if output is None:
-            output = str(input_path.with_suffix("")) + f"-{language}.md"
-
-        # Generate title if not provided
-        if title is None:
-            # Use filename without extension as title
-            title = input_path.stem.replace("-", " ").replace("_", " ").title()
-
-        if verbose:
-            click.echo(f"Rendering to markdown: {output}", err=True)
-            click.echo(f"Language: {language}", err=True)
-            click.echo(f"Title: {title}", err=True)
-
-        # Render to markdown
-        render_to_file(scanner_output, output, language=language, title=title)
-
-        click.echo(f"✓ Successfully rendered markdown to: {output}")
-
-    except Exception as e:
-        click.echo(f"Error: {e}", err=True)
-        if verbose:
-            import traceback
-
-            traceback.print_exc()
-        sys.exit(1)
 
 
 if __name__ == "__main__":

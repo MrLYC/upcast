@@ -1181,40 +1181,46 @@ Benefits:
 - **13 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
-- **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
-- **Markdown Rendering**: Convert scanner outputs to readable markdown documentation
-- **Multi-Language Support**: Render documentation in English, Chinese, and more
+- **Multiple Output Formats**: YAML, JSON, and Markdown with multi-language support
 - **Aggregated Results**: Group findings by variable/model/metric name
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Well-Tested**: Comprehensive test suite with high coverage
 
 ## Markdown Rendering
 
-Upcast can convert scanner output files (YAML or JSON) into readable markdown documentation with support for multiple languages.
+Upcast can render scanner outputs directly to markdown format using the `--format markdown` option. This provides readable documentation with support for multiple languages.
 
 ### Basic Usage
 
 ```bash
-# Render scanner output to markdown (English)
-upcast render-markdown results.yaml
+# Scan and output as markdown (English)
+upcast scan-complexity-patterns . --format markdown -o report.md
 
-# Render with Chinese language
-upcast render-markdown results.yaml --language zh
+# Scan and output as markdown (Chinese)
+upcast scan-env-vars . --format markdown --markdown-language zh
 
-# Specify output file and custom title
-upcast render-markdown results.yaml -o report.md --title "Analysis Report"
+# Specify custom title
+upcast scan-django-models . --format markdown --markdown-title "Django Models Report"
 
-# Render JSON input
-upcast render-markdown results.json
+# Output to stdout
+upcast scan-http-requests . --format markdown
 ```
 
 ### Features
 
 - **Multi-Language Support**: Templates available in English (`en`) and Chinese (`zh`)
-- **Auto-Detection**: Automatically detects scanner output type from input file
+- **Integrated with All Scanners**: Works with all 13 scanner commands
 - **Structured Output**: Consistent format with metadata, summary, and detailed results
 - **Readable Tables**: Field details presented in organized markdown tables
-- **Customizable**: Override output filename and document title
+- **Customizable**: Override output filename, language, and document title
+
+### Markdown Options
+
+All scanner commands support these markdown-specific options:
+
+- `--format markdown`: Output format (use instead of yaml or json)
+- `--markdown-language [en|zh]`: Language for markdown output (default: en)
+- `--markdown-title TEXT`: Custom title for the markdown document
 
 ### Example Outputs
 
