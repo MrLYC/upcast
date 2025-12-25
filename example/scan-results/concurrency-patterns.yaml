@@ -1,0 +1,56 @@
+metadata: {}
+results:
+  asyncio: {}
+  celery: {}
+  multiprocessing:
+    process_creation:
+    - api_call: null
+      class_name: Cluster
+      column: 24
+      details:
+        target: Sentinel
+      file: svc-rabbitmq/tasks/management/commands/worker.py
+      function: __init__
+      line: 115
+      pattern: process_creation
+      statement: Process(target=Sentinel, args=(self.cluster_id, self.stop_event,
+        self.start_event, self.broker, self.timeout))
+  threading:
+    thread_creation:
+    - api_call: null
+      class_name: ParallelChainedGenerator
+      column: 19
+      details:
+        target: self._consume_gen
+      file: apiserver/paasng/paas_wl/bk_app/processes/watch.py
+      function: start
+      line: 185
+      pattern: thread_creation
+      statement: threading.Thread(target=self._consume_gen, args=(gen, ))
+    - api_call: null
+      class_name: TestBareGitRepoController
+      column: 12
+      details:
+        target: httpd.serve_forever
+      file: apiserver/paasng/tests/paasng/platform/sourcectl/test_bare_git.py
+      function: test_anonymize_url
+      line: 83
+      pattern: thread_creation
+      statement: threading.Thread(target=httpd.serve_forever)
+    thread_pool_executor:
+    - api_call: null
+      class_name: null
+      column: 17
+      details: null
+      file: apiserver/paasng/paasng/platform/smart_app/services/dispatch.py
+      function: dispatch_package_to_modules
+      line: 74
+      pattern: thread_pool_executor
+      statement: ThreadPoolExecutor()
+summary:
+  by_category:
+    multiprocessing: 1
+    threading: 3
+  files_scanned: 4
+  scan_duration_ms: 11869
+  total_count: 4

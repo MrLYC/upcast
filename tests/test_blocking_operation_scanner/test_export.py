@@ -3,7 +3,6 @@
 import json
 
 import yaml
-
 from upcast.blocking_operation_scanner.export import (
     export_to_json,
     export_to_yaml,

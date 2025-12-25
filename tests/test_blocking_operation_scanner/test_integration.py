@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 import yaml
 from click.testing import CliRunner
-
 from upcast.blocking_operation_scanner.checker import BlockingOperationChecker
 from upcast.blocking_operation_scanner.cli import scan_blocking_operations
 

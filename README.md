@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 12 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, concurrency patterns, code complexity, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 14 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -22,14 +22,20 @@ pip install upcast
 # Scan environment variables
 upcast scan-env-vars /path/to/project
 
+# Analyze logging patterns
+upcast scan-logging /path/to/project
+
 # Analyze Django models
 upcast scan-django-models /path/to/django/project
+
+# Scan Redis usage patterns
+upcast scan-redis-usage /path/to/django/project
 
 # Find blocking operations
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
 
 # Check cyclomatic complexity
-upcast scan-complexity /path/to/project --threshold 15
+upcast scan-complexity-patterns /path/to/project --threshold 15
 ```
 
 ## Installation
@@ -62,9 +68,15 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 - `--format FORMAT`: Choose output format (`yaml` or `json`)
 - `-v, --verbose`: Enable detailed logging
 
-## Django Scanners
+## Scanners
 
-### scan-django-models
+Upcast provides 14 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+
+> 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
+
+### Django Scanners
+
+#### scan-django-models
 
 Analyze Django model definitions, extracting fields, relationships, and metadata.
 
@@ -74,11 +86,15 @@ upcast scan-django-models /path/to/django/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/django-models.yaml`](example/scan-results/django-models.yaml)
+
 ```yaml
 app.models.User:
+  name: User
   module: app.models
   bases:
     - models.Model
+  description: "User model for authentication and profile management."
   fields:
     username:
       type: models.CharField
@@ -98,11 +114,12 @@ app.models.User:
 **Key features:**
 
 - Detects all Django model classes
+- Extracts model descriptions from docstrings
 - Extracts field types and parameters
 - Identifies relationships (ForeignKey, ManyToMany, OneToOne)
 - Captures model metadata and options
 
-### scan-django-settings
+#### scan-django-settings
 
 Find all references to Django settings variables and extract settings definitions from your Django project.
 
@@ -125,6 +142,8 @@ upcast scan-django-settings --combined /path/to/django/project
 ```
 
 **Output example (usages):**
+
+> See full output: [`example/scan-results/django-settings.yaml`](example/scan-results/django-settings.yaml)
 
 ```yaml
 DEBUG:
@@ -219,9 +238,9 @@ usages:
 - `-o, --output FILE`: Write results to YAML file
 - `-v, --verbose`: Enable verbose output
 
-### scan-django-urls
+#### scan-django-urls
 
-Scan Django URL configurations and extract route patterns.
+Scan Django URL configurations and extract route patterns, including view resolution.
 
 ```bash
 upcast scan-django-urls /path/to/django/project
@@ -229,79 +248,347 @@ upcast scan-django-urls /path/to/django/project
 
 **Output example:**
 
-```yaml
-/api/users/:
-  pattern: api/users/
-  view: users.views.UserListView
-  name: user-list
-  methods:
-    - GET
-    - POST
-  file: api/urls.py
-  line: 15
+> See full output: [`example/scan-results/django-urls.yaml`](example/scan-results/django-urls.yaml)
 
-/api/users/<int:pk>/:
-  pattern: api/users/<int:pk>/
-  view: users.views.UserDetailView
-  name: user-detail
-  methods:
-    - GET
-    - PUT
-    - DELETE
-  file: api/urls.py
-  line: 16
+```yaml
+apiserver.paasng.paas_wl.apis.admin.urls:
+  urlpatterns:
+    - pattern: wl_api/platform/process_spec_plan/manage/
+      type: path
+      name: null
+      view_module: paas_wl.apis.admin.views.processes
+      view_name: ProcessSpecPlanManageViewSet
+      converters: []
+      named_groups: []
+      is_partial: false
+      is_conditional: false
+    - pattern: api/users/<int:pk>/
+      type: path
+      name: user-detail
+      view_module: users.views
+      view_name: UserDetailView
+      converters:
+        - pk:int
+      named_groups: []
+      is_partial: false
+      is_conditional: false
+    - pattern: api/accounts/
+      type: include
+      include_module: accounts.urls
+      namespace: accounts
 ```
 
 **Key features:**
 
 - Extracts URL patterns from `urlpatterns`
-- Identifies view functions and classes
+- **Resolves view functions and classes** - Automatically resolves `view_module` and `view_name` for all views including ViewSets
+- **Unified field names** - Both regular views and ViewSets use `view_module` and `view_name` fields consistently
+- **Fallback extraction** - Even when full module path resolution fails, view names are still extracted
 - Captures route names
 - Detects path converters (`<int:id>`, `<slug:slug>`)
+- Handles include() patterns and namespaces
+- Supports Django REST Framework router registrations and ViewSet.as_view() patterns
 
-### scan-signals
+**View resolution:**
+
+- `view_module`: Full module path where the view/ViewSet is defined (e.g., `users.views`)
+- `view_name`: Function or class name, including ViewSets (e.g., `UserDetailView`, `UserViewSet`)
+- Both fields are set to `null` when resolution fails (e.g., for include() patterns or dynamic views)
+- Resolution success rate typically exceeds 80% on real-world codebases
+
+#### scan-signals
 
 Discover Django and Celery signal definitions and handlers.
 
 ```bash
+# Basic usage
 upcast scan-signals /path/to/project
+
+# Save to file (supports JSON and YAML)
+upcast scan-signals /path/to/project -o signals.yaml
+upcast scan-signals /path/to/project -o signals.json --format json
+
+# Filter signal files
+upcast scan-signals /path/to/project --include "**/signals/**"
 ```
 
-**Output example:**
+**Output format:**
+
+> See full output: [`example/scan-results/signals.yaml`](example/scan-results/signals.yaml)
 
 ```yaml
-post_save:
-  type: django.signal
-  receivers:
-    - handler: users.signals.create_profile
-      sender: User
-      file: users/signals.py
-      line: 25
-    - handler: notifications.signals.send_welcome_email
-      sender: User
-      file: notifications/signals.py
-      line: 42
-
-task_success:
-  type: celery.signal
-  receivers:
-    - handler: monitoring.handlers.log_task_success
-      file: monitoring/handlers.py
-      line: 15
+metadata:
+  root_path: /path/to/project
+  scanner_name: signal
+summary:
+  total_count: 5
+  files_scanned: 3
+  django_receivers: 4
+  celery_receivers: 1
+  custom_signals_defined: 2
+  unused_custom_signals: 0
+results:
+  - signal: post_save
+    type: django
+    category: model_signals
+    receivers:
+      - handler: create_profile
+        file: users/signals.py
+        line: 25
+        sender: User
+        context:
+          type: function
+  - signal: user_logged_in
+    type: django
+    category: custom_signals
+    receivers:
+      - handler: log_login
+        file: auth/handlers.py
+        line: 42
+    status: active
 ```
 
 **Key features:**
 
-- Detects Django signals (pre_save, post_save, etc.)
-- Finds Celery task signals
-- Identifies signal receivers and senders
-- Tracks decorator-based connections (`@receiver`)
+- Detects Django signals (pre_save, post_save, m2m_changed, etc.)
+- Finds Celery task signals (task_success, task_failure, etc.)
+- Identifies custom signal definitions
+- Tracks signal receivers and senders
+- Supports decorator-based connections (`@receiver`)
+- Detects unused custom signals
+- Provides comprehensive statistics in summary
 
-## Code Analysis Scanners
+#### scan-redis-usage
 
-### scan-concurrency-patterns
+Analyze Redis usage patterns in Django projects, including cache backends, Celery configuration, and direct redis-py usage.
 
-Identify concurrency patterns including async/await, threading, and multiprocessing.
+```bash
+# Basic usage
+upcast scan-redis-usage /path/to/project
+
+# Save to file
+upcast scan-redis-usage /path/to/project -o redis-usage.yaml
+
+# Filter specific directories
+upcast scan-redis-usage /path/to/project --include "app/**" --include "core/**"
+```
+
+**Output example:**
+
+> See full output: [`example/scan-results/redis-usage.yaml`](example/scan-results/redis-usage.yaml)
+
+```yaml
+summary:
+  total_count: 5
+  total_usages: 5
+  files_scanned: 3
+  scan_duration_ms: 12096
+  categories:
+    celery_broker: 1
+    celery_result: 1
+    direct_client: 3
+  warnings: []
+
+results:
+  celery_broker:
+    - type: celery_broker
+      file: settings/__init__.py
+      line: 609
+      library: redis
+      config:
+        location: settings.get('CELERY_BROKER_URL', REDIS_URL)
+      statement: CELERY_BROKER_URL = "..."
+
+  direct_client:
+    - type: direct_client
+      file: misc/metrics/workloads/deployment.py
+      line: 40
+      library: django_redis
+      operation: get
+      key: metrics:unavailable_deployments_total
+      statement: cache.get(cache_key)
+      has_ttl: null
+      timeout: null
+      is_pipeline: false
+
+    - type: direct_client
+      file: misc/metrics/workloads/deployment.py
+      line: 67
+      library: django_redis
+      operation: set
+      key: metrics:unavailable_deployments_total
+      statement: cache.set(cache_key, gauge_family, timeout=60 * 5)
+      has_ttl: true
+      timeout: 300
+      is_pipeline: false
+
+    - type: direct_client
+      file: svc-rabbitmq/tasks/management/commands/worker.py
+      line: 59
+      library: django_redis
+      operation: get_or_set
+      key: "..."
+      statement: cache.get_or_set(settings.TASK_LEADER_KEY, ...)
+      has_ttl: null
+      timeout: null
+      is_pipeline: false
+
+  distributed_lock:
+    - type: distributed_lock
+      file: workers/tasks.py
+      line: 45
+      library: django_redis
+      operation: lock
+      key: task:...:lock
+      statement: cache.lock(f"task:{task_id}:lock", timeout=60)
+      timeout: 60
+      pattern: cache_lock
+      is_pipeline: false
+```
+
+**Key features:**
+
+- **Configuration Detection:**
+
+  - Django cache backends (CACHES, django-redis)
+  - Celery broker and result backend settings
+  - Django Channels Redis layer configuration
+  - DRF throttling with Redis
+
+- **Usage Pattern Analysis:**
+
+  - Django cache API (`cache.get()`, `cache.set()`, etc.)
+  - Direct redis-py client operations
+  - Distributed locks (`cache.lock()`)
+  - Pipeline operations tracking
+
+- **Smart Key Inference:**
+
+  - Extracts literal Redis keys when possible
+  - Uses `...` for dynamic/unresolvable keys
+  - Handles f-strings, format(), % formatting
+  - Resolves variable assignments in scope
+
+- **TTL & Timeout Tracking:**
+
+  - Detects TTL configuration in cache operations
+  - Warns about missing TTL on set operations
+  - Extracts timeout values from lock operations
+  - Identifies operations without expiration
+
+- **Library Detection:**
+  - Distinguishes between django_redis, redis-py, channels_redis
+  - Tracks session storage and rate limiting configurations
+  - Identifies custom Redis client usage
+
+**Usage Types:**
+
+- `cache_backend`: Django CACHES configuration
+- `session_storage`: SESSION_ENGINE with Redis
+- `celery_broker`: Celery message broker
+- `celery_result`: Celery result backend
+- `channels`: Django Channels layer
+- `rate_limiting`: DRF throttling
+- `direct_client`: Direct cache/Redis API calls
+- `distributed_lock`: Distributed locking patterns
+
+### Code Analysis Scanners
+
+#### scan-module-symbols
+
+Analyze Python modules to extract imports and symbol definitions including variables, functions, and classes with their metadata.
+
+```bash
+upcast scan-module-symbols /path/to/project
+```
+
+**Features:**
+
+- Extract all import types (import, from...import, from...import \*)
+- Track attribute access patterns on imported symbols
+- Extract module-level variables, functions, and classes
+- Capture decorators, docstrings, and function signatures
+- Track symbol definition context (module, if, try, except blocks)
+- Compute body MD5 hashes for functions and classes
+- Filter private symbols (configurable with `--include-private`)
+
+**Output example:**
+
+> See full output: [`example/scan-results/module-symbols.yaml`](example/scan-results/module-symbols.yaml)
+
+```yaml
+metadata:
+  scanner_name: module_symbols
+
+results:
+  path/to/file.py:
+    imported_modules:
+      os:
+        module_path: os
+        attributes: ["path", "environ"]
+        blocks: ["module"]
+      django:
+        module_path: django
+        attributes: []
+        blocks: ["module"]
+
+    imported_symbols:
+      Path:
+        module_path: pathlib
+        attributes: ["home"]
+        blocks: ["module"]
+      execute_from_command_line:
+        module_path: django.core.management.execute_from_command_line
+        attributes: []
+        blocks: ["module"]
+
+    star_imported: []
+
+    variables:
+      DEBUG:
+        module_path: path.to.file
+        attributes: []
+        value: "True"
+        statement: "DEBUG = True"
+        blocks: ["module"]
+
+    functions:
+      helper:
+        signature: "def helper(arg1: int, arg2: str) -> bool:"
+        docstring: "A helper function."
+        body_md5: "abc123..."
+        attributes: []
+        decorators:
+          - name: decorator_name
+            args: []
+            kwargs: {}
+        blocks: ["module"]
+
+    classes:
+      MyClass:
+        docstring: "My class documentation"
+        body_md5: "def456..."
+        attributes: ["attr1", "attr2"]
+        methods: ["method1", "method2"]
+        bases: ["BaseClass"]
+        decorators:
+          - name: dataclass
+            args: []
+            kwargs: {}
+        blocks: ["module"]
+```
+
+**Options:**
+
+- `--include-private`: Include private symbols (starting with `_`)
+- `--exclude`: Exclude specific file patterns
+- `--format`: Output format (yaml or json)
+
+---
+
+#### scan-concurrency-patterns
+
+Identify concurrency patterns including async/await, threading, and multiprocessing with detailed context and parameter extraction.
 
 ```bash
 upcast scan-concurrency-patterns /path/to/project
@@ -309,39 +596,111 @@ upcast scan-concurrency-patterns /path/to/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/concurrency-patterns.yaml`](example/scan-results/concurrency-patterns.yaml)
+
 ```yaml
-async_functions:
-  - name: fetch_data
-    file: api/client.py
-    line: 45
-    uses_await: true
-    calls:
-      - asyncio.gather
-      - aiohttp.get
+summary:
+  total_count: 15
+  files_scanned: 8
+  scan_duration_ms: 120
+  by_category:
+    threading: 6
+    multiprocessing: 3
+    asyncio: 6
 
-thread_usage:
-  - pattern: threading.Thread
-    file: workers/processor.py
-    line: 78
-    target: process_batch
-    daemon: true
+results:
+  threading:
+    thread_creation:
+      - file: workers/processor.py
+        line: 78
+        pattern: thread_creation
+        function: start_worker
+        class_name: WorkerManager
+        details:
+          target: process_batch
+          name: worker-1
+        statement: threading.Thread(target=process_batch, name="worker-1")
 
-multiprocessing:
-  - pattern: multiprocessing.Pool
-    file: tasks/parallel.py
-    line: 123
-    workers: 4
+    thread_pool_executor:
+      - file: tasks/parallel.py
+        line: 45
+        pattern: thread_pool_executor
+        function: setup_executor
+        details:
+          max_workers: 4
+        statement: ThreadPoolExecutor(max_workers=4)
+
+    submit:
+      - file: tasks/parallel.py
+        line: 67
+        pattern: executor_submit_thread
+        function: process_items
+        details:
+          function: worker_function
+        api_call: submit
+        statement: executor.submit(worker_function, item)
+
+  multiprocessing:
+    process_creation:
+      - file: compute/workers.py
+        line: 123
+        pattern: process_creation
+        function: start_compute
+        details:
+          target: compute_intensive_task
+        statement: multiprocessing.Process(target=compute_intensive_task)
+
+    run_in_executor:
+      - file: api/handlers.py
+        line: 89
+        pattern: run_in_executor_process
+        function: async_handler
+        details:
+          executor_type: ProcessPoolExecutor
+          function: cpu_intensive
+        api_call: run_in_executor
+        statement: await loop.run_in_executor(process_pool, cpu_intensive)
+
+  asyncio:
+    async_function:
+      - file: api/client.py
+        line: 45
+        pattern: async_function
+        function: fetch_data
+        statement: async def fetch_data
+
+    create_task:
+      - file: api/client.py
+        line: 78
+        pattern: create_task
+        function: fetch_all
+        details:
+          coroutine: fetch_data
+        api_call: create_task
+        statement: asyncio.create_task(fetch_data(url))
+
+    run_in_executor:
+      - file: api/handlers.py
+        line: 56
+        pattern: run_in_executor_thread
+        function: async_handler
+        details:
+          executor_type: ThreadPoolExecutor
+          function: io_operation
+        api_call: run_in_executor
+        statement: await loop.run_in_executor(thread_pool, io_operation)
 ```
 
 **Key features:**
 
-- Detects async/await patterns
-- Identifies threading usage
-- Finds multiprocessing constructs
-- Tracks asyncio operations
-- Flags potential concurrency issues
+- **Pattern-Specific Detection**: Distinguishes Thread creation, ThreadPoolExecutor, submit() calls, etc.
+- **Context Extraction**: Captures enclosing function and class names for each pattern
+- **Parameter Extraction**: Extracts target functions, max_workers, coroutine names
+- **Executor Resolution**: Two-pass scanning resolves executor variables in submit() and run_in_executor()
+- **API Call Tracking**: Identifies specific API methods (create_task, submit, run_in_executor)
+- **Smart Filtering**: Skips asyncio.create_task() with unresolvable coroutines to reduce noise
 
-### scan-blocking-operations
+#### scan-blocking-operations
 
 Find blocking operations that may cause performance issues in async code.
 
@@ -350,6 +709,8 @@ upcast scan-blocking-operations /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/blocking-operations.yaml`](example/scan-results/blocking-operations.yaml)
 
 ```yaml
 summary:
@@ -391,7 +752,7 @@ operations:
 - Detects Django ORM `select_for_update()`
 - Flags anti-patterns in async code
 
-### scan-unit-tests
+#### scan-unit-tests
 
 Analyze unit test files and extract test information.
 
@@ -400,6 +761,8 @@ upcast scan-unit-tests /path/to/tests
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/unit-tests.yaml`](example/scan-results/unit-tests.yaml)
 
 ```yaml
 tests/test_users.py:
@@ -441,9 +804,9 @@ tests/test_api.py:
 - Captures fixtures and markers
 - Counts tests per file
 
-## Infrastructure Scanners
+### Infrastructure Scanners
 
-### scan-env-vars
+#### scan-env-vars
 
 Scan for environment variable usage with advanced type inference.
 
@@ -452,6 +815,8 @@ upcast scan-env-vars /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/env-vars.yaml`](example/scan-results/env-vars.yaml)
 
 ```yaml
 DATABASE_URL:
@@ -493,7 +858,7 @@ API_TIMEOUT:
 - Identifies required vs optional variables
 - Aggregates all usages per variable
 
-### scan-prometheus-metrics
+#### scan-prometheus-metrics
 
 Extract Prometheus metrics definitions with full metadata.
 
@@ -502,6 +867,8 @@ upcast scan-prometheus-metrics /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/metrics.yaml`](example/scan-results/metrics.yaml)
 
 ```yaml
 http_requests_total:
@@ -542,11 +909,11 @@ request_duration_seconds:
 - Identifies histogram buckets
 - Supports decorator patterns
 
-## HTTP & Exception Scanners
+### HTTP & Exception Scanners
 
-### scan-http-requests
+#### scan-http-requests
 
-Find HTTP and API requests throughout your codebase.
+Find HTTP and API requests throughout your codebase with intelligent URL pattern detection and filtering.
 
 ```bash
 upcast scan-http-requests /path/to/project
@@ -554,38 +921,179 @@ upcast scan-http-requests /path/to/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/http-requests.yaml`](example/scan-results/http-requests.yaml)
+
 ```yaml
-requests:
-  - location: api/client.py:45
-    method: GET
-    library: requests
-    statement: requests.get('https://api.example.com/users')
-    url: https://api.example.com/users
-    has_timeout: false
+"...":
+  library: requests
+  method: GET
+  usages:
+    - file: accessories/cloudapi/components/http.py
+      line: 38
+      method: REQUEST
+      statement: requests.request(method, url, **kwargs)
+      session_based: false
+      is_async: false
+      timeout: null
+    - file: accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
+      line: 56
+      method: GET
+      statement: requests.get(url)
+      session_based: false
+      is_async: false
 
-  - location: services/http.py:67
-    method: POST
-    library: httpx
-    statement: httpx.post(url, json=data, timeout=30)
-    has_timeout: true
-    timeout: 30
+https://api.example.com/users/...:
+  method: GET
+  library: requests
+  usages:
+    - file: api/client.py
+      line: 45
+      method: GET
+      statement: requests.get(f"https://api.example.com/users/{user_id}")
+      session_based: false
+      is_async: false
 
-  - location: tasks/fetch.py:23
-    method: GET
-    library: urllib
-    statement: urllib.request.urlopen(url)
-    has_timeout: false
+https://api.example.com/api/v2/data:
+  method: GET
+  library: requests
+  usages:
+    - file: services/http.py
+      line: 67
+      method: GET
+      statement: requests.get(BASE_URL + "/api/v2/data")
+      timeout: 30
+      session_based: false
+      is_async: false
 ```
 
 **Key features:**
 
-- Detects `requests`, `httpx`, `urllib`, `aiohttp`
-- Extracts HTTP methods (GET, POST, PUT, DELETE)
-- Identifies URLs when possible
-- Checks for timeout configuration
-- Flags missing timeout warnings
+- **Smart URL Detection**: Detects `requests`, `httpx`, `urllib`, `aiohttp`
+- **Accurate Request Identification**: Filters out non-request classes (RequestException, Response, Auth, Adapter, etc.)
+- **Request Constructor Support**: Correctly handles `requests.Request(method, url)` with positional and keyword arguments
+- **Context-Aware Resolution**: Infers variable values from assignments in the same scope
+- **Pattern Preservation**: Preserves static URL parts while replacing dynamic segments with `...`
+  - `f"https://api.example.com/users/{user_id}"` → `https://api.example.com/users/...`
+  - `f"{proto}://{host}/api/v1/path"` → `...://.../api/v1/path`
+  - `BASE_URL + "/api/data"` → resolves BASE_URL if defined
+  - `f"{a}{b}{c}{d}"` → `...` (merges consecutive `...` into one)
+- **Extracts HTTP methods** (GET, POST, PUT, DELETE, REQUEST)
+- **Identifies URLs** when possible, with smart pattern normalization
+- **Checks for timeout configuration**
+- **Detects async requests** and session-based calls
+- **Extracts request parameters**: data, json_body, headers, params
 
-### scan-exception-handlers
+#### scan-logging
+
+Detect and analyze all logging statements in your Python codebase, supporting multiple logging libraries.
+
+```bash
+upcast scan-logging /path/to/project
+
+# Use custom sensitive keywords
+upcast scan-logging /path/to/project --sensitive-keywords password --sensitive-keywords api_key
+
+# Combine with other options
+upcast scan-logging /path/to/project --sensitive-keywords db_password --format json -o logs.json
+```
+
+**Output example:**
+
+> See full output: [`example/scan-results/logging.yaml`](example/scan-results/logging.yaml)
+
+```yaml
+metadata:
+  scanner_name: logging
+
+results:
+  src/auth/login.py:
+    logging:
+      - logger_name: auth.login
+        lineno: 45
+        level: info
+        message: "User {} logged in successfully"
+        args: ["username"]
+        type: fstring
+        block: function
+        sensitive_patterns: []
+      - logger_name: auth.login
+        lineno: 52
+        level: warning
+        message: "Failed login attempt for user %s"
+        args: ["username"]
+        type: percent
+        block: if
+        sensitive_patterns: []
+      - logger_name: auth.login
+        lineno: 67
+        level: error
+        message: "Password validation failed"
+        args: []
+        type: string
+        block: except
+        sensitive_patterns: ["password"]
+
+    loguru:
+      - logger_name: loguru
+        lineno: 89
+        level: info
+        message: "Application started on port {}"
+        args: ["port"]
+        type: format
+        block: module
+        sensitive_patterns: []
+
+    django: []
+    structlog: []
+
+  src/api/client.py:
+    structlog:
+      - logger_name: api.client
+        lineno: 23
+        level: info
+        message: "API request completed"
+        args: ["user_id", "status_code"]
+        type: string
+        block: function
+        sensitive_patterns: []
+      - logger_name: api.client
+        lineno: 78
+        level: error
+        message: "API token expired: {}"
+        args: ["token"]
+        type: format
+        block: except
+        sensitive_patterns: ["token"]
+
+    logging: []
+    loguru: []
+    django: []
+```
+
+**Key features:**
+
+- **Multi-Library Support**: Detects logging from `logging`, `loguru`, `structlog`, and Django
+- **Logger Name Resolution**: Resolves logger names from `getLogger(__name__)` to actual module paths
+- **Message Format Detection**: Identifies format types (string literal, f-string, % formatting, .format())
+- **Argument Extraction**: Captures all arguments passed to log calls
+- **Block Type Detection**: Identifies code block context for each log call
+  - Detects block types: `function`, `class`, `try`, `except`, `finally`, `for`, `while`, `if`, `else`, `with`, `module`
+  - Helps understand log context and control flow
+- **Sensitive Data Detection**: Automatically flags potentially sensitive information in logs
+  - **Default keywords**: password, token, api_key, secret, ssn, credit_card, private_key, etc.
+  - **Custom keywords**: Use `--sensitive-keywords` to specify your own list (can be repeated)
+  - Identifies JWT tokens (eyJ... pattern)
+  - Lists matched patterns for review
+- **Smart Library Detection**: Uses import analysis to correctly categorize logging calls
+
+**CLI Options:**
+
+- `--sensitive-keywords KEYWORD`: Add custom sensitive keyword patterns (can be repeated)
+- `-o, --output FILE`: Save results to file
+- `--format FORMAT`: Output format (yaml or json)
+- `-v, --verbose`: Enable detailed logging
+
+#### scan-exception-handlers
 
 Analyze exception handling patterns in your code.
 
@@ -595,9 +1103,13 @@ upcast scan-exception-handlers /path/to/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/exception-handlers.yaml`](example/scan-results/exception-handlers.yaml)
+
 ```yaml
 handlers:
-  - location: api/views.py:45
+  - file: api/views.py
+    lineno: 45
+    end_lineno: 52
     type: try-except
     exceptions:
       - ValueError
@@ -605,7 +1117,9 @@ handlers:
     has_bare_except: false
     reraises: false
 
-  - location: services/processor.py:78
+  - file: services/processor.py
+    lineno: 78
+    end_lineno: 85
     type: try-except
     exceptions:
       - Exception
@@ -613,7 +1127,9 @@ handlers:
     reraises: true
     logs_error: true
 
-  - location: legacy/old_code.py:123
+  - file: legacy/old_code.py
+    lineno: 123
+    end_lineno: 127
     type: try-except
     has_bare_except: true
     warning: Bare except clause detected
@@ -627,17 +1143,19 @@ handlers:
 - Checks for error logging
 - Detects exception re-raising
 
-## Code Quality Scanners
+### Code Quality Scanners
 
-### scan-complexity
+#### scan-complexity-patterns
 
 Analyze cyclomatic complexity to identify functions that may need refactoring.
 
 ```bash
-upcast scan-complexity /path/to/project
+upcast scan-complexity-patterns /path/to/project
 ```
 
 **Output example:**
+
+> See full output: [`example/scan-results/complexity-patterns.yaml`](example/scan-results/complexity-patterns.yaml)
 
 ```yaml
 summary:
@@ -655,6 +1173,7 @@ modules:
       end_line: 98
       complexity: 14
       severity: warning
+      message: "Complexity 14 exceeds threshold 11"
       description: "Validate user registration with multiple checks"
       signature: "def process_user_registration(data: dict, strict: bool = True) -> Result:"
       comment_lines: 8
@@ -672,19 +1191,19 @@ modules:
 
 ```bash
 # Scan with default threshold (11)
-upcast scan-complexity /path/to/project
+upcast scan-complexity-patterns /path/to/project
 
 # Custom threshold
-upcast scan-complexity . --threshold 15
+upcast scan-complexity-patterns . --threshold 15
 
 # Include test files (excluded by default)
-upcast scan-complexity . --include-tests
+upcast scan-complexity-patterns . --include-tests
 
 # Save to file
-upcast scan-complexity . -o complexity-report.yaml
+upcast scan-complexity-patterns . -o complexity-report.yaml
 
 # JSON format
-upcast scan-complexity . --format json
+upcast scan-complexity-patterns . --format json
 ```
 
 **Severity levels:**
@@ -704,7 +1223,63 @@ upcast scan-complexity . --format json
 - **Detailed Metadata**: Function signature, docstring, line numbers
 - **Actionable Output**: Sorted by severity with clear recommendations
 
+---
+
 ## Architecture
+
+### Data Models
+
+Starting from version 0.3.0, Upcast provides standardized Pydantic models for all scanner outputs in the `upcast.models` package. This enables type-safe data handling for both scanners and future analyzers.
+
+**Base Models:**
+
+```python
+from upcast.models import ScannerSummary, ScannerOutput
+
+# All scanners extend these base classes
+class MySummary(ScannerSummary):
+    # Scanner-specific summary fields
+    pass
+
+class MyOutput(ScannerOutput[ResultType]):
+    summary: MySummary
+    results: ResultType
+```
+
+**Available Models:**
+
+- **base**: `ScannerSummary`, `ScannerOutput` - Base classes for all scanners
+- **blocking_operations**: `BlockingOperation`, `BlockingOperationsSummary`, `BlockingOperationsOutput`
+- **concurrency**: `ConcurrencyUsage`, `ConcurrencyPatternSummary`, `ConcurrencyPatternOutput`
+- **complexity**: `ComplexityResult`, `ComplexitySummary`, `ComplexityOutput`
+- **django_models**: `DjangoField`, `DjangoModel`, `DjangoModelSummary`, `DjangoModelOutput`
+- **django_settings**: `SettingsUsage`, `SettingDefinition`, `DjangoSettingsSummary`, `DjangoSettings*Output`
+- **django_urls**: `UrlPattern`, `DjangoUrlSummary`, `DjangoUrlOutput`
+- **env_vars**: `EnvVarInfo`, `EnvVarSummary`, `EnvVarOutput`
+- **exceptions**: `ExceptionHandler`, `ExceptionHandlerSummary`, `ExceptionHandlerOutput`
+- **http_requests**: `HttpRequestInfo`, `HttpRequestSummary`, `HttpRequestOutput`
+- **metrics**: `MetricInfo`, `PrometheusMetricSummary`, `PrometheusMetricOutput`
+- **redis_usage**: `RedisUsage`, `RedisUsageSummary`, `RedisUsageOutput`
+- **signals**: `SignalInfo`, `SignalSummary`, `SignalOutput`
+- **unit_tests**: `UnitTestInfo`, `UnitTestSummary`, `UnitTestOutput`
+
+**Usage Example:**
+
+```python
+from upcast.models import EnvVarOutput, EnvVarInfo
+from upcast.env_var_scanner import EnvironmentVariableScanner
+
+# Type-safe scanner output
+scanner = EnvironmentVariableScanner()
+output: EnvVarOutput = scanner.scan(project_path)
+
+# Access with full type hints
+for var_name, var_info in output.results.items():
+    var_info: EnvVarInfo
+    print(f"{var_name}: required={var_info.required}")
+    for location in var_info.locations:
+        print(f"  {location.file}:{location.line}")
+```
 
 ### Common Utilities
 
@@ -722,16 +1297,60 @@ Benefits:
 - Better error messages
 - Unified file filtering
 
-## Ke2 Features
+## Key Features
 
 - **Static Analysis**: No code execution - safe for any codebase
-- **11 Specialized Scanners**: Comprehensive project analysis
+- **14 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
 - **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
 - **Aggregated Results**: Group findings by variable/model/metric name
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Well-Tested**: Comprehensive test suite with high coverage
+
+## Integration Testing
+
+Upcast includes comprehensive integration tests that validate all scanners on a real-world Django project (blueking-paas).
+
+### Running Integration Tests
+
+```bash
+# Run all scanners on example project
+make test-integration
+```
+
+This command:
+
+- Scans `example/blueking-paas` with all 12 scanners
+- Outputs results to `example/scan-results/*.yaml`
+- Takes approximately 1-2 minutes to complete
+
+### CI Validation
+
+The GitHub Actions workflow automatically:
+
+- Runs integration tests on every PR
+- Compares scan results against committed versions using Git
+- Fails if scanner output changes unexpectedly
+- Helps detect regressions in scanner behavior
+
+### Accepting Result Changes
+
+When scanner improvements intentionally change output:
+
+```bash
+# 1. Run integration tests
+make test-integration
+
+# 2. Review the changes
+git diff example/scan-results/
+
+# 3. Commit updated results
+git add example/scan-results/
+git commit -m "Update scan results: [describe changes]"
+```
+
+**Note:** All 13 scanners are tested on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas), with results available in [`example/scan-results/`](example/scan-results/).
 
 ## Contributing
 

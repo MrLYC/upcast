@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import astroid
-
 from upcast.blocking_operation_scanner.operation_parser import (
     OperationType,
     extract_function_context,

@@ -1,8 +1,8 @@
 # ruff: noqa
 """Mixed library usage patterns for testing."""
 
-import requests
 import httpx
+import requests
 
 # Same URL, different libraries
 r1 = requests.get("https://example.com")

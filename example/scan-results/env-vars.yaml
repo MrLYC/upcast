@@ -1,0 +1,110 @@
+metadata:
+  scanner_name: env_vars
+results:
+  ? ''
+  : default_value: <dynamic>
+    locations:
+    - code: os.getenv(env_key, default)
+      column: 20
+      file: apiserver/paasng/paasng/utils/configs.py
+      line: 101
+      pattern: os.getenv('')
+    name: ''
+    required: false
+  BKPAAS_BUILD_VERSION:
+    default_value: unset
+    locations:
+    - code: os.getenv('BKPAAS_BUILD_VERSION', 'unset')
+      column: 23
+      file: apiserver/paasng/paasng/plat_admin/admin42/context_processors.py
+      line: 24
+      pattern: os.getenv('BKPAAS_BUILD_VERSION')
+    name: BKPAAS_BUILD_VERSION
+    required: false
+  CELERY_TASK_DEFAULT_QUEUE:
+    default_value: celery
+    locations:
+    - code: os.environ.get('CELERY_TASK_DEFAULT_QUEUE', 'celery')
+      column: 28
+      file: apiserver/paasng/paasng/settings/__init__.py
+      line: 656
+      pattern: os.environ.get('CELERY_TASK_DEFAULT_QUEUE')
+    name: CELERY_TASK_DEFAULT_QUEUE
+    required: false
+  DATABASE_URL:
+    default_value: null
+    locations:
+    - code: os.getenv('DATABASE_URL')
+      column: 3
+      file: svc-bkrepo/svc_bk_repo/settings/__init__.py
+      line: 140
+      pattern: os.getenv('DATABASE_URL')
+    - code: os.getenv('DATABASE_URL')
+      column: 3
+      file: svc-mysql/svc_mysql/settings/__init__.py
+      line: 139
+      pattern: os.getenv('DATABASE_URL')
+    - code: os.getenv('DATABASE_URL')
+      column: 3
+      file: svc-otel/svc_otel/settings/__init__.py
+      line: 139
+      pattern: os.getenv('DATABASE_URL')
+    name: DATABASE_URL
+    required: true
+  OAUTHLIB_INSECURE_TRANSPORT:
+    default_value: null
+    locations:
+    - code: os.environ['OAUTHLIB_INSECURE_TRANSPORT']
+      column: 0
+      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      line: 35
+      pattern: os.environ['OAUTHLIB_INSECURE_TRANSPORT']
+    name: OAUTHLIB_INSECURE_TRANSPORT
+    required: true
+  OAUTHLIB_RELAX_TOKEN_SCOPE:
+    default_value: null
+    locations:
+    - code: os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE']
+      column: 0
+      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      line: 38
+      pattern: os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE']
+    name: OAUTHLIB_RELAX_TOKEN_SCOPE
+    required: true
+  PAAS_WL_CLUSTER_API_SERVER_URLS:
+    default_value: null
+    locations:
+    - code: os.environ.get('PAAS_WL_CLUSTER_API_SERVER_URLS')
+      column: 26
+      file: apiserver/paasng/paas_wl/infras/cluster/management/commands/initial_default_cluster.py
+      line: 114
+      pattern: os.environ.get('PAAS_WL_CLUSTER_API_SERVER_URLS')
+    name: PAAS_WL_CLUSTER_API_SERVER_URLS
+    required: true
+  PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT:
+    default_value: null
+    locations:
+    - code: os.environ['PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT']
+      column: 4
+      file: apiserver/paasng/tests/paas_wl/infras/cluster/test_commands.py
+      line: 56
+      pattern: os.environ['PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT']
+    name: PAAS_WL_CLUSTER_ENABLED_HTTPS_BY_DEFAULT
+    required: true
+  prometheus_multiproc_dir:
+    default_value: null
+    locations:
+    - code: os.environ.get('prometheus_multiproc_dir')
+      column: 11
+      file: apiserver/paasng/paasng/__init__.py
+      line: 33
+      pattern: os.environ.get('prometheus_multiproc_dir')
+    name: prometheus_multiproc_dir
+    required: true
+summary:
+  files_scanned: 2368
+  optional_count: 3
+  required_count: 6
+  scan_duration_ms: 11898
+  total_count: 9
+  total_env_vars: 9

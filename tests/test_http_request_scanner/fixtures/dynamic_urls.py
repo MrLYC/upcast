@@ -12,7 +12,7 @@ BASE_URL = "https://api.example.com"
 response = requests.get(BASE_URL + "/data")
 
 # Format string
-response = requests.get("{}/items".format(API_BASE))
+response = requests.get(f"{API_BASE}/items")
 
 
 # Dynamic URL (unresolvable)

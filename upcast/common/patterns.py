@@ -40,6 +40,17 @@ def match_patterns(path: Path, patterns: list[str]) -> bool:
         if path.match(pattern):
             return True
 
+        # Special handling for patterns like **/*.py with simple filenames
+        # "**/*.py" should match "test.py"
+        if "**/" in pattern:
+            suffix = pattern.split("**/", 1)[1]  # Get part after **/
+            # If the suffix matches the path or its last part
+            if path.match(suffix) or path_str.endswith(f"/{suffix}"):
+                return True
+            # Direct filename match for simple cases like "test.py" vs "*.py"
+            if "/" not in path_str and Path(path_str).match(suffix):
+                return True
+
         # Handle patterns like "venv/**" by checking if path starts with "venv/"
         if "/**" in pattern:
             prefix = pattern.replace("/**", "")

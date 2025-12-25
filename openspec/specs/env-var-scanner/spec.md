@@ -10,78 +10,52 @@ TBD - created by archiving change reimplement-env-var-scanner. Update Purpose af
 
 The system SHALL detect environment variable access patterns using semantic AST analysis with astroid.
 
-#### Scenario: os.getenv() detection
+#### Scenario: Context-validated os.getenv() detection
 
 - **WHEN** code uses `os.getenv('VAR_NAME')`
-- **THEN** the system SHALL identify "VAR_NAME" as an environment variable
+- **THEN** the system SHALL verify the string 'VAR_NAME' is used as argument to getenv()
+- **AND** SHALL verify parent node context is a Call to os.getenv or equivalent
+- **AND** SHALL identify "VAR_NAME" as an environment variable only if validation passes
 - **AND** mark it as not required (has implicit None default)
 - **AND** record the file location and statement
 
-#### Scenario: os.getenv() with default
+**Rationale**: Context validation prevents false positives from strings in unrelated contexts
 
-- **WHEN** code uses `os.getenv('VAR_NAME', 'default_value')`
-- **THEN** the system SHALL identify "VAR_NAME" as an environment variable
-- **AND** extract 'default_value' as the default
-- **AND** mark it as not required
-- **AND** infer type from default value if possible
+**DIFF**: Added explicit context validation requirement
 
-#### Scenario: os.environ[] detection
+#### Scenario: Reject strings from non-env contexts
 
-- **WHEN** code uses `os.environ['VAR_NAME']`
-- **THEN** the system SHALL identify "VAR_NAME" as an environment variable
-- **AND** mark it as required (no default, will raise KeyError)
-- **AND** record the location
+- **WHEN** string literal appears in source code
+- **AND** string is not an argument to env access function
+- **EXAMPLES**:
+  - API endpoint: `api.post('/api/config/', {'key': 'A1'})`
+  - Dict key access: `data['environment']`
+  - Logging: `logger.info('Checking variable: %s', name)`
+  - Configuration: `config = {'id': 123}`
+- **THEN** the system SHALL NOT report these strings as environment variables
+- **AND** SHALL skip them during extraction
+- **AND** SHALL log debug message about context mismatch if verbose mode enabled
 
-#### Scenario: os.environ.get() detection
+**Rationale**: Many strings in code look like env var names but are used in different contexts
 
-- **WHEN** code uses `os.environ.get('VAR_NAME')` or `os.environ.get('VAR_NAME', 'default')`
-- **THEN** the system SHALL detect the pattern
-- **AND** extract default value if provided
-- **AND** mark as required or not required accordingly
-
-#### Scenario: Aliased import detection
-
-- **WHEN** code uses `from os import getenv` and then `getenv('VAR_NAME')`
-- **THEN** the system SHALL resolve the import through astroid
-- **AND** detect it as an environment variable access
-
-#### Scenario: Star import handling
-
-- **WHEN** code uses `from os import *` and then `getenv('VAR_NAME')`
-- **THEN** the system SHALL handle the star import
-- **AND** detect the environment variable access
+**NEW**: Explicit requirement to filter non-env contexts
 
 ### Requirement: Django-environ Pattern Detection
 
 The system SHALL detect and parse django-environ library patterns with type extraction.
 
-#### Scenario: env() basic usage
+#### Scenario: Context-validated env() method detection
 
-- **WHEN** code uses `env('VAR_NAME')`
-- **THEN** the system SHALL identify "VAR_NAME" as an environment variable
-- **AND** mark it as required (no default)
-- **AND** record the usage location
-
-#### Scenario: env.TYPE() method detection
-
-- **WHEN** code uses `env.str('VAR_NAME')`, `env.int('VAR_NAME')`, `env.bool('VAR_NAME')`, etc.
-- **THEN** the system SHALL extract the type from the method name
+- **WHEN** code uses `env.str('VAR_NAME')` or similar
+- **THEN** the system SHALL verify 'VAR_NAME' is argument to env.\* method call
+- **AND** SHALL verify the method is called on an `Env` instance from django-environ
+- **AND** extract the type from the method name
 - **AND** record the type as 'str', 'int', 'bool', etc.
 - **AND** mark as required if no default provided
 
-#### Scenario: env() with default parameter
+**Rationale**: Same context validation principle applied to django-environ patterns
 
-- **WHEN** code uses `env('VAR_NAME', default='value')` or `env.str('VAR_NAME', 'value')`
-- **THEN** the system SHALL extract the default value
-- **AND** mark as not required
-- **AND** infer type from default or method name
-
-#### Scenario: Env class instantiation with schema
-
-- **WHEN** code declares `env = Env(VAR_NAME=(type, default))`
-- **THEN** the system SHALL extract variable name, type, and default from schema
-- **AND** record this as a variable definition
-- **AND** associate it with later `env('VAR_NAME')` usages
+**DIFF**: Added context validation for django-environ calls
 
 ### Requirement: Type Inference
 
@@ -568,3 +542,42 @@ The system SHALL support file filtering in scanner functions to enable CLI filte
 - **AND** respect pattern precedence (exclude wins over include)
 
 **DIFF**: Filtering is now applied before scanning, enabling CLI filtering features
+
+### Requirement: Parent Node Context Validation
+
+The system SHALL validate parent node context before reporting environment variables.
+
+#### Scenario: Verify Call node ancestry
+
+- **WHEN** extracting variable name from string literal
+- **THEN** the system SHALL traverse AST upward to find parent Call node
+- **AND** SHALL verify Call node is one of:
+  - `os.getenv(string_arg)`
+  - `os.environ.get(string_arg)`
+  - `env(string_arg)` or `env.TYPE(string_arg)`
+  - Other registered env access patterns
+- **AND** SHALL verify string literal is the variable name argument (typically first arg)
+- **AND** SHALL reject string if no matching Call pattern found
+
+**Rationale**: AST structure provides reliable context information to filter false positives
+
+#### Scenario: Handle subscript access context
+
+- **WHEN** string appears in subscript: `os.environ['VAR_NAME']`
+- **THEN** the system SHALL verify parent is Subscript node
+- **AND** SHALL verify Subscript.value resolves to `os.environ`
+- **AND** SHALL accept this as valid env var context
+- **DIFF**: Dict subscript is valid env access pattern; other subscripts are not
+
+#### Scenario: Log rejected strings in verbose mode
+
+- **WHEN** string literal looks like env var name but fails context validation
+- **AND** verbose mode is enabled
+- **THEN** the system SHALL log debug message with:
+  - String value
+  - File and line location
+  - Parent node type
+  - Reason for rejection
+- **AND** SHALL NOT output this string in results
+
+**Rationale**: Debugging support helps understand and refine filter logic

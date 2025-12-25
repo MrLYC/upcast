@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from upcast.prometheus_metrics_scanner.checker import PrometheusMetricsChecker
 
 

@@ -1,0 +1,4 @@
+[submodule "example/blueking-paas"]
+	path = example/blueking-paas
+	url = https://github.com/TencentBlueKing/blueking-paas.git
+	branch = release-1.6

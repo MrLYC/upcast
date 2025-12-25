@@ -6,7 +6,6 @@ from pathlib import Path
 import pytest
 import yaml
 from click.testing import CliRunner
-
 from upcast.concurrency_pattern_scanner.cli import scan_concurrency_patterns
 
 

@@ -3,7 +3,6 @@
 from textwrap import dedent
 
 from astroid import parse
-
 from upcast.cyclomatic_complexity_scanner.checker import ComplexityChecker
 
 

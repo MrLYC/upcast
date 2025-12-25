@@ -167,3 +167,5 @@ cython_debug/
 #.idea/
 .temp/
 .ruff_cache/
+coverage.json
+coverage.xml

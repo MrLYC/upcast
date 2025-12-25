@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from upcast.concurrency_pattern_scanner.checker import ConcurrencyChecker
 
 

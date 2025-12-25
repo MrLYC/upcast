@@ -27,13 +27,13 @@ async def async_with_sleep():
 def subprocess_operations():
     """Function with subprocess operations."""
     # subprocess.run with timeout
-    subprocess.run(["ls", "-la"], timeout=30)  # noqa: S603, S607
+    subprocess.run(["ls", "-la"], timeout=30)  # noqa: S607
 
     # Popen operations
-    proc = Popen(["echo", "hello"])  # noqa: S603, S607
+    proc = Popen(["echo", "hello"])  # noqa: S607
     proc.wait(timeout=5)
 
-    proc2 = Popen(["cat"], stdin=subprocess.PIPE)  # noqa: S603, S607
+    proc2 = Popen(["cat"], stdin=subprocess.PIPE)  # noqa: S607
     proc2.communicate(input=b"test", timeout=10)
 
 

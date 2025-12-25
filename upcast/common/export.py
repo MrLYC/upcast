@@ -1,10 +1,22 @@
 """Unified export utilities for YAML and JSON with sorted output."""
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
 import yaml
+
+from upcast.models.base import ScannerOutput
+
+
+# Configure YAML to output None values as 'null'
+def represent_none(self, _):
+    """Represent None as 'null' in YAML output."""
+    return self.represent_scalar("tag:yaml.org,2002:null", "null")
+
+
+yaml.add_representer(type(None), represent_none)
 
 
 def sort_dict_recursive(obj: Any) -> Any:
@@ -122,5 +134,52 @@ def export_to_json(data: Any, output_path: Optional[str] = None) -> str:
     return json_str
 
 
-# Type alias for Optional import
-from typing import Optional  # noqa: E402
+def export_scanner_output(
+    output: ScannerOutput | dict[str, Any],
+    file_path: str,
+    format: str = "yaml",  # noqa: A002
+    scanner_name: str | None = None,
+    scanner_version: str | None = None,
+    include_metadata: bool = True,
+) -> None:
+    """Export scanner output with optional metadata injection.
+
+    This is the main export function for all scanners. It handles both
+    Pydantic ScannerOutput models and legacy dict outputs.
+
+    Args:
+        output: Scanner output (ScannerOutput or dict)
+        file_path: Path to output file
+        format: Output format ("yaml" or "json")
+        scanner_name: Optional scanner name to inject in metadata
+        scanner_version: Optional scanner version to inject
+        include_metadata: Whether to include metadata in output
+
+    Raises:
+        ValueError: If format is invalid
+        OSError: If file cannot be written
+    """
+    # Convert ScannerOutput to dict
+    # Note: Keep None values for critical fields like view_module and view_name
+    data = output.model_dump(mode="json", exclude_none=False) if isinstance(output, ScannerOutput) else dict(output)
+
+    # Inject metadata if requested
+    if include_metadata:
+        metadata = data.setdefault("metadata", {})
+
+        if scanner_name:
+            metadata["scanner_name"] = scanner_name
+
+        if scanner_version:
+            metadata["scanner_version"] = scanner_version
+
+        # Always add timestamp
+        metadata["scan_timestamp"] = datetime.now().isoformat()
+
+    # Export based on format
+    if format.lower() == "json":
+        export_to_json(data, file_path)
+    elif format.lower() == "yaml":
+        export_to_yaml(data, file_path)
+    else:
+        raise ValueError(f"Invalid format: {format}. Must be 'yaml' or 'json'.")

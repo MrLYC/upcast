@@ -1,7 +1,6 @@
 """Tests for request_parser module."""
 
 from astroid import parse
-
 from upcast.http_request_scanner.request_parser import (
     detect_request_call,
     extract_headers,
@@ -141,3 +140,66 @@ def fetch():
     call_node = func_def.body[0].value
     is_async = is_async_call(call_node)
     assert is_async is False
+
+
+def test_extract_json_body_returns_none_for_dynamic():
+    """
+    Regression test: extract_json_body should return None (not a placeholder)
+    for bodies that cannot be statically inferred.
+
+    Previously, the scanner would output {"<dynamic>": "..."} which was unhelpful.
+    Now it should return None, and the Pydantic model will omit the field.
+    """
+    code = """
+import requests
+
+def api_call(data):
+    # data is a variable - cannot be statically inferred
+    requests.post('https://example.com', json=data)
+"""
+    tree = parse(code)
+    func_def = tree.body[1]
+    call_node = func_def.body[0].value
+    json_body = extract_json_body(call_node)
+    # Should return None for non-inferrable bodies
+    assert json_body is None
+
+
+def test_extract_params_returns_none_for_dynamic():
+    """
+    Regression test: extract_params should return None for params that
+    cannot be statically inferred.
+    """
+    code = """
+import requests
+
+def api_call(query_params):
+    # query_params is a variable - cannot be statically inferred
+    requests.get('https://example.com', params=query_params)
+"""
+    tree = parse(code)
+    func_def = tree.body[1]
+    call_node = func_def.body[0].value
+    params = extract_params(call_node)
+    # Should return None for non-inferrable params
+    assert params is None
+
+
+def test_extract_headers_returns_none_for_dynamic():
+    """
+    Regression test: extract_headers should return None for headers that
+    cannot be statically inferred.
+    """
+    code = """
+import requests
+
+def api_call(auth_headers):
+    # auth_headers is a variable - cannot be statically inferred
+    requests.get('https://example.com', headers=auth_headers)
+"""
+    tree = parse(code)
+    func_def = tree.body[1]
+    call_node = func_def.body[0].value
+    headers = extract_headers(call_node)
+    # Should return None for non-inferrable headers
+    assert headers is None

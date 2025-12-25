@@ -1,7 +1,6 @@
 """Tests for checker module."""
 
 import pytest
-
 from upcast.blocking_operation_scanner.checker import BlockingOperationChecker
 from upcast.blocking_operation_scanner.operation_parser import OperationType
 

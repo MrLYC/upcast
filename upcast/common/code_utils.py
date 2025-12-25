@@ -92,3 +92,115 @@ def get_code_lines(node: nodes.FunctionDef) -> int:
 
     end_line = node.end_lineno or node.lineno
     return end_line - node.lineno + 1
+
+
+def extract_function_signature(node: nodes.FunctionDef) -> str | None:  # noqa: C901
+    """Extract complete function signature with type hints and defaults.
+
+    Args:
+        node: Astroid FunctionDef or AsyncFunctionDef node
+
+    Returns:
+        Function signature string or None if extraction fails
+
+    Examples:
+        >>> func_node = ...  # def foo(x: int, y: str = "default") -> bool:
+        >>> extract_function_signature(func_node)
+        'def foo(x: int, y: str = "default") -> bool:'
+    """
+    try:
+        parts = []
+
+        # Handle async functions
+        if isinstance(node, nodes.AsyncFunctionDef):
+            parts.append("async")
+
+        parts.append("def")
+        parts.append(node.name)
+        parts.append("(")
+
+        # Build parameter list
+        params = []
+        if node.args:
+            args_list = node.args.args or []
+            defaults = node.args.defaults or []
+            annotations = node.args.annotations or []
+
+            # Calculate where defaults start
+            num_without_defaults = len(args_list) - len(defaults)
+
+            for i, arg in enumerate(args_list):
+                param_str = arg.name
+
+                # Add type annotation if available
+                if i < len(annotations) and annotations[i]:
+                    param_str += f": {annotations[i].as_string()}"
+
+                # Add default value if available
+                if i >= num_without_defaults:
+                    default_idx = i - num_without_defaults
+                    if default_idx < len(defaults):
+                        param_str += f" = {defaults[default_idx].as_string()}"
+
+                params.append(param_str)
+
+            # *args
+            if node.args.vararg:
+                vararg_str = f"*{node.args.vararg}"
+                if node.args.varargannotation:
+                    vararg_str += f": {node.args.varargannotation.as_string()}"
+                params.append(vararg_str)
+
+            # **kwargs
+            if node.args.kwarg:
+                kwarg_str = f"**{node.args.kwarg}"
+                if node.args.kwargannotation:
+                    kwarg_str += f": {node.args.kwargannotation.as_string()}"
+                params.append(kwarg_str)
+
+        parts.append(", ".join(params))
+        parts.append(")")
+
+        # Return type annotation
+        if node.returns:
+            parts.append("->")
+            parts.append(node.returns.as_string())
+
+        parts.append(":")
+
+        return " ".join(parts)
+    except Exception:
+        return None
+
+
+def extract_description(node: nodes.FunctionDef | nodes.ClassDef) -> str | None:
+    """Extract first line of docstring as description.
+
+    Args:
+        node: Astroid FunctionDef, AsyncFunctionDef, or ClassDef node
+
+    Returns:
+        First line of docstring or None if no docstring
+
+    Examples:
+        >>> func_node = ...  # def foo():
+        ...                  #     '''First line.
+        ...                  #     Second line.'''
+        >>> extract_description(func_node)
+        'First line.'
+    """
+    try:
+        doc = node.doc_node
+        if not doc:
+            return None
+
+        docstring = doc.value
+        if not docstring:
+            return None
+
+        # Extract first line
+        first_line = docstring.split("\n")[0].strip()
+    except Exception:
+        return None
+    else:
+        return first_line if first_line else None

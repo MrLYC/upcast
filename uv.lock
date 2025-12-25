@@ -1540,7 +1540,7 @@ wheels = [
 
 [[package]]
 name = "upcast"
-version = "1.0.0"
+version = "1.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "astroid", version = "3.3.11", source = { registry = "https://mirrors.aliyun.com/pypi/simple" }, marker = "python_full_version < '3.10'" },
