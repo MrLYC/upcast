@@ -31,77 +31,8 @@ jobs:
       - name: Run integration tests
         run: make test-integration
 
-      - name: Install yq for YAML processing
-        run: |
-          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
-
       - name: Compare results against committed version
-        id: compare
-        run: |
-          set +e  # Don't exit immediately on error
-          RESULTS_DIR="example/scan-results"
-          DIFF_FOUND=0
-          NEW_FILES=0
-
-          echo "📊 Checking for scan result changes..."
-          echo ""
-
-          for file in "$RESULTS_DIR"/*.yaml; do
-            filename=$(basename "$file")
-
-            # Check if file exists in git history
-            if ! git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-              echo "⚠️  $filename is new (not in git history yet)"
-              echo "    This is expected for new scanners."
-              echo "    Commit the file to establish baseline."
-              NEW_FILES=1
-              continue
-            fi
-
-            # Extract results section from committed version
-            git show "HEAD:$file" | yq '.results' > /tmp/old-results.yaml 2>/dev/null || echo "null" > /tmp/old-results.yaml
-
-            # Extract results section from current version
-            yq '.results' "$file" > /tmp/new-results.yaml 2>/dev/null || echo "null" > /tmp/new-results.yaml
-
-            # Compare
-            if ! diff -u /tmp/old-results.yaml /tmp/new-results.yaml > /tmp/diff-$filename.txt 2>&1; then
-              echo "⚠️  Results changed in $filename:"
-              echo "----------------------------------------"
-              cat /tmp/diff-$filename.txt | head -100
-              if [ $(wc -l < /tmp/diff-$filename.txt) -gt 100 ]; then
-                echo "... (diff truncated, see artifacts for full output)"
-              fi
-              echo "----------------------------------------"
-              echo ""
-              DIFF_FOUND=1
-            else
-              echo "✅ $filename: no changes"
-            fi
-          done
-
-          echo ""
-          if [ $DIFF_FOUND -eq 1 ]; then
-            echo "::warning::Scanner results changed. Review diffs above."
-            echo ""
-            echo "If changes are intentional (scanner improvements):"
-            echo "  1. Review the diffs to ensure they are correct"
-            echo "  2. Run: make test-integration"
-            echo "  3. Commit: git add example/scan-results/ && git commit -m 'Update scan results'"
-            echo ""
-            echo "If changes are unexpected (possible bugs):"
-            echo "  1. Investigate which code change caused the diff"
-            echo "  2. Fix the scanner or revert the problematic change"
-            exit 1
-          elif [ $NEW_FILES -eq 1 ]; then
-            echo "⚠️  Some scanner result files are new."
-            echo "To establish baseline:"
-            echo "  1. Run: make test-integration"
-            echo "  2. Commit: git add example/scan-results/ && git commit -m 'Add new scanner results'"
-          else
-            echo "✅ All scan results match committed baseline"
-          fi
+        run: python .github/scripts/compare-scan-yaml.py --check-dir example/scan-results/
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4
@@ -110,11 +41,3 @@ jobs:
           name: scan-results
           path: example/scan-results/
           retention-days: 30
-
-      - name: Upload comparison diffs
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: scan-diffs
-          path: /tmp/diff-*.txt
-          retention-days: 7

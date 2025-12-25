@@ -1,0 +1,138 @@
+name: Publish to PyPI
+
+# This workflow automatically publishes releases to PyPI when version tags are pushed.
+# It ensures all tests pass before publishing.
+#
+# Usage:
+#   1. Update version in pyproject.toml
+#   2. Commit: git commit -am "Bump version to X.Y.Z"
+#   3. Tag: git tag vX.Y.Z
+#   4. Push: git push && git push --tags
+#
+# The workflow will:
+#   - Validate tag matches pyproject.toml version
+#   - Run all test suites (unit, integration, type checking)
+#   - Build package
+#   - Publish to PyPI (only if all tests pass)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract and validate version
+        id: get-version
+        run: |
+          # Extract version from tag (remove 'v' prefix)
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "Tag version: $TAG_VERSION"
+
+          # Extract version from pyproject.toml
+          TOML_VERSION=$(grep '^version = ' pyproject.toml | cut -d'"' -f2)
+          echo "pyproject.toml version: $TOML_VERSION"
+
+          # Validate versions match
+          if [ "$TAG_VERSION" != "$TOML_VERSION" ]; then
+            echo "::error::Version mismatch detected!"
+            echo "::error::  Tag version: $TAG_VERSION"
+            echo "::error::  pyproject.toml version: $TOML_VERSION"
+            echo "::error::Please ensure tag and pyproject.toml versions match"
+            exit 1
+          fi
+
+          echo "✅ Version validated: $TAG_VERSION"
+          echo "version=$TAG_VERSION" >> $GITHUB_OUTPUT
+
+  test:
+    name: Run all tests
+    needs: validate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.13"]
+      fail-fast: true # Stop if any test fails
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive # Include blueking-paas submodule for integration tests
+
+      - name: Set up environment
+        uses: ./.github/actions/setup-uv-env
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run code quality checks
+        run: make check
+
+      - name: Run unit tests
+        run: uv run pytest tests --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Run type checking
+        run: uv run mypy
+
+      - name: Run integration tests
+        run: make test-integration
+
+  publish:
+    name: Build and publish to PyPI
+    needs: [validate, test]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/upcast/${{ needs.validate.outputs.version }}/
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        uses: ./.github/actions/setup-uv-env
+
+      - name: Build package
+        run: make build
+
+      - name: Verify build artifacts
+        run: |
+          echo "📦 Build artifacts:"
+          ls -lh dist/
+          echo ""
+          echo "Checking package contents..."
+          tar -tzf dist/upcast-${{ needs.validate.outputs.version }}.tar.gz | head -20
+
+      - name: Publish to PyPI
+        run: uv publish
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ needs.validate.outputs.version }}
+          body: |
+            Release ${{ needs.validate.outputs.version }}
+
+            ## Installation
+            ```bash
+            pip install upcast==${{ needs.validate.outputs.version }}
+            ```
+
+            ## PyPI
+            https://pypi.org/project/upcast/${{ needs.validate.outputs.version }}/
+          draft: false
+          prerelease: false

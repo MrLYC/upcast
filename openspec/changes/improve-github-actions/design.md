@@ -99,7 +99,7 @@ fi
 
 ### YAML Normalization Script
 
-Location: `.github/scripts/normalize-yaml.py`
+Location: `.github/scripts/compare-scan-yaml.py`
 
 ```python
 #!/usr/bin/env python3
@@ -149,10 +149,10 @@ Replace the comparison section in `scanner-integration.yml`:
       filename=$(basename "$file")
 
       # Normalize committed version
-      git show "HEAD:$file" | python .github/scripts/normalize-yaml.py > /tmp/old.yaml
+      git show "HEAD:$file" | python .github/scripts/compare-scan-yaml.py > /tmp/old.yaml
 
       # Normalize current version
-      python .github/scripts/normalize-yaml.py "$file" > /tmp/new.yaml
+      python .github/scripts/compare-scan-yaml.py "$file" > /tmp/new.yaml
 
       # Compare
       if ! diff -u /tmp/old.yaml /tmp/new.yaml > /tmp/diff-$filename.txt; then
