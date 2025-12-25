@@ -32,7 +32,7 @@ jobs:
         run: make test-integration
 
       - name: Compare results against committed version
-        run: python .github/scripts/compare-scan-yaml.py --check-dir example/scan-results/
+        run: uv run python .github/scripts/compare-scan-yaml.py --check-dir example/scan-results/
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4
