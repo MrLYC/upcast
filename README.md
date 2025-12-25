@@ -514,29 +514,36 @@ upcast scan-module-symbols /path/to/project
 
 **Output example:**
 
+> See full output: [`example/scan-results/module-symbols.yaml`](example/scan-results/module-symbols.yaml)
+
 ```yaml
-summary:
-  total_modules: 10
-  total_imports: 50
-  total_symbols: 100
-  files_scanned: 10
-  scan_duration_ms: 150
+metadata:
+  scanner_name: module_symbols
 
 results:
   path/to/file.py:
     imported_modules:
       os:
         module_path: os
-        attributes: ["path"]
+        attributes: ["path", "environ"]
         blocks: ["module"]
+      django:
+        module_path: django
+        attributes: []
+        blocks: ["module"]
+
     imported_symbols:
       Path:
         module_path: pathlib
         attributes: ["home"]
         blocks: ["module"]
-    star_imported:
-      - module_path: typing
+      execute_from_command_line:
+        module_path: django.core.management.execute_from_command_line
+        attributes: []
         blocks: ["module"]
+
+    star_imported: []
+
     variables:
       DEBUG:
         module_path: path.to.file
@@ -544,6 +551,7 @@ results:
         value: "True"
         statement: "DEBUG = True"
         blocks: ["module"]
+
     functions:
       helper:
         signature: "def helper(arg1: int, arg2: str) -> bool:"
@@ -555,6 +563,7 @@ results:
             args: []
             kwargs: {}
         blocks: ["module"]
+
     classes:
       MyClass:
         docstring: "My class documentation"
@@ -990,23 +999,11 @@ upcast scan-logging /path/to/project --sensitive-keywords db_password --format j
 
 **Output example:**
 
+> See full output: [`example/scan-results/logging.yaml`](example/scan-results/logging.yaml)
+
 ```yaml
-summary:
-  total_count: 156
-  total_log_calls: 156
-  files_scanned: 45
-  scan_duration_ms: 523
-  by_library:
-    logging: 98
-    loguru: 32
-    structlog: 18
-    django: 8
-  by_level:
-    info: 85
-    warning: 32
-    error: 24
-    debug: 15
-  sensitive_calls: 7
+metadata:
+  scanner_name: logging
 
 results:
   src/auth/login.py:
@@ -1046,6 +1043,9 @@ results:
         block: module
         sensitive_patterns: []
 
+    django: []
+    structlog: []
+
   src/api/client.py:
     structlog:
       - logger_name: api.client
@@ -1064,6 +1064,10 @@ results:
         type: format
         block: except
         sensitive_patterns: ["token"]
+
+    logging: []
+    loguru: []
+    django: []
 ```
 
 **Key features:**
@@ -1080,11 +1084,14 @@ results:
   - **Custom keywords**: Use `--sensitive-keywords` to specify your own list (can be repeated)
   - Identifies JWT tokens (eyJ... pattern)
   - Lists matched patterns for review
-- **Comprehensive Statistics**:
-  - Counts by library (logging, loguru, structlog, django)
-  - Counts by log level (debug, info, warning, error, critical)
-  - Total sensitive call count
 - **Smart Library Detection**: Uses import analysis to correctly categorize logging calls
+
+**CLI Options:**
+
+- `--sensitive-keywords KEYWORD`: Add custom sensitive keyword patterns (can be repeated)
+- `-o, --output FILE`: Save results to file
+- `--format FORMAT`: Output format (yaml or json)
+- `-v, --verbose`: Enable detailed logging
 
 #### scan-exception-handlers
 
