@@ -166,6 +166,17 @@ def scan_env_vars_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -174,12 +185,12 @@ def scan_blocking_operations_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for blocking operations (sleep, locks, subprocess, DB queries)."""
     try:
@@ -197,7 +208,7 @@ def scan_blocking_operations_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:
@@ -215,6 +226,17 @@ def scan_blocking_operations_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -223,12 +245,12 @@ def scan_http_requests_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for HTTP request patterns (requests, httpx, aiohttp)."""
     try:
@@ -246,7 +268,7 @@ def scan_http_requests_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:
@@ -264,6 +286,17 @@ def scan_http_requests_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -272,12 +305,12 @@ def scan_metrics_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for Prometheus metrics (Counter, Gauge, Histogram, Summary)."""
     try:
@@ -295,7 +328,7 @@ def scan_metrics_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:
@@ -394,6 +427,17 @@ def scan_logging_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -402,12 +446,12 @@ def scan_concurrency_patterns_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for concurrency patterns (threading, multiprocessing, asyncio)."""
     try:
@@ -425,7 +469,7 @@ def scan_concurrency_patterns_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:
@@ -443,6 +487,17 @@ def scan_concurrency_patterns_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -451,12 +506,12 @@ def scan_exception_handlers_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for exception handlers (try/except/else/finally)."""
     try:
@@ -474,7 +529,7 @@ def scan_exception_handlers_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:
@@ -492,6 +547,17 @@ def scan_exception_handlers_cmd(
     default="yaml",
     help="Output format (default: yaml)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--include", multiple=True, help="File patterns to include (e.g., 'test_*.py')")
 @click.option("--exclude", multiple=True, help="File patterns to exclude (e.g., '__pycache__/**')")
@@ -508,12 +574,12 @@ def scan_unit_tests_cmd(
     root_modules: tuple[str, ...],
     output: str | None,
     output_format: str,
+    markdown_language: str,
+    markdown_title: Optional[str],
     verbose: bool,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan Python code for unit tests.
 
@@ -555,7 +621,7 @@ def scan_unit_tests_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
 
@@ -574,6 +640,17 @@ def scan_unit_tests_cmd(
     default="yaml",
     help="Output format (default: yaml)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--include", multiple=True, help="File patterns to include (e.g., '**/urls.py')")
 @click.option("--exclude", multiple=True, help="File patterns to exclude")
@@ -583,12 +660,12 @@ def scan_django_urls_cmd(
     path: str,
     output: str | None,
     output_format: str,
+    markdown_language: str,
+    markdown_title: Optional[str],
     verbose: bool,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan Django URLconf files for URL patterns.
 
@@ -624,7 +701,7 @@ def scan_django_urls_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
 
@@ -643,6 +720,17 @@ def scan_django_urls_cmd(
     default="yaml",
     help="Output format (default: yaml)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
 @click.option("--include", multiple=True, help="File patterns to include (e.g., '**/models.py')")
 @click.option("--exclude", multiple=True, help="File patterns to exclude")
@@ -652,12 +740,12 @@ def scan_django_models_cmd(
     path: str,
     output: str | None,
     output_format: str,
+    markdown_language: str,
+    markdown_title: Optional[str],
     verbose: bool,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan Django model files for model definitions.
 
@@ -693,7 +781,7 @@ def scan_django_models_cmd(
             output=output,
             format=output_format,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
 
@@ -711,6 +799,17 @@ def scan_django_models_cmd(
     type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
     default="yaml",
     help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
 )
 @click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
 @click.option(
@@ -732,12 +831,12 @@ def scan_signals_cmd(
     path: str,
     output: Optional[str],
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     verbose: bool,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for Django and Celery signal usage.
 
@@ -795,7 +894,7 @@ def scan_signals_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
 
@@ -817,6 +916,17 @@ def scan_signals_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -825,12 +935,12 @@ def scan_django_settings_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan Django code for settings definitions and usages.
 
@@ -856,7 +966,18 @@ def scan_django_settings_cmd(
     try:
         scanner = DjangoSettingsScanner(verbose=verbose)
         output_format_str = format
-        run_scanner_cli(scanner, path, output, output_format_str, include, exclude, no_default_excludes, verbose)
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=output_format_str,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
 
         if verbose:
             click.echo("Scan complete!", err=True)
@@ -879,6 +1000,17 @@ def scan_django_settings_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -887,12 +1019,12 @@ def scan_redis_usage_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan for Redis usage patterns in Django projects.
 
@@ -925,6 +1057,8 @@ def scan_redis_usage_cmd(
             include=include,
             exclude=exclude,
             no_default_excludes=no_default_excludes,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
         )
 
         if verbose:
@@ -948,6 +1082,17 @@ def scan_redis_usage_cmd(
     default="yaml",
     help="Output format (yaml, json, or markdown)",
 )
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
 @click.option("--include", multiple=True, help="Glob patterns for files to include")
 @click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
 @click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
@@ -957,13 +1102,13 @@ def scan_module_symbols_cmd(
     output: Optional[str],
     verbose: bool,
     format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
     path: str,
     include: tuple[str, ...],
     exclude: tuple[str, ...],
     no_default_excludes: bool,
     include_private: bool,
-    markdown_language: str,
-    markdown_title: Optional[str],
 ) -> None:
     """Scan Python modules for imports and symbol definitions.
 
@@ -992,7 +1137,7 @@ def scan_module_symbols_cmd(
             exclude=exclude,
             no_default_excludes=no_default_excludes,
             verbose=verbose,
-        markdown_title=markdown_title,
+            markdown_title=markdown_title,
             markdown_language=markdown_language,
         )
     except Exception as e:

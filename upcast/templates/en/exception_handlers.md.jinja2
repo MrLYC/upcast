@@ -8,13 +8,42 @@ Additional summary statistics based on ExceptionHandlerSummary fields.
 {% endblock %}
 
 {% block results %}
-{% for file_path, handlers in results.items() %}
+{% if results %}
+{% set handlers_by_file = {} %}
+{% for handler in results %}
+  {% if handler.file not in handlers_by_file %}
+    {% set _ = handlers_by_file.update({handler.file: []}) %}
+  {% endif %}
+  {% set _ = handlers_by_file[handler.file].append(handler) %}
+{% endfor %}
 
-### File: {{ file_path }}
+{% for file_path, handlers in handlers_by_file.items() %}
 
-Details of exception handlers would be rendered here based on the specific structure.
+### File: `{{ file_path }}`
+
+{% for handler in handlers %}
+#### Exception Handler (lines {{ handler.lineno }}-{{ handler.end_lineno }})
+
+- **Try block**: {{ handler.try_lines }} lines
+- **Except clauses**: {{ handler.except_clauses|length }}
+{% if handler.else_clause %}
+- **Else clause**: line {{ handler.else_clause.line }} ({{ handler.else_clause.lines }} lines)
+{% endif %}
+{% if handler.finally_clause %}
+- **Finally clause**: line {{ handler.finally_clause.line }} ({{ handler.finally_clause.lines }} lines)
+{% endif %}
+
+**Except clause details:**
+{% for except_clause in handler.except_clauses %}
+- Line {{ except_clause.line }}: {{ except_clause.exception_types|join(', ') or '(bare except)' }} ({{ except_clause.lines }} lines)
+  - Logging calls: debug={{ except_clause.log_debug_count }}, info={{ except_clause.log_info_count }}, warning={{ except_clause.log_warning_count }}, error={{ except_clause.log_error_count }}, exception={{ except_clause.log_exception_count }}, critical={{ except_clause.log_critical_count }}
+  - Control flow: pass={{ except_clause.pass_count }}, return={{ except_clause.return_count }}, raise={{ except_clause.raise_count }}, break={{ except_clause.break_count }}, continue={{ except_clause.continue_count }}
+{% endfor %}
 
 ---
-
 {% endfor %}
+{% endfor %}
+{% else %}
+No exception handlers found.
+{% endif %}
 {% endblock %}

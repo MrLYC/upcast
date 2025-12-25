@@ -58,23 +58,39 @@ publish: clean build ## Clean, build and publish a release to PyPI
 test-integration: ## Run integration tests on example project
 	@echo "🚀 Running scanner integration tests on blueking-paas"
 	@mkdir -p example/scan-results
-	@uv run upcast scan-blocking-operations example/blueking-paas -o example/scan-results/blocking-operations.yaml || true
-	@uv run upcast scan-complexity-patterns example/blueking-paas -o example/scan-results/complexity-patterns.yaml --threshold 10 || true
-	@uv run upcast scan-concurrency-patterns example/blueking-paas -o example/scan-results/concurrency-patterns.yaml || true
-	@uv run upcast scan-django-models example/blueking-paas -o example/scan-results/django-models.yaml || true
-	@uv run upcast scan-django-settings example/blueking-paas -o example/scan-results/django-settings.yaml || true
-	@uv run upcast scan-django-urls example/blueking-paas -o example/scan-results/django-urls.yaml || true
-	@uv run upcast scan-env-vars example/blueking-paas -o example/scan-results/env-vars.yaml || true
-	@uv run upcast scan-exception-handlers example/blueking-paas -o example/scan-results/exception-handlers.yaml || true
-	@uv run upcast scan-http-requests example/blueking-paas -o example/scan-results/http-requests.yaml || true
-	@uv run upcast scan-metrics example/blueking-paas -o example/scan-results/metrics.yaml || true
-	@uv run upcast scan-signals example/blueking-paas -o example/scan-results/signals.yaml || true
-	@uv run upcast scan-unit-tests example/blueking-paas -o example/scan-results/unit-tests.yaml || true
-	@uv run upcast scan-redis-usage example/blueking-paas -o example/scan-results/redis-usage.yaml || true
-	@uv run upcast scan-module-symbols example/blueking-paas -o example/scan-results/module-symbols.yaml || true
-	@uv run upcast scan-logging example/blueking-paas -o example/scan-results/logging.yaml || true
-
+	@echo "📊 Generating YAML and Markdown reports..."
+	@for scanner in \
+		"blocking-operations:" \
+		"complexity-patterns:--threshold 10" \
+		"concurrency-patterns:" \
+		"django-models:" \
+		"django-settings:" \
+		"django-urls:" \
+		"env-vars:" \
+		"exception-handlers:" \
+		"http-requests:" \
+		"metrics:" \
+		"signals:" \
+		"unit-tests:" \
+		"redis-usage:" \
+		"module-symbols:" \
+		"logging:"; do \
+		name=$${scanner%%:*}; \
+		args=$${scanner#*:}; \
+		echo "  ⚡ Running scan-$$name..."; \
+		uv run upcast scan-$$name example/blueking-paas \
+			-o example/scan-results/$$name.yaml \
+			$$args || true; \
+		uv run upcast scan-$$name example/blueking-paas \
+			--format markdown \
+			--markdown-language zh \
+			--markdown-title "$$name 扫描报告" \
+			-o example/markdown-reports/$$name.md \
+			$$args || true; \
+	done
 	@echo "✓ Integration tests complete. Results in example/scan-results/"
+	@echo "  📄 YAML reports: example/scan-results/*.yaml"
+	@echo "  📝 Markdown reports: example/scan-results/*.md"
 
 .PHONY: clean-scan-results
 clean-scan-results: ## Clean integration test results

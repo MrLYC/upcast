@@ -9388,7 +9388,7 @@ summary:
   by_library:
     logging: 866
   files_scanned: 293
-  scan_duration_ms: 10595
+  scan_duration_ms: 10452
   sensitive_calls: 23
   total_count: 866
   total_log_calls: 866
