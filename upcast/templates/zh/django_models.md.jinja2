@@ -12,19 +12,19 @@
 
 ### {{ model.name }}
 
-**模块**: `{{ model.module }}`  
-**行号**: {{ model.line }}  
-**基类**: {{ model.bases | join(', ') }}  
+**模块**: `{{ model.module }}`
+**行号**: {{ model.line }}
+**基类**: {{ model.bases | join(', ') }}
 {% if model.description %}
 **描述**: {{ model.description }}
 {% endif %}
 
 #### 字段
 
-| 字段名 | 类型 | 行号 | 参数 |
-|--------|------|------|------|
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
 {% for field_name, field in model.fields.items() %}
-| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.parameters | tojson }} |
+| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.help_text or '-' }} | {{ field.verbose_name or '-' }} | {{ field.parameters | tojson }} |
 {% endfor %}
 
 {% if model.relationships %}

@@ -149,12 +149,22 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
                 # Get line number from field_info or default to model line
                 line = field_info.get("line", model_data.get("line", 1))
 
+                # Extract metadata fields
+                help_text = field_info.get("help_text")
+                verbose_name = field_info.get("verbose_name")
+
                 # Extract parameters, excluding fields that are already DjangoField attributes
-                parameters = {k: v for k, v in field_info.items() if k not in ("type", "name", "line")}
+                parameters = {
+                    k: v
+                    for k, v in field_info.items()
+                    if k not in ("type", "name", "line", "help_text", "verbose_name")
+                }
 
                 fields[field_name] = DjangoField(
                     name=field_name,
                     type=field_info.get("type", "Unknown"),
+                    help_text=help_text,
+                    verbose_name=verbose_name,
                     parameters=parameters,
                     line=line,
                 )

@@ -12,19 +12,19 @@
 
 ### {{ model.name }}
 
-**Module**: `{{ model.module }}`  
-**Line**: {{ model.line }}  
-**Base Classes**: {{ model.bases | join(', ') }}  
+**Module**: `{{ model.module }}`
+**Line**: {{ model.line }}
+**Base Classes**: {{ model.bases | join(', ') }}
 {% if model.description %}
 **Description**: {{ model.description }}
 {% endif %}
 
 #### Fields
 
-| Field Name | Type | Line | Parameters |
-|------------|------|------|------------|
+| Field Name | Type | Line | Help Text | Verbose Name | Parameters |
+|------------|------|------|-----------|--------------|------------|
 {% for field_name, field in model.fields.items() %}
-| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.parameters | tojson }} |
+| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.help_text or '-' }} | {{ field.verbose_name or '-' }} | {{ field.parameters | tojson }} |
 {% endfor %}
 
 {% if model.relationships %}
