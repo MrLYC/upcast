@@ -28,11 +28,16 @@ jobs:
       - name: Set up environment
         uses: ./.github/actions/setup-uv-env
 
+      - name: Backup baseline results
+        run: |
+          mkdir -p /tmp/baseline-results
+          cp -r example/scan-results/*.yaml /tmp/baseline-results/ 2>/dev/null || echo "No baseline results found"
+
       - name: Run integration tests
         run: make test-integration
 
-      - name: Compare results against committed version
-        run: uv run python .github/scripts/compare-scan-yaml.py --check-dir example/scan-results/
+      - name: Compare results against baseline
+        run: uv run python .github/scripts/compare-scan-yaml.py --compare-dirs /tmp/baseline-results example/scan-results/
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4

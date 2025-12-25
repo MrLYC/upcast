@@ -167,6 +167,81 @@ def get_git_baseline(file_path: str) -> str | None:
         return result.stdout
 
 
+def compare_directories(old_dir: str, new_dir: str, max_lines: int = 100) -> tuple[int, int, int]:
+    """Compare all YAML files between two directories.
+
+    Args:
+        old_dir: Directory containing baseline YAML files
+        new_dir: Directory containing new YAML files
+        max_lines: Maximum diff lines to display per file
+
+    Returns:
+        Tuple of (files_with_diffs, new_files, missing_files)
+    """
+    old_path = Path(old_dir)
+    new_path = Path(new_dir)
+
+    if not old_path.is_dir():
+        print(f"Error: {old_dir} is not a directory", file=sys.stderr)
+        sys.exit(2)
+
+    if not new_path.is_dir():
+        print(f"Error: {new_dir} is not a directory", file=sys.stderr)
+        sys.exit(2)
+
+    print("📊 Comparing scan result directories...")
+    print(f"Baseline: {old_dir}")
+    print(f"New:      {new_dir}")
+    print("Using semantic YAML comparison to ignore formatting differences")
+    print()
+
+    # Get all YAML files from both directories
+    old_files = {f.name: f for f in sorted(old_path.glob("*.yaml"))}
+    new_files = {f.name: f for f in sorted(new_path.glob("*.yaml"))}
+
+    files_with_diffs = 0
+    new_file_count = 0
+    missing_file_count = 0
+
+    all_files = sorted(set(old_files.keys()) | set(new_files.keys()))
+
+    for filename in all_files:
+        # Check for new files (in new but not in old)
+        if filename not in old_files:
+            print(f"⚠️  {filename} is new (not in baseline)")
+            print("    This is expected for new scanners.")
+            new_file_count += 1
+            print()
+            continue
+
+        # Check for missing files (in old but not in new)
+        if filename not in new_files:
+            print(f"⚠️  {filename} is missing (was in baseline but not generated)")
+            print("    This might indicate a scanner was removed or failed.")
+            missing_file_count += 1
+            print()
+            continue
+
+        # Compare files
+        identical, diff_lines = compare_yaml_files(str(old_files[filename]), str(new_files[filename]), max_lines)
+
+        if not identical:
+            if diff_lines and diff_lines[0].startswith("Error:"):
+                print(f"⚠️  {filename}: {diff_lines[0]}", file=sys.stderr)
+            else:
+                print(f"⚠️  Results changed in {filename}:")
+                print("----------------------------------------")
+                print("".join(diff_lines))
+                print("----------------------------------------")
+            files_with_diffs += 1
+        else:
+            print(f"✅ {filename}: no changes")
+
+        print()
+
+    return files_with_diffs, new_file_count, missing_file_count
+
+
 def check_directory(results_dir: str, max_lines: int = 100) -> tuple[int, int, int]:
     """Check all YAML files in directory against git baseline.
 
@@ -259,21 +334,26 @@ Exit codes:
         """,
     )
 
-    # Support two modes: file comparison or directory checking
+    # Support three modes: file comparison, directory checking against git, or directory-to-directory
     parser.add_argument(
         "old_file",
         nargs="?",
-        help="Path to old/committed YAML file (for file mode)",
+        help="Path to old/baseline YAML file or directory",
     )
     parser.add_argument(
         "new_file",
         nargs="?",
-        help="Path to new/generated YAML file (for file mode)",
+        help="Path to new/generated YAML file or directory",
     )
     parser.add_argument(
         "--check-dir",
         metavar="DIR",
-        help="Check all YAML files in directory against git baseline (for directory mode)",
+        help="Check all YAML files in directory against git baseline",
+    )
+    parser.add_argument(
+        "--compare-dirs",
+        action="store_true",
+        help="Compare two directories (old_file and new_file as directories)",
     )
     parser.add_argument(
         "--max-lines",
@@ -284,7 +364,38 @@ Exit codes:
 
     args = parser.parse_args()
 
-    # Directory checking mode
+    # Directory-to-directory comparison mode
+    if args.compare_dirs:
+        if not args.old_file or not args.new_file:
+            parser.error("--compare-dirs requires both old_file and new_file arguments as directories")
+
+        files_with_diffs, new_files, missing_files = compare_directories(args.old_file, args.new_file, args.max_lines)
+
+        print()
+        if files_with_diffs > 0 or missing_files > 0:
+            print("::warning::Scanner results changed. Review diffs above.")
+            print()
+            if missing_files > 0:
+                print(f"⚠️  {missing_files} file(s) missing from new results")
+            print("If changes are intentional (scanner improvements):")
+            print("  1. Review the diffs to ensure they are correct")
+            print("  2. Run: make test-integration")
+            print("  3. Commit: git add example/scan-results/ && git commit -m 'Update scan results'")
+            print()
+            print("If changes are unexpected (possible bugs):")
+            print("  1. Investigate which code change caused the diff")
+            print("  2. Fix the scanner or revert the problematic change")
+            sys.exit(1)
+        elif new_files > 0:
+            print(f"✅ All existing files match baseline ({new_files} new file(s) added)")
+            print("To establish baseline for new files:")
+            print("  1. Commit: git add example/scan-results/ && git commit -m 'Add new scanner results'")
+            sys.exit(0)
+        else:
+            print("✅ All scan results match baseline")
+            sys.exit(0)
+
+    # Directory checking mode (against git)
     if args.check_dir:
         files_with_diffs, new_files, total_files = check_directory(args.check_dir, args.max_lines)
 
