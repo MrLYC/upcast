@@ -88,7 +88,7 @@ summary:
     celery_result: 1
     direct_client: 3
   files_scanned: 3
-  scan_duration_ms: 7079
+  scan_duration_ms: 14292
   total_count: 5
   total_usages: 5
   warnings: []

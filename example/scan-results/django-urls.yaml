@@ -8451,7 +8451,7 @@ results:
       view_name: ClusterMinimalMetricsView
 summary:
   files_scanned: 59
-  scan_duration_ms: 227
+  scan_duration_ms: 347
   total_count: 533
   total_modules: 59
   total_patterns: 533

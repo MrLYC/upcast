@@ -6,6 +6,7 @@ results:
     description: App Model
     fields:
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
@@ -13,27 +14,33 @@ results:
           validators:
           - '`validate_app_name`'
         type: models.SlugField
+        verbose_name: null
       owner:
+        help_text: null
         line: 1
         name: owner
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           db_index: true
           default: '`WlAppType.DEFAULT.value`'
           max_length: 16
-          verbose_name: 应用类型
         type: models.CharField
+        verbose_name: 应用类型
     line: 1
     meta:
       unique_together:
@@ -48,99 +55,114 @@ results:
     description: null
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': true
-          verbose_name: 所属应用
         type: models.UUIDField
+        verbose_name: 所属应用
       artifact_deleted:
+        help_text: slug/镜像是否已被清理
         line: 1
         name: artifact_deleted
         parameters:
           default: false
-          help_text: slug/镜像是否已被清理
         type: models.BooleanField
+        verbose_name: null
       artifact_detail:
+        help_text: 构件详情(展示信息)
         line: 1
         name: artifact_detail
         parameters:
           default: {}
-          help_text: 构件详情(展示信息)
         type: models.JSONField
+        verbose_name: null
       artifact_metadata:
+        help_text: 构件元信息, 包括 entrypoint/use_cnb/use_dockerfile 等信息
         line: 1
         name: artifact_metadata
         parameters:
           default: {}
-          help_text: 构件元信息, 包括 entrypoint/use_cnb/use_dockerfile 等信息
         type: models.JSONField
+        verbose_name: null
       artifact_type:
+        help_text: 构件类型
         line: 1
         name: artifact_type
         parameters:
           default: '`ArtifactType.SLUG`'
-          help_text: 构件类型
           max_length: 16
         type: models.CharField
+        verbose_name: null
       bkapp_revision_id:
+        help_text: 与本次构建关联的 BkApp Revision id
         line: 1
         name: bkapp_revision_id
         parameters:
-          help_text: 与本次构建关联的 BkApp Revision id
           'null': true
         type: models.IntegerField
+        verbose_name: null
       branch:
+        help_text: readable version, such as trunk/master
         line: 1
         name: branch
         parameters:
-          help_text: readable version, such as trunk/master
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       image:
+        help_text: 运行 Build 的镜像地址. 如果构件类型为 image，该值即构建产物; 如果构建产物是 Slug, 则返回 SlugRunner
+          的镜像
         line: 1
         name: image
         parameters:
-          help_text: 运行 Build 的镜像地址. 如果构件类型为 image，该值即构建产物; 如果构建产物是 Slug, 则返回 SlugRunner
-            的镜像
           'null': true
         type: models.TextField
+        verbose_name: null
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': true
-          verbose_name: 所属模块
         type: models.UUIDField
+        verbose_name: 所属模块
       owner:
+        help_text: null
         line: 1
         name: owner
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       revision:
+        help_text: unique version, such as sha256
         line: 1
         name: revision
         parameters:
-          help_text: unique version, such as sha256
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       slug_path:
+        help_text: slug path 形如 {region}/home/{name}:{branch}:{revision}/push
         line: 1
         name: slug_path
         parameters:
-          help_text: slug path 形如 {region}/home/{name}:{branch}:{revision}/push
           'null': true
         type: models.TextField
+        verbose_name: null
       source_type:
+        help_text: null
         line: 1
         name: source_type
         parameters:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -160,92 +182,107 @@ results:
     description: This Build Process was invoked via a source tarball or anything similar
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': true
-          verbose_name: 所属应用
         type: models.UUIDField
+        verbose_name: 所属应用
       branch:
+        help_text: null
         line: 1
         name: branch
         parameters:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       completed_at:
+        help_text: failed/successful/interrupted 都是完成
         line: 1
         name: completed_at
         parameters:
-          help_text: failed/successful/interrupted 都是完成
           'null': true
-          verbose_name: 完成时间
         type: models.DateTimeField
+        verbose_name: 完成时间
       generation:
+        help_text: 每个应用独立的自增ID
         line: 1
         name: generation
-        parameters:
-          help_text: 每个应用独立的自增ID
-          verbose_name: 自增ID
+        parameters: {}
         type: models.PositiveBigIntegerField
+        verbose_name: 自增ID
       image:
+        help_text: builder image
         line: 1
         name: image
         parameters:
-          help_text: builder image
           max_length: 512
           'null': true
         type: models.CharField
+        verbose_name: null
       int_requested_at:
+        help_text: 用户请求中断的时间
         line: 1
         name: int_requested_at
         parameters:
-          help_text: 用户请求中断的时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       invoke_message:
+        help_text: 触发信息
         line: 1
         name: invoke_message
         parameters:
           blank: true
-          help_text: 触发信息
           max_length: 255
           'null': true
         type: models.CharField
+        verbose_name: null
       logs_was_ready_at:
+        help_text: Pod 状态就绪允许读取日志的时间
         line: 1
         name: logs_was_ready_at
         parameters:
-          help_text: Pod 状态就绪允许读取日志的时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': true
-          verbose_name: 所属模块
         type: models.UUIDField
+        verbose_name: 所属模块
       owner:
+        help_text: null
         line: 1
         name: owner
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       revision:
+        help_text: null
         line: 1
         name: revision
         parameters:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       source_tar_path:
+        help_text: null
         line: 1
         name: source_tar_path
         parameters:
           max_length: 2048
         type: models.CharField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -253,6 +290,7 @@ results:
           default: '`BuildStatus.PENDING.value`'
           max_length: 12
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -282,6 +320,7 @@ results:
     description: App configs, includes env variables and resource limits
     fields:
       cluster:
+        help_text: null
         line: 1
         name: cluster
         parameters:
@@ -289,33 +328,41 @@ results:
           default: ''
           max_length: 64
         type: models.CharField
+        verbose_name: null
       domain:
+        help_text: null
         line: 1
         name: domain
         parameters:
           default: ''
           max_length: 64
         type: models.CharField
+        verbose_name: null
       image:
+        help_text: null
         line: 1
         name: image
         parameters:
           max_length: 256
           'null': true
         type: models.CharField
+        verbose_name: null
       mount_log_to_host:
+        help_text: Whether mount app logs to host
         line: 1
         name: mount_log_to_host
         parameters:
           default: true
-          help_text: Whether mount app logs to host
         type: models.BooleanField
+        verbose_name: null
       owner:
+        help_text: null
         line: 1
         name: owner
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -338,28 +385,36 @@ results:
     description: null
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       line:
+        help_text: null
         line: 1
         name: line
         parameters: {}
         type: models.TextField
+        verbose_name: null
       stream:
+        help_text: null
         line: 1
         name: stream
         parameters:
           max_length: 16
         type: models.CharField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -378,29 +433,37 @@ results:
     description: null
     fields:
       failed:
+        help_text: null
         line: 1
         name: failed
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       owner:
+        help_text: null
         line: 1
         name: owner
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       summary:
+        help_text: null
         line: 1
         name: summary
         parameters:
           blank: true
           'null': true
         type: models.TextField
+        verbose_name: null
       version:
+        help_text: null
         line: 1
         name: version
         parameters: {}
         type: models.PositiveIntegerField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -433,60 +496,68 @@ results:
     description: This model stores the cloud-native app's deployment histories.
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': false
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       last_transition_time:
+        help_text: null
         line: 1
         name: last_transition_time
         parameters:
           'null': true
-          verbose_name: '`_(''状态最近变更时间'')`'
         type: models.DateTimeField
+        verbose_name: '`_(''状态最近变更时间'')`'
       message:
+        help_text: null
         line: 1
         name: message
         parameters:
           blank: true
           'null': true
-          verbose_name: '`_(''状态描述文字'')`'
         type: models.TextField
+        verbose_name: '`_(''状态描述文字'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
-          verbose_name: '`_(''Deploy 名称'')`'
         type: models.CharField
+        verbose_name: '`_(''Deploy 名称'')`'
       reason:
+        help_text: null
         line: 1
         name: reason
         parameters:
           blank: true
           max_length: 128
           'null': true
-          verbose_name: '`_(''状态原因'')`'
         type: models.CharField
+        verbose_name: '`_(''状态原因'')`'
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -494,8 +565,8 @@ results:
           choices: '`DeployStatus.get_choices()`'
           max_length: 32
           'null': true
-          verbose_name: '`_(''状态'')`'
         type: models.CharField
+        verbose_name: '`_(''状态'')`'
     line: 1
     meta:
       unique_together:
@@ -517,20 +588,22 @@ results:
     description: Cloud-native Application's Model Resource
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': false
           unique: true
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
     line: 1
     meta:
       indexes:
@@ -549,66 +622,75 @@ results:
     description: Revisions of cloud-native Application's Model Resource
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       deployed_value:
+        help_text: null
         line: 1
         name: deployed_value
         parameters:
           'null': true
-          verbose_name: '`_(''已部署的应用模型（JSON 格式）'')`'
         type: models.JSONField
+        verbose_name: '`_(''已部署的应用模型（JSON 格式）'')`'
       has_deployed:
+        help_text: null
         line: 1
         name: has_deployed
         parameters:
           default: false
-          verbose_name: '`_(''是否已部署'')`'
         type: models.BooleanField
+        verbose_name: '`_(''是否已部署'')`'
       is_deleted:
+        help_text: null
         line: 1
         name: is_deleted
         parameters:
           default: false
-          verbose_name: '`_(''是否已删除'')`'
         type: models.BooleanField
+        verbose_name: '`_(''是否已删除'')`'
       is_draft:
+        help_text: null
         line: 1
         name: is_draft
         parameters:
           default: false
-          verbose_name: '`_(''是否草稿'')`'
         type: models.BooleanField
+        verbose_name: '`_(''是否草稿'')`'
       json_value:
+        help_text: null
         line: 1
         name: json_value
-        parameters:
-          verbose_name: '`_(''应用模型（JSON 格式）'')`'
+        parameters: {}
         type: models.JSONField
+        verbose_name: '`_(''应用模型（JSON 格式）'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 64
-          verbose_name: '`_(''模型版本'')`'
         type: models.CharField
+        verbose_name: '`_(''模型版本'')`'
       yaml_value:
+        help_text: null
         line: 1
         name: yaml_value
-        parameters:
-          verbose_name: '`_(''应用模型（YAML 格式）'')`'
+        parameters: {}
         type: models.TextField
+        verbose_name: '`_(''应用模型（YAML 格式）'')`'
     line: 1
     meta:
       indexes:
@@ -622,49 +704,56 @@ results:
     description: ConfigMap 类型的挂载资源
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       data:
+        help_text: null
         line: 1
         name: data
         parameters:
           default: '`dict`'
         type: models.JSONField
+        verbose_name: null
       display_name:
+        help_text: '`_(''挂载资源展示名称'')`'
         line: 1
         name: display_name
         parameters:
-          help_text: '`_(''挂载资源展示名称'')`'
           max_length: 63
           'null': true
         type: models.CharField
+        verbose_name: null
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': true
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
       name:
+        help_text: '`_(''挂载资源名'')`'
         line: 1
         name: name
         parameters:
-          help_text: '`_(''挂载资源名'')`'
           max_length: 63
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -680,41 +769,48 @@ results:
     description: 挂载配置
     fields:
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
       mount_path:
+        help_text: null
         line: 1
         name: mount_path
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: '`_(''挂载点的名称'')`'
         line: 1
         name: name
         parameters:
-          help_text: '`_(''挂载点的名称'')`'
           max_length: 63
         type: models.CharField
+        verbose_name: null
       source_type:
+        help_text: null
         line: 1
         name: source_type
         parameters:
           choices: '`VolumeSourceType.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -730,55 +826,64 @@ results:
     description: 持久存储类型的挂载资源
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       display_name:
+        help_text: '`_(''挂载资源展示名称'')`'
         line: 1
         name: display_name
         parameters:
-          help_text: '`_(''挂载资源展示名称'')`'
           max_length: 63
           'null': true
         type: models.CharField
+        verbose_name: null
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`MountEnvName.get_choices()`'
           max_length: 16
           'null': false
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       module_id:
+        help_text: null
         line: 1
         name: module_id
         parameters:
           'null': true
-          verbose_name: '`_(''所属模块'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属模块'')`'
       name:
+        help_text: '`_(''挂载资源名'')`'
         line: 1
         name: name
         parameters:
-          help_text: '`_(''挂载资源名'')`'
           max_length: 63
         type: models.CharField
+        verbose_name: null
       storage_class_name:
+        help_text: null
         line: 1
         name: storage_class_name
         parameters:
           max_length: 63
         type: models.CharField
+        verbose_name: null
       storage_size:
+        help_text: null
         line: 1
         name: storage_size
         parameters:
           max_length: 63
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -794,24 +899,27 @@ results:
     description: null
     fields:
       is_enabled:
+        help_text: 是否启动 AppMetrics
         line: 1
         name: is_enabled
         parameters:
           default: true
-          help_text: 是否启动 AppMetrics
         type: models.BooleanField
+        verbose_name: null
       port:
+        help_text: Service 端口
         line: 1
         name: port
-        parameters:
-          help_text: Service 端口
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
       target_port:
+        help_text: 容器内的端口
         line: 1
         name: target_port
-        parameters:
-          help_text: 容器内的端口
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.bk_app.monitoring.app_monitor.models
@@ -828,48 +936,62 @@ results:
     description: null
     fields:
       failure_threshold:
+        help_text: null
         line: 1
         name: failure_threshold
         parameters:
           default: 3
         type: models.PositiveIntegerField
+        verbose_name: null
       initial_delay_seconds:
+        help_text: null
         line: 1
         name: initial_delay_seconds
         parameters:
           default: 0
         type: models.IntegerField
+        verbose_name: null
       period_seconds:
+        help_text: null
         line: 1
         name: period_seconds
         parameters:
           default: 10
         type: models.PositiveIntegerField
+        verbose_name: null
       probe_type:
+        help_text: null
         line: 1
         name: probe_type
         parameters:
           choices: '`ProbeType.get_django_choices()`'
           max_length: 255
         type: models.CharField
+        verbose_name: null
       process_type:
+        help_text: null
         line: 1
         name: process_type
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
       success_threshold:
+        help_text: null
         line: 1
         name: success_threshold
         parameters:
           default: 1
         type: models.PositiveIntegerField
+        verbose_name: null
       timeout_seconds:
+        help_text: null
         line: 1
         name: timeout_seconds
         parameters:
           default: 1
         type: models.PositiveIntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -890,50 +1012,62 @@ results:
     description: null
     fields:
       autoscaling:
+        help_text: null
         line: 1
         name: autoscaling
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       port:
+        help_text: 容器端口
         line: 1
         name: port
         parameters:
-          help_text: 容器端口
           'null': true
         type: models.IntegerField
+        verbose_name: null
       proc_command:
+        help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
         line: 1
         name: proc_command
         parameters:
-          help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
         type: models.TextField
+        verbose_name: null
       target_replicas:
+        help_text: null
         line: 1
         name: target_replicas
         parameters:
           default: 1
         type: models.IntegerField
+        verbose_name: null
       target_status:
+        help_text: null
         line: 1
         name: target_status
         parameters:
           default: start
           max_length: 32
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.bk_app.processes.models
@@ -955,36 +1089,45 @@ results:
     description: null
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
-          verbose_name: 是否可用
         type: models.BooleanField
+        verbose_name: 是否可用
       max_replicas:
+        help_text: null
         line: 1
         name: max_replicas
         parameters: {}
         type: models.IntegerField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           db_index: true
           max_length: 32
         type: models.CharField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -997,22 +1140,24 @@ results:
     description: null
     fields:
       host:
+        help_text: API Server 的后端地址
         line: 1
         name: host
         parameters:
-          help_text: API Server 的后端地址
           max_length: 255
         type: models.CharField
+        verbose_name: null
       overridden_hostname:
+        help_text: 在请求该 APIServer 时, 使用该 hostname 替换具体的 backend 中的 hostname
         line: 1
         name: overridden_hostname
         parameters:
           blank: true
           default: null
-          help_text: 在请求该 APIServer 时, 使用该 hostname 替换具体的 backend 中的 hostname
           max_length: 255
           'null': true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1032,49 +1177,57 @@ results:
     description: 应用集群
     fields:
       description:
+        help_text: 描述信息
         line: 1
         name: description
         parameters:
           blank: true
-          help_text: 描述信息
         type: models.TextField
+        verbose_name: null
       is_default:
+        help_text: 是否为默认集群
         line: 1
         name: is_default
         parameters:
           default: false
-          help_text: 是否为默认集群
           'null': true
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: name of the cluster
         line: 1
         name: name
         parameters:
-          help_text: name of the cluster
           max_length: 32
           unique: true
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           db_index: true
           max_length: 32
         type: models.CharField
+        verbose_name: null
       token_type:
+        help_text: null
         line: 1
         name: token_type
         parameters:
           'null': true
         type: models.IntegerField
+        verbose_name: null
       type:
+        help_text: cluster type
         line: 1
         name: type
         parameters:
           default: '`ClusterType.NORMAL`'
-          help_text: cluster type
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.infras.cluster.models
@@ -1086,16 +1239,20 @@ results:
     description: 应用挂件关联实例
     fields:
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       spec:
+        help_text: null
         line: 1
         name: spec
         parameters: {}
         type: models.TextField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.infras.resource_templates.models
@@ -1117,34 +1274,44 @@ results:
     description: 应用挂件模版
     fields:
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       spec:
+        help_text: null
         line: 1
         name: spec
         parameters: {}
         type: models.TextField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           default: '`AppAddOnType.SIMPLE_SIDECAR.value`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1159,17 +1326,21 @@ results:
     description: Audited model with 'created' and 'updated' fields.
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -1182,24 +1353,29 @@ results:
     description: Model with 'created' and 'updated' fields.
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       region:
+        help_text: 部署区域
         line: 1
         name: region
         parameters:
-          help_text: 部署区域
           max_length: 32
         type: models.CharField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -1212,6 +1388,7 @@ results:
     description: Add a UUID primary key to an class`AuditedModel`.
     fields:
       uuid:
+        help_text: null
         line: 1
         name: uuid
         parameters:
@@ -1221,6 +1398,7 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -1234,18 +1412,22 @@ results:
       (username + password) pair for a registry
     fields:
       registry:
+        help_text: null
         line: 1
         name: registry
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
       username:
+        help_text: null
         line: 1
         name: username
         parameters:
           blank: false
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1265,32 +1447,36 @@ results:
     description: App owned UserCredential, aka (Username + Password) pair
     fields:
       application_id:
+        help_text: null
         line: 1
         name: application_id
         parameters:
           'null': false
-          verbose_name: '`_(''所属应用'')`'
         type: models.UUIDField
+        verbose_name: '`_(''所属应用'')`'
       description:
+        help_text: 描述
         line: 1
         name: description
-        parameters:
-          help_text: 描述
+        parameters: {}
         type: models.TextField
+        verbose_name: null
       name:
+        help_text: 凭证名称
         line: 1
         name: name
         parameters:
-          help_text: 凭证名称
           max_length: 32
         type: models.CharField
+        verbose_name: null
       username:
+        help_text: 账号
         line: 1
         name: username
         parameters:
-          help_text: 账号
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1305,34 +1491,44 @@ results:
     description: BCS Egress.spec.rules
     fields:
       dst_port:
+        help_text: null
         line: 1
         name: dst_port
         parameters: {}
         type: models.IntegerField
+        verbose_name: null
       host:
+        help_text: null
         line: 1
         name: host
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
       protocol:
+        help_text: null
         line: 1
         name: protocol
         parameters:
           choices: '`NetworkProtocol.get_django_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
       service:
+        help_text: null
         line: 1
         name: service
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
       src_port:
+        help_text: null
         line: 1
         name: src_port
         parameters: {}
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.workloads.networking.egress.models
@@ -1349,23 +1545,29 @@ results:
     description: null
     fields:
       cpu_limit:
+        help_text: null
         line: 1
         name: cpu_limit
         parameters:
           max_length: 16
         type: models.CharField
+        verbose_name: null
       memory_limit:
+        help_text: null
         line: 1
         name: memory_limit
         parameters:
           max_length: 16
         type: models.CharField
+        verbose_name: null
       replicas:
+        help_text: null
         line: 1
         name: replicas
         parameters:
           default: 1
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paas_wl.workloads.networking.egress.models
@@ -1404,37 +1606,47 @@ results:
       is in a specified moment. it
     fields:
       cluster_name:
+        help_text: null
         line: 1
         name: cluster_name
         parameters:
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       nodes_cnt:
+        help_text: null
         line: 1
         name: nodes_cnt
         parameters:
           default: 0
         type: models.IntegerField
+        verbose_name: null
       nodes_digest:
+        help_text: null
         line: 1
         name: nodes_digest
         parameters:
           db_index: true
           max_length: 64
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -1454,43 +1666,54 @@ results:
       + path_prefix) pair.
     fields:
       host:
+        help_text: null
         line: 1
         name: host
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
       https_auto_redirection:
+        help_text: null
         line: 1
         name: https_auto_redirection
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       https_enabled:
+        help_text: null
         line: 1
         name: https_enabled
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       path_prefix:
+        help_text: the accessable path for current domain
         line: 1
         name: path_prefix
         parameters:
           default: /
-          help_text: the accessable path for current domain
           max_length: 64
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       source:
+        help_text: null
         line: 1
         name: source
         parameters:
           choices: '`make_enum_choices(AppDomainSource)`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       db_table: services_appdomain
@@ -1523,12 +1746,15 @@ results:
       to this certificate as
     fields:
       auto_match_cns:
+        help_text: null
         line: 1
         name: auto_match_cns
         parameters:
           max_length: 2048
         type: models.TextField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
@@ -1537,12 +1763,15 @@ results:
           validators:
           - '`RegexValidator(DNS_SAFE_PATTERN)`'
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       db_table: services_appdomainsharedcert
@@ -1555,28 +1784,36 @@ results:
     description: stores application's subpaths
     fields:
       cluster_name:
+        help_text: null
         line: 1
         name: cluster_name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       source:
+        help_text: null
         line: 1
         name: source
         parameters: {}
         type: models.IntegerField
+        verbose_name: null
       subpath:
+        help_text: null
         line: 1
         name: subpath
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       db_table: services_appsubpath
@@ -1597,6 +1834,7 @@ results:
     description: null
     fields:
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
@@ -1605,12 +1843,15 @@ results:
           validators:
           - '`RegexValidator(DNS_SAFE_PATTERN)`'
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -1623,43 +1864,48 @@ results:
     description: custom domain for application
     fields:
       environment_id:
+        help_text: 关联的环境 ID
         line: 1
         name: environment_id
         parameters:
-          help_text: 关联的环境 ID
           'null': false
         type: models.BigIntegerField
+        verbose_name: null
       https_enabled:
+        help_text: 该域名是否开启 https
         line: 1
         name: https_enabled
         parameters:
           default: false
-          help_text: 该域名是否开启 https
           'null': true
         type: models.BooleanField
+        verbose_name: null
       module_id:
+        help_text: 关联的模块 ID
         line: 1
         name: module_id
         parameters:
-          help_text: 关联的模块 ID
           'null': false
         type: models.UUIDField
+        verbose_name: null
       name:
+        help_text: 域名
         line: 1
         name: name
         parameters:
-          help_text: 域名
           max_length: 253
           'null': false
         type: models.CharField
+        verbose_name: null
       path_prefix:
+        help_text: the accessable path for current domain
         line: 1
         name: path_prefix
         parameters:
           default: /
-          help_text: the accessable path for current domain
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       db_table: services_domain
@@ -1678,39 +1924,46 @@ results:
       `command`,
     fields:
       command:
+        help_text: null
         line: 1
         name: command
         parameters: {}
         type: models.TextField
+        verbose_name: null
       exit_code:
+        help_text: 容器结束状态码, -1 表示未知
         line: 1
         name: exit_code
         parameters:
-          help_text: 容器结束状态码, -1 表示未知
           'null': true
         type: models.SmallIntegerField
+        verbose_name: null
       int_requested_at:
+        help_text: 用户请求中断的时间
         line: 1
         name: int_requested_at
         parameters:
-          help_text: 用户请求中断的时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       logs_was_ready_at:
+        help_text: Pod 状态就绪允许读取日志的时间
         line: 1
         name: logs_was_ready_at
         parameters:
-          help_text: Pod 状态就绪允许读取日志的时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       operator:
+        help_text: 操作者(被编码的 username), 目前该字段无意义
         line: 1
         name: operator
         parameters:
-          help_text: 操作者(被编码的 username), 目前该字段无意义
           max_length: 64
         type: models.CharField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -1718,18 +1971,23 @@ results:
           default: '`CommandStatus.PENDING.value`'
           max_length: 12
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`CommandType.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
       version:
+        help_text: null
         line: 1
         name: version
         parameters: {}
         type: models.PositiveIntegerField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created
@@ -1764,20 +2022,22 @@ results:
     description: CI 资源
     fields:
       backend:
+        help_text: null
         line: 1
         name: backend
         parameters:
           choices: '`CIBackend.get_django_choices()`'
           max_length: 32
-          verbose_name: CI引擎
         type: models.CharField
+        verbose_name: CI引擎
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: true
-          verbose_name: 是否启用
         type: models.BooleanField
+        verbose_name: 是否启用
     line: 1
     meta:
       get_latest_by: created
@@ -1795,21 +2055,24 @@ results:
     description: CI 资源原子
     fields:
       backend:
+        help_text: null
         line: 1
         name: backend
         parameters:
           choices: '`CIBackend.get_django_choices()`'
           max_length: 32
-          verbose_name: CI引擎
         type: models.CharField
+        verbose_name: CI引擎
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: true
-          verbose_name: 是否启用
         type: models.BooleanField
+        verbose_name: 是否启用
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -1818,12 +2081,15 @@ results:
           primary_key: true
           unique: true
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1864,28 +2130,31 @@ results:
     description: DevSandbox Model
     fields:
       code:
+        help_text: 沙箱标识
         line: 1
         name: code
         parameters:
-          help_text: 沙箱标识
           max_length: 8
           unique: true
         type: models.CharField
+        verbose_name: null
       expired_at:
+        help_text: 到期时间
         line: 1
         name: expired_at
         parameters:
-          help_text: 到期时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           choices: '`DevSandboxStatus.get_choices()`'
           max_length: 32
-          verbose_name: 沙箱状态
         type: models.CharField
+        verbose_name: 沙箱状态
     line: 1
     meta:
       unique_together:
@@ -1905,55 +2174,68 @@ results:
     description: 日志平台自定义采集项配置
     fields:
       bk_data_id:
+        help_text: null
         line: 1
         name: bk_data_id
         parameters: {}
         type: models.BigIntegerField
+        verbose_name: null
       collector_config_id:
+        help_text: 采集配置ID
         line: 1
         name: collector_config_id
         parameters:
           db_index: true
-          help_text: 采集配置ID
         type: models.BigIntegerField
+        verbose_name: null
       index_set_id:
+        help_text: 查询时使用
         line: 1
         name: index_set_id
         parameters:
-          help_text: 查询时使用
           'null': true
         type: models.BigIntegerField
+        verbose_name: null
       is_builtin:
+        help_text: null
         line: 1
         name: is_builtin
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       is_enabled:
+        help_text: null
         line: 1
         name: is_enabled
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       log_paths:
+        help_text: null
         line: 1
         name: log_paths
         parameters: {}
         type: models.JSONField
+        verbose_name: null
       log_type:
+        help_text: null
         line: 1
         name: log_type
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       name_en:
+        help_text: 5-50个字符，仅包含字母数字下划线, 查询索引是 name_en-*
         line: 1
         name: name_en
         parameters:
           db_index: true
-          help_text: 5-50个字符，仅包含字母数字下划线, 查询索引是 name_en-*
           max_length: 50
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -1973,20 +2255,22 @@ results:
     description: ES查询配置
     fields:
       backend_type:
+        help_text: '日志后端类型, 可选 ''es'', ''bkLog'' '
         line: 1
         name: backend_type
         parameters:
-          help_text: '日志后端类型, 可选 ''es'', ''bkLog'' '
           max_length: 16
         type: models.CharField
+        verbose_name: null
       collector_config_id:
+        help_text: 采集配置ID
         line: 1
         name: collector_config_id
         parameters:
-          help_text: 采集配置ID
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.log.models
@@ -1998,6 +2282,7 @@ results:
     description: 进程日志查询配置
     fields:
       process_type:
+        help_text: null
         line: 1
         name: process_type
         parameters:
@@ -2005,6 +2290,7 @@ results:
           max_length: 16
           'null': true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2039,18 +2325,21 @@ results:
     description: 进程结构化日志采集配置
     fields:
       collector_config_id:
+        help_text: null
         line: 1
         name: collector_config_id
         parameters:
           primary_key: true
         type: models.BigAutoField
+        verbose_name: null
       process_type:
+        help_text: 进程类型(名称)
         line: 1
         name: process_type
         parameters:
-          help_text: 进程类型(名称)
           max_length: 16
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.log.models
@@ -2072,6 +2361,7 @@ results:
     description: app展示相关的属性
     fields:
       contact:
+        help_text: null
         line: 1
         name: contact
         parameters:
@@ -2079,20 +2369,25 @@ results:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       height:
+        help_text: 应用页面高度，必须为整数，单位为px
         line: 1
         name: height
         parameters:
           default: 550
-          help_text: 应用页面高度，必须为整数，单位为px
         type: models.IntegerField
+        verbose_name: null
       is_win_maximize:
+        help_text: null
         line: 1
         name: is_win_maximize
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       open_mode:
+        help_text: null
         line: 1
         name: open_mode
         parameters:
@@ -2100,34 +2395,39 @@ results:
           default: '`constant.OpenMode.NEW_TAB.value`'
           max_length: 20
         type: models.CharField
+        verbose_name: null
       resizable:
+        help_text: 选项：true(可以拉伸)，false(不可以拉伸)
         line: 1
         name: resizable
         parameters:
           default: true
-          help_text: 选项：true(可以拉伸)，false(不可以拉伸)
         type: models.BooleanField
+        verbose_name: null
       visible:
+        help_text: '选项: true(是)，false(否)'
         line: 1
         name: visible
         parameters:
           default: true
-          help_text: '选项: true(是)，false(否)'
         type: models.BooleanField
+        verbose_name: null
       width:
+        help_text: 应用页面宽度，必须为整数，单位为px
         line: 1
         name: width
         parameters:
           default: 890
-          help_text: 应用页面宽度，必须为整数，单位为px
         type: models.IntegerField
+        verbose_name: null
       win_bars:
+        help_text: '选项: true(on)，false(off)'
         line: 1
         name: win_bars
         parameters:
           default: true
-          help_text: '选项: true(on)，false(off)'
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.publish.market.models
@@ -2144,47 +2444,53 @@ results:
     description: 应用市场相关功能配置
     fields:
       auto_enable_when_deploy:
+        help_text: null
         line: 1
         name: auto_enable_when_deploy
         parameters:
           'null': true
-          verbose_name: 成功部署主模块正式环境后, 是否自动打开市场
         type: models.BooleanField
+        verbose_name: 成功部署主模块正式环境后, 是否自动打开市场
       custom_domain_url:
+        help_text: null
         line: 1
         name: custom_domain_url
         parameters:
           blank: true
           'null': true
-          verbose_name: 绑定的独立域名访问地址
         type: models.URLField
+        verbose_name: 绑定的独立域名访问地址
       enabled:
+        help_text: null
         line: 1
         name: enabled
-        parameters:
-          verbose_name: 是否开启
+        parameters: {}
         type: models.BooleanField
+        verbose_name: 是否开启
       prefer_https:
+        help_text: null
         line: 1
         name: prefer_https
         parameters:
           'null': true
-          verbose_name: '[deprecated] 仅为 False 时强制使用 http, 否则保持与集群 https_enabled 状态一致'
         type: models.BooleanField
+        verbose_name: '[deprecated] 仅为 False 时强制使用 http, 否则保持与集群 https_enabled 状态一致'
       source_tp_url:
+        help_text: null
         line: 1
         name: source_tp_url
         parameters:
           blank: true
           'null': true
-          verbose_name: 第三方访问地址
         type: models.URLField
+        verbose_name: 第三方访问地址
       source_url_type:
+        help_text: null
         line: 1
         name: source_url_type
-        parameters:
-          verbose_name: 访问地址类型
+        parameters: {}
         type: models.SmallIntegerField
+        verbose_name: 访问地址类型
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.publish.market.models
@@ -2206,28 +2512,31 @@ results:
     description: '蓝鲸应用: 开发者中心的编辑属性'
     fields:
       code:
+        help_text: 应用编码
         line: 1
         name: code
         parameters:
-          help_text: 应用编码
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       state:
+        help_text: 应用状态
         line: 1
         name: state
         parameters:
           choices: '`constant.AppState.get_choices()`'
           default: 1
-          help_text: 应用状态
         type: models.SmallIntegerField
+        verbose_name: null
       type:
+        help_text: 按实现方式分类
         line: 1
         name: type
         parameters:
           choices: '`constant.AppType.get_choices()`'
-          help_text: 按实现方式分类
         type: models.SmallIntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.publish.market.models
@@ -2249,42 +2558,47 @@ results:
     description: null
     fields:
       enabled:
+        help_text: 创建应用时是否可选择该分类
         line: 1
         name: enabled
         parameters:
           default: true
-          help_text: 创建应用时是否可选择该分类
         type: models.BooleanField
+        verbose_name: null
       index:
+        help_text: 显示排序字段
         line: 1
         name: index
         parameters:
           default: 0
-          help_text: 显示排序字段
         type: models.IntegerField
+        verbose_name: null
       name:
+        help_text: 分类名称
         line: 1
         name: name
         parameters:
-          help_text: 分类名称
           max_length: 64
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: 部署区域
         line: 1
         name: region
         parameters:
-          help_text: 部署区域
           max_length: 32
         type: models.CharField
+        verbose_name: null
       remark:
+        help_text: 备注
         line: 1
         name: remark
         parameters:
           blank: true
-          help_text: 备注
           max_length: 255
           'null': true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -2304,11 +2618,13 @@ results:
     description: null
     fields:
       remote_id:
+        help_text: null
         line: 1
         name: remote_id
         parameters:
           db_index: true
         type: django_models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.publish.sync_market.models
@@ -2325,30 +2641,35 @@ results:
     description: Binding relationship of engine app <-> remote service plan
     fields:
       credentials_enabled:
+        help_text: null
         line: 1
         name: credentials_enabled
         parameters:
           default: true
-          verbose_name: 是否使用凭证
         type: models.BooleanField
+        verbose_name: 是否使用凭证
       plan_id:
+        help_text: null
         line: 1
         name: plan_id
-        parameters:
-          verbose_name: 远程增强服务 Plan ID
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 远程增强服务 Plan ID
       service_id:
+        help_text: null
         line: 1
         name: service_id
-        parameters:
-          verbose_name: 远程增强服务 ID
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 远程增强服务 ID
       service_instance_id:
+        help_text: null
         line: 1
         name: service_instance_id
         parameters:
           'null': true
         type: models.UUIDField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2368,11 +2689,12 @@ results:
     description: Binding relationship of module <-> remote service
     fields:
       service_id:
+        help_text: null
         line: 1
         name: service_id
-        parameters:
-          verbose_name: 远程增强服务 ID
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 远程增强服务 ID
     line: 1
     meta:
       unique_together:
@@ -2392,12 +2714,13 @@ results:
     description: null
     fields:
       credentials_enabled:
+        help_text: null
         line: 1
         name: credentials_enabled
         parameters:
           default: true
-          verbose_name: 是否使用凭证
         type: models.BooleanField
+        verbose_name: 是否使用凭证
     line: 1
     meta:
       unique_together:
@@ -2455,24 +2778,27 @@ results:
     description: Share a service binding relationship from other modules
     fields:
       ref_attachment_pk:
+        help_text: null
         line: 1
         name: ref_attachment_pk
-        parameters:
-          verbose_name: 被共享的服务绑定关系主键
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 被共享的服务绑定关系主键
       service_id:
+        help_text: null
         line: 1
         name: service_id
-        parameters:
-          verbose_name: 增强服务 ID
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 增强服务 ID
       service_type:
+        help_text: null
         line: 1
         name: service_type
         parameters:
           max_length: 16
-          verbose_name: 增强服务类型
         type: models.CharField
+        verbose_name: 增强服务类型
     line: 1
     meta:
       unique_together:
@@ -2493,26 +2819,30 @@ results:
     description: null
     fields:
       description:
+        help_text: null
         line: 1
         name: description
         parameters:
           blank: true
           max_length: 1024
-          verbose_name: 方案简介
         type: models.CharField
+        verbose_name: 方案简介
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
-          verbose_name: 是否可用
         type: models.BooleanField
+        verbose_name: 是否可用
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2532,12 +2862,13 @@ results:
     description: 预创建的服务实例
     fields:
       is_allocated:
+        help_text: 实例是否已被分配
         line: 1
         name: is_allocated
         parameters:
           default: false
-          help_text: 实例是否已被分配
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.services.models
@@ -2554,12 +2885,15 @@ results:
     description: null
     fields:
       namespace:
+        help_text: null
         line: 1
         name: namespace
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       uid:
+        help_text: null
         line: 1
         name: uid
         parameters:
@@ -2568,6 +2902,7 @@ results:
           'null': false
           unique: true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2582,49 +2917,56 @@ results:
     description: null
     fields:
       available_languages:
+        help_text: null
         line: 1
         name: available_languages
         parameters:
           blank: true
           max_length: 1024
           'null': true
-          verbose_name: 支持编程语言
         type: models.CharField
+        verbose_name: 支持编程语言
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
-          verbose_name: 是否可用
         type: models.BooleanField
+        verbose_name: 是否可用
       is_visible:
+        help_text: null
         line: 1
         name: is_visible
         parameters:
           default: true
-          verbose_name: 是否可见
         type: models.BooleanField
+        verbose_name: 是否可见
       logo_b64:
+        help_text: null
         line: 1
         name: logo_b64
         parameters:
           blank: true
           'null': true
-          verbose_name: 服务 logo 的地址, 支持base64格式
         type: models.TextField
+        verbose_name: 服务 logo 的地址, 支持base64格式
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
-          verbose_name: 服务名称
         type: models.CharField
+        verbose_name: 服务名称
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2644,11 +2986,13 @@ results:
     description: null
     fields:
       sort_priority:
+        help_text: null
         line: 1
         name: sort_priority
         parameters:
           default: 0
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.services.models
@@ -2660,11 +3004,13 @@ results:
     description: null
     fields:
       to_be_deleted:
+        help_text: null
         line: 1
         name: to_be_deleted
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.services.models
@@ -2687,25 +3033,31 @@ results:
       module and AppTag
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       source:
+        help_text: null
         line: 1
         name: source
         parameters:
           blank: false
           max_length: 32
         type: models.CharField
+        verbose_name: null
       tag_str:
+        help_text: null
         line: 1
         name: tag_str
         parameters:
           blank: false
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2725,31 +3077,39 @@ results:
     description: Stores common failure patterns for failed deployments
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           default: '`timezone.now`'
         type: models.DateTimeField
+        verbose_name: null
       tag_str:
+        help_text: null
         line: 1
         name: tag_str
         parameters:
           blank: false
           max_length: 128
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           default: '`DeployFailurePatternType.REGULAR_EXPRESSION`'
         type: models.IntegerField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           blank: false
           max_length: 2048
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.smart_advisor.models
@@ -2762,24 +3122,30 @@ results:
       documentations
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           default: '`timezone.now`'
         type: models.DateTimeField
+        verbose_name: null
       location:
+        help_text: null
         line: 1
         name: location
         parameters:
           blank: false
           max_length: 256
         type: models.CharField
+        verbose_name: null
       priority:
+        help_text: null
         line: 1
         name: priority
         parameters:
           default: 1
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.accessories.smart_advisor.models
@@ -2792,22 +3158,25 @@ results:
       to a group of users,
     fields:
       bk_app_code:
+        help_text: 插件使用方所绑定的蓝鲸应用代号
         line: 1
         name: bk_app_code
         parameters:
-          help_text: 插件使用方所绑定的蓝鲸应用代号
           max_length: 20
           unique: true
         type: models.CharField
+        verbose_name: null
       code_name:
+        help_text: 插件使用方的英文代号，可替代主键使用
         line: 1
         name: code_name
         parameters:
-          help_text: 插件使用方的英文代号，可替代主键使用
           max_length: 32
           unique: true
         type: models.CharField
+        verbose_name: null
       introduction:
+        help_text: null
         line: 1
         name: introduction
         parameters:
@@ -2815,14 +3184,16 @@ results:
           max_length: 512
           'null': true
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: 插件使用方名称
         line: 1
         name: name
         parameters:
-          help_text: 插件使用方名称
           max_length: 32
           unique: true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.bk_plugins.models
@@ -2839,51 +3210,60 @@ results:
     description: Profile which storing extra information for BkPlugins
     fields:
       api_gw_id:
+        help_text: null
         line: 1
         name: api_gw_id
         parameters:
           'null': true
         type: models.IntegerField
+        verbose_name: null
       api_gw_last_synced_at:
+        help_text: null
         line: 1
         name: api_gw_last_synced_at
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       api_gw_name:
+        help_text: 为空时表示从未成功同步过，暂无已绑定网关
         line: 1
         name: api_gw_name
         parameters:
           blank: true
-          help_text: 为空时表示从未成功同步过，暂无已绑定网关
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       contact:
+        help_text: 使用 ; 分隔的用户名
         line: 1
         name: contact
         parameters:
           blank: true
-          help_text: 使用 ; 分隔的用户名
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       introduction:
+        help_text: 插件简介
         line: 1
         name: introduction
         parameters:
           blank: true
-          help_text: 插件简介
           max_length: 512
           'null': true
         type: models.CharField
+        verbose_name: null
       pre_distributor_codes:
+        help_text: null
         line: 1
         name: pre_distributor_codes
         parameters:
           blank: true
           'null': true
         type: models.JSONField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.bk_plugins.models
@@ -2906,28 +3286,31 @@ results:
       have their own separate tags
     fields:
       code_name:
+        help_text: 分类英文名称，可替代主键使用
         line: 1
         name: code_name
         parameters:
-          help_text: 分类英文名称，可替代主键使用
           max_length: 32
           unique: true
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: 插件使用方名称
         line: 1
         name: name
         parameters:
-          help_text: 插件使用方名称
           max_length: 32
           unique: true
         type: models.CharField
+        verbose_name: null
       priority:
+        help_text: 数字越大，优先级越高
         line: 1
         name: priority
         parameters:
           default: 0
-          help_text: 数字越大，优先级越高
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -2942,25 +3325,28 @@ results:
     description: null
     fields:
       grade_manager_id:
+        help_text: 分级管理员 ID
         line: 1
         name: grade_manager_id
-        parameters:
-          help_text: 分级管理员 ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
       pd_id:
+        help_text: 插件类型标识
         line: 1
         name: pd_id
         parameters:
-          help_text: 插件类型标识
           max_length: 64
         type: models.CharField
+        verbose_name: null
       plugin_id:
+        help_text: 插件标识
         line: 1
         name: plugin_id
         parameters:
-          help_text: 插件标识
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -2976,31 +3362,36 @@ results:
     description: null
     fields:
       pd_id:
+        help_text: 插件类型标识
         line: 1
         name: pd_id
         parameters:
-          help_text: 插件类型标识
           max_length: 64
         type: models.CharField
+        verbose_name: null
       plugin_id:
+        help_text: 插件标识
         line: 1
         name: plugin_id
         parameters:
-          help_text: 插件标识
           max_length: 32
         type: models.CharField
+        verbose_name: null
       role:
+        help_text: null
         line: 1
         name: role
         parameters:
           default: '`PluginRole.DEVELOPER.value`'
         type: models.IntegerField
+        verbose_name: null
       user_group_id:
+        help_text: 权限中心用户组 ID
         line: 1
         name: user_group_id
-        parameters:
-          help_text: 权限中心用户组 ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -3016,33 +3407,38 @@ results:
     description: null
     fields:
       access_mode:
+        help_text: null
         line: 1
         name: access_mode
         parameters:
           default: '`PluginBasicInfoAccessMode.READWRITE`'
           max_length: 16
-          verbose_name: 基本信息查看模式
         type: models.CharField
+        verbose_name: 基本信息查看模式
       extra_fields_order:
+        help_text: null
         line: 1
         name: extra_fields_order
         parameters:
           default: '`list`'
         type: models.JSONField
+        verbose_name: null
       release_method:
+        help_text: null
         line: 1
         name: release_method
         parameters:
           max_length: 16
-          verbose_name: 发布方式
         type: models.CharField
+        verbose_name: 发布方式
       repository_group:
+        help_text: null
         line: 1
         name: repository_group
         parameters:
           max_length: 255
-          verbose_name: 插件代码初始化仓库组
         type: models.CharField
+        verbose_name: 插件代码初始化仓库组
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions
@@ -3059,12 +3455,14 @@ results:
     description: null
     fields:
       docs:
+        help_text: null
         line: 1
         name: docs
         parameters:
           default: ''
           max_length: 255
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions
@@ -3081,29 +3479,37 @@ results:
     description: null
     fields:
       administrator:
+        help_text: null
         line: 1
         name: administrator
         parameters: {}
         type: models.JSONField
+        verbose_name: null
       docs:
+        help_text: null
         line: 1
         name: docs
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
       identifier:
+        help_text: null
         line: 1
         name: identifier
         parameters:
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       logo:
+        help_text: null
         line: 1
         name: logo
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions
@@ -3115,18 +3521,21 @@ results:
     description: null
     fields:
       extra_fields_order:
+        help_text: null
         line: 1
         name: extra_fields_order
         parameters:
           default: '`list`'
         type: models.JSONField
+        verbose_name: null
       storage:
+        help_text: null
         line: 1
         name: storage
         parameters:
           max_length: 16
-          verbose_name: 存储方式
         type: models.CharField
+        verbose_name: 存储方式
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions
@@ -3158,20 +3567,21 @@ results:
     description: 审批服务信息
     fields:
       service_id:
+        help_text: 用于在 ITSM 上提申请单据
         line: 1
         name: service_id
-        parameters:
-          help_text: 用于在 ITSM 上提申请单据
-          verbose_name: 审批服务ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 审批服务ID
       service_name:
+        help_text: null
         line: 1
         name: service_name
         parameters:
           max_length: 64
           unique: true
-          verbose_name: 审批服务名称
         type: models.CharField
+        verbose_name: 审批服务名称
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3183,26 +3593,32 @@ results:
     description: 插件操作记录
     fields:
       action:
+        help_text: null
         line: 1
         name: action
         parameters:
           choices: '`constants.ActionTypes.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
       specific:
+        help_text: null
         line: 1
         name: specific
         parameters:
           max_length: 255
           'null': true
         type: models.CharField
+        verbose_name: null
       subject:
+        help_text: null
         line: 1
         name: subject
         parameters:
           choices: '`constants.SubjectTypes.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3219,19 +3635,21 @@ results:
     description: 插件配置
     fields:
       row:
+        help_text: null
         line: 1
         name: row
         parameters:
           default: '`dict`'
-          verbose_name: '配置内容(1行), 格式 {''column_key'': ''value''}'
         type: models.JSONField
+        verbose_name: '配置内容(1行), 格式 {''column_key'': ''value''}'
       unique_key:
+        help_text: null
         line: 1
         name: unique_key
         parameters:
           max_length: 64
-          verbose_name: 唯一标识
         type: models.CharField
+        verbose_name: 唯一标识
     line: 1
     meta:
       unique_together:
@@ -3251,64 +3669,72 @@ results:
     description: 插件实例
     fields:
       extra_fields:
+        help_text: null
         line: 1
         name: extra_fields
-        parameters:
-          verbose_name: 额外字段
+        parameters: {}
         type: models.JSONField
+        verbose_name: 额外字段
       id:
+        help_text: 插件id
         line: 1
         name: id
         parameters:
-          help_text: 插件id
           max_length: 32
         type: models.CharField
+        verbose_name: null
       is_deleted:
+        help_text: 是否已删除
         line: 1
         name: is_deleted
         parameters:
           default: false
-          help_text: 是否已删除
         type: models.BooleanField
+        verbose_name: null
       language:
+        help_text: 冗余字段, 用于减少查询次数
         line: 1
         name: language
         parameters:
-          help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          verbose_name: 开发语言
         type: models.CharField
+        verbose_name: 开发语言
       publisher:
+        help_text: null
         line: 1
         name: publisher
         parameters:
           default: ''
           max_length: 64
-          verbose_name: 插件发布者
         type: models.CharField
+        verbose_name: 插件发布者
       repo_type:
+        help_text: null
         line: 1
         name: repo_type
         parameters:
           max_length: 16
           'null': true
-          verbose_name: 源码托管类型
         type: models.CharField
+        verbose_name: 源码托管类型
       repository:
+        help_text: null
         line: 1
         name: repository
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           choices: '`constants.PluginStatus.get_choices()`'
           default: '`constants.PluginStatus.WAITING_APPROVAL`'
           max_length: 16
-          verbose_name: 插件状态
         type: models.CharField
+        verbose_name: 插件状态
     line: 1
     meta:
       unique_together:
@@ -3328,26 +3754,28 @@ results:
     description: 插件市场信息
     fields:
       category:
+        help_text: null
         line: 1
         name: category
         parameters:
           db_index: true
           max_length: 64
-          verbose_name: 分类
         type: models.CharField
+        verbose_name: 分类
       contact:
+        help_text: 以分号(;)分割
         line: 1
         name: contact
-        parameters:
-          help_text: 以分号(;)分割
-          verbose_name: 联系人
+        parameters: {}
         type: models.TextField
+        verbose_name: 联系人
       extra_fields:
+        help_text: null
         line: 1
         name: extra_fields
-        parameters:
-          verbose_name: 额外字段
+        parameters: {}
         type: models.JSONField
+        verbose_name: 额外字段
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3364,109 +3792,123 @@ results:
     description: 插件发布版本
     fields:
       comment:
+        help_text: null
         line: 1
         name: comment
-        parameters:
-          verbose_name: 版本日志
+        parameters: {}
         type: models.TextField
+        verbose_name: 版本日志
       extra_fields:
+        help_text: null
         line: 1
         name: extra_fields
-        parameters:
-          verbose_name: 额外字段
+        parameters: {}
         type: models.JSONField
+        verbose_name: 额外字段
       gray_status:
+        help_text: null
         line: 1
         name: gray_status
         parameters:
           default: '`constants.GrayReleaseStatus.IN_GRAY`'
           max_length: 32
-          verbose_name: 灰度发布状态
         type: models.CharField
+        verbose_name: 灰度发布状态
       is_rolled_back:
+        help_text: 是否已回滚
         line: 1
         name: is_rolled_back
         parameters:
           default: false
-          help_text: 是否已回滚
         type: models.BooleanField
+        verbose_name: null
       retryable:
+        help_text: 失败后是否可重试
         line: 1
         name: retryable
         parameters:
           default: true
-          help_text: 失败后是否可重试
         type: models.BooleanField
+        verbose_name: null
       semver_type:
+        help_text: 该字段只用于自动生成版本号的插件
         line: 1
         name: semver_type
         parameters:
-          help_text: 该字段只用于自动生成版本号的插件
           max_length: 16
           'null': true
-          verbose_name: 语义化版本类型
         type: models.CharField
+        verbose_name: 语义化版本类型
       source_hash:
+        help_text: null
         line: 1
         name: source_hash
         parameters:
           max_length: 128
-          verbose_name: 代码提交哈希
         type: models.CharField
+        verbose_name: 代码提交哈希
       source_location:
+        help_text: null
         line: 1
         name: source_location
         parameters:
           max_length: 2048
-          verbose_name: 代码仓库地址
         type: models.CharField
+        verbose_name: 代码仓库地址
       source_version_name:
+        help_text: null
         line: 1
         name: source_version_name
         parameters:
           max_length: 128
           'null': true
-          verbose_name: 代码分支名/tag名
         type: models.CharField
+        verbose_name: 代码分支名/tag名
       source_version_type:
+        help_text: null
         line: 1
         name: source_version_type
         parameters:
           max_length: 128
           'null': true
-          verbose_name: 代码版本类型(branch/tag)
         type: models.CharField
+        verbose_name: 代码版本类型(branch/tag)
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           default: '`constants.PluginReleaseStatus.INITIAL`'
           max_length: 16
         type: models.CharField
+        verbose_name: null
       tag:
+        help_text: null
         line: 1
         name: tag
         parameters:
           db_index: true
           max_length: 16
           'null': true
-          verbose_name: 标签
         type: models.CharField
+        verbose_name: 标签
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`constants.PluginReleaseType.get_choices()`'
           max_length: 16
-          verbose_name: 版本类型(正式/测试)
         type: models.CharField
+        verbose_name: 版本类型(正式/测试)
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 255
-          verbose_name: 版本号
         type: models.CharField
+        verbose_name: 版本号
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3488,76 +3930,80 @@ results:
     description: 插件发布阶段
     fields:
       api_detail:
+        help_text: 该字段仅 invoke_method = api 时可用
         line: 1
         name: api_detail
         parameters:
-          help_text: 该字段仅 invoke_method = api 时可用
           'null': true
-          verbose_name: API 详情
         type: models.JSONField
+        verbose_name: API 详情
       fail_message:
+        help_text: null
         line: 1
         name: fail_message
-        parameters:
-          verbose_name: 错误原因
+        parameters: {}
         type: models.TextField
+        verbose_name: 错误原因
       invoke_method:
+        help_text: 冗余字段, 用于减少查询次数
         line: 1
         name: invoke_method
         parameters:
-          help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          verbose_name: 触发方式
         type: models.CharField
+        verbose_name: 触发方式
       operator:
+        help_text: null
         line: 1
         name: operator
         parameters:
           max_length: 32
           'null': true
-          verbose_name: 操作人
         type: models.CharField
+        verbose_name: 操作人
       pipeline_detail:
+        help_text: 该字段仅 invoke_method = pipeline 时可用
         line: 1
         name: pipeline_detail
         parameters:
           default: null
-          help_text: 该字段仅 invoke_method = pipeline 时可用
           'null': true
-          verbose_name: 流水线构建详情
         type: models.JSONField
+        verbose_name: 流水线构建详情
       stage_id:
+        help_text: null
         line: 1
         name: stage_id
         parameters:
           max_length: 32
-          verbose_name: 阶段标识
         type: models.CharField
+        verbose_name: 阶段标识
       stage_name:
+        help_text: 冗余字段, 用于减少查询次数
         line: 1
         name: stage_name
         parameters:
-          help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          verbose_name: 阶段名称
         type: models.CharField
+        verbose_name: 阶段名称
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           default: '`constants.PluginReleaseStatus.INITIAL`'
           max_length: 16
-          verbose_name: 发布状态
         type: models.CharField
+        verbose_name: 发布状态
       status_polling_method:
+        help_text: 冗余字段, 用于减少查询次数
         line: 1
         name: status_polling_method
         parameters:
           default: '`constants.StatusPollingMethod.API`'
-          help_text: 冗余字段, 用于减少查询次数
           max_length: 16
-          verbose_name: 阶段的状态轮询方式
         type: models.CharField
+        verbose_name: 阶段的状态轮询方式
     line: 1
     meta:
       unique_together:
@@ -3582,30 +4028,32 @@ results:
     description: 插件版本的发布策略
     fields:
       bkci_project:
+        help_text: 格式：['1111', '222222']
         line: 1
         name: bkci_project
         parameters:
           blank: true
-          help_text: 格式：['1111', '222222']
           'null': true
-          verbose_name: 蓝盾项目ID
         type: models.JSONField
+        verbose_name: 蓝盾项目ID
       organization:
+        help_text: null
         line: 1
         name: organization
         parameters:
           blank: true
           'null': true
-          verbose_name: 组织架构
         type: models.JSONField
+        verbose_name: 组织架构
       strategy:
+        help_text: null
         line: 1
         name: strategy
         parameters:
           choices: '`constants.ReleaseStrategy.get_choices()`'
           max_length: 32
-          verbose_name: 发布策略
         type: models.CharField
+        verbose_name: 发布策略
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3622,27 +4070,30 @@ results:
     description: 插件可见范围
     fields:
       bkci_project:
+        help_text: null
         line: 1
         name: bkci_project
         parameters:
           default: '`list`'
-          verbose_name: 蓝盾项目ID
         type: models.JSONField
+        verbose_name: 蓝盾项目ID
       is_in_approval:
+        help_text: null
         line: 1
         name: is_in_approval
         parameters:
           default: false
-          verbose_name: 是否在审批中
         type: models.BooleanField
+        verbose_name: 是否在审批中
       organization:
+        help_text: null
         line: 1
         name: organization
         parameters:
           blank: true
           'null': true
-          verbose_name: 组织架构
         type: models.JSONField
+        verbose_name: 组织架构
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances
@@ -3659,17 +4110,21 @@ results:
     description: null
     fields:
       effect:
+        help_text: null
         line: 1
         name: effect
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3682,18 +4137,22 @@ results:
       app as an regular user,
     fields:
       bk_app_code:
+        help_text: null
         line: 1
         name: bk_app_code
         parameters:
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3710,24 +4169,30 @@ results:
     description: OAuth2 Token for sourcectl
     fields:
       expire_at:
+        help_text: null
         line: 1
         name: expire_at
         parameters:
           blank: true
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       provider:
+        help_text: null
         line: 1
         name: provider
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       token_type:
+        help_text: null
         line: 1
         name: token_type
         parameters:
           max_length: 16
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3744,18 +4209,22 @@ results:
     description: Private Token for sourcectl
     fields:
       expire_at:
+        help_text: null
         line: 1
         name: expire_at
         parameters:
           blank: true
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       provider:
+        help_text: null
         line: 1
         name: provider
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3773,25 +4242,31 @@ results:
       have very long
     fields:
       expires_at:
+        help_text: null
         line: 1
         name: expires_at
         parameters:
           blank: true
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       token:
+        help_text: null
         line: 1
         name: token
         parameters:
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3808,18 +4283,22 @@ results:
     description: Profile field for user
     fields:
       feature_flags:
+        help_text: null
         line: 1
         name: feature_flags
         parameters:
           blank: true
           'null': true
         type: models.TextField
+        verbose_name: null
       role:
+        help_text: null
         line: 1
         name: role
         parameters:
           default: '`SiteRole.USER.value`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.accounts.models
@@ -3831,47 +4310,51 @@ results:
     description: null
     fields:
       extra_info:
+        help_text: 蓝鲸监控API-metadata_get_space_detail 的原始返回值
         line: 1
         name: extra_info
-        parameters:
-          help_text: 蓝鲸监控API-metadata_get_space_detail 的原始返回值
+        parameters: {}
         type: models.JSONField
+        verbose_name: null
       id:
+        help_text: null
         line: 1
         name: id
-        parameters:
-          verbose_name: 蓝鲸监控空间 id
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 蓝鲸监控空间 id
       space_id:
+        help_text: 同一空间类型下唯一
         line: 1
         name: space_id
         parameters:
-          help_text: 同一空间类型下唯一
           max_length: 48
-          verbose_name: 空间id
         type: models.CharField
+        verbose_name: 空间id
       space_name:
+        help_text: null
         line: 1
         name: space_name
         parameters:
           max_length: 64
-          verbose_name: 空间名称
         type: models.CharField
+        verbose_name: 空间名称
       space_type_id:
+        help_text: null
         line: 1
         name: space_type_id
         parameters:
           max_length: 48
-          verbose_name: 空间类型id
         type: models.CharField
+        verbose_name: 空间类型id
       space_uid:
+        help_text: '{space_type_id}__{space_id}'
         line: 1
         name: space_uid
         parameters:
-          help_text: '{space_type_id}__{space_id}'
           max_length: 48
-          verbose_name: 蓝鲸监控空间 uid
         type: models.CharField
+        verbose_name: 蓝鲸监控空间 uid
     line: 1
     meta:
       unique_together:
@@ -3891,18 +4374,20 @@ results:
     description: null
     fields:
       app_code:
+        help_text: 应用代号
         line: 1
         name: app_code
         parameters:
-          help_text: 应用代号
           max_length: 20
         type: models.CharField
+        verbose_name: null
       grade_manager_id:
+        help_text: 分级管理员 ID
         line: 1
         name: grade_manager_id
-        parameters:
-          help_text: 分级管理员 ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -3917,24 +4402,28 @@ results:
     description: null
     fields:
       app_code:
+        help_text: 应用代号
         line: 1
         name: app_code
         parameters:
-          help_text: 应用代号
           max_length: 20
         type: models.CharField
+        verbose_name: null
       role:
+        help_text: null
         line: 1
         name: role
         parameters:
           default: '`ApplicationRole.DEVELOPER.value`'
         type: models.IntegerField
+        verbose_name: null
       user_group_id:
+        help_text: 权限中心用户组 ID
         line: 1
         name: user_group_id
-        parameters:
-          help_text: 权限中心用户组 ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -3949,19 +4438,21 @@ results:
     description: null
     fields:
       bk_app_code:
+        help_text: null
         line: 1
         name: bk_app_code
         parameters:
           max_length: 20
           unique: true
         type: models.CharField
+        verbose_name: null
       bk_app_secret_id:
+        help_text: 不存储密钥的信息，仅存储密钥 ID
         line: 1
         name: bk_app_secret_id
-        parameters:
-          help_text: 不存储密钥的信息，仅存储密钥 ID
-          verbose_name: 应用密钥的 ID
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 应用密钥的 ID
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.oauth2.models
@@ -3973,13 +4464,14 @@ results:
     description: OAuth2 体系中的基本单位：Client
     fields:
       client_id:
+        help_text: null
         line: 1
         name: client_id
         parameters:
           max_length: 20
           unique: true
-          verbose_name: 应用编码
         type: models.CharField
+        verbose_name: 应用编码
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.infras.oauth2.models
@@ -3991,56 +4483,62 @@ results:
     description: 后台管理操作记录，用于记录平台管理员在 Admin 系统上的操作
     fields:
       access_type:
+        help_text: null
         line: 1
         name: access_type
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          verbose_name: 访问方式
         type: models.IntegerField
+        verbose_name: 访问方式
       app_code:
+        help_text: null
         line: 1
         name: app_code
         parameters:
           blank: true
           max_length: 32
           'null': true
-          verbose_name: 应用ID, 非必填
         type: models.CharField
+        verbose_name: 应用ID, 非必填
       attribute:
+        help_text: 如增强服务的属性可以为：mysql、bkrepo
         line: 1
         name: attribute
         parameters:
           blank: true
-          help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          verbose_name: 对象属性
         type: models.CharField
+        verbose_name: 对象属性
       data_after:
+        help_text: null
         line: 1
         name: data_after
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作后的数据
         type: models.JSONField
+        verbose_name: 操作后的数据
       data_before:
+        help_text: null
         line: 1
         name: data_before
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作前的数据
         type: models.JSONField
+        verbose_name: 操作前的数据
       end_time:
+        help_text: 仅需要后台执行的的操作才需要记录结束时间
         line: 1
         name: end_time
         parameters:
-          help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
@@ -4048,49 +4546,54 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          verbose_name: 环境，非必填
         type: models.CharField
+        verbose_name: 环境，非必填
       module_name:
+        help_text: null
         line: 1
         name: module_name
         parameters:
           blank: true
           max_length: 32
           'null': true
-          verbose_name: 模块名，非必填
         type: models.CharField
+        verbose_name: 模块名，非必填
       operation:
+        help_text: null
         line: 1
         name: operation
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          verbose_name: 操作类型
         type: models.CharField
+        verbose_name: 操作类型
       result_code:
+        help_text: null
         line: 1
         name: result_code
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          verbose_name: 操作结果
         type: models.IntegerField
+        verbose_name: 操作结果
       start_time:
+        help_text: null
         line: 1
         name: start_time
         parameters:
           auto_now_add: true
           db_index: true
-          verbose_name: 开始时间
         type: models.DateTimeField
+        verbose_name: 开始时间
       target:
+        help_text: null
         line: 1
         name: target
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          verbose_name: 操作对象
         type: models.CharField
+        verbose_name: 操作对象
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.audit.models
@@ -4102,11 +4605,13 @@ results:
     description: 应用最近操作的映射表，可方便快速查询应用的最近操作者，并按最近操作时间进行排序等操作
     fields:
       latest_operated_at:
+        help_text: null
         line: 1
         name: latest_operated_at
         parameters:
           db_index: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.audit.models
@@ -4128,64 +4633,71 @@ results:
     description: 应用操作记录，用于记录应用开发者的操作，需要同步记录应用的权限数据，并可以选择是否将数据上报到审计中心
     fields:
       access_type:
+        help_text: null
         line: 1
         name: access_type
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          verbose_name: 访问方式
         type: models.IntegerField
+        verbose_name: 访问方式
       action_id:
+        help_text: action_id 为空则不会将数据上报到审计中心
         line: 1
         name: action_id
         parameters:
           blank: true
           choices: '`AppAction.get_choices()`'
-          help_text: action_id 为空则不会将数据上报到审计中心
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       app_code:
+        help_text: null
         line: 1
         name: app_code
         parameters:
           max_length: 32
-          verbose_name: 应用ID, 必填
         type: models.CharField
+        verbose_name: 应用ID, 必填
       attribute:
+        help_text: 如增强服务的属性可以为：mysql、bkrepo
         line: 1
         name: attribute
         parameters:
           blank: true
-          help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          verbose_name: 对象属性
         type: models.CharField
+        verbose_name: 对象属性
       data_after:
+        help_text: null
         line: 1
         name: data_after
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作后的数据
         type: models.JSONField
+        verbose_name: 操作后的数据
       data_before:
+        help_text: null
         line: 1
         name: data_before
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作前的数据
         type: models.JSONField
+        verbose_name: 操作前的数据
       end_time:
+        help_text: 仅需要后台执行的的操作才需要记录结束时间
         line: 1
         name: end_time
         parameters:
-          help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
@@ -4193,58 +4705,64 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          verbose_name: 环境，非必填
         type: models.CharField
+        verbose_name: 环境，非必填
       module_name:
+        help_text: null
         line: 1
         name: module_name
         parameters:
           blank: true
           max_length: 32
           'null': true
-          verbose_name: 模块名，非必填
         type: models.CharField
+        verbose_name: 模块名，非必填
       operation:
+        help_text: null
         line: 1
         name: operation
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          verbose_name: 操作类型
         type: models.CharField
+        verbose_name: 操作类型
       resource_type_id:
+        help_text: 开发者中心注册的资源都为蓝鲸应用
         line: 1
         name: resource_type_id
         parameters:
           choices: '`ResourceType.get_choices()`'
           default: '`ResourceType.Application`'
-          help_text: 开发者中心注册的资源都为蓝鲸应用
           max_length: 32
         type: models.CharField
+        verbose_name: null
       result_code:
+        help_text: null
         line: 1
         name: result_code
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          verbose_name: 操作结果
         type: models.IntegerField
+        verbose_name: 操作结果
       start_time:
+        help_text: null
         line: 1
         name: start_time
         parameters:
           auto_now_add: true
           db_index: true
-          verbose_name: 开始时间
         type: models.DateTimeField
+        verbose_name: 开始时间
       target:
+        help_text: null
         line: 1
         name: target
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          verbose_name: 操作对象
         type: models.CharField
+        verbose_name: 操作对象
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.audit.models
@@ -4256,47 +4774,52 @@ results:
     description: null
     fields:
       access_type:
+        help_text: null
         line: 1
         name: access_type
         parameters:
           choices: '`AccessType.get_choices()`'
           default: '`AccessType.WEB`'
-          verbose_name: 访问方式
         type: models.IntegerField
+        verbose_name: 访问方式
       attribute:
+        help_text: 如增强服务的属性可以为：mysql、bkrepo
         line: 1
         name: attribute
         parameters:
           blank: true
-          help_text: 如增强服务的属性可以为：mysql、bkrepo
           max_length: 32
           'null': true
-          verbose_name: 对象属性
         type: models.CharField
+        verbose_name: 对象属性
       data_after:
+        help_text: null
         line: 1
         name: data_after
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作后的数据
         type: models.JSONField
+        verbose_name: 操作后的数据
       data_before:
+        help_text: null
         line: 1
         name: data_before
         parameters:
           blank: true
           'null': true
-          verbose_name: 操作前的数据
         type: models.JSONField
+        verbose_name: 操作前的数据
       end_time:
+        help_text: 仅需要后台执行的的操作才需要记录结束时间
         line: 1
         name: end_time
         parameters:
-          help_text: 仅需要后台执行的的操作才需要记录结束时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
@@ -4304,49 +4827,54 @@ results:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': true
-          verbose_name: 环境，非必填
         type: models.CharField
+        verbose_name: 环境，非必填
       module_name:
+        help_text: null
         line: 1
         name: module_name
         parameters:
           blank: true
           max_length: 32
           'null': true
-          verbose_name: 模块名，非必填
         type: models.CharField
+        verbose_name: 模块名，非必填
       operation:
+        help_text: null
         line: 1
         name: operation
         parameters:
           choices: '`OperationEnum.get_choices()`'
           max_length: 32
-          verbose_name: 操作类型
         type: models.CharField
+        verbose_name: 操作类型
       result_code:
+        help_text: null
         line: 1
         name: result_code
         parameters:
           choices: '`ResultCode.get_choices()`'
           default: '`ResultCode.SUCCESS`'
-          verbose_name: 操作结果
         type: models.IntegerField
+        verbose_name: 操作结果
       start_time:
+        help_text: null
         line: 1
         name: start_time
         parameters:
           auto_now_add: true
           db_index: true
-          verbose_name: 开始时间
         type: models.DateTimeField
+        verbose_name: 开始时间
       target:
+        help_text: null
         line: 1
         name: target
         parameters:
           choices: '`OperationTarget.get_choices()`'
           max_length: 32
-          verbose_name: 操作对象
         type: models.CharField
+        verbose_name: 操作对象
     line: 1
     meta:
       abstract: true
@@ -4359,43 +4887,53 @@ results:
     description: 记录 app 初始的告警规则配置
     fields:
       alert_code:
+        help_text: alert rule code e.g. high_cpu_usage
         line: 1
         name: alert_code
         parameters:
-          help_text: alert rule code e.g. high_cpu_usage
           max_length: 64
         type: models.CharField
+        verbose_name: null
       display_name:
+        help_text: null
         line: 1
         name: display_name
         parameters:
           max_length: 512
         type: models.CharField
+        verbose_name: null
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
           max_length: 16
-          verbose_name: 部署环境
         type: models.CharField
+        verbose_name: 部署环境
       receivers:
+        help_text: null
         line: 1
         name: receivers
         parameters:
           default: '`list`'
         type: models.JSONField
+        verbose_name: null
       threshold_expr:
+        help_text: null
         line: 1
         name: threshold_expr
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.monitoring.monitor.models
@@ -4417,33 +4955,37 @@ results:
     description: 记录 APP 初始化的仪表盘信息
     fields:
       display_name:
+        help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
         line: 1
         name: display_name
         parameters:
-          help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
           max_length: 512
         type: models.CharField
+        verbose_name: null
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: 仪表盘所属语言
         type: models.CharField
+        verbose_name: 仪表盘所属语言
       name:
+        help_text: 仪表盘名称，如：bksaas/framework-python
         line: 1
         name: name
         parameters:
-          help_text: 仪表盘名称，如：bksaas/framework-python
           max_length: 64
         type: models.CharField
+        verbose_name: null
       template_version:
+        help_text: 模板版本更新时，可以根据该字段作为批量刷新仪表盘
         line: 1
         name: template_version
         parameters:
-          help_text: 模板版本更新时，可以根据该字段作为批量刷新仪表盘
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -4463,39 +5005,46 @@ results:
     description: 仪表盘模板，只需要记录名称和版本号，模板的内容在蓝鲸监控侧维护
     fields:
       display_name:
+        help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
         line: 1
         name: display_name
         parameters:
-          help_text: 仪表盘展示名称，如：Python 开发框架内置仪表盘
           max_length: 512
         type: models.CharField
+        verbose_name: null
       is_plugin_template:
+        help_text: null
         line: 1
         name: is_plugin_template
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: 仪表盘所属语言
         type: models.CharField
+        verbose_name: 仪表盘所属语言
       name:
+        help_text: 与蓝鲸监控约定的仪表盘名称，如：bksaas/framework-python，需要提前将仪表盘的 JSON 文件内置到监控的代码目录中
         line: 1
         name: name
         parameters:
-          help_text: 与蓝鲸监控约定的仪表盘名称，如：bksaas/framework-python，需要提前将仪表盘的 JSON 文件内置到监控的代码目录中
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.monitoring.monitor.models
@@ -4507,17 +5056,20 @@ results:
     description: A mapper table which saves application's latest operation
     fields:
       latest_operated_at:
+        help_text: null
         line: 1
         name: latest_operated_at
         parameters:
           db_index: true
         type: models.DateTimeField
+        verbose_name: null
       operation_type:
+        help_text: 操作类型
         line: 1
         name: operation_type
-        parameters:
-          help_text: 操作类型
+        parameters: {}
         type: models.SmallIntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.operations.models
@@ -4539,51 +5091,58 @@ results:
     description: null
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
           db_index: true
         type: models.DateTimeField
+        verbose_name: null
       is_hidden:
+        help_text: 隐藏起来
         line: 1
         name: is_hidden
         parameters:
           default: false
-          help_text: 隐藏起来
         type: models.BooleanField
+        verbose_name: null
       module_name:
+        help_text: null
         line: 1
         name: module_name
         parameters:
           max_length: 20
           'null': true
-          verbose_name: 关联 Module
         type: models.CharField
+        verbose_name: 关联 Module
       region:
+        help_text: 部署区域
         line: 1
         name: region
         parameters:
-          help_text: 部署区域
           max_length: 32
         type: models.CharField
+        verbose_name: null
       source_object_id:
+        help_text: 事件来源对象ID，具体指向需要根据操作类型解析
         line: 1
         name: source_object_id
         parameters:
           blank: true
           default: ''
-          help_text: 事件来源对象ID，具体指向需要根据操作类型解析
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: 操作类型
         line: 1
         name: type
         parameters:
           db_index: true
-          help_text: 操作类型
         type: models.SmallIntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.misc.operations.models
@@ -4600,14 +5159,16 @@ results:
     description: 蓝鲸应用
     fields:
       code:
+        help_text: null
         line: 1
         name: code
         parameters:
           max_length: 20
           unique: true
-          verbose_name: 应用代号
         type: models.CharField
+        verbose_name: 应用代号
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -4617,88 +5178,98 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
-          verbose_name: 是否活跃
         type: models.BooleanField
+        verbose_name: 是否活跃
       is_ai_agent_app:
+        help_text: null
         line: 1
         name: is_ai_agent_app
         parameters:
           default: false
-          verbose_name: 是否为 AI Agent 插件应用
         type: models.BooleanField
+        verbose_name: 是否为 AI Agent 插件应用
       is_deleted:
+        help_text: null
         line: 1
         name: is_deleted
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       is_plugin_app:
+        help_text: 蓝鲸应用插件：供标准运维、ITSM 等 SaaS 使用，有特殊逻辑
         line: 1
         name: is_plugin_app
         parameters:
           default: false
-          help_text: 蓝鲸应用插件：供标准运维、ITSM 等 SaaS 使用，有特殊逻辑
-          verbose_name: 是否为插件应用
         type: models.BooleanField
+        verbose_name: 是否为插件应用
       is_scene_app:
+        help_text: null
         line: 1
         name: is_scene_app
         parameters:
           default: false
-          verbose_name: 是否为场景 SaaS 应用
         type: models.BooleanField
+        verbose_name: 是否为场景 SaaS 应用
       is_smart_app:
+        help_text: null
         line: 1
         name: is_smart_app
         parameters:
           default: false
-          verbose_name: 是否为 S-Mart 应用
         type: models.BooleanField
+        verbose_name: 是否为 S-Mart 应用
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: 编程语言
         type: models.CharField
+        verbose_name: 编程语言
       last_deployed_date:
+        help_text: null
         line: 1
         name: last_deployed_date
         parameters:
           'null': true
-          verbose_name: 最近部署时间
         type: models.DateTimeField
+        verbose_name: 最近部署时间
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 20
           unique: true
-          verbose_name: 应用名称
         type: models.CharField
+        verbose_name: 应用名称
       name_en:
+        help_text: 目前仅用于 S-Mart 应用
         line: 1
         name: name_en
         parameters:
-          help_text: 目前仅用于 S-Mart 应用
           max_length: 20
-          verbose_name: 应用名称(英文)
         type: models.CharField
+        verbose_name: 应用名称(英文)
       type:
+        help_text: 与应用部署方式相关的类型信息
         line: 1
         name: type
         parameters:
           db_index: true
           default: '`ApplicationType.DEFAULT.value`'
-          help_text: 与应用部署方式相关的类型信息
           max_length: 16
-          verbose_name: 应用类型
         type: models.CharField
+        verbose_name: 应用类型
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.applications.models
@@ -4710,11 +5281,12 @@ results:
     description: null
     fields:
       order:
+        help_text: null
         line: 1
         name: order
-        parameters:
-          verbose_name: 顺序
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 顺序
     line: 1
     meta:
       verbose_name: 模块顺序
@@ -4732,19 +5304,21 @@ results:
     description: 记录蓝鲸应用在不同部署环境下对应的 Engine App
     fields:
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
           max_length: 16
-          verbose_name: 部署环境
         type: models.CharField
+        verbose_name: 部署环境
       is_offlined:
+        help_text: 是否已经下线，仅成功下线后变为False
         line: 1
         name: is_offlined
         parameters:
           default: false
-          help_text: 是否已经下线，仅成功下线后变为False
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -4774,17 +5348,21 @@ results:
     description: null
     fields:
       effect:
+        help_text: null
         line: 1
         name: effect
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 30
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.applications.models
@@ -4801,11 +5379,13 @@ results:
     description: '[deprecated] 切换为权限中心用户组存储用户信息'
     fields:
       role:
+        help_text: null
         line: 1
         name: role
         parameters:
           default: '`ApplicationRole.DEVELOPER.value`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -4845,19 +5425,21 @@ results:
       bkapp model, it's
     fields:
       fields:
+        help_text: 所管理的字段
         line: 1
         name: fields
         parameters:
           default: []
-          help_text: 所管理的字段
         type: models.JSONField
+        verbose_name: null
       manager:
+        help_text: 管理者类型
         line: 1
         name: manager
         parameters:
-          help_text: 管理者类型
           max_length: 20
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -4892,27 +5474,30 @@ results:
     description: 钩子命令
     fields:
       enabled:
+        help_text: 是否已开启
         line: 1
         name: enabled
         parameters:
           default: false
-          help_text: 是否已开启
         type: models.BooleanField
+        verbose_name: null
       proc_command:
+        help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
         line: 1
         name: proc_command
         parameters:
-          help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
         type: models.TextField
+        verbose_name: null
       type:
+        help_text: 钩子类型
         line: 1
         name: type
         parameters:
           choices: '`DeployHookType.get_choices()`'
-          help_text: 钩子类型
           max_length: 20
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -4932,44 +5517,53 @@ results:
     description: 模块维度的进程定义, 表示模块当前所定义的进程, 该模型只通过 API 变更
     fields:
       autoscaling:
+        help_text: null
         line: 1
         name: autoscaling
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       plan_name:
+        help_text: 仅存储方案名称
         line: 1
         name: plan_name
         parameters:
-          help_text: 仅存储方案名称
           max_length: 32
         type: models.CharField
+        verbose_name: null
       port:
+        help_text: '[deprecated] 容器端口'
         line: 1
         name: port
         parameters:
-          help_text: '[deprecated] 容器端口'
           'null': true
         type: models.IntegerField
+        verbose_name: null
       proc_command:
+        help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
         line: 1
         name: proc_command
         parameters:
-          help_text: 进程启动命令(包含完整命令和参数的字符串), 只能与 command/args 二选一
           'null': true
         type: models.TextField
+        verbose_name: null
       target_replicas:
+        help_text: null
         line: 1
         name: target_replicas
         parameters:
           default: 1
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -5006,11 +5600,13 @@ results:
     description: ProcessServicesFlag 主要用途是标记是否隐式需要 process services 配置
     fields:
       implicit_needed:
+        help_text: null
         line: 1
         name: implicit_needed
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.bkapp_model.models
@@ -5027,35 +5623,41 @@ results:
     description: 进程定义中允许按环境覆盖的配置
     fields:
       autoscaling:
+        help_text: null
         line: 1
         name: autoscaling
         parameters:
           'null': true
         type: models.BooleanField
+        verbose_name: null
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`AppEnvName.get_choices()`'
           max_length: 16
           'null': false
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       plan_name:
+        help_text: 仅存储方案名称
         line: 1
         name: plan_name
         parameters:
           blank: true
-          help_text: 仅存储方案名称
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       target_replicas:
+        help_text: null
         line: 1
         name: target_replicas
         parameters:
           'null': true
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -5090,20 +5692,22 @@ results:
     description: Application description object
     fields:
       code:
+        help_text: null
         line: 1
         name: code
         parameters:
           db_index: true
           max_length: 20
-          verbose_name: ID of application
         type: models.CharField
+        verbose_name: ID of application
       is_creation:
+        help_text: null
         line: 1
         name: is_creation
         parameters:
           default: false
-          verbose_name: whether current description creates an application
         type: models.BooleanField
+        verbose_name: whether current description creates an application
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.declarative.models
@@ -5135,6 +5739,7 @@ results:
     description: 蓝鲸应用引擎应用
     fields:
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -5144,26 +5749,32 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
       is_active:
+        help_text: null
         line: 1
         name: is_active
         parameters:
           default: true
-          verbose_name: 是否活跃
         type: models.BooleanField
+        verbose_name: 是否活跃
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       region:
+        help_text: null
         line: 1
         name: region
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.engine.models.base
@@ -5175,6 +5786,7 @@ results:
     description: 带操作版本信息的BaseModel
     fields:
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -5184,44 +5796,56 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
       source_comment:
+        help_text: null
         line: 1
         name: source_comment
         parameters: {}
         type: models.TextField
+        verbose_name: null
       source_location:
+        help_text: null
         line: 1
         name: source_location
         parameters:
           max_length: 2048
         type: models.CharField
+        verbose_name: null
       source_revision:
+        help_text: null
         line: 1
         name: source_revision
         parameters:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       source_type:
+        help_text: null
         line: 1
         name: source_type
         parameters:
           max_length: 16
           'null': true
-          verbose_name: 源码托管类型
         type: models.CharField
+        verbose_name: 源码托管类型
       source_version_name:
+        help_text: null
         line: 1
         name: source_version_name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       source_version_type:
+        help_text: null
         line: 1
         name: source_version_type
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -5234,30 +5858,33 @@ results:
     description: Default config vars for global, can be added or edited in admin42.
     fields:
       description:
+        help_text: null
         line: 1
         name: description
         parameters:
           max_length: 512
           'null': false
-          verbose_name: 描述
         type: models.CharField
+        verbose_name: 描述
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 128
           'null': false
           unique: true
-          verbose_name: 环境变量名
         type: models.CharField
+        verbose_name: 环境变量名
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           max_length: 512
           'null': false
-          verbose_name: 环境变量值
         type: models.TextField
+        verbose_name: 环境变量值
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.engine.models.config_var
@@ -5269,37 +5896,47 @@ results:
     description: Config vars for application
     fields:
       description:
+        help_text: null
         line: 1
         name: description
         parameters:
           max_length: 200
           'null': true
         type: models.CharField
+        verbose_name: null
       is_builtin:
+        help_text: null
         line: 1
         name: is_builtin
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       is_global:
+        help_text: null
         line: 1
         name: is_global
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 128
           'null': false
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           'null': false
         type: models.TextField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -5326,6 +5963,7 @@ results:
     description: Mobile config switcher for application
     fields:
       access_url:
+        help_text: null
         line: 1
         name: access_url
         parameters:
@@ -5333,21 +5971,25 @@ results:
           default: ''
           'null': true
         type: models.URLField
+        verbose_name: null
       is_enabled:
+        help_text: null
         line: 1
         name: is_enabled
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       lb_plan:
+        help_text: which one-level load balancer plan the domain use
         line: 1
         name: lb_plan
         parameters:
           choices: '`LBPlans.get_choices()`'
           default: '`LBPlans.LBDefaultPlan.value`'
-          help_text: which one-level load balancer plan the domain use
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.engine.models.mobile_config
@@ -5364,6 +6006,7 @@ results:
     description: null
     fields:
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -5373,21 +6016,27 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
       object_uid:
+        help_text: null
         line: 1
         name: object_uid
         parameters:
           default: '`uuid.uuid4`'
           editable: false
         type: models.UUIDField
+        verbose_name: null
       operation_type:
+        help_text: null
         line: 1
         name: operation_type
         parameters:
           choices: '`OperationTypes.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -5395,6 +6044,7 @@ results:
           default: '`JobStatus.PENDING.value`'
           max_length: 16
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.engine.models.operations
@@ -5417,18 +6067,23 @@ results:
     description: 部署阶段
     fields:
       complete_time:
+        help_text: null
         line: 1
         name: complete_time
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       start_time:
+        help_text: null
         line: 1
         name: start_time
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -5436,13 +6091,16 @@ results:
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`DeployPhaseTypes.get_choices()`'
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -5466,20 +6124,23 @@ results:
     description: 应用描述文件中预定义的环境变量
     fields:
       environment_name:
+        help_text: null
         line: 1
         name: environment_name
         parameters:
           choices: '`ConfigVarEnvName.get_choices()`'
           max_length: 16
-          verbose_name: '`_(''环境名称'')`'
         type: models.CharField
+        verbose_name: '`_(''环境名称'')`'
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 128
           'null': false
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -5501,31 +6162,40 @@ results:
     description: 部署步骤
     fields:
       complete_time:
+        help_text: null
         line: 1
         name: complete_time
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           db_index: true
           max_length: 32
         type: models.CharField
+        verbose_name: null
       skipped:
+        help_text: null
         line: 1
         name: skipped
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       start_time:
+        help_text: null
         line: 1
         name: start_time
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -5533,6 +6203,7 @@ results:
           max_length: 32
           'null': true
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -5556,20 +6227,23 @@ results:
     description: 部署步骤元信息
     fields:
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           db_index: true
           max_length: 32
         type: models.CharField
+        verbose_name: null
       phase:
+        help_text: null
         line: 1
         name: phase
         parameters:
           choices: '`DeployPhaseTypes.get_choices()`'
           max_length: 16
-          verbose_name: '`_(''关联阶段'')`'
         type: models.CharField
+        verbose_name: '`_(''关联阶段'')`'
     line: 1
     meta:
       ordering:
@@ -5583,17 +6257,21 @@ results:
     description: 部署步骤元信息集
     fields:
       is_default:
+        help_text: null
         line: 1
         name: is_default
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -5612,18 +6290,22 @@ results:
     description: 模块环境角色保护
     fields:
       allowed_role:
+        help_text: null
         line: 1
         name: allowed_role
         parameters:
           choices: '`ApplicationRole.get_django_choices()`'
         type: models.IntegerField
+        verbose_name: null
       operation:
+        help_text: null
         line: 1
         name: operation
         parameters:
           choices: '`EnvRoleOperation.get_choices()`'
           max_length: 64
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.environments.models
@@ -5640,63 +6322,71 @@ results:
     description: 应用运营报告邮件通知任务
     fields:
       end_at:
+        help_text: null
         line: 1
         name: end_at
         parameters:
           'null': true
-          verbose_name: 任务结束时间
         type: models.DateTimeField
+        verbose_name: 任务结束时间
       failed_count:
+        help_text: null
         line: 1
         name: failed_count
         parameters:
           default: 0
-          verbose_name: 采集失败数
         type: models.IntegerField
+        verbose_name: 采集失败数
       failed_usernames:
+        help_text: null
         line: 1
         name: failed_usernames
         parameters:
           default: '`list`'
-          verbose_name: 通知失败的应用数量
         type: models.JSONField
+        verbose_name: 通知失败的应用数量
       notification_type:
+        help_text: null
         line: 1
         name: notification_type
         parameters:
           max_length: 64
-          verbose_name: 通知类型
         type: models.CharField
+        verbose_name: 通知类型
       start_at:
+        help_text: null
         line: 1
         name: start_at
         parameters:
           auto_now_add: true
-          verbose_name: 任务开始时间
         type: models.DateTimeField
+        verbose_name: 任务开始时间
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           choices: '`BatchTaskStatus.get_choices()`'
           default: '`BatchTaskStatus.RUNNING`'
           max_length: 32
-          verbose_name: 任务状态
         type: models.CharField
+        verbose_name: 任务状态
       succeed_count:
+        help_text: null
         line: 1
         name: succeed_count
         parameters:
           default: 0
-          verbose_name: 采集成功数
         type: models.IntegerField
+        verbose_name: 采集成功数
       total_count:
+        help_text: null
         line: 1
         name: total_count
         parameters:
           default: 0
-          verbose_name: 应用总数
         type: models.IntegerField
+        verbose_name: 应用总数
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.evaluation.models
@@ -5708,155 +6398,176 @@ results:
     description: 应用运营报告（含资源使用，用户活跃，运维操作等）
     fields:
       administrators:
+        help_text: null
         line: 1
         name: administrators
         parameters:
           default: '`list`'
-          verbose_name: 应用管理员
         type: models.JSONField
+        verbose_name: 应用管理员
       collected_at:
+        help_text: null
         line: 1
         name: collected_at
-        parameters:
-          verbose_name: 采集时间
+        parameters: {}
         type: models.DateTimeField
+        verbose_name: 采集时间
       cpu_limits:
+        help_text: null
         line: 1
         name: cpu_limits
         parameters:
           default: 0
-          verbose_name: CPU 限制
         type: models.IntegerField
+        verbose_name: CPU 限制
       cpu_requests:
+        help_text: null
         line: 1
         name: cpu_requests
         parameters:
           default: 0
-          verbose_name: CPU 请求
         type: models.IntegerField
+        verbose_name: CPU 请求
       cpu_usage_avg:
+        help_text: null
         line: 1
         name: cpu_usage_avg
         parameters:
           default: 0
-          verbose_name: CPU 平均使用率
         type: models.FloatField
+        verbose_name: CPU 平均使用率
       deploy_summary:
+        help_text: null
         line: 1
         name: deploy_summary
         parameters:
           default: '`dict`'
-          verbose_name: 部署详情汇总
         type: models.JSONField
+        verbose_name: 部署详情汇总
       developers:
+        help_text: null
         line: 1
         name: developers
         parameters:
           default: '`list`'
-          verbose_name: 应用开发者
         type: models.JSONField
+        verbose_name: 应用开发者
       evaluate_result:
+        help_text: null
         line: 1
         name: evaluate_result
         parameters:
           default: '`dict`'
-          verbose_name: 评估结果
         type: models.JSONField
+        verbose_name: 评估结果
       issue_type:
+        help_text: null
         line: 1
         name: issue_type
         parameters:
           default: '`OperationIssueType.NONE`'
           max_length: 32
-          verbose_name: 问题类型
         type: models.CharField
+        verbose_name: 问题类型
       latest_deployed_at:
+        help_text: null
         line: 1
         name: latest_deployed_at
         parameters:
           'null': true
-          verbose_name: 最新部署时间
         type: models.DateTimeField
+        verbose_name: 最新部署时间
       latest_deployer:
+        help_text: null
         line: 1
         name: latest_deployer
         parameters:
           max_length: 128
           'null': true
-          verbose_name: 最新部署人
         type: models.CharField
+        verbose_name: 最新部署人
       latest_operated_at:
+        help_text: null
         line: 1
         name: latest_operated_at
         parameters:
           'null': true
-          verbose_name: 最新操作时间
         type: models.DateTimeField
+        verbose_name: 最新操作时间
       latest_operation:
+        help_text: null
         line: 1
         name: latest_operation
         parameters:
           max_length: 128
           'null': true
-          verbose_name: 最新操作内容
         type: models.CharField
+        verbose_name: 最新操作内容
       latest_operator:
+        help_text: null
         line: 1
         name: latest_operator
         parameters:
           max_length: 128
           'null': true
-          verbose_name: 最新操作人
         type: models.CharField
+        verbose_name: 最新操作人
       mem_limits:
+        help_text: null
         line: 1
         name: mem_limits
         parameters:
           default: 0
-          verbose_name: 内存限制
         type: models.IntegerField
+        verbose_name: 内存限制
       mem_requests:
+        help_text: null
         line: 1
         name: mem_requests
         parameters:
           default: 0
-          verbose_name: 内存请求
         type: models.IntegerField
+        verbose_name: 内存请求
       mem_usage_avg:
+        help_text: null
         line: 1
         name: mem_usage_avg
         parameters:
           default: 0
-          verbose_name: 内存平均使用率
         type: models.FloatField
+        verbose_name: 内存平均使用率
       pv:
+        help_text: null
         line: 1
         name: pv
         parameters:
           default: 0
-          verbose_name: 近 30 天页面访问量
         type: models.BigIntegerField
+        verbose_name: 近 30 天页面访问量
       res_summary:
+        help_text: null
         line: 1
         name: res_summary
         parameters:
           default: '`dict`'
-          verbose_name: 资源使用详情汇总
         type: models.JSONField
+        verbose_name: 资源使用详情汇总
       uv:
+        help_text: null
         line: 1
         name: uv
         parameters:
           default: 0
-          verbose_name: 近 30 天访问用户数
         type: models.BigIntegerField
+        verbose_name: 近 30 天访问用户数
       visit_summary:
+        help_text: null
         line: 1
         name: visit_summary
         parameters:
           default: '`dict`'
-          verbose_name: 用户访问详情汇总
         type: models.JSONField
+        verbose_name: 用户访问详情汇总
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.evaluation.models
@@ -5873,56 +6584,63 @@ results:
     description: 应用运营报告采集任务
     fields:
       end_at:
+        help_text: null
         line: 1
         name: end_at
         parameters:
           'null': true
-          verbose_name: 任务结束时间
         type: models.DateTimeField
+        verbose_name: 任务结束时间
       failed_app_codes:
+        help_text: null
         line: 1
         name: failed_app_codes
         parameters:
           default: '`list`'
-          verbose_name: 采集失败应用 Code 列表
         type: models.JSONField
+        verbose_name: 采集失败应用 Code 列表
       failed_count:
+        help_text: null
         line: 1
         name: failed_count
         parameters:
           default: 0
-          verbose_name: 采集失败数
         type: models.IntegerField
+        verbose_name: 采集失败数
       start_at:
+        help_text: null
         line: 1
         name: start_at
         parameters:
           auto_now_add: true
-          verbose_name: 任务开始时间
         type: models.DateTimeField
+        verbose_name: 任务开始时间
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           choices: '`BatchTaskStatus.get_choices()`'
           default: '`BatchTaskStatus.RUNNING`'
           max_length: 32
-          verbose_name: 任务状态
         type: models.CharField
+        verbose_name: 任务状态
       succeed_count:
+        help_text: null
         line: 1
         name: succeed_count
         parameters:
           default: 0
-          verbose_name: 采集成功数
         type: models.IntegerField
+        verbose_name: 采集成功数
       total_count:
+        help_text: null
         line: 1
         name: total_count
         parameters:
           default: 0
-          verbose_name: 应用总数
         type: models.IntegerField
+        verbose_name: 应用总数
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.evaluation.models
@@ -5934,28 +6652,36 @@ results:
     description: 闲置应用通知屏蔽规则
     fields:
       app_code:
+        help_text: null
         line: 1
         name: app_code
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       environment:
+        help_text: null
         line: 1
         name: environment
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       expired_at:
+        help_text: null
         line: 1
         name: expired_at
         parameters: {}
         type: models.DateTimeField
+        verbose_name: null
       module_name:
+        help_text: null
         line: 1
         name: module_name
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -5972,20 +6698,23 @@ results:
     description: null
     fields:
       confirm_at:
+        help_text: 用户确认的时间
         line: 1
         name: confirm_at
         parameters:
-          help_text: 用户确认的时间
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       created_at:
+        help_text: 操作记录的创建时间
         line: 1
         name: created_at
         parameters:
           auto_now_add: true
-          help_text: 操作记录的创建时间
         type: models.DateTimeField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
@@ -5993,6 +6722,7 @@ results:
           default: '`CNativeMigrationStatus.DEFAULT.value`'
           max_length: 20
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       get_latest_by: created_at
@@ -6012,35 +6742,46 @@ results:
     description: An migration process
     fields:
       confirmed_date:
+        help_text: null
         line: 1
         name: confirmed_date
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       failed_date:
+        help_text: null
         line: 1
         name: failed_date
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       legacy_app_has_all_deployed:
+        help_text: null
         line: 1
         name: legacy_app_has_all_deployed
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       legacy_app_id:
+        help_text: null
         line: 1
         name: legacy_app_id
         parameters: {}
         type: models.IntegerField
+        verbose_name: null
       legacy_app_is_already_online:
+        help_text: null
         line: 1
         name: legacy_app_is_already_online
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       legacy_app_logo:
+        help_text: null
         line: 1
         name: legacy_app_logo
         parameters:
@@ -6048,31 +6789,40 @@ results:
           max_length: 500
           'null': true
         type: models.CharField
+        verbose_name: null
       legacy_app_state:
+        help_text: null
         line: 1
         name: legacy_app_state
         parameters:
           default: 4
         type: models.IntegerField
+        verbose_name: null
       migrated_date:
+        help_text: null
         line: 1
         name: migrated_date
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       rollbacked_date:
+        help_text: null
         line: 1
         name: rollbacked_date
         parameters:
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       status:
+        help_text: null
         line: 1
         name: status
         parameters:
           choices: '`MigrationStatus.get_choices()`'
           default: '`MigrationStatus.DEFAULT.value`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.mgrlegacy.models
@@ -6089,17 +6839,19 @@ results:
     description: WlApp 的备份关系表
     fields:
       backup_id:
+        help_text: null
         line: 1
         name: backup_id
-        parameters:
-          verbose_name: 对应备份的 WlApp uuid
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 对应备份的 WlApp uuid
       original_id:
+        help_text: null
         line: 1
         name: original_id
-        parameters:
-          verbose_name: 原 WlApp uuid
+        parameters: {}
         type: models.UUIDField
+        verbose_name: 原 WlApp uuid
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.mgrlegacy.models
@@ -6116,43 +6868,48 @@ results:
     description: null
     fields:
       build_method:
+        help_text: null
         line: 1
         name: build_method
         parameters:
           default: '`RuntimeType.BUILDPACK`'
           max_length: 32
-          verbose_name: '`_(''构建方式'')`'
         type: models.CharField
+        verbose_name: '`_(''构建方式'')`'
       dockerfile_path:
+        help_text: '`_(''Dockerfile文件路径, 必须保证 Dockerfile 在构建目录下, 填写时无需包含构建目录'')`'
         line: 1
         name: dockerfile_path
         parameters:
-          help_text: '`_(''Dockerfile文件路径, 必须保证 Dockerfile 在构建目录下, 填写时无需包含构建目录'')`'
           max_length: 512
           'null': true
         type: models.CharField
+        verbose_name: null
       image_credential_name:
+        help_text: null
         line: 1
         name: image_credential_name
         parameters:
           max_length: 32
           'null': true
-          verbose_name: '`_(''镜像凭证名称'')`'
         type: models.CharField
+        verbose_name: '`_(''镜像凭证名称'')`'
       image_repository:
+        help_text: null
         line: 1
         name: image_repository
         parameters:
           'null': true
-          verbose_name: '`_(''镜像仓库'')`'
         type: models.TextField
+        verbose_name: '`_(''镜像仓库'')`'
       use_bk_ci_pipeline:
+        help_text: 是否使用蓝盾流水线构建
         line: 1
         name: use_bk_ci_pipeline
         parameters:
           default: false
-          help_text: 是否使用蓝盾流水线构建
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.build_cfg
@@ -6199,13 +6956,15 @@ results:
     description: Module for Application
     fields:
       exposed_url_type:
+        help_text: null
         line: 1
         name: exposed_url_type
         parameters:
           'null': true
-          verbose_name: 访问 URL 版本
         type: models.IntegerField
+        verbose_name: 访问 URL 版本
       id:
+        help_text: null
         line: 1
         name: id
         parameters:
@@ -6215,71 +6974,81 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
       is_default:
+        help_text: null
         line: 1
         name: is_default
         parameters:
           default: false
-          verbose_name: 是否为默认模块
         type: models.BooleanField
+        verbose_name: 是否为默认模块
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: 编程语言
         type: models.CharField
+        verbose_name: 编程语言
       last_deployed_date:
+        help_text: null
         line: 1
         name: last_deployed_date
         parameters:
           'null': true
-          verbose_name: 最近部署时间
         type: models.DateTimeField
+        verbose_name: 最近部署时间
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 20
-          verbose_name: 模块名称
         type: models.CharField
+        verbose_name: 模块名称
       source_init_template:
+        help_text: null
         line: 1
         name: source_init_template
         parameters:
           max_length: 32
-          verbose_name: 初始化模板类型
         type: models.CharField
+        verbose_name: 初始化模板类型
       source_origin:
+        help_text: null
         line: 1
         name: source_origin
         parameters:
           'null': true
-          verbose_name: 源码来源
         type: models.SmallIntegerField
+        verbose_name: 源码来源
       source_repo_id:
+        help_text: null
         line: 1
         name: source_repo_id
         parameters:
           'null': true
-          verbose_name: 源码 ID
         type: models.IntegerField
+        verbose_name: 源码 ID
       source_type:
+        help_text: null
         line: 1
         name: source_type
         parameters:
           max_length: 16
           'null': true
-          verbose_name: 源码托管类型
         type: models.CharField
+        verbose_name: 源码托管类型
       user_preferred_root_domain:
+        help_text: null
         line: 1
         name: user_preferred_root_domain
         parameters:
           max_length: 255
           'null': true
-          verbose_name: 用户偏好的根域名
         type: models.CharField
+        verbose_name: 用户偏好的根域名
     line: 1
     meta:
       unique_together:
@@ -6299,48 +7068,54 @@ results:
     description: buildpack 配置
     fields:
       address:
+        help_text: null
         line: 1
         name: address
         parameters:
           max_length: 2048
-          verbose_name: 地址
         type: models.CharField
+        verbose_name: 地址
       is_hidden:
+        help_text: null
         line: 1
         name: is_hidden
         parameters:
           default: false
-          verbose_name: 是否隐藏
         type: models.BooleanField
+        verbose_name: 是否隐藏
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: 编程语言
         type: models.CharField
+        verbose_name: 编程语言
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
-          verbose_name: 名称
         type: models.CharField
+        verbose_name: 名称
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`BuildPackType.get_choices()`'
           max_length: 32
-          verbose_name: 引用类型
         type: models.CharField
+        verbose_name: 引用类型
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 32
-          verbose_name: 版本
         type: models.CharField
+        verbose_name: 版本
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.runtime
@@ -6357,50 +7132,56 @@ results:
     description: null
     fields:
       image:
+        help_text: null
         line: 1
         name: image
         parameters:
           max_length: 256
-          verbose_name: 镜像
         type: models.CharField
+        verbose_name: 镜像
       is_default:
+        help_text: null
         line: 1
         name: is_default
         parameters:
           default: false
           'null': true
-          verbose_name: 是否为默认运行时
         type: models.BooleanField
+        verbose_name: 是否为默认运行时
       is_hidden:
+        help_text: null
         line: 1
         name: is_hidden
         parameters:
           default: false
-          verbose_name: 是否隐藏
         type: models.BooleanField
+        verbose_name: 是否隐藏
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           unique: true
-          verbose_name: 名称
         type: models.CharField
+        verbose_name: 名称
       tag:
+        help_text: null
         line: 1
         name: tag
         parameters:
           max_length: 32
-          verbose_name: 标签
         type: models.CharField
+        verbose_name: 标签
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          verbose_name: 镜像类型
         type: models.CharField
+        verbose_name: 镜像类型
     line: 1
     meta:
       abstract: true
@@ -6413,50 +7194,56 @@ results:
     description: 应用构建环境
     fields:
       image:
+        help_text: null
         line: 1
         name: image
         parameters:
           max_length: 256
-          verbose_name: 镜像
         type: models.CharField
+        verbose_name: 镜像
       is_default:
+        help_text: null
         line: 1
         name: is_default
         parameters:
           default: false
           'null': true
-          verbose_name: 是否为默认运行时
         type: models.BooleanField
+        verbose_name: 是否为默认运行时
       is_hidden:
+        help_text: null
         line: 1
         name: is_hidden
         parameters:
           default: false
-          verbose_name: 是否隐藏
         type: models.BooleanField
+        verbose_name: 是否隐藏
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           unique: true
-          verbose_name: 名称
         type: models.CharField
+        verbose_name: 名称
       tag:
+        help_text: null
         line: 1
         name: tag
         parameters:
           max_length: 32
-          verbose_name: 标签
         type: models.CharField
+        verbose_name: 标签
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          verbose_name: 镜像类型
         type: models.CharField
+        verbose_name: 镜像类型
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.runtime
@@ -6483,50 +7270,56 @@ results:
     description: 应用运行环境
     fields:
       image:
+        help_text: null
         line: 1
         name: image
         parameters:
           max_length: 256
-          verbose_name: 镜像
         type: models.CharField
+        verbose_name: 镜像
       is_default:
+        help_text: null
         line: 1
         name: is_default
         parameters:
           default: false
           'null': true
-          verbose_name: 是否为默认运行时
         type: models.BooleanField
+        verbose_name: 是否为默认运行时
       is_hidden:
+        help_text: null
         line: 1
         name: is_hidden
         parameters:
           default: false
-          verbose_name: 是否隐藏
         type: models.BooleanField
+        verbose_name: 是否隐藏
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           unique: true
-          verbose_name: 名称
         type: models.CharField
+        verbose_name: 名称
       tag:
+        help_text: null
         line: 1
         name: tag
         parameters:
           max_length: 32
-          verbose_name: 标签
         type: models.CharField
+        verbose_name: 标签
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`AppImageType.get_choices()`'
           max_length: 32
-          verbose_name: 镜像类型
         type: models.CharField
+        verbose_name: 镜像类型
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.modules.models.runtime
@@ -6544,28 +7337,30 @@ results:
     description: 容器镜像仓库
     fields:
       repo_url:
+        help_text: 形如 registry.hub.docker.com/library/python, 也可省略 registry 地址
         line: 1
         name: repo_url
         parameters:
-          help_text: 形如 registry.hub.docker.com/library/python, 也可省略 registry 地址
           max_length: 2048
-          verbose_name: 项目地址
         type: models.CharField
+        verbose_name: 项目地址
       server_name:
+        help_text: null
         line: 1
         name: server_name
         parameters:
           max_length: 32
-          verbose_name: DockerRegistry 服务名称
         type: models.CharField
+        verbose_name: DockerRegistry 服务名称
       source_dir:
+        help_text: null
         line: 1
         name: source_dir
         parameters:
           max_length: 2048
           'null': true
-          verbose_name: 源码目录
         type: models.CharField
+        verbose_name: 源码目录
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6578,27 +7373,30 @@ results:
     description: 基于 Git 的软件存储库
     fields:
       repo_url:
+        help_text: null
         line: 1
         name: repo_url
         parameters:
           max_length: 2048
-          verbose_name: 项目地址
         type: models.CharField
+        verbose_name: 项目地址
       server_name:
+        help_text: null
         line: 1
         name: server_name
         parameters:
           max_length: 32
-          verbose_name: GIT 服务名称
         type: models.CharField
+        verbose_name: GIT 服务名称
       source_dir:
+        help_text: null
         line: 1
         name: source_dir
         parameters:
           max_length: 2048
           'null': true
-          verbose_name: 源码目录
         type: models.CharField
+        verbose_name: 源码目录
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6610,25 +7408,28 @@ results:
     description: Repo 鉴权
     fields:
       repo_id:
+        help_text: null
         line: 1
         name: repo_id
-        parameters:
-          verbose_name: 关联仓库
+        parameters: {}
         type: models.IntegerField
+        verbose_name: 关联仓库
       repo_type:
+        help_text: null
         line: 1
         name: repo_type
         parameters:
           max_length: 32
-          verbose_name: 仓库类型
         type: models.CharField
+        verbose_name: 仓库类型
       username:
+        help_text: null
         line: 1
         name: username
         parameters:
           max_length: 64
-          verbose_name: 仓库用户名
         type: models.CharField
+        verbose_name: 仓库用户名
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6645,73 +7446,77 @@ results:
     description: 源码包存储信息
     fields:
       is_deleted:
+        help_text: 如果 SourcePackage 指向的源码包已被清理, 则设置该值为 True
         line: 1
         name: is_deleted
         parameters:
           default: false
-          help_text: 如果 SourcePackage 指向的源码包已被清理, 则设置该值为 True
-          verbose_name: 源码包是否已被清理
         type: models.BooleanField
+        verbose_name: 源码包是否已被清理
       package_name:
+        help_text: null
         line: 1
         name: package_name
         parameters:
           max_length: 128
-          verbose_name: 源码包原始文件名
         type: models.CharField
+        verbose_name: 源码包原始文件名
       package_size:
+        help_text: null
         line: 1
         name: package_size
-        parameters:
-          verbose_name: 源码包大小, bytes
+        parameters: {}
         type: models.BigIntegerField
+        verbose_name: 源码包大小, bytes
       relative_path:
+        help_text: 如果压缩时将目录也打包进来, 入目录名是 foo, 那么 relative_path = 'foo/'
         line: 1
         name: relative_path
         parameters:
-          help_text: 如果压缩时将目录也打包进来, 入目录名是 foo, 那么 relative_path = 'foo/'
           max_length: 255
-          verbose_name: 源码入口的相对路径
         type: models.CharField
+        verbose_name: 源码入口的相对路径
       sha256_signature:
+        help_text: null
         line: 1
         name: sha256_signature
         parameters:
           max_length: 64
           'null': true
-          verbose_name: sha256数字签名
         type: models.CharField
+        verbose_name: sha256数字签名
       storage_engine:
+        help_text: 源码包真实存放的存储服务类型
         line: 1
         name: storage_engine
         parameters:
-          help_text: 源码包真实存放的存储服务类型
           max_length: 64
-          verbose_name: 存储引擎
         type: models.CharField
+        verbose_name: 存储引擎
       storage_path:
+        help_text: '[deprecated] 源码包在存储服务中存放的位置'
         line: 1
         name: storage_path
         parameters:
-          help_text: '[deprecated] 源码包在存储服务中存放的位置'
           max_length: 1024
-          verbose_name: 存储路径
         type: models.CharField
+        verbose_name: 存储路径
       storage_url:
+        help_text: 可获取到源码包的 URL 地址
         line: 1
         name: storage_url
         parameters:
-          help_text: 可获取到源码包的 URL 地址
           max_length: 1024
-          verbose_name: 存储地址
         type: models.CharField
+        verbose_name: 存储地址
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 128
-          verbose_name: 版本号
         type: models.CharField
+        verbose_name: 版本号
     line: 1
     meta:
       unique_together:
@@ -6731,71 +7536,79 @@ results:
     description: SourceTypeSpec 数据存储
     fields:
       authorization_base_url:
+        help_text: null
         line: 1
         name: authorization_base_url
         parameters:
           blank: true
           default: ''
           max_length: 256
-          verbose_name: OAuth 授权链接
         type: models.CharField
+        verbose_name: OAuth 授权链接
       client_id:
+        help_text: null
         line: 1
         name: client_id
         parameters:
           blank: true
           default: ''
           max_length: 256
-          verbose_name: OAuth App Client ID
         type: models.CharField
+        verbose_name: OAuth App Client ID
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: false
-          verbose_name: 是否启用
         type: models.BooleanField
+        verbose_name: 是否启用
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 32
           unique: true
-          verbose_name: '`_(''服务名称'')`'
         type: models.CharField
+        verbose_name: '`_(''服务名称'')`'
       redirect_uri:
+        help_text: null
         line: 1
         name: redirect_uri
         parameters:
           blank: true
           default: ''
           max_length: 256
-          verbose_name: 重定向（回调）地址
         type: models.CharField
+        verbose_name: 重定向（回调）地址
       server_config:
+        help_text: null
         line: 1
         name: server_config
         parameters:
           blank: true
           default: '`dict`'
-          verbose_name: 服务配置
         type: models.JSONField
+        verbose_name: 服务配置
       spec_cls:
+        help_text: null
         line: 1
         name: spec_cls
         parameters:
           max_length: 128
-          verbose_name: 配置类路径
         type: models.CharField
+        verbose_name: 配置类路径
       token_base_url:
+        help_text: null
         line: 1
         name: token_base_url
         parameters:
           blank: true
           default: ''
           max_length: 256
-          verbose_name: 获取 Token 链接
         type: models.CharField
+        verbose_name: 获取 Token 链接
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6807,20 +7620,22 @@ results:
     description: svn account for developer
     fields:
       account:
+        help_text: 目前仅支持固定格式
         line: 1
         name: account
         parameters:
-          help_text: 目前仅支持固定格式
           max_length: 64
           unique: true
         type: models.CharField
+        verbose_name: null
       synced_from_paas20:
+        help_text: 账户信息是否从 PaaS 2.0 同步过来
         line: 1
         name: synced_from_paas20
         parameters:
           default: false
-          help_text: 账户信息是否从 PaaS 2.0 同步过来
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6833,27 +7648,30 @@ results:
     description: 基于 Svn 的软件存储库
     fields:
       repo_url:
+        help_text: null
         line: 1
         name: repo_url
         parameters:
           max_length: 2048
-          verbose_name: 项目地址
         type: models.CharField
+        verbose_name: 项目地址
       server_name:
+        help_text: null
         line: 1
         name: server_name
         parameters:
           max_length: 32
-          verbose_name: SVN 服务名称
         type: models.CharField
+        verbose_name: SVN 服务名称
       source_dir:
+        help_text: null
         line: 1
         name: source_dir
         parameters:
           max_length: 2048
           'null': true
-          verbose_name: 源码目录
         type: models.CharField
+        verbose_name: 源码目录
     line: 1
     meta: {}
     module: apiserver.paasng.paasng.platform.sourcectl.models
@@ -6865,98 +7683,110 @@ results:
     description: 开发模板配置
     fields:
       blob_url:
+        help_text: null
         line: 1
         name: blob_url
-        parameters:
-          verbose_name: '`_(''不同版本二进制包存储路径'')`'
+        parameters: {}
         type: models.JSONField
+        verbose_name: '`_(''不同版本二进制包存储路径'')`'
       enabled_regions:
+        help_text: null
         line: 1
         name: enabled_regions
         parameters:
           blank: true
           default: '`list`'
-          verbose_name: '`_(''允许被使用的版本'')`'
         type: models.JSONField
+        verbose_name: '`_(''允许被使用的版本'')`'
       language:
+        help_text: null
         line: 1
         name: language
         parameters:
           max_length: 32
-          verbose_name: '`_(''开发语言'')`'
         type: models.CharField
+        verbose_name: '`_(''开发语言'')`'
       market_ready:
+        help_text: null
         line: 1
         name: market_ready
         parameters:
           default: false
-          verbose_name: '`_(''能否发布到应用集市'')`'
         type: models.BooleanField
+        verbose_name: '`_(''能否发布到应用集市'')`'
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           unique: true
-          verbose_name: '`_(''模板名称'')`'
         type: models.CharField
+        verbose_name: '`_(''模板名称'')`'
       preset_services_config:
+        help_text: null
         line: 1
         name: preset_services_config
         parameters:
           blank: true
           default: '`dict`'
-          verbose_name: '`_(''预设增强服务配置'')`'
         type: models.JSONField
+        verbose_name: '`_(''预设增强服务配置'')`'
       processes:
+        help_text: null
         line: 1
         name: processes
         parameters:
           blank: true
           default: '`dict`'
-          verbose_name: '`_(''进程配置'')`'
         type: models.JSONField
+        verbose_name: '`_(''进程配置'')`'
       repo_url:
+        help_text: null
         line: 1
         name: repo_url
         parameters:
           blank: true
           default: ''
           max_length: 256
-          verbose_name: '`_(''代码仓库信息'')`'
         type: models.CharField
+        verbose_name: '`_(''代码仓库信息'')`'
       required_buildpacks:
+        help_text: null
         line: 1
         name: required_buildpacks
         parameters:
           blank: true
           default: '`list`'
-          verbose_name: '`_(''必须的构建工具'')`'
         type: models.JSONField
+        verbose_name: '`_(''必须的构建工具'')`'
       runtime_type:
+        help_text: null
         line: 1
         name: runtime_type
         parameters:
           default: '`RuntimeType.BUILDPACK`'
           max_length: 32
-          verbose_name: '`_(''运行时类型'')`'
         type: models.CharField
+        verbose_name: '`_(''运行时类型'')`'
       tags:
+        help_text: null
         line: 1
         name: tags
         parameters:
           blank: true
           default: '`list`'
-          verbose_name: '`_(''标签'')`'
         type: models.JSONField
+        verbose_name: '`_(''标签'')`'
       type:
+        help_text: null
         line: 1
         name: type
         parameters:
           choices: '`TemplateType.get_django_choices()`'
           max_length: 16
-          verbose_name: '`_(''模板类型'')`'
         type: models.CharField
+        verbose_name: '`_(''模板类型'')`'
     line: 1
     meta:
       ordering:
@@ -6970,17 +7800,21 @@ results:
     description: Audited model with 'created' and 'updated' fields.
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -7004,24 +7838,29 @@ results:
     description: Model with 'created' and 'updated' fields.
     fields:
       created:
+        help_text: null
         line: 1
         name: created
         parameters:
           auto_now_add: true
         type: models.DateTimeField
+        verbose_name: null
       region:
+        help_text: 部署区域
         line: 1
         name: region
         parameters:
-          help_text: 部署区域
           max_length: 32
         type: models.CharField
+        verbose_name: null
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -7034,6 +7873,7 @@ results:
     description: Add a UUID primary key to an :class:`AuditedModel`.
     fields:
       uuid:
+        help_text: null
         line: 1
         name: uuid
         parameters:
@@ -7043,6 +7883,7 @@ results:
           primary_key: true
           unique: true
         type: models.UUIDField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -7055,34 +7896,37 @@ results:
     description: null
     fields:
       max_size:
+        help_text: 单位字节，值为 nul 时表示未设置仓库配额
         line: 1
         name: max_size
         parameters:
-          help_text: 单位字节，值为 nul 时表示未设置仓库配额
           'null': true
-          verbose_name: 仓库最大配额
         type: models.BigIntegerField
+        verbose_name: 仓库最大配额
       repo_name:
+        help_text: null
         line: 1
         name: repo_name
         parameters:
           max_length: 64
-          verbose_name: 仓库名称
         type: models.CharField
+        verbose_name: 仓库名称
       updated:
+        help_text: null
         line: 1
         name: updated
         parameters:
           auto_now: true
         type: models.DateTimeField
+        verbose_name: null
       used:
+        help_text: 单位字节
         line: 1
         name: used
         parameters:
           default: 0
-          help_text: 单位字节
-          verbose_name: 仓库已使用容量
         type: models.BigIntegerField
+        verbose_name: 仓库已使用容量
     line: 1
     meta: {}
     module: svc-bkrepo.svc_bk_repo.monitoring.models
@@ -7099,35 +7943,45 @@ results:
     description: null
     fields:
       app_name:
+        help_text: null
         line: 1
         name: app_name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       bk_app_code:
+        help_text: null
         line: 1
         name: bk_app_code
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       data_token:
+        help_text: null
         line: 1
         name: data_token
         parameters:
           max_length: 255
         type: models.CharField
+        verbose_name: null
       env:
+        help_text: null
         line: 1
         name: env
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       is_delete:
+        help_text: null
         line: 1
         name: is_delete
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
     line: 1
     meta:
       unique_together:
@@ -7142,31 +7996,40 @@ results:
     description: null
     fields:
       enabled:
+        help_text: null
         line: 1
         name: enabled
         parameters:
           default: false
         type: models.BooleanField
+        verbose_name: null
       interval:
+        help_text: null
         line: 1
         name: interval
         parameters: {}
         type: models.DurationField
+        verbose_name: null
       last_run_time:
+        help_text: null
         line: 1
         name: last_run_time
         parameters:
           blank: true
           'null': true
         type: models.DateTimeField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 255
           unique: true
         type: models.CharField
+        verbose_name: null
       next_run_time:
+        help_text: null
         line: 1
         name: next_run_time
         parameters:
@@ -7175,6 +8038,7 @@ results:
           default: '`get_now`'
           'null': true
         type: models.DateTimeField
+        verbose_name: null
     line: 1
     meta:
       ordering:
@@ -7189,46 +8053,60 @@ results:
     description: null
     fields:
       admin:
+        help_text: null
         line: 1
         name: admin
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       enable:
+        help_text: null
         line: 1
         name: enable
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       host:
+        help_text: null
         line: 1
         name: host
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       management_api:
+        help_text: null
         line: 1
         name: management_api
         parameters: {}
         type: models.TextField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       port:
+        help_text: null
         line: 1
         name: port
         parameters:
           default: 5672
         type: models.IntegerField
+        verbose_name: null
       version:
+        help_text: null
         line: 1
         name: version
         parameters:
           max_length: 16
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7240,17 +8118,21 @@ results:
     description: 集群标签，用于分配和分组
     fields:
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7267,17 +8149,21 @@ results:
     description: 实例单据，保存申请上下文，方便重入
     fields:
       action:
+        help_text: null
         line: 1
         name: action
         parameters:
           max_length: 32
         type: models.CharField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7289,19 +8175,24 @@ results:
     description: 集群下创建 vhost 限制机制，和具体 vhost 无关
     fields:
       cluster_id:
+        help_text: null
         line: 1
         name: cluster_id
         parameters:
           blank: true
           default: null
         type: models.IntegerField
+        verbose_name: null
       enable:
+        help_text: null
         line: 1
         name: enable
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       limit:
+        help_text: null
         line: 1
         name: limit
         parameters:
@@ -7310,27 +8201,34 @@ results:
           max_length: 64
           'null': true
         type: models.CharField
+        verbose_name: null
       link_type:
+        help_text: null
         line: 1
         name: link_type
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
         type: models.IntegerField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           'null': true
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           blank: true
           'null': true
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7347,17 +8245,21 @@ results:
     description: 表示绑定关系
     fields:
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7374,12 +8276,14 @@ results:
     description: null
     fields:
       link_type:
+        help_text: null
         line: 1
         name: link_type
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -7397,17 +8301,21 @@ results:
     description: null
     fields:
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta:
       abstract: true
@@ -7420,6 +8328,7 @@ results:
     description: 集群下创建 vhost 默认策略，和具体 vhost 无关
     fields:
       apply_to:
+        help_text: null
         line: 1
         name: apply_to
         parameters:
@@ -7428,34 +8337,44 @@ results:
           max_length: 64
           'null': true
         type: models.CharField
+        verbose_name: null
       cluster_id:
+        help_text: null
         line: 1
         name: cluster_id
         parameters:
           blank: true
           default: null
         type: models.IntegerField
+        verbose_name: null
       enable:
+        help_text: null
         line: 1
         name: enable
         parameters:
           default: true
         type: models.BooleanField
+        verbose_name: null
       link_type:
+        help_text: null
         line: 1
         name: link_type
         parameters:
           choices: '`[(i.value, i.name) for i in LinkType]`'
           default: '`LinkType.empty.value`'
         type: models.IntegerField
+        verbose_name: null
       name:
+        help_text: null
         line: 1
         name: name
         parameters:
           max_length: 64
           'null': true
         type: models.CharField
+        verbose_name: null
       pattern:
+        help_text: null
         line: 1
         name: pattern
         parameters:
@@ -7463,13 +8382,16 @@ results:
           max_length: 128
           'null': true
         type: models.CharField
+        verbose_name: null
       priority:
+        help_text: null
         line: 1
         name: priority
         parameters:
           blank: true
           'null': true
         type: models.IntegerField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7486,17 +8408,21 @@ results:
     description: 表示绑定关系
     fields:
       key:
+        help_text: null
         line: 1
         name: key
         parameters:
           max_length: 64
         type: models.CharField
+        verbose_name: null
       value:
+        help_text: null
         line: 1
         name: value
         parameters:
           max_length: 128
         type: models.CharField
+        verbose_name: null
     line: 1
     meta: {}
     module: svc-rabbitmq.vendor.models
@@ -7509,7 +8435,7 @@ results:
       type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 2053
+  scan_duration_ms: 1985
   total_count: 167
   total_fields: 684
   total_models: 167

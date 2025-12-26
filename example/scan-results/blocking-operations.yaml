@@ -273,5 +273,5 @@ summary:
     database: 5
     time_based: 28
   files_scanned: 21
-  scan_duration_ms: 6875
+  scan_duration_ms: 11176
   total_count: 33

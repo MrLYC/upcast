@@ -1,22 +1,22 @@
-# DjangoModel Analysis
+# django-models 扫描报告
 
 ## 元数据
 暂无元数据。
 
 ## 概要信息
-- **总数量**: 155
-- **已扫描文件数**: 155
-- **扫描耗时**: 1214 毫秒
+- **总数量**: 167
+- **已扫描文件数**: 167
+- **扫描耗时**: 1962 毫秒
 
-- **模型总数**: 155
-- **字段总数**: 639
-- **关系总数**: 141
+- **模型总数**: 167
+- **字段总数**: 684
+- **关系总数**: 148
 
 ## 结果详情
 
 ### App
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.app`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.app`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: App Model
@@ -42,7 +42,7 @@
 
 ### Build
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.build`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.build`
 **行号**: 1
 **基类**: paas_wl.utils.models.UuidAuditedModel
 
@@ -82,7 +82,7 @@
 
 ### BuildProcess
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.build`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.build`
 **行号**: 1
 **基类**: paas_wl.utils.models.UuidAuditedModel
 **描述**: This Build Process was invoked via a source tarball or anything similar
@@ -125,7 +125,7 @@
 
 ### Config
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.config`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.config`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: App configs, includes env variables and resource limits
@@ -159,7 +159,7 @@
 
 ### OutputStreamLine
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.misc`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.misc`
 **行号**: 1
 **基类**: models.Model
 
@@ -189,7 +189,7 @@
 
 ### Release
 
-**模块**: `paasng.paas_wl.bk_app.applications.models.release`
+**模块**: `apiserver.paasng.paas_wl.bk_app.applications.models.release`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 
@@ -223,7 +223,7 @@
 
 ### AppModelResource
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: Cloud-native Application's Model Resource
@@ -252,7 +252,7 @@
 
 ### AppModelRevision
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: Revisions of cloud-native Application's Model Resource
@@ -283,7 +283,7 @@
 
 ### AppModelDeploy
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: This model stores the cloud-native app's deployment histories.
@@ -318,7 +318,7 @@
 
 ### ConfigMapSource
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.mount`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.mount`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: ConfigMap 类型的挂载资源
@@ -346,7 +346,7 @@
 
 ### PersistentStorageSource
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.mount`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.mount`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: 持久存储类型的挂载资源
@@ -375,7 +375,7 @@
 
 ### Mount
 
-**模块**: `paasng.paas_wl.bk_app.cnative.specs.models.mount`
+**模块**: `apiserver.paasng.paas_wl.bk_app.cnative.specs.models.mount`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: 挂载配置
@@ -402,7 +402,7 @@
 
 ### AppMetricsMonitor
 
-**模块**: `paasng.paas_wl.bk_app.monitoring.app_monitor.models`
+**模块**: `apiserver.paasng.paas_wl.bk_app.monitoring.app_monitor.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 
@@ -426,7 +426,7 @@
 
 ### ProcessSpecPlan
 
-**模块**: `paasng.paas_wl.bk_app.processes.models`
+**模块**: `apiserver.paasng.paas_wl.bk_app.processes.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -452,7 +452,7 @@
 
 ### ProcessSpec
 
-**模块**: `paasng.paas_wl.bk_app.processes.models`
+**模块**: `apiserver.paasng.paas_wl.bk_app.processes.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 
@@ -481,7 +481,7 @@
 
 ### ProcessProbe
 
-**模块**: `paasng.paas_wl.bk_app.processes.models`
+**模块**: `apiserver.paasng.paas_wl.bk_app.processes.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -514,7 +514,7 @@
 
 ### Cluster
 
-**模块**: `paasng.paas_wl.infras.cluster.models`
+**模块**: `apiserver.paasng.paas_wl.infras.cluster.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.UuidAuditedModel
 **描述**: 应用集群
@@ -537,7 +537,7 @@
 
 ### APIServer
 
-**模块**: `paasng.paas_wl.infras.cluster.models`
+**模块**: `apiserver.paasng.paas_wl.infras.cluster.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.UuidAuditedModel
 
@@ -565,7 +565,7 @@
 
 ### AppAddOnTemplate
 
-**模块**: `paasng.paas_wl.infras.resource_templates.models`
+**模块**: `apiserver.paasng.paas_wl.infras.resource_templates.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: 应用挂件模版
@@ -592,7 +592,7 @@
 
 ### AppAddOn
 
-**模块**: `paasng.paas_wl.infras.resource_templates.models`
+**模块**: `apiserver.paasng.paas_wl.infras.resource_templates.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: 应用挂件关联实例
@@ -617,7 +617,7 @@
 
 ### AuditedModel
 
-**模块**: `paasng.paas_wl.utils.models`
+**模块**: `apiserver.paasng.paas_wl.utils.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Audited model with 'created' and 'updated' fields.
@@ -641,9 +641,9 @@
 
 ### UuidAuditedModel
 
-**模块**: `paasng.paas_wl.utils.models`
+**模块**: `apiserver.paasng.paas_wl.utils.models`
 **行号**: 1
-**基类**: paasng.paas_wl.utils.models.AuditedModel
+**基类**: apiserver.paasng.paas_wl.utils.models.AuditedModel
 **描述**: Add a UUID primary key to an class`AuditedModel`.
 
 #### 字段
@@ -664,7 +664,7 @@
 
 ### TimestampedModel
 
-**模块**: `paasng.paas_wl.utils.models`
+**模块**: `apiserver.paasng.paas_wl.utils.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Model with 'created' and 'updated' fields.
@@ -689,7 +689,7 @@
 
 ### AppImageCredential
 
-**模块**: `paasng.paas_wl.workloads.images.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.images.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: ImageCredential of applications, each object(entry) represents an (username + password) pair for a registry
@@ -718,7 +718,7 @@
 
 ### AppUserCredential
 
-**模块**: `paasng.paas_wl.workloads.images.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.images.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.UuidAuditedModel
 **描述**: App owned UserCredential, aka (Username + Password) pair
@@ -744,7 +744,7 @@
 
 ### RegionClusterState
 
-**模块**: `paasng.paas_wl.workloads.networking.egress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.egress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 **描述**: A RegionClusterState is a state which describes what the cluster is in a specified moment. it
@@ -773,7 +773,7 @@
 
 ### RCStateAppBinding
 
-**模块**: `paasng.paas_wl.workloads.networking.egress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.egress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 **描述**: If an app was bind with one RegionClusterState instance, it means that the app will not be
@@ -796,7 +796,7 @@
 
 ### EgressSpec
 
-**模块**: `paasng.paas_wl.workloads.networking.egress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.egress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 
@@ -820,7 +820,7 @@
 
 ### EgressRule
 
-**模块**: `paasng.paas_wl.workloads.networking.egress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.egress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 **描述**: BCS Egress.spec.rules
@@ -847,7 +847,7 @@
 
 ### AppDomain
 
-**模块**: `paasng.paas_wl.workloads.networking.ingress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.ingress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 **描述**: Domains of applications, each object(entry) represents an (domain + path_prefix) pair.
@@ -883,7 +883,7 @@
 
 ### BasicCert
 
-**模块**: `paasng.paas_wl.workloads.networking.ingress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.ingress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 
@@ -906,9 +906,9 @@
 
 ### AppDomainSharedCert
 
-**模块**: `paasng.paas_wl.workloads.networking.ingress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.ingress.models`
 **行号**: 1
-**基类**: paasng.paas_wl.workloads.networking.ingress.models.BasicCert
+**基类**: apiserver.paasng.paas_wl.workloads.networking.ingress.models.BasicCert
 **描述**: Shared TLS Certifications for AppDomain, every app's domain may link to this certificate as
 
 #### 字段
@@ -931,7 +931,7 @@
 
 ### AppSubpath
 
-**模块**: `paasng.paas_wl.workloads.networking.ingress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.ingress.models`
 **行号**: 1
 **基类**: paas_wl.bk_app.applications.models.AuditedModel
 **描述**: stores application's subpaths
@@ -963,7 +963,7 @@
 
 ### Domain
 
-**模块**: `paasng.paas_wl.workloads.networking.ingress.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.networking.ingress.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: custom domain for application
@@ -991,7 +991,7 @@
 
 ### Command
 
-**模块**: `paasng.paas_wl.workloads.release_controller.hooks.models`
+**模块**: `apiserver.paasng.paas_wl.workloads.release_controller.hooks.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.UuidAuditedModel
 **描述**: The Command Model, which will be used to schedule a container running `command`,
@@ -1030,7 +1030,7 @@
 
 ### CIResourceAppEnvRelation
 
-**模块**: `paasng.paasng.accessories.ci.models`
+**模块**: `apiserver.paasng.paasng.accessories.ci.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: CI 资源
@@ -1059,7 +1059,7 @@
 
 ### CIResourceAtom
 
-**模块**: `paasng.paasng.accessories.ci.models`
+**模块**: `apiserver.paasng.paasng.accessories.ci.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: CI 资源原子
@@ -1091,7 +1091,7 @@
 
 ### DevSandbox
 
-**模块**: `paasng.paasng.accessories.dev_sandbox.models`
+**模块**: `apiserver.paasng.paasng.accessories.dev_sandbox.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: DevSandbox Model
@@ -1121,7 +1121,7 @@
 
 ### CodeEditor
 
-**模块**: `paasng.paasng.accessories.dev_sandbox.models`
+**模块**: `apiserver.paasng.paasng.accessories.dev_sandbox.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: CodeEditor Model
@@ -1143,7 +1143,7 @@
 
 ### ProcessStructureLogCollectorConfig
 
-**模块**: `paasng.paasng.accessories.log.models`
+**模块**: `apiserver.paasng.paasng.accessories.log.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 进程结构化日志采集配置
@@ -1168,7 +1168,7 @@
 
 ### ElasticSearchConfig
 
-**模块**: `paasng.paasng.accessories.log.models`
+**模块**: `apiserver.paasng.paasng.accessories.log.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: ES查询配置
@@ -1187,7 +1187,7 @@
 
 ### ProcessLogQueryConfig
 
-**模块**: `paasng.paasng.accessories.log.models`
+**模块**: `apiserver.paasng.paasng.accessories.log.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: 进程日志查询配置
@@ -1218,7 +1218,7 @@
 
 ### CustomCollectorConfig
 
-**模块**: `paasng.paasng.accessories.log.models`
+**模块**: `apiserver.paasng.paasng.accessories.log.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: 日志平台自定义采集项配置
@@ -1253,7 +1253,7 @@
 
 ### Tag
 
-**模块**: `paasng.paasng.accessories.publish.market.models`
+**模块**: `apiserver.paasng.paasng.accessories.publish.market.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -1284,7 +1284,7 @@
 
 ### Product
 
-**模块**: `paasng.paasng.accessories.publish.market.models`
+**模块**: `apiserver.paasng.paasng.accessories.publish.market.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: 蓝鲸应用: 开发者中心的编辑属性
@@ -1310,7 +1310,7 @@
 
 ### DisplayOptions
 
-**模块**: `paasng.paasng.accessories.publish.market.models`
+**模块**: `apiserver.paasng.paasng.accessories.publish.market.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: app展示相关的属性
@@ -1340,7 +1340,7 @@
 
 ### MarketConfig
 
-**模块**: `paasng.paasng.accessories.publish.market.models`
+**模块**: `apiserver.paasng.paasng.accessories.publish.market.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: 应用市场相关功能配置
@@ -1369,7 +1369,7 @@
 
 ### TagMap
 
-**模块**: `paasng.paasng.accessories.publish.sync_market.models`
+**模块**: `apiserver.paasng.paasng.accessories.publish.sync_market.models`
 **行号**: 1
 **基类**: django_models.Model
 
@@ -1391,7 +1391,7 @@
 
 ### ServiceModuleAttachment
 
-**模块**: `paasng.paasng.accessories.servicehub.models`
+**模块**: `apiserver.paasng.paasng.accessories.servicehub.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Module <-> Local Service relationship
@@ -1419,7 +1419,7 @@
 
 ### ServiceEngineAppAttachment
 
-**模块**: `paasng.paasng.accessories.servicehub.models`
+**模块**: `apiserver.paasng.paasng.accessories.servicehub.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 
@@ -1449,7 +1449,7 @@
 
 ### RemoteServiceModuleAttachment
 
-**模块**: `paasng.paasng.accessories.servicehub.models`
+**模块**: `apiserver.paasng.paasng.accessories.servicehub.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Binding relationship of module <-> remote service
@@ -1477,7 +1477,7 @@
 
 ### RemoteServiceEngineAppAttachment
 
-**模块**: `paasng.paasng.accessories.servicehub.models`
+**模块**: `apiserver.paasng.paasng.accessories.servicehub.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Binding relationship of engine app <-> remote service plan
@@ -1508,7 +1508,7 @@
 
 ### SharedServiceAttachment
 
-**模块**: `paasng.paasng.accessories.servicehub.models`
+**模块**: `apiserver.paasng.paasng.accessories.servicehub.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Share a service binding relationship from other modules
@@ -1538,7 +1538,7 @@
 
 ### ServiceCategory
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -1555,7 +1555,7 @@
 
 ### Service
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -1587,7 +1587,7 @@
 
 ### ServiceInstance
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -1610,7 +1610,7 @@
 
 ### PreCreatedInstance
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: 预创建的服务实例
@@ -1633,7 +1633,7 @@
 
 ### Plan
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -1662,7 +1662,7 @@
 
 ### ResourceId
 
-**模块**: `paasng.paasng.accessories.services.models`
+**模块**: `apiserver.paasng.paasng.accessories.services.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -1685,7 +1685,7 @@
 
 ### AppModuleTagRel
 
-**模块**: `paasng.paasng.accessories.smart_advisor.models`
+**模块**: `apiserver.paasng.paasng.accessories.smart_advisor.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: A M2M relationship table for storing the relationship between application module and AppTag
@@ -1715,7 +1715,7 @@
 
 ### DocumentaryLink
 
-**模块**: `paasng.paasng.accessories.smart_advisor.models`
+**模块**: `apiserver.paasng.paasng.accessories.smart_advisor.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Links from document systems including blueking doc and other opensource documentations
@@ -1735,7 +1735,7 @@
 
 ### DeployFailurePattern
 
-**模块**: `paasng.paasng.accessories.smart_advisor.models`
+**模块**: `apiserver.paasng.paasng.accessories.smart_advisor.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Stores common failure patterns for failed deployments
@@ -1756,7 +1756,7 @@
 
 ### BkPluginProfile
 
-**模块**: `paasng.paasng.bk_plugins.bk_plugins.models`
+**模块**: `apiserver.paasng.paasng.bk_plugins.bk_plugins.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Profile which storing extra information for BkPlugins
@@ -1785,7 +1785,7 @@
 
 ### BkPluginDistributor
 
-**模块**: `paasng.paasng.bk_plugins.bk_plugins.models`
+**模块**: `apiserver.paasng.paasng.bk_plugins.bk_plugins.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: A "Distributor" is responsible for providing a collection of BkPlugins to a group of users,
@@ -1811,7 +1811,7 @@
 
 ### BkPluginTag
 
-**模块**: `paasng.paasng.bk_plugins.bk_plugins.models`
+**模块**: `apiserver.paasng.paasng.bk_plugins.bk_plugins.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: Plugins and applications use different markets, and plugins should have their own separate tags
@@ -1836,7 +1836,7 @@
 
 ### PluginGradeManager
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1860,7 +1860,7 @@
 
 ### PluginUserGroup
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1885,7 +1885,7 @@
 
 ### PluginDefinition
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.definitions`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -1905,7 +1905,7 @@
 
 ### PluginBasicInfoDefinition
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.definitions`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1930,7 +1930,7 @@
 
 ### PluginMarketInfoDefinition
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.definitions`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1953,7 +1953,7 @@
 
 ### PluginConfigInfoDefinition
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.definitions`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1975,7 +1975,7 @@
 
 ### PluginVisibleRangeDefinition
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.definitions`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.definitions`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -1996,7 +1996,7 @@
 
 ### PluginInstance
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: 插件实例
@@ -2031,7 +2031,7 @@
 
 ### PluginMarketInfo
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件市场信息
@@ -2056,7 +2056,7 @@
 
 ### PluginRelease
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件发布版本
@@ -2093,7 +2093,7 @@
 
 ### PluginReleaseStage
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件发布阶段
@@ -2130,7 +2130,7 @@
 
 ### PluginReleaseStrategy
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件版本的发布策略
@@ -2155,7 +2155,7 @@
 
 ### ApprovalService
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 **描述**: 审批服务信息
@@ -2174,7 +2174,7 @@
 
 ### PluginConfig
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件配置
@@ -2203,7 +2203,7 @@
 
 ### PluginVisibleRange
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件可见范围
@@ -2228,7 +2228,7 @@
 
 ### OperationRecord
 
-**模块**: `paasng.paasng.bk_plugins.pluginscenter.models.instances`
+**模块**: `apiserver.paasng.paasng.bk_plugins.pluginscenter.models.instances`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 插件操作记录
@@ -2253,7 +2253,7 @@
 
 ### UserPrivateToken
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Private token can be used to authenticate an user, these tokens usually have very long
@@ -2278,7 +2278,7 @@
 
 ### UserProfile
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Profile field for user
@@ -2297,7 +2297,7 @@
 
 ### Oauth2TokenHolder
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: OAuth2 Token for sourcectl
@@ -2322,7 +2322,7 @@
 
 ### PrivateTokenHolder
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: Private Token for sourcectl
@@ -2346,7 +2346,7 @@
 
 ### AccountFeatureFlag
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 
@@ -2364,7 +2364,7 @@
 
 ### AuthenticatedAppAsUser
 
-**模块**: `paasng.paasng.infras.accounts.models`
+**模块**: `apiserver.paasng.paasng.infras.accounts.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Store relationships which treat an authenticated(by API Gateway) app as an regular user,
@@ -2388,7 +2388,7 @@
 
 ### BKMonitorSpace
 
-**模块**: `paasng.paasng.infras.bkmonitorv3.models`
+**模块**: `apiserver.paasng.paasng.infras.bkmonitorv3.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -2420,7 +2420,7 @@
 
 ### ApplicationGradeManager
 
-**模块**: `paasng.paasng.infras.iam.members.models`
+**模块**: `apiserver.paasng.paasng.infras.iam.members.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -2443,7 +2443,7 @@
 
 ### ApplicationUserGroup
 
-**模块**: `paasng.paasng.infras.iam.members.models`
+**模块**: `apiserver.paasng.paasng.infras.iam.members.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 
@@ -2467,7 +2467,7 @@
 
 ### OAuth2Client
 
-**模块**: `paasng.paasng.infras.oauth2.models`
+**模块**: `apiserver.paasng.paasng.infras.oauth2.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: OAuth2 体系中的基本单位：Client
@@ -2485,7 +2485,7 @@
 
 ### BkAppSecretInEnvVar
 
-**模块**: `paasng.paasng.infras.oauth2.models`
+**模块**: `apiserver.paasng.paasng.infras.oauth2.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 
@@ -2503,7 +2503,7 @@
 
 ### BaseOperation
 
-**模块**: `paasng.paasng.misc.audit.models`
+**模块**: `apiserver.paasng.paasng.misc.audit.models`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -2535,9 +2535,9 @@
 
 ### AdminOperationRecord
 
-**模块**: `paasng.paasng.misc.audit.models`
+**模块**: `apiserver.paasng.paasng.misc.audit.models`
 **行号**: 1
-**基类**: paasng.paasng.misc.audit.models.BaseOperation
+**基类**: apiserver.paasng.paasng.misc.audit.models.BaseOperation
 **描述**: 后台管理操作记录，用于记录平台管理员在 Admin 系统上的操作
 
 #### 字段
@@ -2564,9 +2564,9 @@
 
 ### AppOperationRecord
 
-**模块**: `paasng.paasng.misc.audit.models`
+**模块**: `apiserver.paasng.paasng.misc.audit.models`
 **行号**: 1
-**基类**: paasng.paasng.misc.audit.models.BaseOperation
+**基类**: apiserver.paasng.paasng.misc.audit.models.BaseOperation
 **描述**: 应用操作记录，用于记录应用开发者的操作，需要同步记录应用的权限数据，并可以选择是否将数据上报到审计中心
 
 #### 字段
@@ -2595,7 +2595,7 @@
 
 ### AppLatestOperationRecord
 
-**模块**: `paasng.paasng.misc.audit.models`
+**模块**: `apiserver.paasng.paasng.misc.audit.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: 应用最近操作的映射表，可方便快速查询应用的最近操作者，并按最近操作时间进行排序等操作
@@ -2619,7 +2619,7 @@
 
 ### AppAlertRule
 
-**模块**: `paasng.paasng.misc.monitoring.monitor.models`
+**模块**: `apiserver.paasng.paasng.misc.monitoring.monitor.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 记录 app 初始的告警规则配置
@@ -2648,7 +2648,7 @@
 
 ### AppDashboardTemplate
 
-**模块**: `paasng.paasng.misc.monitoring.monitor.models`
+**模块**: `apiserver.paasng.paasng.misc.monitoring.monitor.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 仪表盘模板，只需要记录名称和版本号，模板的内容在蓝鲸监控侧维护
@@ -2670,7 +2670,7 @@
 
 ### AppDashboard
 
-**模块**: `paasng.paasng.misc.monitoring.monitor.models`
+**模块**: `apiserver.paasng.paasng.misc.monitoring.monitor.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 记录 APP 初始化的仪表盘信息
@@ -2701,7 +2701,7 @@
 
 ### Operation
 
-**模块**: `paasng.paasng.misc.operations.models`
+**模块**: `apiserver.paasng.paasng.misc.operations.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -2728,7 +2728,7 @@
 
 ### ApplicationLatestOp
 
-**模块**: `paasng.paasng.misc.operations.models`
+**模块**: `apiserver.paasng.paasng.misc.operations.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: A mapper table which saves application's latest operation
@@ -2753,7 +2753,7 @@
 
 ### Application
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: 蓝鲸应用
@@ -2783,7 +2783,7 @@
 
 ### ApplicationMembership
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: [deprecated] 切换为权限中心用户组存储用户信息
@@ -2811,7 +2811,7 @@
 
 ### ApplicationEnvironment
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: 记录蓝鲸应用在不同部署环境下对应的 Engine App
@@ -2842,7 +2842,7 @@
 
 ### ApplicationFeatureFlag
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 
@@ -2865,7 +2865,7 @@
 
 ### UserMarkedApplication
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 
@@ -2891,7 +2891,7 @@
 
 ### ApplicationDeploymentModuleOrder
 
-**模块**: `paasng.paasng.platform.applications.models`
+**模块**: `apiserver.paasng.paasng.platform.applications.models`
 **行号**: 1
 **基类**: models.Model
 
@@ -2918,7 +2918,7 @@
 
 ### ModuleProcessSpec
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: 模块维度的进程定义, 表示模块当前所定义的进程, 该模型只通过 API 变更
@@ -2952,7 +2952,7 @@
 
 ### ProcessSpecEnvOverlay
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: 进程定义中允许按环境覆盖的配置
@@ -2983,7 +2983,7 @@
 
 ### ProcessServicesFlag
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: ProcessServicesFlag 主要用途是标记是否隐式需要 process services 配置
@@ -3006,7 +3006,7 @@
 
 ### ModuleDeployHook
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: 钩子命令
@@ -3036,7 +3036,7 @@
 
 ### SvcDiscConfig
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.AuditedModel
 **描述**: 服务发现配置
@@ -3058,7 +3058,7 @@
 
 ### DomainResolution
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.AuditedModel
 **描述**: 域名解析配置
@@ -3080,7 +3080,7 @@
 
 ### ObservabilityConfig
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 
@@ -3101,7 +3101,7 @@
 
 ### BkAppManagedFields
 
-**模块**: `paasng.paasng.platform.bkapp_model.models`
+**模块**: `apiserver.paasng.paasng.platform.bkapp_model.models`
 **行号**: 1
 **基类**: paas_wl.utils.models.TimestampedModel
 **描述**: This model stores the management status of the fields of a module's bkapp model, it's
@@ -3130,7 +3130,7 @@
 
 ### ApplicationDescription
 
-**模块**: `paasng.paasng.platform.declarative.models`
+**模块**: `apiserver.paasng.paasng.platform.declarative.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Application description object
@@ -3154,7 +3154,7 @@
 
 ### DeploymentDescription
 
-**模块**: `paasng.paasng.platform.declarative.models`
+**模块**: `apiserver.paasng.paasng.platform.declarative.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Config objects which describes deployment objects.
@@ -3176,7 +3176,7 @@
 
 ### OperationVersionBase
 
-**模块**: `paasng.paasng.platform.engine.models.base`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.base`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: 带操作版本信息的BaseModel
@@ -3205,7 +3205,7 @@
 
 ### EngineApp
 
-**模块**: `paasng.paasng.platform.engine.models.base`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.base`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: 蓝鲸应用引擎应用
@@ -3226,7 +3226,7 @@
 
 ### ConfigVar
 
-**模块**: `paasng.paasng.platform.engine.models.config_var`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.config_var`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Config vars for application
@@ -3259,7 +3259,7 @@
 
 ### BuiltinConfigVar
 
-**模块**: `paasng.paasng.platform.engine.models.config_var`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.config_var`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: Default config vars for global, can be added or edited in admin42.
@@ -3279,7 +3279,7 @@
 
 ### MobileConfig
 
-**模块**: `paasng.paasng.platform.engine.models.mobile_config`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.mobile_config`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Mobile config switcher for application
@@ -3304,7 +3304,7 @@
 
 ### ModuleEnvironmentOperations
 
-**模块**: `paasng.paasng.platform.engine.models.operations`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.operations`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 
@@ -3330,7 +3330,7 @@
 
 ### DeployPhase
 
-**模块**: `paasng.paasng.platform.engine.models.phases`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.phases`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.MarkStatusMixin
 **描述**: 部署阶段
@@ -3362,7 +3362,7 @@
 
 ### PresetEnvVariable
 
-**模块**: `paasng.paasng.platform.engine.models.preset_envvars`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.preset_envvars`
 **行号**: 1
 **基类**: paas_wl.utils.models.AuditedModel
 **描述**: 应用描述文件中预定义的环境变量
@@ -3391,7 +3391,7 @@
 
 ### DeployStepMeta
 
-**模块**: `paasng.paasng.platform.engine.models.steps`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.steps`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 部署步骤元信息
@@ -3415,7 +3415,7 @@
 
 ### StepMetaSet
 
-**模块**: `paasng.paasng.platform.engine.models.steps`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.steps`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 部署步骤元信息集
@@ -3444,7 +3444,7 @@
 
 ### DeployStep
 
-**模块**: `paasng.paasng.platform.engine.models.steps`
+**模块**: `apiserver.paasng.paasng.platform.engine.models.steps`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.base.MarkStatusMixin
 **描述**: 部署步骤
@@ -3477,7 +3477,7 @@
 
 ### EnvRoleProtection
 
-**模块**: `paasng.paasng.platform.environments.models`
+**模块**: `apiserver.paasng.paasng.platform.environments.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: 模块环境角色保护
@@ -3501,7 +3501,7 @@
 
 ### AppOperationReportCollectionTask
 
-**模块**: `paasng.paasng.platform.evaluation.models`
+**模块**: `apiserver.paasng.paasng.platform.evaluation.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: 应用运营报告采集任务
@@ -3525,7 +3525,7 @@
 
 ### AppOperationReport
 
-**模块**: `paasng.paasng.platform.evaluation.models`
+**模块**: `apiserver.paasng.paasng.platform.evaluation.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: 应用运营报告（含资源使用，用户活跃，运维操作等）
@@ -3568,7 +3568,7 @@
 
 ### AppOperationEmailNotificationTask
 
-**模块**: `paasng.paasng.platform.evaluation.models`
+**模块**: `apiserver.paasng.paasng.platform.evaluation.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: 应用运营报告邮件通知任务
@@ -3593,7 +3593,7 @@
 
 ### IdleAppNotificationMuteRule
 
-**模块**: `paasng.paasng.platform.evaluation.models`
+**模块**: `apiserver.paasng.paasng.platform.evaluation.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 闲置应用通知屏蔽规则
@@ -3619,7 +3619,7 @@
 
 ### MigrationProcess
 
-**模块**: `paasng.paasng.platform.mgrlegacy.models`
+**模块**: `apiserver.paasng.paasng.platform.mgrlegacy.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: An migration process
@@ -3651,7 +3651,7 @@
 
 ### CNativeMigrationProcess
 
-**模块**: `paasng.paasng.platform.mgrlegacy.models`
+**模块**: `apiserver.paasng.paasng.platform.mgrlegacy.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 
@@ -3681,7 +3681,7 @@
 
 ### WlAppBackupRel
 
-**模块**: `paasng.paasng.platform.mgrlegacy.models`
+**模块**: `apiserver.paasng.paasng.platform.mgrlegacy.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: WlApp 的备份关系表
@@ -3705,7 +3705,7 @@
 
 ### BuildConfig
 
-**模块**: `paasng.paasng.platform.modules.models.build_cfg`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.build_cfg`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -3734,7 +3734,7 @@
 
 ### DeployConfig
 
-**模块**: `paasng.paasng.platform.modules.models.deploy_config`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.deploy_config`
 **行号**: 1
 **基类**: paasng.utils.models.UuidAuditedModel
 
@@ -3755,7 +3755,7 @@
 
 ### Module
 
-**模块**: `paasng.paasng.platform.modules.models.module`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.module`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: Module for Application
@@ -3793,7 +3793,7 @@
 
 ### AppBuildPack
 
-**模块**: `paasng.paasng.platform.modules.models.runtime`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.runtime`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: buildpack 配置
@@ -3821,7 +3821,7 @@
 
 ### AppImage
 
-**模块**: `paasng.paasng.platform.modules.models.runtime`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.runtime`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 
@@ -3848,9 +3848,9 @@
 
 ### AppSlugRunner
 
-**模块**: `paasng.paasng.platform.modules.models.runtime`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.runtime`
 **行号**: 1
-**基类**: paasng.paasng.platform.modules.models.runtime.AppImage
+**基类**: apiserver.paasng.paasng.platform.modules.models.runtime.AppImage
 **描述**: 应用运行环境
 
 #### 字段
@@ -3876,9 +3876,9 @@
 
 ### AppSlugBuilder
 
-**模块**: `paasng.paasng.platform.modules.models.runtime`
+**模块**: `apiserver.paasng.paasng.platform.modules.models.runtime`
 **行号**: 1
-**基类**: paasng.paasng.platform.modules.models.runtime.AppImage
+**基类**: apiserver.paasng.paasng.platform.modules.models.runtime.AppImage
 **描述**: 应用构建环境
 
 #### 字段
@@ -3906,9 +3906,9 @@
 
 ### SvnRepository
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
-**基类**: paasng.utils.models.OwnerTimestampedModel, paasng.paasng.platform.sourcectl.models.RepositoryMixin
+**基类**: paasng.utils.models.OwnerTimestampedModel, apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
 **描述**: 基于 Svn 的软件存储库
 
 #### 字段
@@ -3926,7 +3926,7 @@
 
 ### SvnAccount
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: svn account for developer
@@ -3945,9 +3945,9 @@
 
 ### GitRepository
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
-**基类**: paasng.utils.models.OwnerTimestampedModel, paasng.paasng.platform.sourcectl.models.RepositoryMixin
+**基类**: paasng.utils.models.OwnerTimestampedModel, apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
 **描述**: 基于 Git 的软件存储库
 
 #### 字段
@@ -3965,9 +3965,9 @@
 
 ### DockerRepository
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
-**基类**: paasng.utils.models.OwnerTimestampedModel, paasng.paasng.platform.sourcectl.models.RepositoryMixin
+**基类**: paasng.utils.models.OwnerTimestampedModel, apiserver.paasng.paasng.platform.sourcectl.models.RepositoryMixin
 **描述**: 容器镜像仓库
 
 #### 字段
@@ -3985,7 +3985,7 @@
 
 ### SourcePackage
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
 **基类**: paasng.utils.models.OwnerTimestampedModel
 **描述**: 源码包存储信息
@@ -4021,7 +4021,7 @@
 
 ### RepoBasicAuthHolder
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
 **基类**: paasng.utils.models.TimestampedModel
 **描述**: Repo 鉴权
@@ -4046,7 +4046,7 @@
 
 ### SourceTypeSpecConfig
 
-**模块**: `paasng.paasng.platform.sourcectl.models`
+**模块**: `apiserver.paasng.paasng.platform.sourcectl.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: SourceTypeSpec 数据存储
@@ -4071,7 +4071,7 @@
 
 ### Template
 
-**模块**: `paasng.paasng.platform.templates.models`
+**模块**: `apiserver.paasng.paasng.platform.templates.models`
 **行号**: 1
 **基类**: paasng.utils.models.AuditedModel
 **描述**: 开发模板配置
@@ -4105,7 +4105,7 @@
 
 ### TimestampedModel
 
-**模块**: `paasng.paasng.utils.models`
+**模块**: `apiserver.paasng.paasng.utils.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Model with 'created' and 'updated' fields.
@@ -4130,9 +4130,9 @@
 
 ### OwnerTimestampedModel
 
-**模块**: `paasng.paasng.utils.models`
+**模块**: `apiserver.paasng.paasng.utils.models`
 **行号**: 1
-**基类**: paasng.paasng.utils.models.TimestampedModel
+**基类**: apiserver.paasng.paasng.utils.models.TimestampedModel
 **描述**: Model with 'created' and 'updated' fields.
 
 #### 字段
@@ -4152,7 +4152,7 @@
 
 ### AuditedModel
 
-**模块**: `paasng.paasng.utils.models`
+**模块**: `apiserver.paasng.paasng.utils.models`
 **行号**: 1
 **基类**: models.Model
 **描述**: Audited model with 'created' and 'updated' fields.
@@ -4176,9 +4176,9 @@
 
 ### UuidAuditedModel
 
-**模块**: `paasng.paasng.utils.models`
+**模块**: `apiserver.paasng.paasng.utils.models`
 **行号**: 1
-**基类**: paasng.paasng.utils.models.AuditedModel
+**基类**: apiserver.paasng.paasng.utils.models.AuditedModel
 **描述**: Add a UUID primary key to an :class:`AuditedModel`.
 
 #### 字段
@@ -4193,6 +4193,304 @@
 | 选项 | 值 |
 |------|-----|
 | abstract | True |
+
+---
+
+
+### RepoQuotaStatistics
+
+**模块**: `svc-bkrepo.svc_bk_repo.monitoring.models`
+**行号**: 1
+**基类**: models.Model
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| repo_name | models.CharField | 1 | - | 仓库名称 | {"max_length": 64} |
+| max_size | models.BigIntegerField | 1 | 单位字节，值为 nul 时表示未设置仓库配额 | 仓库最大配额 | {"null": true} |
+| used | models.BigIntegerField | 1 | 单位字节 | 仓库已使用容量 | {"default": 0} |
+| updated | models.DateTimeField | 1 | - | - | {"auto_now": true} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| instance | models.ForeignKey | paas_service.ServiceInstance | 不适用 | `models.CASCADE` |
+
+
+---
+
+
+### ApmData
+
+**模块**: `svc-otel.svc_otel.vendor.models`
+**行号**: 1
+**基类**: paas_service.models.AuditedModel
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| bk_app_code | models.CharField | 1 | - | - | {"max_length": 64} |
+| env | models.CharField | 1 | - | - | {"max_length": 64} |
+| app_name | models.CharField | 1 | - | - | {"max_length": 64} |
+| data_token | models.CharField | 1 | - | - | {"max_length": 255} |
+| is_delete | models.BooleanField | 1 | - | - | {"default": false} |
+
+
+#### Meta 选项
+
+| 选项 | 值 |
+|------|-----|
+| unique_together | ('bk_app_code', 'env') |
+
+---
+
+
+### CronTask
+
+**模块**: `svc-rabbitmq.tasks.models`
+**行号**: 1
+**基类**: models.Model
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| name | models.CharField | 1 | - | - | {"max_length": 255, "unique": true} |
+| interval | models.DurationField | 1 | - | - | {} |
+| next_run_time | models.DateTimeField | 1 | - | - | {"blank": true, "db_index": true, "default": "`get_now`", "null": true} |
+| last_run_time | models.DateTimeField | 1 | - | - | {"blank": true, "null": true} |
+| enabled | models.BooleanField | 1 | - | - | {"default": false} |
+
+
+#### Meta 选项
+
+| 选项 | 值 |
+|------|-----|
+| ordering | ('next_run_time', 'name') |
+
+---
+
+
+### Tag
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: paas_service.models.AuditedModel
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| key | models.CharField | 1 | - | - | {"max_length": 64} |
+| value | models.CharField | 1 | - | - | {"max_length": 128} |
+
+
+#### Meta 选项
+
+| 选项 | 值 |
+|------|-----|
+| abstract | True |
+
+---
+
+
+### Cluster
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: paas_service.models.AuditedModel
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| name | models.CharField | 1 | - | - | {"max_length": 64} |
+| host | models.CharField | 1 | - | - | {"max_length": 64} |
+| port | models.IntegerField | 1 | - | - | {"default": 5672} |
+| management_api | models.TextField | 1 | - | - | {} |
+| admin | models.CharField | 1 | - | - | {"max_length": 64} |
+| version | models.CharField | 1 | - | - | {"max_length": 16} |
+| enable | models.BooleanField | 1 | - | - | {"default": true} |
+
+
+
+---
+
+
+### ClusterTag
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: svc-rabbitmq.vendor.models.Tag
+**描述**: 集群标签，用于分配和分组
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| key | models.CharField | 1 | - | - | {"max_length": 64} |
+| value | models.CharField | 1 | - | - | {"max_length": 128} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| instance | models.ForeignKey | `Cluster` | tags | `models.CASCADE` |
+
+
+---
+
+
+### LinkableModel
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: paas_service.models.AuditedModel
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| link_type | models.IntegerField | 1 | - | - | {"choices": "`[(i.value, i.name) for i in LinkType]`", "default": "`LinkType.empty.value`"} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| linked | models.ForeignKey | self | 不适用 | `models.CASCADE` |
+
+#### Meta 选项
+
+| 选项 | 值 |
+|------|-----|
+| abstract | True |
+
+---
+
+
+### UserPolicy
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: svc-rabbitmq.vendor.models.LinkableModel
+**描述**: 集群下创建 vhost 默认策略，和具体 vhost 无关
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| name | models.CharField | 1 | - | - | {"max_length": 64, "null": true} |
+| enable | models.BooleanField | 1 | - | - | {"default": true} |
+| pattern | models.CharField | 1 | - | - | {"blank": true, "max_length": 128, "null": true} |
+| apply_to | models.CharField | 1 | - | - | {"blank": true, "choices": "`[(i.value, i.name) for i in PolicyTarget]`", "max_length": 64, "null": true} |
+| priority | models.IntegerField | 1 | - | - | {"blank": true, "null": true} |
+| cluster_id | models.IntegerField | 1 | - | - | {"blank": true, "default": null} |
+| link_type | models.IntegerField | 1 | - | - | {"choices": "`[(i.value, i.name) for i in LinkType]`", "default": "`LinkType.empty.value`"} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| linked | models.ForeignKey | self | 不适用 | `models.CASCADE` |
+
+
+---
+
+
+### UserPolicyTag
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: svc-rabbitmq.vendor.models.Tag
+**描述**: 表示绑定关系
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| key | models.CharField | 1 | - | - | {"max_length": 64} |
+| value | models.CharField | 1 | - | - | {"max_length": 128} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| instance | models.ForeignKey | `UserPolicy` | tags | `models.CASCADE` |
+
+
+---
+
+
+### LimitPolicy
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: svc-rabbitmq.vendor.models.LinkableModel
+**描述**: 集群下创建 vhost 限制机制，和具体 vhost 无关
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| name | models.CharField | 1 | - | - | {"max_length": 64, "null": true} |
+| enable | models.BooleanField | 1 | - | - | {"default": true} |
+| limit | models.CharField | 1 | - | - | {"blank": true, "choices": "`[(i.value, i.name) for i in LimitType]`", "max_length": 64, "null": true} |
+| value | models.IntegerField | 1 | - | - | {"blank": true, "null": true} |
+| cluster_id | models.IntegerField | 1 | - | - | {"blank": true, "default": null} |
+| link_type | models.IntegerField | 1 | - | - | {"choices": "`[(i.value, i.name) for i in LinkType]`", "default": "`LinkType.empty.value`"} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| linked | models.ForeignKey | self | 不适用 | `models.CASCADE` |
+
+
+---
+
+
+### LimitPolicyTag
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: svc-rabbitmq.vendor.models.Tag
+**描述**: 表示绑定关系
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| key | models.CharField | 1 | - | - | {"max_length": 64} |
+| value | models.CharField | 1 | - | - | {"max_length": 128} |
+
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+| instance | models.ForeignKey | `LimitPolicy` | tags | `models.CASCADE` |
+
+
+---
+
+
+### InstanceBill
+
+**模块**: `svc-rabbitmq.vendor.models`
+**行号**: 1
+**基类**: paas_service.models.UuidAuditedModel
+**描述**: 实例单据，保存申请上下文，方便重入
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+| name | models.CharField | 1 | - | - | {"max_length": 128} |
+| action | models.CharField | 1 | - | - | {"max_length": 32} |
+
+
 
 ---
 

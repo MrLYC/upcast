@@ -10002,7 +10002,7 @@ results:
     usages: {}
 summary:
   files_scanned: 2368
-  scan_duration_ms: 41701
+  scan_duration_ms: 38003
   total_count: 474
   total_definitions: 616
   total_settings: 474
