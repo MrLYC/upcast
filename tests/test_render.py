@@ -34,7 +34,9 @@ class TestGetTemplateName:
     def test_django_model_output(self):
         """Test template name for DjangoModelOutput."""
         output = DjangoModelOutput(
-            summary=DjangoModelSummary(total_count=1, files_scanned=1, total_models=1, total_fields=0, total_relationships=0),
+            summary=DjangoModelSummary(
+                total_count=1, files_scanned=1, total_models=1, total_fields=0, total_relationships=0
+            ),
             results={},
         )
         assert get_template_name(output) == "django_models.md.jinja2"

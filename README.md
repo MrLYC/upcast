@@ -8,10 +8,11 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 14 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 15 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
+- **📚 Scanner Documentation**: [docs/README.md](docs/README.md) - Detailed scanner rules and field references
 
 ## Quick Start
 
@@ -70,9 +71,11 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 
 ## Scanners
 
-Upcast provides 14 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 15 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
+>
+> 📖 **Detailed documentation:** For complete field references and scanning rules, see [Scanner Documentation](docs/README.md).
 
 ### Django Scanners
 

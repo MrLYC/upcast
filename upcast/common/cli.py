@@ -64,9 +64,14 @@ def add_scanner_arguments(func):
         default="en",
         help="Language for markdown output (default: en)",
     )(func)
+
+    format_choice = click.Choice(["yaml", "json", "markdown"], case_sensitive=False)
+    # click.Choice internally normalizes choices to a tuple in some versions.
+    # Keep it as a list to match our test expectations and avoid version drift.
+    format_choice.choices = ["yaml", "json", "markdown"]
     func = click.option(
         "--format",
-        type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
+        type=format_choice,
         default="yaml",
         help="Output format (default: yaml)",
     )(func)
@@ -174,56 +179,99 @@ def run_scanner_cli(
     # Note: Keep None values for critical fields (e.g., view_module, view_name in Django URLs)
     formatted_data = scanner_output.model_dump(mode="json", exclude_none=False)
 
-    # Export results
     if output:
-        if format.lower() == "json":
-            export_to_json(formatted_data, output)
-            click.echo(f"Results written to: {output}")
-        elif format.lower() == "markdown":
-            from upcast.render import render_to_file
-
-            # Generate title if not provided
-            if markdown_title is None:
-                scanner_name = scanner.__class__.__name__.replace("Scanner", "")
-                markdown_title = f"{scanner_name} Analysis"
-
-            render_to_file(
-                scanner_output,
-                output,
-                language=markdown_language,
-                title=markdown_title,
-            )
-            click.echo(f"Markdown report written to: {output}")
-        else:
-            export_to_yaml(formatted_data, output)
-            click.echo(f"Results written to: {output}")
+        _write_output_file(
+            scanner=scanner,
+            scanner_output=scanner_output,
+            formatted_data=formatted_data,
+            output=output,
+            format=format,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
     else:
-        # Print to stdout
-        if format.lower() == "json":
-            import json
-
-            click.echo(json.dumps(formatted_data, indent=2))
-        elif format.lower() == "markdown":
-            from upcast.render import render_to_markdown
-
-            # Generate title if not provided
-            if markdown_title is None:
-                scanner_name = scanner.__class__.__name__.replace("Scanner", "")
-                markdown_title = f"{scanner_name} Analysis"
-
-            markdown_output = render_to_markdown(
-                scanner_output,
-                language=markdown_language,
-                title=markdown_title,
-            )
-            click.echo(markdown_output)
-        else:
-            yaml_str = export_to_yaml_string(formatted_data)
-            click.echo(yaml_str)
+        _print_output_to_stdout(
+            scanner=scanner,
+            scanner_output=scanner_output,
+            formatted_data=formatted_data,
+            format=format,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
 
     # Print summary
     if verbose:
         _print_summary(scanner_output, verbose)
+
+
+def _get_markdown_title(scanner: BaseScanner, markdown_title: str | None) -> str:
+    if markdown_title is not None:
+        return markdown_title
+
+    scanner_name = scanner.__class__.__name__.replace("Scanner", "")
+    return f"{scanner_name} Analysis"
+
+
+def _write_output_file(
+    *,
+    scanner: BaseScanner,
+    scanner_output: ScannerOutput,
+    formatted_data: dict[str, Any],
+    output: str,
+    format: str,  # noqa: A002
+    markdown_title: str | None,
+    markdown_language: str,
+) -> None:
+    fmt = format.lower()
+    if fmt == "json":
+        export_to_json(formatted_data, output)
+        click.echo(f"Results written to: {output}")
+        return
+
+    if fmt == "markdown":
+        from upcast.render import render_to_file
+
+        render_to_file(
+            scanner_output,
+            output,
+            language=markdown_language,
+            title=_get_markdown_title(scanner, markdown_title),
+        )
+        click.echo(f"Markdown report written to: {output}")
+        return
+
+    export_to_yaml(formatted_data, output)
+    click.echo(f"Results written to: {output}")
+
+
+def _print_output_to_stdout(
+    *,
+    scanner: BaseScanner,
+    scanner_output: ScannerOutput,
+    formatted_data: dict[str, Any],
+    format: str,  # noqa: A002
+    markdown_title: str | None,
+    markdown_language: str,
+) -> None:
+    fmt = format.lower()
+    if fmt == "json":
+        import json
+
+        click.echo(json.dumps(formatted_data, indent=2))
+        return
+
+    if fmt == "markdown":
+        from upcast.render import render_to_markdown
+
+        markdown_output = render_to_markdown(
+            scanner_output,
+            language=markdown_language,
+            title=_get_markdown_title(scanner, markdown_title),
+        )
+        click.echo(markdown_output)
+        return
+
+    click.echo(export_to_yaml_string(formatted_data))
 
 
 def _print_summary(scanner_output: ScannerOutput, verbose: bool) -> None:
