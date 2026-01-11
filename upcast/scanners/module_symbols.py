@@ -73,9 +73,22 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             scan_duration_ms=int((time.time() - start_time) * 1000),
         )
 
+        filtered_results = {
+            file_path: symbols
+            for file_path, symbols in self.results.items()
+            if (
+                symbols.imported_modules
+                or symbols.imported_symbols
+                or symbols.star_imported
+                or symbols.variables
+                or symbols.functions
+                or symbols.classes
+            )
+        }
+
         return ModuleSymbolOutput(
             summary=summary,
-            results=self.results,
+            results=filtered_results,
             metadata={"scanner_name": "module_symbols"},
         )
 

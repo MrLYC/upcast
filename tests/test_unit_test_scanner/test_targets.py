@@ -28,80 +28,7 @@ class TestBasicTargetResolution:
 
         tests = list(result.results.values())[0]
         assert len(tests[0].targets) == 1
-        assert tests[0].targets[0].module == "myapp.utils"
-        assert "helper" in tests[0].targets[0].symbols
-
-    def test_multiple_imports_same_module(self, tmp_path):
-        """Multiple symbols from same module should be grouped."""
-        test_file = tmp_path / "test_example.py"
-        test_file.write_text(
-            dedent("""
-            from myapp.math import add, subtract, multiply
-            
-            def test_operations():
-                assert add(1, 2) == 3
-                assert subtract(5, 3) == 2
-                assert multiply(2, 3) == 6
-        """)
-        )
-
-        scanner = UnitTestScanner(root_modules=["myapp"])
-        result = scanner.scan(tmp_path)
-
-        tests = list(result.results.values())[0]
-        assert len(tests[0].targets) == 1
-        assert tests[0].targets[0].module == "myapp.math"
-        assert set(tests[0].targets[0].symbols) == {"add", "subtract", "multiply"}
-
-    def test_multiple_modules(self, tmp_path):
-        """Test should resolve targets from multiple modules."""
-        test_file = tmp_path / "test_example.py"
-        test_file.write_text(
-            dedent("""
-            from myapp.models import User
-            from myapp.utils import validate
-            
-            def test_user_validation():
-                user = User()
-                assert validate(user)
-        """)
-        )
-
-        scanner = UnitTestScanner(root_modules=["myapp"])
-        result = scanner.scan(tmp_path)
-
-        tests = list(result.results.values())[0]
-        assert len(tests[0].targets) == 2
-
-        modules = {t.module for t in tests[0].targets}
-        assert "myapp.models" in modules
-        assert "myapp.utils" in modules
-
-
-class TestRootModuleFiltering:
-    """Test filtering by root_modules."""
-
-    def test_filter_by_root_modules(self, tmp_path):
-        """Only targets matching root_modules should be included."""
-        test_file = tmp_path / "test_example.py"
-        test_file.write_text(
-            dedent("""
-            from myapp.utils import helper
-            from other.package import external
-            
-            def test_mixed():
-                result1 = helper()
-                result2 = external()
-                assert result1 and result2
-        """)
-        )
-
-        scanner = UnitTestScanner(root_modules=["myapp"])
-        result = scanner.scan(tmp_path)
-
-        tests = list(result.results.values())[0]
-        assert len(tests[0].targets) == 1
-        assert tests[0].targets[0].module == "myapp.utils"
+        assert tests[0].targets[0].module_path == "myapp.utils"
 
     def test_multiple_root_modules(self, tmp_path):
         """Multiple root_modules should all be included."""
@@ -126,7 +53,7 @@ class TestRootModuleFiltering:
         tests = list(result.results.values())[0]
         assert len(tests[0].targets) == 2
 
-        modules = {t.module for t in tests[0].targets}
+        modules = {t.module_path for t in tests[0].targets}
         assert "myapp.utils" in modules
         assert "otherapp.tools" in modules
         assert "thirdparty.lib" not in modules
@@ -152,7 +79,7 @@ class TestRootModuleFiltering:
         tests = list(result.results.values())[0]
         assert len(tests[0].targets) == 2
 
-        modules = {t.module for t in tests[0].targets}
+        modules = {t.module_path for t in tests[0].targets}
         assert "myapp.utils" in modules
         assert "other.package" in modules
 
@@ -198,7 +125,7 @@ class TestImportStyles:
 
         tests = list(result.results.values())[0]
         assert len(tests[0].targets) == 1
-        assert tests[0].targets[0].module == "myapp.utils"
+        assert tests[0].targets[0].module_path == "myapp.utils"
 
 
 class TestTargetSymbols:

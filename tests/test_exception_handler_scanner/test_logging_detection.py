@@ -26,7 +26,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_error_count == 1
 
     def test_logger_exception(self, tmp_path, scanner):
@@ -46,7 +46,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_exception_count == 1
 
     def test_multiple_logging_calls(self, tmp_path, scanner):
@@ -68,7 +68,7 @@ except ValueError as e:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_warning_count == 1
         assert clause.log_error_count == 1
         assert clause.log_exception_count == 1
@@ -95,7 +95,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_debug_count == 1
         assert clause.log_info_count == 1
         assert clause.log_warning_count == 1
@@ -124,7 +124,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_error_count == 3
 
     def test_no_logging(self, tmp_path, scanner):
@@ -142,7 +142,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.log_error_count == 0
         assert clause.log_exception_count == 0
 
@@ -167,7 +167,7 @@ except ValueError as e:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         # Should detect the warning call in the except block
         # The error call inside handle_error() is in a different scope
         assert clause.log_warning_count == 1
@@ -188,7 +188,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         # Direct logging.error() might not be detected depending on implementation
         # This documents the current behavior
         assert clause.log_error_count >= 0

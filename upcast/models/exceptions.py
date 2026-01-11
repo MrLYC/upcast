@@ -5,13 +5,13 @@ from pydantic import BaseModel, Field
 from upcast.models.base import ScannerOutput, ScannerSummary
 
 
-class ExceptClause(BaseModel):
+class ExceptionBlock(BaseModel):
     """An except clause in a try-except block.
 
     Attributes:
-        line: Line number
-        exception_types: Exception types handled
+        lineno: Line number
         lines: Number of lines in clause
+        exceptions: Exception types handled
         log_debug_count: Number of log.debug() calls
         log_info_count: Number of log.info() calls
         log_warning_count: Number of log.warning() calls
@@ -25,9 +25,9 @@ class ExceptClause(BaseModel):
         raise_count: Number of raise statements
     """
 
-    line: int | None = Field(ge=1, description="Line number")
-    exception_types: list[str] = Field(description="Exception types handled")
+    lineno: int | None = Field(ge=1, description="Line number")
     lines: int = Field(ge=0, description="Number of lines in clause")
+    exceptions: list[str] = Field(description="Exception types handled")
     log_debug_count: int = Field(default=0, ge=0, description="log.debug() calls")
     log_info_count: int = Field(default=0, ge=0, description="log.info() calls")
     log_warning_count: int = Field(default=0, ge=0, description="log.warning() calls")
@@ -41,50 +41,30 @@ class ExceptClause(BaseModel):
     raise_count: int = Field(default=0, ge=0, description="raise statements")
 
 
-class ElseClause(BaseModel):
-    """An else clause in a try-except block.
-
-    Attributes:
-        line: Line number
-        lines: Number of lines in clause
-    """
-
-    line: int = Field(ge=0, description="Line number")
-    lines: int = Field(ge=0, description="Number of lines")
-
-
-class FinallyClause(BaseModel):
-    """A finally clause in a try-except block.
-
-    Attributes:
-        line: Line number
-        lines: Number of lines in clause
-    """
-
-    line: int = Field(ge=0, description="Line number")
-    lines: int = Field(ge=0, description="Number of lines")
-
-
 class ExceptionHandler(BaseModel):
     """A complete try-except block.
 
     Attributes:
         file: File path
-        lineno: Start line number
-        end_lineno: End line number
+        try_lineno: try statement start line number
         try_lines: Number of lines in try block
-        except_clauses: List of except clauses
-        else_clause: Optional else clause
-        finally_clause: Optional finally clause
+        else_lineno: else statement start line number (null if no else)
+        else_lines: Number of lines in else block (null if no else)
+        finally_lineno: finally statement start line number (null if no finally)
+        finally_lines: Number of lines in finally block (null if no finally)
+        nested_exceptions: Whether there are nested exception handlers
+        exception_blocks: List of except clauses
     """
 
     file: str = Field(description="File path")
-    lineno: int | None = Field(ge=1, description="Start line")
-    end_lineno: int | None = Field(ge=1, description="End line")
+    try_lineno: int | None = Field(ge=1, description="try statement start line")
     try_lines: int | None = Field(ge=0, description="Number of lines in try block")
-    except_clauses: list[ExceptClause] = Field(description="Except clauses")
-    else_clause: ElseClause | None = Field(None, description="Else clause")
-    finally_clause: FinallyClause | None = Field(None, description="Finally clause")
+    else_lineno: int | None = Field(None, description="else statement start line")
+    else_lines: int | None = Field(None, ge=0, description="Number of lines in else block")
+    finally_lineno: int | None = Field(None, description="finally statement start line")
+    finally_lines: int | None = Field(None, ge=0, description="Number of lines in finally block")
+    nested_exceptions: bool = Field(default=False, description="Has nested exception handlers")
+    exception_blocks: list[ExceptionBlock] = Field(description="Except clauses")
 
 
 class ExceptionHandlerSummary(ScannerSummary):

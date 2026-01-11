@@ -90,12 +90,10 @@ from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, Env
 
 # Exception handlers
 from upcast.models.exceptions import (
-    ElseClause,
-    ExceptClause,
+    ExceptionBlock,
     ExceptionHandler,
     ExceptionHandlerOutput,
     ExceptionHandlerSummary,
-    FinallyClause,
 )
 
 # HTTP requests
@@ -147,14 +145,13 @@ __all__ = [
     "DjangoSettingsSummary",
     "DjangoUrlOutput",
     "DjangoUrlSummary",
-    "ElseClause",
     "EnvVarInfo",
     # Environment variables
     "EnvVarLocation",
     "EnvVarOutput",
     "EnvVarSummary",
     # Exception handlers
-    "ExceptClause",
+    "ExceptionBlock",
     "ExceptionHandler",
     "ExceptionHandlerOutput",
     "ExceptionHandlerSummary",

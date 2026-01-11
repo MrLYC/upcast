@@ -44,12 +44,12 @@ class TestImportedSymbol:
 
     def test_basic_symbol(self):
         """Test basic symbol import."""
-        symbol = ImportedSymbol(module_path="pathlib", attributes=[], blocks=["module"])
+        symbol = ImportedSymbol(module_path="pathlib", attributes=[], lineno=1, statement="from pathlib import Path", blocks=["module"])
         assert symbol.module_path == "pathlib"
 
     def test_with_attributes(self):
         """Test symbol with attribute access."""
-        symbol = ImportedSymbol(module_path="pathlib", attributes=["home"], blocks=["module"])
+        symbol = ImportedSymbol(module_path="pathlib", attributes=["home"], lineno=1, statement="from xxx import yyy", blocks=["module"])
         assert "home" in symbol.attributes
 
 
@@ -71,6 +71,7 @@ class TestVariable:
         var = Variable(
             module_path="test.module",
             attributes=[],
+            lineno=1,
             value="True",
             statement="DEBUG = True",
             blocks=["module"],
@@ -81,9 +82,7 @@ class TestVariable:
 
     def test_variable_without_value(self):
         """Test variable without inferred value."""
-        var = Variable(
-            module_path="test.module", attributes=[], value=None, statement="X = compute()", blocks=["module"]
-        )
+        var = Variable(module_path="test.module", attributes=[], lineno=1, value=None, statement="X = compute()", blocks=["module"])
         assert var.value is None
 
 
@@ -92,14 +91,14 @@ class TestDecorator:
 
     def test_simple_decorator(self):
         """Test simple decorator without arguments."""
-        dec = Decorator(name="decorator", args=[], kwargs={})
+        dec = Decorator(name="decorator", lineno=1, args=[], kwargs={})
         assert dec.name == "decorator"
         assert dec.args == []
         assert dec.kwargs == {}
 
     def test_decorator_with_args(self):
         """Test decorator with arguments."""
-        dec = Decorator(name="decorator", args=["arg1"], kwargs={"key": "value"})
+        dec = Decorator(name="decorator", lineno=1, args=["arg1"], kwargs={"key": "value"})
         assert dec.args == ["arg1"]
         assert dec.kwargs == {"key": "value"}
 
@@ -110,6 +109,8 @@ class TestFunction:
     def test_basic_function(self):
         """Test basic function."""
         func = Function(
+                    lineno=1,
+                    is_async=False,
             signature="def test() -> None",
             docstring="Test function",
             body_md5="abc123",
@@ -124,11 +125,13 @@ class TestFunction:
     def test_function_with_decorator(self):
         """Test function with decorators."""
         func = Function(
+                    lineno=1,
+                    is_async=False,
             signature="def test() -> None",
             docstring=None,
             body_md5="abc123",
             attributes=[],
-            decorators=[Decorator(name="staticmethod", args=[], kwargs={})],
+            decorators=[Decorator(name="staticmethod", lineno=1, args=[], kwargs={})],
             blocks=["module"],
         )
         assert len(func.decorators) == 1
@@ -141,6 +144,7 @@ class TestClass:
     def test_basic_class(self):
         """Test basic class."""
         cls = Class(
+            lineno=1,
             docstring="Test class",
             body_md5="def456",
             attributes=["attr1"],
@@ -157,6 +161,7 @@ class TestClass:
     def test_class_with_bases(self):
         """Test class with base classes."""
         cls = Class(
+            lineno=1,
             docstring=None,
             body_md5="def456",
             attributes=[],
@@ -185,7 +190,7 @@ class TestModuleSymbols:
         """Test module with imports."""
         symbols = ModuleSymbols(
             imported_modules={"os": ImportedModule(module_path="os", attributes=[], blocks=["module"])},
-            imported_symbols={"Path": ImportedSymbol(module_path="pathlib", attributes=[], blocks=["module"])},
+            imported_symbols={"Path": ImportedSymbol(module_path="pathlib", attributes=[], lineno=1, statement="from xxx import yyy", blocks=["module"])},
         )
         assert "os" in symbols.imported_modules
         assert "Path" in symbols.imported_symbols

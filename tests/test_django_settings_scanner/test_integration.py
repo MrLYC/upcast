@@ -63,7 +63,7 @@ DATABASES = {
         assert "DATABASES" in result.results
         db_info = result.results["DATABASES"]
         assert db_info.definition_count >= 1
-        assert "dict" in db_info.type_list
+        assert "dict" in db_info.definition_types
 
     def test_scan_installed_apps(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test scanning INSTALLED_APPS."""
@@ -81,7 +81,7 @@ INSTALLED_APPS = [
         assert "INSTALLED_APPS" in result.results
         apps_info = result.results["INSTALLED_APPS"]
         assert apps_info.definition_count >= 1
-        assert "list" in apps_info.type_list
+        assert "list" in apps_info.definition_types
 
     def test_scan_middleware(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test scanning MIDDLEWARE."""

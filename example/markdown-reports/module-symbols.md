@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 7679
 - **已扫描文件数**: 2368
-- **扫描耗时**: 25469 毫秒
+- **扫描耗时**: 26134 毫秒
 
 - **Total Modules**: 2368
 - **Total Imports**: 17215
@@ -37,39 +37,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/apis/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/apis/admin/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/apis/admin/constants.py
 
 
@@ -81,17 +48,6 @@
 |--------|---|------|-------|
 | BKPAAS_APP_OPERATOR_INSTALL_NAMESPACE | bkpaas-app-operator-system | `BKPAAS_APP_OPERATOR_INSTALL_NAMESPACE = 'bkpaas-app-operator-system'` | module |
 | HELM_RELEASE_SECRET_TYPE | helm.sh/release.v1 | `HELM_RELEASE_SECRET_TYPE = 'helm.sh/release.v1'` | module |
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/apis/admin/helpers/__init__.py
-
-
-
-
 
 
 
@@ -196,17 +152,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PaginationMixin | 无 | get_pagination_context | 无 | 无 | 获取分页上下文的mixin |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/apis/admin/serializers/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -321,17 +266,6 @@
 | 变量名 | 值 | 语句 | 代码块 |
 |--------|---|------|-------|
 | urlpatterns | 不适用 | `urlpatterns = [path('wl_api/platform/process_spec_plan/manage/', processes.ProcessSpecPlanManageViewSet.as_view({'get': 'get_context_data'})), path('wl_api/platform/process_spec_plan/', processes.ProcessSpecPlanManageViewSet.as_view(dict(post='create', get='list')), name='wl_api.process_spec_plan'), path('wl_api/platform/process_spec_plan/id/<int:id>/', processes.ProcessSpecPlanManageViewSet.as_view(dict(put='edit', get='list_binding_app')), name='wl_api.process_spec_plan_by_id'), path('wl_api/regions/<str:region>/apps/<str:name>/processes/<str:process_type>/plan', processes.ProcessSpecManageViewSet.as_view({'put': 'switch_process_plan'}), name='wl_api.application.process_plan'), path('wl_api/regions/<str:region>/apps/<str:name>/processes/<str:process_type>/scale', processes.ProcessSpecManageViewSet.as_view({'put': 'scale'}), name='wl_api.application.process_scale'), path('wl_api/regions/<str:region>/apps/<str:name>/processes/<str:process_type>/instances/<str:instance_name>/', processes.ProcessInstanceViewSet.as_view({'get': 'retrieve'}), name='wl_api.application.process_instance'), path('wl_api/applications/<str:code>/domains/', domain.AppDomainsViewSet.as_view({'get': 'list', 'post': 'create'}), name='wl_api.application.domains'), path('wl_api/applications/<str:code>/domains/<int:id>/', domain.AppDomainsViewSet.as_view({'put': 'update', 'delete': 'destroy'}), name='wl_api.application.domain_by_id'), path('wl_api/platform/app_certs/shared/', certs.AppDomainSharedCertsViewSet.as_view({'post': 'create', 'get': 'list'}), name='wl_api.shared_app_certs'), path('wl_api/platform/app_certs/shared/<str:name>', certs.AppDomainSharedCertsViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='wl_api.shared_app_cert_by_name'), path('wl_api/applications/<str:code>/log_config/', logs.AppLogConfigViewSet.as_view({'get': 'list', 'post': 'toggle'}), name='wl_api.application.log_config'), path('wl_api/platform/clusters/', clusters.ClusterViewSet.as_view({'post': 'update_or_create', 'get': 'list'}), name='wl_api.clusters'), path('wl_api/platform/clusters/<str:cluster_name>/node_state/', clusters.ClusterViewSet.as_view({'post': 'gen_node_state'}), name='wl_api.cluster.node_state'), path('wl_api/platform/clusters/<str:cluster_name>/operator_info/', clusters.ClusterComponentViewSet.as_view({'get': 'get_operator_info'}), name='wl_api.cluster.operator_info'), path('wl_api/platform/clusters/<str:cluster_name>/components/', clusters.ClusterComponentViewSet.as_view({'get': 'list_components'}), name='wl_api.cluster.components'), path('wl_api/platform/clusters/<str:cluster_name>/components/<str:component_name>/', clusters.ClusterComponentViewSet.as_view({'get': 'get_component_status'}), name='wl_api.cluster.component_by_name'), path('wl_api/platform/clusters/<str:pk>/', clusters.ClusterViewSet.as_view({'get': 'retrieve', 'put': 'update_or_create', 'delete': 'destroy'}), name='wl_api.cluster_by_id'), path('wl_api/platform/clusters/<str:pk>/api_servers', clusters.ClusterViewSet.as_view({'post': 'bind_api_server'}), name='wl_api.cluster.api_servers'), path('wl_api/platform/clusters/<str:pk>/set_default/', clusters.ClusterViewSet.as_view({'post': 'set_as_default'}), name='wl_api.cluster.set_default'), path('wl_api/platform/clusters/<str:pk>/api_servers/<str:api_server_id>', clusters.ClusterViewSet.as_view({'delete': 'unbind_api_server'}), name='wl_api.cluster.api_server_by_id')]` | module |
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/apis/admin/views/__init__.py
-
-
-
-
 
 
 
@@ -568,28 +502,6 @@
 | ProcessSpecPlanManageViewSet | paas_wl.apis.admin.mixins.PaginationMixin, rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | _list_data, get_context_data, create, edit, list_binding_app | exclude_from_schema, serializer_class, permission_classes, filter_backends, search_fields, queryset | 无 | ProcessSpecPlan 管理API |
 | ProcessSpecManageViewSet | rest_framework.viewsets.GenericViewSet | get_app, switch_process_plan, scale | permission_classes | 无 | ProcessSpec 管理API |
 | ProcessInstanceViewSet | rest_framework.viewsets.GenericViewSet | get_app, retrieve | exclude_from_schema, permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/applications/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -1221,17 +1133,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/applications/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/applications/models/__init__.py
 
 
@@ -1512,28 +1413,6 @@
 | ModuleAttrFromID | 无 | __get__, __get__, __get__ | key_field | 无 | A descriptor which make `{owner}.module` available... |
 | ModuleEnvAttrFromID | 无 | __get__, __get__, __get__ | key_field | 无 | A descriptor which make `{owner}.environment` avai... |
 | ModuleEnvAttrFromName | 无 | __get__, __get__, __get__ | key_field, module_key_field | 无 | A descriptor which make `{owner}.environment` avai... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/cnative/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/cnative/specs/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -2242,17 +2121,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/cnative/specs/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/cnative/specs/models/__init__.py
 
 
@@ -2434,17 +2302,6 @@
 | ConfigMapSourceController | BaseVolumeSourceController | build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, create_by_env, update_by_env, delete_by_env, upsert_k8s_resource, delete_k8s_resource | volume_source_type, model_class | 无 | 不适用 |
 | PersistentStorageSourceController | BaseVolumeSourceController | build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, create_by_env, update_by_env, delete_by_env, upsert_k8s_resource, delete_k8s_resource | volume_source_type, model_class | 无 | 不适用 |
 | MountManager | 无 | new | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/cnative/specs/procs/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -2866,17 +2723,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/deploy/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/deploy/actions/__init__.py
 
 
@@ -3089,17 +2935,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/deploy/app_res/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
 
 #### 导入的模块
@@ -3247,28 +3082,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/deploy/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/deploy/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/deploy/management/commands/clean_timeout_pod.py
 
 #### 导入的模块
@@ -3406,17 +3219,6 @@
 | AppProcessesController | 无 | __init__, start, stop, scale, _scale, _deploy_autoscaling, _disable_autoscaling, _get_spec, _build_proc_autoscaling | 无 | 无 | Controls app's processes, includes common operatio... |
 | CNativeProcController | 无 | __init__, start, stop, scale, scale_static, disable_autoscaling_if_enabled, scale_auto, _get_module_process_spec | 无 | 无 | Process controller for cloud-native applications |
 | ProcSpecUpdater | 无 | __init__, set_start, set_stop, change_replicas, set_autoscaling, spec_object | 无 | 无 | It update the ProcessSpec object for the given env... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/dev_sandbox/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -3978,17 +3780,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/mgrlegacy/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/mgrlegacy/processes.py
 
 
@@ -4010,28 +3801,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_processes_info | `def get_processes_info(wl_app: WlApp) -> ProcessesInfo:` | 无 | get processes info by wl_app |
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/monitoring/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/monitoring/app_monitor/__init__.py
-
-
-
-
-
 
 
 ---
@@ -4253,17 +4022,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/monitoring/app_monitor/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/monitoring/app_monitor/models.py
 
 
@@ -4346,17 +4104,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | build_monitor_port | `def build_monitor_port(app: WlApp) -> Optional[PServicePortPair]:` | 无 | Generate the build-in metrics port objects |
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/monitoring/bklog/__init__.py
-
-
-
-
-
 
 
 ---
@@ -4576,17 +4323,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_bk_log_controller | `def make_bk_log_controller(env: ModuleEnvironment):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/bk_app/processes/__init__.py
-
-
-
-
-
 
 
 ---
@@ -5160,17 +4896,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/bk_app/processes/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/bk_app/processes/models.py
 
 #### 导入的模块
@@ -5669,17 +5394,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/core/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/core/app_structure.py
 
 
@@ -5780,28 +5494,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | CNativeBkAppNameGenerator | 无 | generate, make_name | 无 | 无 | Resource name generator for cnative applications |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/cluster/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -5915,28 +5607,6 @@
 |------|------|------|------|--------|----------|
 | DBConfigLoader | 无 | __init__, _load, get_all_cluster_names, list_configurations_by_name | 无 | 无 | Enhanced ConfigLoader, which is loaded from **db**... |
 | LegacyKubeConfigLoader | kubernetes.config.kube_config.KubeConfigLoader | from_file, _get_tag_from_context, get_all_tags, list_configurations_by_tag, _load_cluster_info, _set_config | 无 | 无 | Legacy ConfigLoader, which is loaded from **file**... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/cluster/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/cluster/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -6303,17 +5973,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/infras/cluster/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/infras/cluster/models.py
 
 #### 导入的模块
@@ -6524,28 +6183,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | validate_ingress_config | `def validate_ingress_config(ingress_config: Optional[Dict]):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/resource_templates/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/resource_templates/components/__init__.py
-
-
-
-
-
 
 
 ---
@@ -6804,17 +6441,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/infras/resource_templates/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/infras/resource_templates/models.py
 
 #### 导入的模块
@@ -6846,28 +6472,6 @@
 | AppAddOnTemplate | paas_wl.bk_app.applications.models.UuidAuditedModel | digest, link_to_app | region, name, spec, enabled, type | 无 | 应用挂件模版 |
 | AppAddOnManager | django.db.models.Manager | get_queryset | 无 | 无 | 不适用 |
 | AppAddOn | paas_wl.bk_app.applications.models.UuidAuditedModel | render_spec, sync_with_template, digest | app, template, enabled, spec, objects, default_objects | 无 | 应用挂件关联实例 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/resources/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/resources/base/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -6917,17 +6521,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | EnhancedApiClient | BaseApiClient | __init__, call_api, rest_client, rest_client | 无 | 无 | Enhanced Kubernetes ApiClient, with some extra fea... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/infras/resources/base/bcs/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -7211,17 +6804,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/infras/resources/generation/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/infras/resources/generation/apps.py
 
 
@@ -7432,17 +7014,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/infras/resources/kube_res/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/infras/resources/kube_res/base.py
 
 #### 导入的模块
@@ -7571,17 +7142,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/infras/resources/utils/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/infras/resources/utils/basic.py
 
 #### 导入的模块
@@ -7634,17 +7194,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LabelTolerationProviders | 无 | __init__, register_labels, register_tolerations, get_labels, get_tolerations | 无 | 无 | Allow registering extra functions for labels/toler... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/utils/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -8111,28 +7660,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/autoscaling/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/autoscaling/constants.py
 
 
@@ -8287,28 +7814,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/configuration/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/configuration/configmap/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/configuration/configmap/kres_entities.py
 
 #### 导入的模块
@@ -8374,17 +7879,6 @@
 |------|------|------|------|--------|----------|
 | ConfigMapSerializer | AppEntitySerializer['ConfigMap'] | serialize | api_version | 无 | 不适用 |
 | ConfigMapDeserializer | AppEntityDeserializer['ConfigMap'] | deserialize | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/configuration/secret/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -8478,17 +7972,6 @@
 |------|------|------|------|--------|----------|
 | SecretSerializer | AppEntitySerializer['Secret'] | serialize | api_version | 无 | 不适用 |
 | SecretDeserializer | AppEntityDeserializer['Secret'] | deserialize | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/event/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -8603,17 +8086,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | EventReader | AppEntityReader[Event] | list_by_app_instance_name | 无 | 无 | Reader for Event |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/images/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -8771,28 +8243,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/images/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/images/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/images/management/commands/encryption_migration_images.py
 
 
@@ -8904,17 +8354,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/images/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -9052,17 +8491,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/networking/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/networking/constants.py
 
 
@@ -9082,17 +8510,6 @@
 |------|------|------|------|--------|----------|
 | NetworkProtocol | blue_krill.data_types.enum.StrStructuredEnum | 无 | TCP, UDP | 无 | 不适用 |
 | ExposedTypeName | blue_krill.data_types.enum.StrStructuredEnum | 无 | BK_HTTP | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/egress/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -9200,28 +8617,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ClusterEgressIps | typing.TypedDict | 无 | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/egress/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/egress/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -9366,17 +8761,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/egress/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -9543,17 +8927,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/networking/entrance/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/networking/entrance/addrs.py
 
 
@@ -9583,17 +8956,6 @@
 | URL | 无 | as_address, from_address, compare_with | 无 | define | 不适用 |
 | EnvExposedURL | typing.NamedTuple | address | 无 | 无 | 不适用 |
 | Address | 无 | hostname_endswith, to_exposed_url | 无 | define | Represents an exposed endpoint of application's de... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/entrance/allocator/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -10031,17 +9393,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/apps.py
 
 #### 导入的模块
@@ -10386,17 +9737,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/kres_entities/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/kres_entities/ingress.py
 
 #### 导入的模块
@@ -10464,17 +9804,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ProcessService | paas_wl.infras.resources.kube_res.base.AppEntity | has_port | 无 | dataclass | Service object for app process, internal service |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/kres_slzs/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -10595,28 +9924,6 @@
 | LegacyNginxRewrittenProvider | 无 | make_configuration_snippet, make_location_path, make_rewrite_target, parse_location_path | 无 | 无 | Maintains compatibility for ingress-nginx <= 0.21.... |
 | NginxRegexRewrittenProvider | 无 | make_configuration_snippet, make_rewrite_target, make_location_path, parse_location_path | 无 | 无 | Maintains compatibility for ingress-nginx >= 0.22.... |
 | ConfigurationSnippetPatcher | 无 | patch, unpatch, parse_service_info_from_rules | START_MARK, END_MARK, REGEX | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -11282,17 +10589,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/networking/ingress/models.py
 
 #### 导入的模块
@@ -11674,17 +10970,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/release_controller/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/release_controller/constants.py
 
 
@@ -11730,17 +11015,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ContainerRuntimeSpec | 无 | 无 | 无 | dataclass | The runtime specification of a container which con... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/release_controller/hooks/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -11927,17 +11201,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/release_controller/hooks/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/release_controller/hooks/models.py
 
 #### 导入的模块
@@ -11973,17 +11236,6 @@
 |------|------|------|------|--------|----------|
 | CommandManager | django.db.models.Manager | new | 无 | 无 | 不适用 |
 | Command | paas_wl.utils.models.UuidAuditedModel | region, lines, split_command, get_envs, update_status, set_logs_was_ready, set_int_requested_at, check_interruption_allowed | type, app, version, command, exit_code, status, logs_was_ready_at, int_requested_at, output_stream, build, config, operator, objects | 无 | The Command Model, which will be used to schedule ... |
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/tracing/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -12116,28 +11368,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paas_wl/workloads/volume/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paas_wl/workloads/volume/persistent_volume_claim/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paas_wl/workloads/volume/persistent_volume_claim/kres_entities.py
 
 #### 导入的模块
@@ -12244,28 +11474,6 @@
 |--------|------|--------|----------|
 | warn | `def warn(msg):` | 无 | Ignore all useless warning messages |
 | formfield | `def formfield(self, **kwargs):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/app_secret/__init__.py
-
-
-
-
-
 
 
 ---
@@ -12434,17 +11642,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/ci/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/ci/apps.py
 
 #### 导入的模块
@@ -12500,17 +11697,6 @@
 | BkUserOAuth | 无 | from_request, from_user_profile, from_simple_username, to_dict | 无 | dataclass | 不适用 |
 | AtomData | 无 | 无 | 无 | dataclass | 不适用 |
 | CIManager | typing_extensions.Protocol | 无 | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/ci/clients/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -12771,17 +11957,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/ci/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/ci/models.py
 
 #### 导入的模块
@@ -12921,28 +12096,6 @@
     TODO 前端修改完后删除，包括 url 和 serializers
   ... |
 | CIInfoViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | query, get_detail | permission_classes | 无 | 获取 CI 信息 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/cloudapi/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/cloudapi/components/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -13203,17 +12356,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/dev_sandbox/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/dev_sandbox/apps.py
 
 
@@ -13264,28 +12406,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | generate_envs | `def generate_envs(app: Application, module: Module) -> Dict[str, str]:` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/dev_sandbox/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/__init__.py
-
-
-
-
-
 
 
 ---
@@ -13411,17 +12531,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/dev_sandbox/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -13590,17 +12699,6 @@
 |------|------|------|------|--------|----------|
 | DevSandboxViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | deploy, delete, get_detail | permission_classes | 无 | 不适用 |
 | DevSandboxWithCodeEditorViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | deploy, delete, get_detail, get_password, list_app_dev_sandbox, pre_deploy_check, _get_version_info | permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/log/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -13846,28 +12944,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/log/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/log/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/log/management/commands/batch_disable_mount_hostpath.py
 
 #### 导入的模块
@@ -14086,17 +13162,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/log/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -14531,17 +13596,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/log/views/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/log/views/config.py
 
 #### 导入的模块
@@ -14727,17 +13781,6 @@
 | ModuleStructuredLogAPIView | ModuleLogAPIMixin, StructuredLogAPIView | 无 | 无 | 无 | 不适用 |
 | ModuleIngressLogAPIView | ModuleLogAPIMixin, IngressLogAPIView | 无 | 无 | 无 | 不适用 |
 | SysStructuredLogAPIView | StructuredLogAPIView | query_logs | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/paas_analysis/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -15151,28 +14194,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/publish/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/publish/entrance/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/publish/entrance/domains.py
 
 
@@ -15458,17 +14479,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/publish/market/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/publish/market/apps.py
 
 
@@ -15543,17 +14553,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | update_market_config_source_module | `@receiver(application_default_module_switch):` | receiver | 更新应用主模块时需要同步更新应用市场配置中模块信息，否则会导致发布条件判断出现问题 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/publish/market/legacy_client/__init__.py
-
-
-
-
-
 
 
 ---
@@ -15777,17 +14776,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/publish/market/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -16152,17 +15140,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/publish/sync_market/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/publish/sync_market/apps.py
 
 
@@ -16474,17 +15451,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/publish/sync_market/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/publish/sync_market/models.py
 
 
@@ -16643,17 +15609,6 @@
 |------|------|------|------|--------|----------|
 | ListAdvisedDocLinksSLZ | rest_framework.serializers.Serializer | validate_plat_panel | plat_panel, limit | 无 | Serializer for list doc links |
 | DocumentaryLinkSLZ | rest_framework.serializers.ModelSerializer | to_representation | title, short_description | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/servicehub/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -16847,39 +15802,6 @@
 | LocalPlanMgr | paasng.accessories.servicehub.services.BasePlanMgr | __init__, list_plans, create_plan, update_plan, delete_plan, _get_service_in_db, _handle_plan_data | service_obj_cls | 无 | Local in-database plans manager |
 | LocalPlainInstanceMgr | paasng.accessories.servicehub.services.PlainInstanceMgr | __init__, is_provisioned, create, destroy | 无 | 无 | 纯粹的本地增强服务实例的管理器, 不涉及增强服务资源申请的流程 |
 | LocalServiceBinder | 无 | __init__, bind, bind_without_plan, _get_plan_by_env, _bind_for_env | 无 | 无 | Service binder for local services |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/servicehub/local/test_manager.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/servicehub/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/servicehub/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -17232,17 +16154,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/servicehub/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -17975,17 +16886,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/services/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/services/apps.py
 
 
@@ -18019,28 +16919,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ResourceNotEnoughError | Exception | 无 | 无 | 无 | 资源不足异常 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/services/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/services/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -18288,17 +17166,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/services/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/services/models.py
 
 #### 导入的模块
@@ -18434,17 +17301,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/services/providers/mysql/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/services/providers/mysql/constants.py
 
 
@@ -18530,17 +17386,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/exceptions.py
 
 
@@ -18622,17 +17467,6 @@
 | RedisInstanceSchema | pydantic.main.BaseModel | 无 | 无 | 无 | 不适用 |
 | SentryInstanceSchema | pydantic.main.BaseModel | 无 | 无 | 无 | 不适用 |
 | RabbitMQInstanceSchema | pydantic.main.BaseModel | 无 | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/accessories/services/providers/sentry/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -18967,17 +17801,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/accessories/smart_advisor/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/accessories/smart_advisor/models.py
 
 
@@ -19204,28 +18027,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | AdvisedDocumentaryLinksViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list | permission_classes | 无 | Viewset for documentary links |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/bk_plugins/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -19678,17 +18479,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/bk_plugins/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/bk_plugins/models.py
 
 #### 导入的模块
@@ -20051,17 +18841,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/apps.py
 
 
@@ -20079,28 +18858,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PluginsCenterConfig | django.apps.AppConfig | ready | default_auto_field, name | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/bk_devops/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/bk_devops/apigw/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -20307,28 +19064,6 @@
 | get_devops_project_id | `def get_devops_project_id(git_project_id: int) -> str:` | 无 | 获取工蜂仓库对应的蓝盾项目ID, 用于获取仓库的代码检查等信息
 
     :param git_pr... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/bk_user/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/bk_user/backend/__init__.py
-
-
-
-
-
 
 
 ---
@@ -20705,17 +19440,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/apps.py
 
 
@@ -20810,17 +19534,6 @@
 | IAMResource | 无 | iam_attribute | 无 | define | IAM 资源定义 |
 | PluginIAMResource | IAMResource | 无 | 无 | define | 蓝鲸插件在 IAM 中对应的资源定义 |
 | PluginUserGroup | 无 | 无 | 无 | define | 蓝鲸插件在 IAM 中的用户组定义 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/management/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -21045,17 +19758,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/migrator.py
 
 #### 导入的模块
@@ -21133,17 +19835,6 @@
     IAM 用户组与插件开发中心用户组的关系
 
     每个插件默认会有 2 个用户组（不可删... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/policy/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -21274,28 +19965,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/itsm_adaptor/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/itsm_adaptor/apigw/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/itsm_adaptor/apigw/client.py
 
 
@@ -21405,17 +20074,6 @@
 | ItsmApiError | ItsmGatewayServiceError | 无 | 无 | 无 | When calling the bk-itsm api, bk-itsm returns an e... |
 | ItsmCatalogNotExistsError | ItsmGatewayServiceError | 无 | 无 | 无 | The specified catalog could not be queried on ITSM |
 | ItsmServiceNotExistsError | ItsmGatewayServiceError | 无 | 无 | 无 | The specified service could not be queried on ITSM |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/itsm_adaptor/open_apis/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -21809,28 +20467,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | clean_logs | `def clean_logs(logs: List[Hit], search_params: ElasticSearchParams) -> List[FlattenLog]:` | 无 | 从 ES 日志中转换成扁平化的 FlattenLog, 方便后续对日志字段的提取 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/management/commands/__init__.py
-
-
-
-
-
 
 
 ---
@@ -22569,17 +21205,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/models/__init__.py
 
 
@@ -22797,17 +21422,6 @@
 |------|------|------|------|--------|----------|
 | IsPluginCreator | rest_framework.permissions.BasePermission | has_permission, has_object_permission | 无 | 无 | 判断是否为插件创建者 |
 | PluginCenterFeaturePermission | rest_framework.permissions.BasePermission | has_permission | 无 | 无 | 是否允许用户访问插件开发者中心 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/releases/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -23359,17 +21973,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/thirdparty/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/bk_plugins/pluginscenter/thirdparty/api_serializers.py
 
 
@@ -23899,39 +22502,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/core/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/core/core/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/core/core/protections/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/core/core/protections/base.py
 
 #### 导入的模块
@@ -23987,17 +22557,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ConditionNotMatched | Exception | __init__, as_dict | 无 | 无 | Raised if publish condition not matched |
-
----
-
-
-### 模块: apiserver/paasng/paasng/core/core/storages/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -24523,28 +23082,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/accounts/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/accounts/admin.py
 
 
@@ -24629,17 +23166,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/accounts/internal/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/accounts/internal/user.py
 
 #### 导入的模块
@@ -24672,28 +23198,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SysUserFromVerifiedClientMiddleware | 无 | __init__, __call__, get_default_user | _client_role, _default_username, _default_role | 无 | When current request was issued by a verified inte... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/accounts/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/accounts/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -24925,17 +23429,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/accounts/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/accounts/models.py
 
 #### 导入的模块
@@ -25001,17 +23494,6 @@
      |
 | AuthenticatedAppAsUserManager | django.db.models.Manager | get_by_natural_key | 无 | 无 | 不适用 |
 | AuthenticatedAppAsUser | paasng.utils.models.TimestampedModel | natural_key | user, bk_app_code, is_active, objects | 无 | Store relationships which treat an authenticated(b... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/accounts/oauth/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -25194,17 +23676,6 @@
 | set_get_backends_callback_func | `def set_get_backends_callback_func(func: Callable):` | 无 | 不适用 |
 | get_available_backends | `def get_available_backends() -> Iterable[Tuple[str, 'OAuth2Backend']]:` | 无 | 不适用 |
 | get_backend | `def get_backend(backend_name: str) -> 'OAuth2Backend':` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/accounts/permissions/__init__.py
-
-
-
-
-
 
 
 ---
@@ -25555,28 +24026,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/bk_ci/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/bk_ci/apigw/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/bk_ci/apigw/client.py
 
 
@@ -25762,28 +24211,6 @@
 |------|------|------|------|--------|----------|
 | BkCIGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
 | BkCIApiError | BkCIGatewayServiceError | 无 | 无 | 无 | When calling the bk-devops api, bk-devops returns ... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/bk_log/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/bk_log/backend/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -25985,17 +24412,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/bkmonitorv3/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/bkmonitorv3/apps.py
 
 
@@ -26013,17 +24429,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BKMonitorAppConfig | django.apps.AppConfig | ready | name | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/bkmonitorv3/backend/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -26277,17 +24682,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/bkmonitorv3/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/bkmonitorv3/models.py
 
 
@@ -26382,28 +24776,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/iam/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/apigw/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/iam/apigw/client.py
 
 
@@ -26425,17 +24797,6 @@
 |------|------|------|------|--------|----------|
 | Group | bkapi_client_core.apigateway.OperationGroup | 无 | management_grade_managers_list, management_grade_managers, management_grade_managers_update, v2_management_delete_grade_manager, management_grade_manager_members, management_add_grade_manager_members, management_delete_grade_manager_members, v2_management_grade_manager_create_groups, v2_management_grade_manager_list_groups, v2_management_grade_manager_update_group, v2_management_grade_manager_delete_group, v2_management_group_members, v2_management_add_group_members, v2_management_delete_group_members, v2_management_groups_policies_grant, v2_management_groups_policies_revoke_by_action | 无 | 不适用 |
 | Client | bkapi_client_core.apigateway.APIGatewayClient | 无 | _api_name, api | 无 | 蓝鲸权限中心提供的 OpenAPI |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/bkpaas_iam_migration/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -26605,17 +24966,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | migration_json, dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/bkpaas_iam_migration/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -26879,17 +25229,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/iam/members/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/iam/members/apps.py
 
 
@@ -26907,28 +25246,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | MemberConfig | django.apps.AppConfig | 无 | name | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/members/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/members/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -27084,17 +25401,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/iam/members/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/iam/members/models.py
 
 #### 导入的模块
@@ -27131,17 +25437,6 @@
     IAM 用户组与开发者中心应用的关系
 
     每个应用默认会有 3 个用户组（不可删除）... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/open_apis/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -27205,17 +25500,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | AuthenticationFailed | Exception | 无 | 无 | 无 | 权限中心回调认证失败 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/open_apis/providers/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -27353,17 +25637,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ResourceAPIView | rest_framework.views.APIView | _get_options, post | authentication_classes | 无 | 统一入口: 提供给权限中心拉取各类资源 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/iam/permissions/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -27548,17 +25821,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/iam/permissions/resources/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/iam/permissions/resources/application.py
 
 #### 导入的模块
@@ -27698,17 +25960,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/legacydb/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/legacydb/adaptors.py
 
 #### 导入的模块
@@ -27843,17 +26094,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/oauth2/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/oauth2/api.py
 
 #### 导入的模块
@@ -27941,28 +26181,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/oauth2/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/oauth2/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/oauth2/management/commands/encryption_migration_oauth2.py
 
 
@@ -28033,17 +26251,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/infras/oauth2/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/infras/oauth2/models.py
 
 
@@ -28099,17 +26306,6 @@
 | get_app_secret_in_env_var | `def get_app_secret_in_env_var(bk_app_code: str) -> BkAppSecret:` | 无 | 应用部署时，写入环境变量中的密钥
     如果用户未主动设置，则为 BkAuth API 中返回的默... |
 | get_oauth2_client_secret | `def get_oauth2_client_secret(bk_app_code: str, region: str) -> str:` | 无 | 获取应用的 OAuth 默认密钥 |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/infras/perm_insure/__init__.py
-
-
-
-
-
 
 
 ---
@@ -28205,28 +26401,6 @@
 | check_drf_view_perm | `def check_drf_view_perm(view_func, is_admin42: bool):` | 无 | Check if a DRF view function has configured permis... |
 | get_unprotected_actions | `def get_unprotected_actions(view_func) -> List[str]:` | 无 | Get all unprotected actions of a DRF view function... |
 | check_django_view_perm | `def check_django_view_perm(view_func, is_admin42: bool):` | 无 | Check if a django view function has configured per... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/audit/__init__.py
-
-
-
-
-
 
 
 ---
@@ -28379,28 +26553,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/audit/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/audit/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/audit/management/commands/transfer_operations.py
 
 
@@ -28499,17 +26651,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/audit/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -28706,17 +26847,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/changelog/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/changelog/exceptions.py
 
 
@@ -28886,17 +27016,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BasicAuthentication | rest_framework.authentication.BaseAuthentication | authenticate | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/metrics/basic_services/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -29126,17 +27245,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/metrics/workloads/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/metrics/workloads/deployment.py
 
 #### 导入的模块
@@ -29170,28 +27278,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | UnavailableDeploymentTotalMetric | 无 | calc_metric, describe_metric | name, description | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/healthz/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -29303,17 +27389,6 @@
 | IssueSerializer | rest_framework.serializers.Serializer | 无 | fatal, description | 无 | 不适用 |
 | DianosisSerializer | rest_framework.serializers.Serializer | 无 | system_name, alive, issues | 无 | 不适用 |
 | HealthViewSet | rest_framework.viewsets.ViewSet | healthz, readyz | permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/metrics/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -29543,28 +27618,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/monitoring/metrics/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/metrics/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/monitoring/metrics/management/commands/deploy_stats_diagnoser.py
 
 #### 导入的模块
@@ -29661,17 +27714,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/metrics/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -29800,39 +27842,6 @@
     A smart model for handling time range
 
     - ... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/ascode/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -30306,17 +28315,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/dashboards/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/dashboards/handlers.py
 
 #### 导入的模块
@@ -30413,28 +28411,6 @@
 |------|------|------|------|--------|----------|
 | BKMonitorGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BKMonitorNotSupportedError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -30551,17 +28527,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -30754,17 +28719,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/service_monitor/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/monitoring/monitor/service_monitor/controller.py
 
 #### 导入的模块
@@ -30909,17 +28863,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/operations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/operations/apps.py
 
 
@@ -30988,17 +28931,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | initial, dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/operations/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -31168,17 +29100,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/plat_config/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/plat_config/urls.py
 
 
@@ -31221,17 +29142,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | FrontendFeatureViewSet | rest_framework.viewsets.ViewSet | get_features | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/misc/search/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -31412,17 +29322,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/tools/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/tools/app_desc.py
 
 #### 导入的模块
@@ -31547,17 +29446,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/misc/tracing/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/misc/tracing/apps.py
 
 
@@ -31664,28 +29552,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/plat_admin/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/admin42/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/plat_admin/admin42/apps.py
 
 
@@ -31747,17 +29613,6 @@
 | 符号名 | 来自模块 | 访问的属性 | 代码块 |
 |--------|---------|-----------|-------|
 | models | django.db.models | 不适用 | module |
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/admin42/serializers/__init__.py
-
-
 
 
 
@@ -32301,17 +30156,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/plat_admin/admin42/templatetags/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/plat_admin/admin42/templatetags/admin_utils.py
 
 
@@ -32850,17 +30694,6 @@
 |------|------|------|------|--------|----------|
 | DashboardTemplateManageView | paasng.plat_admin.admin42.utils.mixins.GenericTemplateView | get_context_data | template_name, permission_classes, name | 无 | 平台服务管理-仪表盘模板配置 |
 | DashboardTemplateViewSet | rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | create, update, destroy | queryset, serializer_class, permission_classes | 无 | 平台服务管理-仪表盘模板配置API |
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/admin42/views/engine/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -33578,17 +31411,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/plat_admin/admin_cli/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/plat_admin/admin_cli/apps.py
 
 
@@ -33667,28 +31489,6 @@
 | wait_for_release | `def wait_for_release(release: Release, timeout_seconds: int = 120, interval_callback: Optional[Callable] = None) -> bool:` | 无 | Wait for the release to become ready.
 
     :param ... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/admin_cli/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/admin_cli/management/commands/__init__.py
-
-
-
-
-
 
 
 ---
@@ -33832,17 +31632,6 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_mapper_v1_envs | `def get_mapper_v1_envs() -> Iterable[ModuleEnvironment]:` | 无 | Get all environments that use resource mapper "v1"... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/api_doc/__init__.py
-
-
-
-
-
 
 
 ---
@@ -34007,17 +31796,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/plat_admin/initialization/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/plat_admin/initialization/apps.py
 
 
@@ -34035,28 +31813,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | InitializationConfig | django.apps.AppConfig | 无 | name | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/initialization/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/initialization/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -34106,28 +31862,6 @@
 |------|------|------|------|--------|----------|
 | Repo | 无 | 无 | 无 | dataclass | 不适用 |
 | Command | django.core.management.base.BaseCommand | add_arguments, handle, get_manager, get_tmpls_repo, bkpaas_project | help | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/initialization/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/numbers/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -34272,17 +32006,6 @@
 | ColUserCodeLineNumsColumn | ContributionColumn | 无 | field_name, display_name | 无 | 不适用 |
 | ColProjectCommitNumsColumn | ContributionColumn | 无 | field_name, display_name | 无 | 不适用 |
 | ColUserCommitNumsColumn | ContributionColumn | 无 | field_name, display_name | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/plat_admin/system/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -34595,50 +32318,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/plat_mgt/infras/services/serializers/services.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/applications/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/applications/admin.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/applications/apps.py
 
 
@@ -34865,28 +32544,6 @@
 |--------|------|--------|----------|
 | register_builtin_user_groups_and_grade_manager | `def register_builtin_user_groups_and_grade_manager(application: Application):` | 无 | 
     默认为每个新建的蓝鲸应用创建三个用户组（管理者，开发者，运营者），以及该应用对应的分级管理... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/applications/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/applications/management/commands/__init__.py
-
-
-
-
-
 
 
 ---
@@ -35360,17 +33017,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/applications/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -36363,28 +34009,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/bk_lesscode/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/bk_lesscode/apigw/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/bk_lesscode/apigw/client.py
 
 
@@ -36520,17 +34144,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LesscodeModuleViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve | permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/bkapp_model/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -37689,28 +35302,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/bkapp_model/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/bkapp_model/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/bkapp_model/management/commands/sanitize_autoscaling.py
 
 #### 导入的模块
@@ -38365,17 +35956,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/bkapp_model/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/bkapp_model/models.py
 
 #### 导入的模块
@@ -38802,28 +36382,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/declarative/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/declarative/application/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/declarative/application/constants.py
 
 
@@ -39047,17 +36605,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/declarative/application/validations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/declarative/application/validations/v2.py
 
 
@@ -39234,17 +36781,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/declarative/deployment/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/declarative/deployment/controller.py
 
 #### 导入的模块
@@ -39393,17 +36929,6 @@
 |------|------|------|------|--------|----------|
 | BkSaaSEnvVariableFactory | 无 | __init__, make, encode_data, decode_data | variable_name | 无 | Generate env variable from config |
 | BkSaaSAddrDiscoverer | 无 | get, extend_with_clusters | 无 | 无 | Get the service addresses of the given SaaS items |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/declarative/deployment/validations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -39752,17 +37277,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/declarative/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/declarative/models.py
 
 #### 导入的模块
@@ -39934,17 +37448,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/apps.py
 
 #### 导入的模块
@@ -39974,17 +37477,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | EngineConfig | paasng.utils.addons.PlugableAppConfig | ready | name, default | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/configurations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -40335,17 +37827,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/deploy/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/deploy/archive/__init__.py
 
 
@@ -40541,17 +38022,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DeployPoller | blue_krill.async_utils.poll_task.TaskPoller | start | 无 | 无 | BasePoller for querying the status of deployment o... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/deploy/bg_build/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -40753,17 +38223,6 @@
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/deploy/bg_command/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/deploy/bg_command/bkapp_hook.py
 
 #### 导入的模块
@@ -40929,17 +38388,6 @@
 | interrupt_command | `def interrupt_command(command: 'CommandModel') -> bool:` | 无 | Interrupt a command.
 
     :param command: Command ... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/deploy/bg_wait/__init__.py
-
-
-
-
-
 
 
 ---
@@ -41670,28 +39118,6 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DeploymentLogStreams | 无 | __init__, main_stream, main_stream_for_write, preparation_stream, preparation_stream_for_write, build_proc_stream, pre_release_cmd_stream, _get_stream_for_write, _get_stream | stream_uuid_fields | 无 | Manages the log streams(in databases) for a deploy... |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -42497,17 +39923,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/models/__init__.py
 
 
@@ -43001,17 +40416,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/phases_steps/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/phases_steps/display_blocks.py
 
 
@@ -43212,17 +40616,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DeployStepPicker | 无 | pick, _pick_default_meta_set | 无 | 无 | 部署步骤选择器 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/processes/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -43591,17 +40984,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/engine/streaming/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/engine/streaming/apps.py
 
 
@@ -43749,17 +41131,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|---|------|-------|
 | PVAR_UUID | (?P<uuid>[0-9a-f-]{32,36}) | `PVAR_UUID = '(?P<uuid>[0-9a-f-]{32,36})'` | module |
 | urlpatterns | 不适用 | `urlpatterns = [re_path(make_app_pattern('/released_info/$'), views.ReleasedInfoViewSet.as_view({'get': 'get_current_info'}), name='api.released_info.get_current_info'), re_path(make_app_pattern('/released_state/$'), views.ReleasedInfoViewSet.as_view({'get': 'get_current_state'}), name='api.released_info.get_current_state'), re_path(make_app_pattern_with_global_envs('/releases/$'), views.ReleasesViewset.as_view({'post': 'release'}), name='api.releases.release'), re_path(make_app_pattern('/config_vars/$', include_envs=False), views.ConfigVarViewSet.as_view({'get': 'list', 'post': 'create'}), name='api.config_vars'), re_path(make_app_pattern('/config_vars/(?P<id>\\d+)/$', include_envs=False), views.ConfigVarViewSet.as_view({'put': 'update', 'delete': 'destroy'}), name='api.config_vars.single'), re_path(make_app_pattern('/config_vars/clone_from/(?P<source_module_name>[^/]+)$', include_envs=False), views.ConfigVarViewSet.as_view({'post': 'clone'}), name='api.config_vars.clone'), re_path(make_app_pattern('/config_vars/batch/$', include_envs=False), views.ConfigVarViewSet.as_view({'post': 'batch'}), name='api.config_vars.batch'), re_path(make_app_pattern('/config_vars/import/$', include_envs=False), views.ConfigVarImportExportViewSet.as_view({'post': 'import_by_file'}), name='api.config_vars.import_by_file'), re_path(make_app_pattern('/config_vars/export/$', include_envs=False), views.ConfigVarImportExportViewSet.as_view({'get': 'export_to_file'}), name='api.config_vars.export_to_file'), re_path(make_app_pattern('/config_vars/template/$', include_envs=False), views.ConfigVarImportExportViewSet.as_view({'get': 'template'}), name='api.config_vars.template'), re_path(make_app_pattern('/config_vars/preset/$', include_envs=False), views.PresetConfigVarViewSet.as_view({'get': 'list'}), name='api.preset_config_vars'), re_path(make_app_pattern('/config_vars/(?P<config_vars_key>[A-Z][A-Z0-9_]*)/$', include_envs=False), views.ConfigVarViewSet.as_view({'get': 'retrieve_by_key', 'post': 'upsert_by_key'}), name='api.config_vars_by_key'), re_path(make_app_pattern('/deployments/%s/result/$' % PVAR_UUID, include_envs=False), views.DeploymentViewSet.as_view({'get': 'get_deployment_result'}), name='api.deploy.result'), re_path(make_app_pattern('/deployments/%s/logs/export/$' % PVAR_UUID, include_envs=False), views.DeploymentViewSet.as_view({'get': 'export_deployment_log'}), name='api.deploy.export_log'), re_path(make_app_pattern('/deployments/{}/interruptions/$'.format(PVAR_UUID), include_envs=False), views.DeploymentViewSet.as_view({'post': 'user_interrupt'}), name='api.deploy.release_interruptions'), re_path(make_app_pattern('/deployments/lists/$', include_envs=False), views.DeploymentViewSet.as_view({'get': 'list'}), name='api.deploy.lists'), re_path(make_app_pattern('/deployments/$'), views.DeploymentViewSet.as_view({'post': 'deploy'}), name='api.deploy'), re_path(make_app_pattern('/deployments/resumable/$'), views.DeploymentViewSet.as_view({'get': 'get_resumable_deployment'}), name='api.deploy.resumable'), re_path(make_app_pattern('/deploy/preparations$'), views.DeploymentViewSet.as_view({'get': 'check_preparations'}), name='api.deploy.check_preparations'), re_path(make_app_pattern('/offlines/$'), views.OfflineViewset.as_view({'post': 'offline'}), name='api.offline'), re_path(make_app_pattern('/offlines/resumable/$'), views.OfflineViewset.as_view({'get': 'get_resumable_offline_operations'}), name='api.offline.resumable'), re_path(make_app_pattern('/offlines/%s/result/$' % PVAR_UUID, include_envs=False), views.OfflineViewset.as_view({'get': 'get_offline_result'}), name='api.deploy.result'), re_path(make_app_pattern('/deploy_operations/lists/$', include_envs=False), views.OperationsViewset.as_view({'get': 'list'}), name='api.deploy_operation.lists'), re_path(make_app_pattern('/build/artifact/image/$', include_envs=False), views.ImageArtifactViewSet.as_view({'get': 'list_image'}), name='api.build.image.list'), re_path(make_app_pattern('/build/artifact/image/(?P<build_id>[^/]+)$', include_envs=False), views.ImageArtifactViewSet.as_view({'get': 'retrieve_image_detail'}), name='api.build.image.detail'), re_path(make_app_pattern('/build_process/$', include_envs=False), views.BuildProcessViewSet.as_view({'get': 'list'}), name='api.build_process.list')]` | module |
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/engine/utils/__init__.py
-
-
-
-
 
 
 
@@ -44540,17 +41911,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/environments/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/environments/constants.py
 
 
@@ -44613,17 +41973,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | initial, dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/environments/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -44762,17 +42111,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ModuleEnvRoleProtectionViewSet | paasng.platform.applications.mixins.ApplicationCodeInPathMixin, rest_framework.viewsets.GenericViewSet | get_envs, list, toggle, batch_save | queryset, serializer_class, permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/evaluation/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -45058,28 +42396,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/evaluation/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/evaluation/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/evaluation/management/commands/collect_app_operation_report.py
 
 
@@ -45229,17 +42545,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/evaluation/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -45446,28 +42751,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | IdleAppNotificationMuteRuleViewSet | paasng.platform.applications.mixins.ApplicationCodeInPathMixin, rest_framework.viewsets.GenericViewSet | create | permission_classes | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -45970,17 +43253,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/cnative_migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/mgrlegacy/cnative_migrations/application.py
 
 
@@ -46285,28 +43557,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/mgrlegacy/management/commands/make_legacy_app_for_test.py
 
 #### 导入的模块
@@ -46545,17 +43795,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/mgrlegacy/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -46929,17 +44168,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/modules/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/modules/apps.py
 
 
@@ -47146,28 +44374,6 @@ s-mart(镜像): 'image:镜像 tag'
 | SlugbuilderBinder | 无 | __init__, bind_buildpack, unbind_buildpack, set_buildpacks | 无 | 无 | slugbuilder 和 buildpack 绑定工具 |
 | ModuleRuntimeBinder | 无 | __init__, bind_bp_stack, bind_image, clear_runtime, bind_buildpacks, bind_buildpack, get_ordered_buildpacks_list | 无 | 无 | 模块相关运行时绑定工具 |
 | ModuleRuntimeManager | 无 | __init__, is_secure_encrypted_runtime, is_need_blobstore_env, is_cnb_runtime, get_slug_builder, get_slug_builder, get_slug_builder, get_slug_runner, get_slug_runner, get_slug_runner, list_buildpacks | SECURE_ENCRYPTED_LABEL, HTTP_SUPPORTED_LABEL, CNB_LABEL | 无 | 模块相关运行时查询工具(NG) |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/modules/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/modules/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -47838,17 +45044,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/modules/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/modules/models/__init__.py
 
 
@@ -48370,17 +45565,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/scene_app/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/scene_app/apps.py
 
 
@@ -48496,28 +45680,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/scene_app/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/scheduler/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/scheduler/apps.py
 
 
@@ -48570,28 +45732,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | update_remote_services | `@scheduler.scheduled_job('interval', minutes=settings.REMOTE_SERVICES_UPDATE_INTERVAL_MINUTES):` | scheduler.scheduled_job | Update remote services periodically |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/scheduler/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/scheduler/management/commands/__init__.py
-
-
-
-
-
 
 
 ---
@@ -48653,17 +45793,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Command | django.core.management.base.BaseCommand | handle | help | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/smart_app/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -48761,28 +45890,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/smart_app/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/smart_app/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/smart_app/management/commands/smart_tool.py
 
 #### 导入的模块
@@ -48868,17 +45975,6 @@ s-mart(镜像): 'image:镜像 tag'
 | PackageStashResponseSLZ | rest_framework.serializers.Serializer | 无 | app_description, signature, supported_services | 无 | 不适用 |
 | DiffItemSLZ | rest_framework.serializers.Serializer | 无 | resource, diff_type | 无 | 不适用 |
 | DescriptionDiffResultSLZ | rest_framework.serializers.Serializer | 无 | services | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/smart_app/services/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -49267,17 +46363,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/sourcectl/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/sourcectl/apps.py
 
 
@@ -49461,17 +46546,6 @@ s-mart(镜像): 'image:镜像 tag'
 | DiffFeatureType | blue_krill.data_types.enum.StrStructuredEnum | 无 | INTERNAL, EXTERNAL | 无 | 代码对比类型 |
 | BasicSourceType | blue_krill.data_types.enum.StrStructuredEnum | 无 | GIT, SVN, PACKAGE | 无 | 基础源码类型 |
 | VersionType | blue_krill.data_types.enum.StrStructuredEnum | 无 | TAG, BRANCH, TRUNK, IMAGE, PACKAGE | 无 | 版本类型. 对应 VersionInfo.version_type |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/sourcectl/controllers/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -49857,17 +46931,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/sourcectl/docker/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/sourcectl/docker/models.py
 
 
@@ -49952,17 +47015,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/sourcectl/git/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/sourcectl/git/client.py
 
 #### 导入的模块
@@ -50008,17 +47060,6 @@ s-mart(镜像): 'image:镜像 tag'
 | GitCommand | 无 | __init__, to_cmd, get_sensitive_texts, __str__ | 无 | 无 | 不适用 |
 | GitCloneCommand | GitCommand | __init__, to_cmd, get_sensitive_texts | 无 | 无 | 不适用 |
 | GitClient | 无 | checkout, clone, clone_no_blob, list_remote, list_remote_raw, list_refs, clean_meta_info, init_repo, add, commit, push, _get_commit_info, parse_ref, run, err_stdout_as_exc | COMMIT_INFO_REGEX, META_GIT_DIR, _git_filepath, _default_timeout | 无 | Git 客户端 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/sourcectl/gitee/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -50546,17 +47587,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/sourcectl/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/sourcectl/models.py
 
 #### 导入的模块
@@ -50685,17 +47715,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | find_by_module | `def find_by_module(module: Module) -> RepositoryInstance:` | 无 | Find the repository inst by the given module |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/sourcectl/package/__init__.py
-
-
-
-
-
 
 
 ---
@@ -51654,17 +48673,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/platform/templates/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/platform/templates/apps.py
 
 
@@ -51952,17 +48960,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/paasng/platform/templates/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -52748,17 +49745,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/utils/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/utils/addons.py
 
 #### 导入的模块
@@ -53276,17 +50262,6 @@ s-mart(镜像): 'image:镜像 tag'
 | find_innermost_exception | `def find_innermost_exception(exception: BaseException) -> BaseException:` | 无 | find the innermost exception in the exception chai... |
 | detect_error_code | `def detect_error_code(exception_cls: Type[BaseException]) -> Optional[APIError]:` | 无 | 不适用 |
 | find_coded_error_message | `def find_coded_error_message(exception: BaseException) -> Optional[str]:` | 无 | Turn a Exception into bk error code and error mess... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/utils/es_log/__init__.py
-
-
-
-
-
 
 
 ---
@@ -53913,17 +50888,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/paasng/utils/monitoring/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/paasng/utils/monitoring/sentry.py
 
 #### 导入的模块
@@ -54105,17 +51069,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | generate_bash_command_with_tokens | `def generate_bash_command_with_tokens(command: List[str], args: List[str]) -> str:` | 无 | returns a bash script that execute command + args ... |
-
-
----
-
-
-### 模块: apiserver/paasng/paasng/utils/rate_limit/__init__.py
-
-
-
-
-
 
 
 ---
@@ -54696,39 +51649,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/api/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/api/apigw/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/api/apigw/test_ai_agent.py
 
 #### 导入的模块
@@ -54964,17 +51884,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/api/bkapp_model/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/api/bkapp_model/test_bkapp_model.py
 
 #### 导入的模块
@@ -55123,17 +52032,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | FakeMiddleware | 无 | __init__, __call__ | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/api/extensions/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -56329,28 +53227,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/api/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/api/test_entrance.py
 
 #### 导入的模块
@@ -56520,17 +53396,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/apis/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/apis/admin/test_helpers.py
 
 #### 导入的模块
@@ -56561,39 +53426,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | helm_release_secret | `@pytest.fixture():` | pytest.fixture | 不适用 |
 | test_HelmReleaseParser | `def test_HelmReleaseParser(helm_release_secret):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/applications/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/applications/models/__init__.py
-
-
-
-
-
 
 
 ---
@@ -56800,28 +53632,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/cnative/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/cnative/specs/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/cnative/specs/conftest.py
 
 #### 导入的模块
@@ -56829,17 +53639,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 模块路径 | 访问的属性 | 代码块 |
 |---------|-----------|-------|
 | pytest | fixture | module |
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/cnative/specs/procs/__init__.py
-
 
 
 
@@ -57320,28 +54119,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/deploy/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/deploy/actions/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/deploy/actions/conftest.py
 
 #### 导入的模块
@@ -57470,17 +54247,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestAppCommandExecutor | 无 | stream, hook_maker, _disable_termcolor, test_perform_successful, test_perform_logs_unready, test_perform_but_pod_dead, test_perform_but_be_interrupt | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/deploy/app_res/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -57701,17 +54467,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/dev_sandbox/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/dev_sandbox/conftest.py
 
 #### 导入的模块
@@ -57858,17 +54613,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/event/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/event/test_reader.py
 
 #### 导入的模块
@@ -57907,17 +54651,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/mgrlegacy/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/mgrlegacy/test_processes.py
 
 #### 导入的模块
@@ -57946,28 +54679,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | test_get_processes_info | `def test_get_processes_info(wl_app, mock_reader):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/monitoring/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/monitoring/app_monitor/__init__.py
-
-
-
-
-
 
 
 ---
@@ -58053,17 +54764,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/monitoring/bklog/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/bk_app/monitoring/bklog/test_kres_slzs.py
 
 #### 导入的模块
@@ -58105,17 +54805,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestBKLogConfigSerializer | 无 | test_serialize | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/bk_app/processes/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -58482,17 +55171,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/core/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/core/test_env.py
 
 #### 导入的模块
@@ -58552,28 +55230,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | test_get_process_selector | `def test_get_process_selector(wl_app, wl_release):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/e2e/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/__init__.py
-
-
-
-
-
 
 
 ---
@@ -58694,17 +55350,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/v0_21_0/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/v0_21_0/conftest.py
 
 #### 导入的模块
@@ -58765,17 +55410,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | test_get | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer/'), ('/multi/layer/foo', '/foo', '/multi/layer/'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer/')]):` | pytest.mark.parametrize | 不适用 |
 | test_post | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer/'), ('/multi/layer/foo', '/foo', '/multi/layer/'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer/')]):` | pytest.mark.parametrize | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/v0_22_0/__init__.py
-
-
-
-
-
 
 
 ---
@@ -58846,17 +55480,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/v1_0_0/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/e2e/ingress/v1_0_0/conftest.py
 
 #### 导入的模块
@@ -58917,28 +55540,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | test_get | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
 | test_post | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/infras/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/infras/cluster/__init__.py
-
-
-
-
-
 
 
 ---
@@ -59213,17 +55814,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/infras/resource_templates/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/infras/resource_templates/conftest.py
 
 #### 导入的模块
@@ -59333,28 +55923,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/infras/resources/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/infras/resources/base/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/infras/resources/base/test_credentials.py
 
 #### 导入的模块
@@ -59455,17 +56023,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/infras/resources/generation/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/infras/resources/generation/test_generation.py
 
 #### 导入的模块
@@ -59502,17 +56059,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestGeneration | 无 | release, process, v1_mapper, v2_mapper, test_v1_pod_name, test_preset_process_client, test_v2_name | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/infras/resources/kube_res/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -59568,17 +56114,6 @@ s-mart(镜像): 'image:镜像 tag'
 | TestDummyReader | 无 | test_watch_with_error_event, test_watch_with_expired_exception | 无 | 无 | 不适用 |
 | TestDummyManager | 无 | test_create | 无 | 无 | 不适用 |
 | TestEntitySerializerPicker | 无 | _setup_gvk_config, test_priority, test_api_version_not_supported | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/infras/resources/utils/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -59652,17 +56187,6 @@ s-mart(镜像): 'image:镜像 tag'
 | TestGetFullNodeSelector | 无 | test_empty, test_integrated, test_with_cluster_state | 无 | 无 | 不适用 |
 | TestGetFullTolerations | 无 | test_empty, test_integrated | 无 | 无 | 不适用 |
 | TestStandardizeTolerations | 无 | test_condensed_list_valid | 无 | 无 | Testcases for `TestTolerationDataHelper` class |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/test_utils/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -59772,17 +56296,6 @@ s-mart(镜像): 'image:镜像 tag'
 | FooCustomAsDict | 无 | __init__, as_dict | 无 | 无 | 不适用 |
 | TestDynamicJSONField | 无 | test_make_json_field, test_get_prep_value | 无 | 无 | 不适用 |
 | TestConvertKeyToCamel | 无 | test_convert_key_to_camel | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/utils/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -59907,17 +56420,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/workloads/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/workloads/autoscaling/test_kres_slzs.py
 
 #### 导入的模块
@@ -59992,28 +56494,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/egress/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/egress/test_region.py
 
 #### 导入的模块
@@ -60048,28 +56528,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestCommandGenState | 无 | existing_node_names, node_maker, default_node_name, _setup, test_normal, test_with_adding_node, test_ignore_labels, test_ignore_multi_labels, test_ignore_masters | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/ingress/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/ingress/domains/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -60149,17 +56607,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestCNativeDftCustomDomainManager | 无 | test_create_no_deploys, test_create_successfully, test_create_failed, domain_foo_com, test_update, test_delete | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/ingress/kres/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -60265,17 +56712,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestProcessService | 无 | _setup_data, test_integrated, test_get_not_found, test_get_normal, test_update_not_found, test_update, test_update_with_less_ports | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paas_wl/workloads/networking/ingress/managers/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -60737,17 +57173,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paas_wl/workloads/release_controller/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paas_wl/workloads/release_controller/test_api.py
 
 #### 导入的模块
@@ -60845,39 +57270,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/cloudapi/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/cloudapi/conftest.py
 
 #### 导入的模块
@@ -60905,17 +57297,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | APIRequestFactory | DRFAPIRequestFactory | __init__, request | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/cloudapi/test_api.py
-
-
-
-
-
-
 
 ---
 
@@ -61042,17 +57423,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/dev_sandbox/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/dev_sandbox/test_config_var.py
 
 #### 导入的模块
@@ -61082,17 +57452,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | test_generate_envs | `def test_generate_envs(bk_app, bk_module):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/log/__init__.py
-
-
-
-
-
 
 
 ---
@@ -61238,17 +57597,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/paas_analysis/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/paas_analysis/conftest.py
 
 #### 导入的模块
@@ -61326,17 +57674,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/publish/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/publish/conftest.py
 
 #### 导入的模块
@@ -61361,17 +57698,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | tag_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
 | create_default_tag | `@pytest.fixture():` | pytest.fixture | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/publish/entrance/__init__.py
-
-
-
-
-
 
 
 ---
@@ -61630,17 +57956,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | test_get_legacy_url | `def test_get_legacy_url(bk_stag_env):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/publish/market/__init__.py
-
-
-
-
-
 
 
 ---
@@ -61908,17 +58223,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/servicehub/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/servicehub/conftest.py
 
 #### 导入的模块
@@ -61971,17 +58275,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 变量名 | 值 | 语句 | 代码块 |
 |--------|---|------|-------|
 | REMOTE_INSTANCE_JSON | {'uuid': '493b6f67-b4fd-4739-9a27-85a9356422e6', 'created': '2019-03-27T09:00:40.489049Z', 'updated': '2019-03-27T09:00:40.490166Z', 'config': {'username': 'pig-bucket-2', 'max_size': 1048576}, 'credentials': {'aws_access_key_id': '35ZQ8Q2J6C81C6B87240', 'aws_secret_access_key': 'txdM570AYr2scYADCIBLhv2GJPM2mnCZsjoeQ6fi', 'rgw_host': '87c5004cb123:38081', 'rgw_url': 'http://87c5004cb123:38081', 'bucket': 'pig-bucket-2'}, 'service': '4c17073c-b2b9-421a-8a67-223200e3c0dc', 'plan': 'f8ad12f2-4dd5-4871-8e31-9a1f9f3795a2'} | `REMOTE_INSTANCE_JSON = {'uuid': '493b6f67-b4fd-4739-9a27-85a9356422e6', 'created': '2019-03-27T09:00:40.489049Z', 'updated': '2019-03-27T09:00:40.490166Z', 'config': {'username': 'pig-bucket-2', 'max_size': 1048576}, 'credentials': {'aws_access_key_id': '35ZQ8Q2J6C81C6B87240', 'aws_secret_access_key': 'txdM570AYr2scYADCIBLhv2GJPM2mnCZsjoeQ6fi', 'rgw_host': '87c5004cb123:38081', 'rgw_url': 'http://87c5004cb123:38081', 'bucket': 'pig-bucket-2'}, 'service': '4c17073c-b2b9-421a-8a67-223200e3c0dc', 'plan': 'f8ad12f2-4dd5-4871-8e31-9a1f9f3795a2'}` | module |
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/accessories/servicehub/remote/__init__.py
-
-
-
-
 
 
 
@@ -62438,17 +58731,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/services/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/services/conftest.py
 
 #### 导入的模块
@@ -62634,17 +58916,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/accessories/smart_advisor/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/accessories/smart_advisor/test_models.py
 
 #### 导入的模块
@@ -62772,28 +59043,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestTaggingLocalPath | 无 | test_tagging_python_using_different_encodings, test_tagging_php, test_tagging_go, test_tagging_nodejs | 无 | 无 | 不适用 |
 | TestGetDeploymentTags | 无 | setup_data, test_normal | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/bk_plugins/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -62963,17 +59212,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/conftest.py
 
 #### 导入的模块
@@ -63035,28 +59273,6 @@ s-mart(镜像): 'image:镜像 tag'
 | test_release | `@pytest.fixture():` | pytest.fixture | 不适用 |
 | itsm_test_stage | `@pytest.fixture():` | pytest.fixture | 不适用 |
 | release_strategy | `@pytest.fixture():` | pytest.fixture | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/iam_adaptor/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/iam_adaptor/management/__init__.py
-
-
-
-
-
 
 
 ---
@@ -63186,17 +59402,6 @@ s-mart(镜像): 'image:镜像 tag'
 | test_setup_builtin_grade_manager | `def test_setup_builtin_grade_manager(plugin, iam_management_client):` | 无 | 不适用 |
 | test_setup_builtin_user_groups | `def test_setup_builtin_user_groups(plugin, iam_management_client):` | 无 | 不适用 |
 | test_delete_builtin_user_groups | `def test_delete_builtin_user_groups(plugin, iam_management_client):` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/iam_adaptor/policy/__init__.py
-
-
-
-
-
 
 
 ---
@@ -63362,17 +59567,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/log/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/log/test_api.py
 
 #### 导入的模块
@@ -63480,17 +59674,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestElasticSearchFilter | 无 | plugin, search, test_filter_by_plugin, test_filter_by_builtin_filters, test_filter_by_builtin_excludes | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/release/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -63893,17 +60076,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/thirdparty/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/thirdparty/conftest.py
 
 #### 导入的模块
@@ -64075,17 +60247,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/core/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/core/core/test_storages.py
 
 #### 导入的模块
@@ -64114,50 +60275,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestSADBManager | 无 | test_make_uni_key | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/core/region/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/core/region/test_app.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/infras/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/infras/accounts/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -64343,17 +60460,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/infras/bk_log/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/infras/bk_log/test_client.py
 
 #### 导入的模块
@@ -64390,17 +60496,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/infras/iam/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/infras/iam/conftest.py
 
 #### 导入的模块
@@ -64428,17 +60523,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | generate_apply_url | `def generate_apply_url(username: str, action_request_list: List[ActionResourcesRequest]) -> str:` | 无 | 不适用 |
 | app_permission_obj | `@pytest.fixture():` | pytest.fixture | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/infras/iam/fake/__init__.py
-
-
-
-
-
 
 
 ---
@@ -64475,17 +60559,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | FakeApplicationIAM | 无 | is_allowed, is_allowed_with_cache | 无 | 无 | 不适用 |
 | FakeApplicationPermission | paasng.infras.iam.permissions.perm.Permission | resource_inst_multi_actions_allowed, batch_resource_multi_actions_allowed | iam | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/infras/iam/permissions/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -64651,28 +60724,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/misc/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/misc/audit/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/misc/audit/test_api.py
 
 #### 导入的模块
@@ -64739,28 +60790,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestAppOperationRecord | 无 | test_opreation_record_display | 无 | 无 | 不适用 |
 | TestAppLatestOp | 无 | test_post_save_handler | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/misc/monitoring/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/misc/monitoring/alert_rules/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -64883,17 +60912,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/misc/monitoring/metrics/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/misc/monitoring/metrics/test_client.py
 
 #### 导入的模块
@@ -64965,17 +60983,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestResourceMetricManager | 无 | _set_up, metric_client, test_normal_gen_series_query, test_empty_gen_series_query, test_exception_gen_series_query, test_gen_series_query, test_gen_all_series_query | 无 | 无 | 不适用 |
 | TestTimeRange | 无 | test_simple_date_string, test_to_now | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/misc/monitoring/service_monitor/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -65147,17 +61154,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/misc/operations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/misc/operations/test_operations.py
 
 #### 导入的模块
@@ -65233,17 +61229,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/misc/tools/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/misc/tools/test_app_desc.py
 
 #### 导入的模块
@@ -65274,17 +61259,6 @@ s-mart(镜像): 'image:镜像 tag'
 | test_transform_module_spec | `@pytest.mark.parametrize(('spec_input', 'expected_spec_output'), [({'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}]}, OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}]})), ({'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}, OrderedDict({'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}})), ({'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}, 'worker': {'command': 'python manage.py runserver', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}}, OrderedDict({'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]}), OrderedDict({'name': 'worker', 'procCommand': 'python manage.py runserver', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'worker', 'protocol': 'TCP', 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})]})), ({'scripts': {'pre_release_hook': 'bin/pre-release.sh'}}, OrderedDict({'hooks': {'preRelease': {'procCommand': 'bin/pre-release.sh'}}})), ({'svc_discovery': {'bk_saas': [{'bk_app_code': 'bk-iam'}, {'bk_app_code': 'bk-user', 'module_name': 'api'}]}}, OrderedDict({'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user', 'moduleName': 'api'}]}}))]):` | pytest.mark.parametrize | 不适用 |
 | test_transform_modules_section | `@pytest.mark.parametrize(('modules_data', 'expected_modules_data'), [({'default': {'is_default': True, 'source_dir': 'src/server', 'language': 'Python', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}]}, 'frontend': {'is_default': False, 'source_dir': 'src/frontend', 'language': 'NodeJS', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}], 'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}}}, [OrderedDict({'name': 'default', 'isDefault': True, 'sourceDir': 'src/server', 'language': 'Python', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}]}})}), OrderedDict({'name': 'frontend', 'isDefault': False, 'sourceDir': 'src/frontend', 'language': 'NodeJS', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}, 'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})]})})]), ({'api_server': {'is_default': False, 'source_dir': 'src/backend', 'language': 'Python', 'services': [{'name': 'mysql', 'share_from': 'default'}, {'name': 'rabbitmq', 'share_from': 'default'}], 'env_variables': [{'key': 'API_KEY', 'value': 'api_value', 'description': 'API 密钥'}], 'processes': {'worker': {'command': 'python manage.py runserver', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}, 'scripts': {'pre_release_hook': 'python manage.py migrate'}, 'svc_discovery': {'bk_saas': [{'bk_app_code': 'bk-iam'}, {'bk_app_code': 'bk-user', 'module_name': 'api'}]}}}, [OrderedDict({'name': 'api_server', 'isDefault': False, 'sourceDir': 'src/backend', 'language': 'Python', 'spec': OrderedDict({'addons': [{'name': 'mysql', 'shareFrom': 'default'}, {'name': 'rabbitmq', 'shareFrom': 'default'}], 'configuration': {'env': [{'name': 'API_KEY', 'value': 'api_value', 'description': 'API 密钥'}]}, 'processes': [OrderedDict({'name': 'worker', 'procCommand': 'python manage.py runserver', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'worker', 'protocol': 'TCP', 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})], 'hooks': {'preRelease': {'procCommand': 'python manage.py migrate'}}, 'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user', 'moduleName': 'api'}]}})})])]):` | pytest.mark.parametrize | 不适用 |
 | test_transform_app_desc_spec2_to_spec3 | `@pytest.mark.parametrize(('spec2_data', 'expected_spec3_data'), [({'spec_version': 2, 'app_version': '1.0', 'app': {'region': 'default', 'bk_app_code': 'foo-app', 'bk_app_name': '默认应用名称', 'market': {'category': '运维工具', 'introduction': '应用简介', 'description': '应用描述', 'display_options': {'width': 800, 'height': 600, 'open_mode': 'desktop', 'is_win_maximize': False, 'visible': True}}}, 'module': {'source_dir': 'src/frontend', 'language': 'NodeJS', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'Baa', 'value': 'value_of_baa', 'description': '环境变量'}], 'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}, 'scripts': {'pre_release_hook': 'bin/pre-release.sh'}, 'svc_discovery': {'bk_saas': ['bk-iam', 'bk-user']}}}, OrderedDict({'specVersion': 3, 'appVersion': '1.0', 'app': OrderedDict({'region': 'default', 'bkAppCode': 'foo-app', 'bkAppName': '默认应用名称', 'market': {'category': '运维工具', 'introduction': '应用简介', 'description': '应用描述', 'displayOptions': {'width': 800, 'height': 600, 'openMode': 'desktop', 'isWinMaximize': False, 'visible': True}}}), 'module': OrderedDict({'name': 'default', 'sourceDir': 'src/frontend', 'language': 'NodeJS', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'Baa', 'value': 'value_of_baa', 'description': '环境变量'}]}, 'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})], 'hooks': {'preRelease': {'procCommand': 'bin/pre-release.sh'}}, 'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user'}]}})})}))]):` | pytest.mark.parametrize | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/plat_admin/admin_cli/__init__.py
-
-
-
-
-
 
 
 ---
@@ -65374,17 +61348,6 @@ s-mart(镜像): 'image:镜像 tag'
 | TestTablesAppGroupedByDevelopers | 无 | test_with_filter_developers, test_without_filter_developers | 无 | 无 | 不适用 |
 | TestTablesAppGroupedByDevelopersSimple | 无 | test_with_filter_developers | 无 | 无 | 不适用 |
 | TestTablesAppBasicInfo | 无 | test_with_matched, test_without_matched | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/applications/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -65622,28 +61585,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestAppSpecs | 无 | test_engine_enabled, test_can_create_extra_modules, test_confirm_required_when_publish_with_no_template, test_confirm_required_when_publish_with_template | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/bkapp_model/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/bkapp_model/entities_syncer/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -66017,17 +61958,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Test__sync_svc_discovery | 无 | test_create, test_update, test_delete, test_notset_value_different_manager | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/bkapp_model/fieldmgr/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -66409,28 +62339,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/application/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py
 
 #### 导入的模块
@@ -66445,17 +62353,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|---------|-----------|-------|
 | on_change_application_name | paasng.accessories.publish.sync_market.handlers.on_change_application_name | 不适用 | module |
 | prepare_change_application_name | paasng.accessories.publish.sync_market.handlers.prepare_change_application_name | disconnect, connect | module |
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/application/v2/__init__.py
-
-
 
 
 
@@ -66576,17 +62473,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestValidations | 无 | test_normal, test_invalid_name_length | 无 | 无 | A test suite about v2 validations |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/application/v3/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -66735,17 +62621,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/deployment/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/declarative/deployment/test_svc_disc.py
 
 #### 导入的模块
@@ -66774,17 +62649,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestBkSaaSEnvVariableFactoryExtendWithClusterApp | 无 | test_missing_app, test_existed_app | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/deployment/v2/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -66887,17 +62751,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestValidations | 无 | test_normal, test_invalid_proc_type, test_invalid_probes | 无 | 无 | A test suite about v2 validations |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/deployment/v3/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -67010,17 +62863,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/handlers/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/declarative/handlers/test_handlers.py
 
 #### 导入的模块
@@ -67053,17 +62895,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestGetAppDescHandlerIncorrectVersions | 无 | test_ver_1, test_ver_unspecified, test_ver_unknown_number, test_ver_unknown_string | 无 | 无 | 不适用 |
 | TestGetDeployDescHandlerIncorrectVersions | 无 | test_ver_1, test_ver_unspecified, test_ver_unknown_number, test_ver_unknown_string | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/handlers/v2/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -67216,17 +63047,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestSaasProbes | 无 | test_process_spec_should_have_probes, test_probes_changes_after_handling_new_yaml | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/declarative/handlers/v3/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -67480,28 +63300,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/engine/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/configurations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/engine/configurations/test_config_var.py
 
 #### 导入的模块
@@ -67702,17 +63500,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/engine/controller/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/engine/controller/test_models.py
 
 #### 导入的模块
@@ -67735,28 +63522,6 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | test_find_subdomain_domain | `def test_find_subdomain_domain():` | 无 | 不适用 |
 | test_find_subpath_domain | `def test_find_subpath_domain():` | 无 | 不适用 |
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/deploy/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/deploy/bg_build/__init__.py
-
-
-
-
-
 
 
 ---
@@ -68123,17 +63888,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/engine/models/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/engine/models/test_offline.py
 
 #### 导入的模块
@@ -68161,17 +63915,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestOfflineOperation | 无 | test_set_failed, test_set_successful | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/phases_steps/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -68249,17 +63992,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestDeployStepPicker | 无 | _setup_slugbuilder, runtime_binder, make_step_meta_set, test_pick, test_pick_no_runtime | 无 | 无 | 测试 DeployStep |
 | TestUpdateStepByLine | 无 | phase_factory, test_match_and_update | 无 | 无 | Test update_step_by_line function |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/processes/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -68765,17 +64497,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/engine/utils/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/engine/utils/test_output.py
 
 #### 导入的模块
@@ -68876,17 +64597,6 @@ s-mart(镜像): 'image:镜像 tag'
 | TestDownloadSourceToDir | 无 | _mocked_ctl, make_deploy_desc, test_no_patch_performed_if_process_empty, test_add_procfile | 无 | pytest.mark.usefixtures | Test download_source_to_dir() |
 | TestCheckSourcePackage | 无 | test_normal, test_big_package | 无 | 无 | Test check_source_package() |
 | Test__get_source_dir | 无 | test_s_mart_desc_found, test_s_mart_desc_not_found | version_info | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/engine/workflow/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -69022,17 +64732,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/environments/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/environments/test_utils.py
 
 #### 导入的模块
@@ -69065,28 +64764,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestEnvRoleProtectionCheck | 无 | test_protection, test_batch_save_protections | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/mgrlegacy/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/mgrlegacy/cnative/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -69486,17 +65163,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/modules/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/modules/conftest.py
 
 #### 导入的模块
@@ -69812,17 +65478,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/scene_app/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/scene_app/test_initializer.py
 
 #### 导入的模块
@@ -69855,17 +65510,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestSceneAPPInitializer | 无 | _setup, test_normal | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/smart_app/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -70062,17 +65706,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/sourcectl/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/sourcectl/conftest.py
 
 #### 导入的模块
@@ -70128,17 +65761,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/platform/sourcectl/git/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/platform/sourcectl/git/test_git_client.py
 
 #### 导入的模块
@@ -70170,17 +65792,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestGitCloneCommand | 无 | command, test_to_command, test_to_obscure_cmd | 无 | 无 | 不适用 |
 | TestGitClient | 无 | client, test_checkout, test_clone, test_list_refs, test_list_remote, test_list_remote_with_warning_and_invalid, test_get_commit_info, test_err_stdout_as_exc | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/platform/sourcectl/packages/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -70946,28 +66557,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/paasng/test_utils/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/test_utils/es_log/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/paasng/test_utils/es_log/test_misc.py
 
 #### 导入的模块
@@ -71066,17 +66655,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestSmartTimeRange | 无 | test_relative_time, test_absolute_time | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: apiserver/paasng/tests/paasng/test_utils/i18n/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -72162,17 +67740,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: apiserver/paasng/tests/utils/mocks/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: apiserver/paasng/tests/utils/mocks/bkmonitor.py
 
 #### 导入的模块
@@ -72446,17 +68013,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-bkrepo/svc_bk_repo/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-bkrepo/svc_bk_repo/middleware.py
 
 
@@ -72476,17 +68032,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | context_processors | `def context_processors(request) -> Dict:` | 无 | 不适用 |
-
-
----
-
-
-### 模块: svc-bkrepo/svc_bk_repo/monitoring/__init__.py
-
-
-
-
-
 
 
 ---
@@ -72641,17 +68186,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: svc-bkrepo/svc_bk_repo/monitoring/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -72921,28 +68455,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-bkrepo/svc_bk_repo/vendor/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-bkrepo/svc_bk_repo/vendor/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-bkrepo/svc_bk_repo/vendor/migrations/0001_initial.py
 
 
@@ -72968,17 +68480,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: svc-bkrepo/svc_bk_repo/vendor/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -73109,17 +68610,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ServiceInstanceForManageSLZ | rest_framework.serializers.ModelSerializer | to_representation | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: svc-bkrepo/svc_bk_repo/vendor/templatetags/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -73263,17 +68753,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 符号名 | 来自模块 | 访问的属性 | 代码块 |
 |--------|---------|-----------|-------|
 | execute_from_command_line | django.core.management.execute_from_command_line | 不适用 | module |
-
-
-
-
-
----
-
-
-### 模块: svc-mysql/svc_mysql/__init__.py
-
-
 
 
 
@@ -73536,28 +69015,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-mysql/svc_mysql/vendor/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-mysql/svc_mysql/vendor/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-mysql/svc_mysql/vendor/management/commands/reset_ins_config.py
 
 #### 导入的模块
@@ -73582,17 +69039,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
-
----
-
-
-### 模块: svc-mysql/svc_mysql/vendor/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -73691,17 +69137,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ServiceInstanceForManageSLZ | rest_framework.serializers.ModelSerializer | to_representation | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: svc-mysql/svc_mysql/vendor/templatetags/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -73890,39 +69325,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 符号名 | 来自模块 | 访问的属性 | 代码块 |
 |--------|---------|-----------|-------|
 | execute_from_command_line | django.core.management.execute_from_command_line | 不适用 | module |
-
-
-
-
-
----
-
-
-### 模块: svc-otel/svc_otel/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-otel/svc_otel/bkmonitorv3/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-otel/svc_otel/bkmonitorv3/backend/__init__.py
-
-
 
 
 
@@ -74224,28 +69626,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-otel/svc_otel/vendor/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-otel/svc_otel/vendor/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-otel/svc_otel/vendor/migrations/0001_initial.py
 
 
@@ -74268,17 +69648,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-otel/svc_otel/vendor/migrations/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-otel/svc_otel/vendor/models.py
 
 
@@ -74297,17 +69666,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ApmData | paas_service.models.AuditedModel | __str__ | bk_app_code, env, app_name, data_token, is_delete | 无 | 不适用 |
-
----
-
-
-### 模块: svc-otel/svc_otel/vendor/monitoring.py
-
-
-
-
-
-
 
 ---
 
@@ -74478,17 +69836,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-rabbitmq/monitor/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-rabbitmq/monitor/apps.py
 
 
@@ -74506,17 +69853,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | MonitorConfig | django.apps.AppConfig | 无 | name | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/monitor/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -74570,17 +69906,6 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | AuthenticatedMetricsView | django.views.View | registry, get | key_username, key_password | 无 | 不适用 |
 | CollectorMetricsView | AuthenticatedMetricsView | get_collectors, registry | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/svc_rabbitmq/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -74896,28 +70221,6 @@ s-mart(镜像): 'image:镜像 tag'
 ---
 
 
-### 模块: svc-rabbitmq/tasks/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-rabbitmq/tasks/management/commands/__init__.py
-
-
-
-
-
-
-
----
-
-
 ### 模块: svc-rabbitmq/tasks/management/commands/worker.py
 
 #### 导入的模块
@@ -74992,17 +70295,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | initial, dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/tasks/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -75230,17 +70522,6 @@ s-mart(镜像): 'image:镜像 tag'
 | CheckInstanceLimits | svc-rabbitmq.tasks.helper.Task | apply | 无 | 无 | 不适用 |
 | CronCheckInstanceLimits | CheckInstancesCronTask | 无 | task, name | 无 | 不适用 |
 | ConnectionRecovery | svc-rabbitmq.tasks.helper.Task | apply | duration, delay | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/vendor/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -75538,28 +70819,6 @@ s-mart(镜像): 'image:镜像 tag'
 | ClusterSelector | 无 | assess, one | 无 | dataclass | 不适用 |
 | InstanceHelper | 无 | create_instance_data, get_instance, from_db, get_credentials, get_cluster_id, get_cluster, get_bill, get_client | 无 | dataclass | 不适用 |
 | Version | 无 | __init__, __eq__, __ne__, __ge__, __gt__, __le__, __lt__ | 无 | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/vendor/management/__init__.py
-
-
-
-
-
-
-
----
-
-
-### 模块: svc-rabbitmq/vendor/management/commands/__init__.py
-
-
-
-
-
-
 
 ---
 
@@ -75985,17 +71244,6 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
-
----
-
-
-### 模块: svc-rabbitmq/vendor/migrations/__init__.py
-
-
-
-
-
-
 
 ---
 

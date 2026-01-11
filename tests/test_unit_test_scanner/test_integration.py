@@ -218,5 +218,5 @@ def test_user():
 
         test = list(output.results.values())[0][0]
         # Should only include myapp targets
-        target_modules = [t.module for t in test.targets]
+        target_modules = [t.module_path for t in test.targets]
         assert all("myapp" in m for m in target_modules)

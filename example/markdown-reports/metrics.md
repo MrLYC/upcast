@@ -1,7 +1,7 @@
 # metrics 扫描报告
 
 ## 元数据
-暂无元数据。
+- **scanner_name**: metrics
 
 ## 概要信息
 - **总数量**: 42

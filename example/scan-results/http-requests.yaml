@@ -5,8 +5,8 @@ results:
     library: requests
     method: GET
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/accessories/cloudapi/components/http.py
+    - file: apiserver/paasng/paasng/accessories/cloudapi/components/http.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -16,8 +16,8 @@ results:
       session_based: false
       statement: requests.request(method, url, **kwargs)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
+    - file: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -27,8 +27,8 @@ results:
       session_based: false
       statement: requests.get(url)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -38,8 +38,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -50,8 +50,8 @@ results:
       statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
         ''end_time'': end_time.isoformat()}, auth=self.auth)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -61,8 +61,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -72,8 +72,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -83,8 +83,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -95,8 +95,8 @@ results:
       statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
         ''end_time'': end_time.isoformat()}, auth=self.auth)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -106,8 +106,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -117,8 +117,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -128,8 +128,8 @@ results:
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -139,8 +139,8 @@ results:
       session_based: false
       statement: requests.get(self.config.meta_info_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
       timeout: 15
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -150,8 +150,8 @@ results:
       session_based: false
       statement: requests.get(self.config.index_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
       timeout: 15
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -162,8 +162,8 @@ results:
       statement: requests.put(self.config.create_service_url, json=data, auth=self.auth,
         timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -173,8 +173,8 @@ results:
       session_based: false
       statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -184,8 +184,8 @@ results:
       session_based: false
       statement: requests.post(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -195,8 +195,8 @@ results:
       session_based: false
       statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -206,8 +206,8 @@ results:
       session_based: false
       statement: requests.post(url, json=payload, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -217,8 +217,8 @@ results:
       session_based: false
       statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
       timeout: 15
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -228,8 +228,8 @@ results:
       session_based: false
       statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
       timeout: 15
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -239,8 +239,8 @@ results:
       session_based: false
       statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
       timeout: 30
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -250,8 +250,8 @@ results:
       session_based: false
       statement: requests.put(url, json=config, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -261,8 +261,8 @@ results:
       session_based: false
       statement: requests.post(url, json=params, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
       timeout: 300
-    - data: null
-      file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -272,8 +272,8 @@ results:
       session_based: false
       statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
       timeout: 30
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
       headers:
         content-type: application/json
       is_async: false
@@ -284,8 +284,8 @@ results:
       session_based: false
       statement: requests.put(url=url, headers=self.headers, auth=self.auth, json=json)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
       headers:
         content-type: application/json
       is_async: false
@@ -296,8 +296,8 @@ results:
       session_based: false
       statement: requests.delete(url=url, headers=self.headers, auth=self.auth, json=json)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
       headers:
         content-type: application/json
       is_async: false
@@ -308,8 +308,8 @@ results:
       session_based: false
       statement: requests.get(url=url, headers=self.headers, auth=self.auth, json=json)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -319,8 +319,8 @@ results:
       session_based: false
       statement: requests.get(url=url, headers=headers, params=data, timeout=timeout)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -330,8 +330,8 @@ results:
       session_based: false
       statement: requests.head(url=url, headers=headers, timeout=timeout)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -341,8 +341,8 @@ results:
       session_based: false
       statement: requests.post(url=url, headers=headers, json=data, timeout=timeout)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -352,8 +352,8 @@ results:
       session_based: false
       statement: requests.delete(url=url, headers=headers, json=data)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -363,8 +363,8 @@ results:
       session_based: false
       statement: requests.put(url=url, headers=headers, json=data)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -376,8 +376,8 @@ results:
         app_secret=self.app_secret, env_name=self.env_name, grant_type=''authorization_code'',
         rtx=username, **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -389,8 +389,8 @@ results:
         env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
         headers=self.app_info_headers)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -401,8 +401,8 @@ results:
       statement: 'requests.get(url=self.validate_url, json={''access_token'': access_token},
         headers=self.app_info_headers)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -414,8 +414,8 @@ results:
         app_secret=self.app_secret, env_name=self.env_name, grant_type=''authorization_code'',
         id_provider=''bk_login'', **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -427,8 +427,8 @@ results:
         env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
         headers=self.app_info_headers)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -439,8 +439,8 @@ results:
       statement: 'requests.post(url=self.validate_url, json={''access_token'': access_token},
         headers=self.app_info_headers)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py
+    - file: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -450,8 +450,8 @@ results:
       session_based: false
       statement: requests.request(method, url, **kwargs)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/misc/search/backends.py
+    - file: apiserver/paasng/paasng/misc/search/backends.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -461,8 +461,8 @@ results:
       session_based: false
       statement: requests.get(self.BKDOC_SEARCH_BASE_URL.format(keyword))
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+    - file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -472,8 +472,8 @@ results:
       session_based: false
       statement: requests.get(logo_url, stream=True)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+    - file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -483,8 +483,8 @@ results:
       session_based: false
       statement: requests.get(settings.APPLICATION_DEFAULT_LOGO, stream=True)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py
+    - file: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -494,8 +494,8 @@ results:
       session_based: false
       statement: requests.get(target_url, stream=True)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py
+    - file: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -510,8 +510,8 @@ results:
     library: requests
     method: GET
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -525,8 +525,8 @@ results:
     library: requests
     method: POST
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/infras/oauth2/api.py
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -538,10 +538,10 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys':
     library: requests
-    method: GET
+    method: POST
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/infras/oauth2/api.py
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -551,8 +551,8 @@ results:
       session_based: false
       statement: requests.post(url, headers=self.headers)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/oauth2/api.py
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -566,8 +566,8 @@ results:
     library: requests
     method: DELETE
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/infras/oauth2/api.py
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -577,8 +577,8 @@ results:
       session_based: false
       statement: requests.delete(url, headers=self.headers)
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/infras/oauth2/api.py
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -592,8 +592,8 @@ results:
     library: requests
     method: POST
     usages:
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -605,8 +605,8 @@ results:
         ''extra_info'': {''paas_app_code'': app_code, ''module_name'': module_name,
         ''environment'': env}}, auth=self.auth)'
       timeout: null
-    - data: null
-      file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -621,8 +621,8 @@ results:
     library: requests
     method: POST
     usages:
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
       headers: null
       is_async: false
       json_body:
@@ -635,10 +635,10 @@ results:
       statement: 'Request(''POST'', ''https://example.com/api'', json={''BK_PASSWORD'':
         ''123456'', ''api_key'': ''abcdef''})'
       timeout: null
-    - data:
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form:
         BK_PASSWORD: '123456'
         api_key: abcdef
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
       headers: null
       is_async: false
       json_body: null
@@ -649,8 +649,8 @@ results:
       statement: 'Request(''POST'', ''https://example.com/api'', data={''BK_PASSWORD'':
         ''123456'', ''api_key'': ''abcdef''})'
       timeout: null
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
       headers:
         BK_PASSWORD: '123456'
         api_key: abcdef
@@ -667,8 +667,8 @@ results:
     library: requests
     method: GET
     usages:
-    - data: null
-      file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
       headers: null
       is_async: false
       json_body: null
@@ -682,7 +682,7 @@ summary:
   by_library:
     requests: 56
   files_scanned: 14
-  scan_duration_ms: 42092
+  scan_duration_ms: 20260
   total_count: 56
   total_requests: 56
   unique_urls: 8

@@ -9,12 +9,10 @@ from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.exceptions import (
-    ElseClause,
-    ExceptClause,
+    ExceptionBlock,
     ExceptionHandler,
     ExceptionHandlerOutput,
     ExceptionHandlerSummary,
-    FinallyClause,
 )
 
 
@@ -69,50 +67,49 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
     def _parse_try_block(self, node: nodes.Try, file_path: str) -> ExceptionHandler | None:
         """Parse a try block into an ExceptionHandler."""
         try:
-            # Calculate try block line count
             try_lines = (node.body[-1].lineno or 0) - (node.lineno or 0) + 1 if node.body else 1
 
-            # Parse all except clauses
-            except_clauses = [self._parse_except_clause(handler) for handler in node.handlers]
+            exception_blocks = [self._parse_except_clause(handler) for handler in node.handlers]
 
-            # Determine end line
+            else_lineno = None
+            else_lines = None
+            if node.orelse:
+                else_lineno = node.orelse[0].lineno
+                else_lines = (node.orelse[-1].lineno or 0) - (else_lineno or 0) + 1
+
+            finally_lineno = None
+            finally_lines = None
             if node.finalbody:
-                end_line = node.finalbody[-1].lineno
-            elif node.orelse:
-                end_line = node.orelse[-1].lineno
-            elif node.handlers:
-                last_handler = node.handlers[-1]
-                end_line = last_handler.body[-1].lineno if last_handler.body else last_handler.lineno
-            else:
-                end_line = node.body[-1].lineno if node.body else node.lineno
+                finally_lineno = node.finalbody[0].lineno
+                finally_lines = (node.finalbody[-1].lineno or 0) - (finally_lineno or 0) + 1
 
-            # Parse else and finally clauses
-            else_clause = self._parse_else_clause(node)
-            finally_clause = self._parse_finally_clause(node)
+            nested_exceptions = self._check_nested_exceptions(node.body)
 
             return ExceptionHandler(
                 file=file_path,
-                lineno=node.lineno,
-                end_lineno=end_line,
+                try_lineno=node.lineno,
                 try_lines=try_lines,
-                except_clauses=except_clauses,
-                else_clause=else_clause,
-                finally_clause=finally_clause,
+                else_lineno=else_lineno,
+                else_lines=else_lines,
+                finally_lineno=finally_lineno,
+                finally_lines=finally_lines,
+                nested_exceptions=nested_exceptions,
+                exception_blocks=exception_blocks,
             )
         except Exception:
             return None
 
-    def _parse_except_clause(self, handler: nodes.ExceptHandler) -> ExceptClause:
+    def _parse_except_clause(self, handler: nodes.ExceptHandler) -> ExceptionBlock:
         """Parse an except clause."""
-        exception_types = self._extract_exception_types(handler)
+        exceptions = self._extract_exception_types(handler)
         lines = (handler.body[-1].lineno or 0) - (handler.lineno or 0) + 1 if handler.body else 1
         log_counts = self._count_logging_calls(handler.body)
         flow_counts = self._count_control_flow(handler.body)
 
-        return ExceptClause(
-            line=handler.lineno,
-            exception_types=exception_types,
+        return ExceptionBlock(
+            lineno=handler.lineno,
             lines=lines,
+            exceptions=exceptions,
             **log_counts,
             **flow_counts,
         )
@@ -187,30 +184,20 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
 
         return counts
 
-    def _parse_else_clause(self, node: nodes.Try) -> ElseClause | None:
-        """Parse else clause if present."""
-        if not node.orelse:
-            return None
-
-        line = node.orelse[0].lineno or 0
-        lines = (node.orelse[-1].lineno or 0) - line + 1
-
-        return ElseClause(line=line, lines=lines)
-
-    def _parse_finally_clause(self, node: nodes.Try) -> FinallyClause | None:
-        """Parse finally clause if present."""
-        if not node.finalbody:
-            return None
-
-        line = node.finalbody[0].lineno or 0
-        lines = (node.finalbody[-1].lineno or 0) - line + 1
-
-        return FinallyClause(line=line, lines=lines)
+    def _check_nested_exceptions(self, body: list[nodes.NodeNG]) -> bool:
+        """Check if the try block contains nested try-except blocks."""
+        for node in body:
+            if isinstance(node, nodes.Try):
+                return True
+            for subnode in node.nodes_of_class(nodes.Try):
+                if subnode is not node:
+                    return True
+        return False
 
     def _calculate_summary(self, scan_duration_ms: int) -> ExceptionHandlerSummary:
         """Calculate summary statistics."""
         total_handlers = len(self.handlers)
-        total_except_clauses = sum(len(h.except_clauses) for h in self.handlers)
+        total_except_clauses = sum(len(h.exception_blocks) for h in self.handlers)
         files_scanned = len({h.file for h in self.handlers})
 
         return ExceptionHandlerSummary(

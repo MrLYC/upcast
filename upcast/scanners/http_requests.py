@@ -121,7 +121,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             params=self._extract_params(node),
             headers=self._extract_headers(node),
             json_body=self._extract_json_body(node),
-            data=self._extract_data(node),
+            form=self._extract_data(node),
             timeout=self._extract_timeout(node),
             session_based="Session" in safe_as_string(func),
             is_async=library == "aiohttp" or "async" in safe_as_string(func),

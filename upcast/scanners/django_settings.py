@@ -55,10 +55,8 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         start_time = time.perf_counter()
 
         # Collect definitions and usages
-        definitions_by_setting: dict[str, dict[str, list[SettingDefinitionItem]]] = defaultdict(
-            lambda: defaultdict(list)
-        )
-        usages_by_setting: dict[str, dict[str, list[SettingUsageItem]]] = defaultdict(lambda: defaultdict(list))
+        definitions_by_setting: dict[str, list[SettingDefinitionItem]] = defaultdict(list)
+        usages_by_setting: dict[str, list[SettingUsageItem]] = defaultdict(list)
 
         files_scanned = 0
 
@@ -83,16 +81,18 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                 # Extract definitions if this is a settings file
                 if is_settings_file:
                     for node in module.nodes_of_class(nodes.Assign):
-                        # Check for uppercase variable assignments
                         for target in node.targets:
                             if isinstance(target, nodes.AssignName) and target.name.isupper():
                                 setting_name = target.name
 
-                                # Try to infer value and type
+                                if setting_name.startswith("_"):
+                                    continue
+
                                 value, type_str, statement = self._infer_value(node.value, setting_name)
 
-                                definitions_by_setting[setting_name][relative_path].append(
+                                definitions_by_setting[setting_name].append(
                                     SettingDefinitionItem(
+                                        file=relative_path,
                                         value=value,
                                         statement=statement,
                                         lineno=node.lineno or 1,
@@ -108,8 +108,9 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                             # Get code context
                             try:
                                 code_line = self._get_code_line(file_path, node.lineno)
-                                usages_by_setting[setting_name][relative_path].append(
+                                usages_by_setting[setting_name].append(
                                     SettingUsageItem(
+                                        file=relative_path,
                                         statement=code_line,
                                         lineno=node.lineno,
                                     )
@@ -124,8 +125,9 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                         if setting_name:
                             try:
                                 code_line = self._get_code_line(file_path, node.lineno)
-                                usages_by_setting[setting_name][relative_path].append(
+                                usages_by_setting[setting_name].append(
                                     SettingUsageItem(
+                                        file=relative_path,
                                         statement=code_line,
                                         lineno=node.lineno,
                                     )
@@ -142,26 +144,17 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         results: dict[str, SettingInfo] = {}
 
         for setting_name in sorted(all_settings):
-            definitions = definitions_by_setting.get(setting_name, {})
-            usages = usages_by_setting.get(setting_name, {})
+            definitions = definitions_by_setting.get(setting_name, [])
+            usages = usages_by_setting.get(setting_name, [])
 
-            # Collect type list
-            type_set = set()
-            for file_defs in definitions.values():
-                for defn in file_defs:
-                    type_set.add(defn.type)
-            type_list = sorted(type_set)
-
-            # Count totals
-            definition_count = sum(len(defs) for defs in definitions.values())
-            usage_count = sum(len(uses) for uses in usages.values())
+            definition_types = sorted(set(defn.type for defn in definitions))
 
             results[setting_name] = SettingInfo(
-                definition_count=definition_count,
-                usage_count=usage_count,
-                type_list=type_list,
-                definitions=dict(definitions),
-                usages=dict(usages),
+                definition_count=len(definitions),
+                usage_count=len(usages),
+                definition_types=definition_types,
+                definitions=definitions,
+                usages=usages,
             )
 
         # Create summary

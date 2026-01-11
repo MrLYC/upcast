@@ -168,18 +168,18 @@ connections = Gauge('active_connections', 'Active connections')
         assert output.summary.by_type["Histogram"] == 1
 
     def test_scan_metric_usage_tracking(self, tmp_path, scanner, counter_metric):
-        """Test that metric usages are tracked."""
+        """Test that metric definitions are tracked."""
         file_path = tmp_path / "metrics.py"
         file_path.write_text(counter_metric)
 
         output = scanner.scan(file_path)
 
         metric = output.results["http_requests_total"]
-        assert len(metric.usages) == 1
-        usage = metric.usages[0]
-        assert usage.file is not None
-        assert usage.line is not None
-        assert "Counter definition" in usage.pattern
+        assert len(metric.definitions) == 1
+        definition = metric.definitions[0]
+        assert definition.file is not None
+        assert definition.line is not None
+        assert "Counter" in definition.statement
 
     def test_scan_metric_name_extraction(self, tmp_path, scanner):
         """Test that metric names are correctly extracted."""
@@ -211,12 +211,12 @@ counter = Counter('test_metric', 'This is the help text')
         assert metric.help == "This is the help text"
 
     def test_scan_file_path_tracking(self, tmp_path, scanner, counter_metric):
-        """Test that file paths are correctly tracked."""
+        """Test that file paths are correctly tracked in definitions."""
         file_path = tmp_path / "metrics.py"
         file_path.write_text(counter_metric)
 
         output = scanner.scan(file_path)
 
         metric = output.results["http_requests_total"]
-        usage = metric.usages[0]
-        assert "metrics.py" in usage.file
+        definition = metric.definitions[0]
+        assert "metrics.py" in definition.file

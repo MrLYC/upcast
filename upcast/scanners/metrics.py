@@ -8,7 +8,7 @@ from astroid import nodes
 from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
-from upcast.models.metrics import MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
+from upcast.models.metrics import MetricDefinition, MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
 
 
 class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
@@ -63,24 +63,33 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         # Extract labels
         labels = self._extract_labels(node.value)
 
-        usage = MetricUsage(
+        namespace = self._extract_string_arg(node.value, None, "namespace")
+        subsystem = self._extract_string_arg(node.value, None, "subsystem")
+        unit = self._extract_string_arg(node.value, None, "unit")
+
+        metric_name = self._build_metric_name(name, namespace, subsystem)
+
+        definition = MetricDefinition(
             file=file_path,
             line=node.lineno if hasattr(node, "lineno") else None,
-            pattern=f"{metric_type} definition",
             statement=safe_as_string(node),
         )
+
+        buckets = self._extract_buckets(node.value) if metric_type == "Histogram" else None
 
         return MetricInfo(
             name=name,
             type=metric_type,
             help=help_text,
             labels=labels,
-            usages=[usage],
-            namespace=None,
-            subsystem=None,
-            unit=None,
+            namespace=namespace,
+            subsystem=subsystem,
+            unit=unit,
+            metric_name=metric_name,
             custom_collector=False,
-            buckets=None,
+            buckets=buckets,
+            definitions=[definition],
+            usages=[],
         )
 
     def _get_metric_type(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
@@ -96,15 +105,13 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
                     return metric_type
         return None
 
-    def _extract_string_arg(self, call_node: nodes.Call, pos: int, kwarg_name: str | None = None) -> str | None:
+    def _extract_string_arg(self, call_node: nodes.Call, pos: int | None, kwarg_name: str | None = None) -> str | None:
         """Extract string argument by position or keyword."""
-        # Try positional
-        if len(call_node.args) > pos:
+        if pos is not None and len(call_node.args) > pos:
             value = safe_infer_value(call_node.args[pos])
             if isinstance(value, str):
                 return value
 
-        # Try keyword
         if kwarg_name:
             for keyword in call_node.keywords or []:
                 if keyword.arg == kwarg_name:
@@ -123,18 +130,37 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
                     return [str(v) for v in value if isinstance(v, str)]
         return []
 
+    def _extract_buckets(self, call_node: nodes.Call) -> list[float] | None:
+        """Extract buckets for Histogram metrics."""
+        for keyword in call_node.keywords or []:
+            if keyword.arg == "buckets":
+                value = safe_infer_value(keyword.value)
+                if isinstance(value, (list, tuple)):
+                    return [float(v) for v in value if isinstance(v, (int, float))]
+        return None
+
+    def _build_metric_name(self, name: str, namespace: str | None, subsystem: str | None) -> str:
+        """Build full metric name from components."""
+        parts = []
+        if namespace:
+            parts.append(namespace)
+        if subsystem:
+            parts.append(subsystem)
+        parts.append(name)
+        return "_".join(parts)
+
     def _calculate_summary(self, metrics: dict[str, MetricInfo]) -> PrometheusMetricSummary:
         """Calculate summary statistics."""
         by_type: dict[str, int] = {}
         for metric in metrics.values():
             by_type[metric.type] = by_type.get(metric.type, 0) + 1
 
-        total_usages = sum(len(m.usages) for m in metrics.values())
+        total_definitions = sum(len(m.definitions) for m in metrics.values())
 
         return PrometheusMetricSummary(
-            total_count=total_usages,
-            files_scanned=len({u.file for m in metrics.values() for u in m.usages}),
+            total_count=total_definitions,
+            files_scanned=len({d.file for m in metrics.values() for d in m.definitions}),
             total_metrics=len(metrics),
             by_type=by_type,
-            scan_duration_ms=0,  # TODO: Add timing
+            scan_duration_ms=0,
         )

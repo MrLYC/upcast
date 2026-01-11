@@ -17,6 +17,7 @@ class TestSettingDefinitionItem:
     def test_basic_definition(self) -> None:
         """Test creating a basic definition."""
         defn = SettingDefinitionItem(
+            file="settings.py",
             value="localhost",
             statement="DEBUG = True",
             lineno=10,
@@ -30,6 +31,7 @@ class TestSettingDefinitionItem:
     def test_definition_without_value(self) -> None:
         """Test definition without inferred value."""
         defn = SettingDefinitionItem(
+            file="settings.py",
             value=None,
             statement="DATABASES = {...}",
             lineno=15,
@@ -45,6 +47,7 @@ class TestSettingUsageItem:
     def test_basic_usage(self) -> None:
         """Test creating a basic usage."""
         usage = SettingUsageItem(
+            file="views.py",
             statement="if settings.DEBUG:",
             lineno=25,
         )
@@ -55,6 +58,7 @@ class TestSettingUsageItem:
         """Test that line number must be >= 1."""
         with pytest.raises(ValueError):
             SettingUsageItem(
+                file="views.py",
                 statement="settings.DEBUG",
                 lineno=0,
             )
@@ -68,32 +72,34 @@ class TestSettingInfo:
         info = SettingInfo(
             definition_count=1,
             usage_count=5,
-            type_list=["bool"],
-            definitions={},
-            usages={},
+            definition_types=["bool"],
+            definitions=[],
+            usages=[],
         )
         assert info.definition_count == 1
         assert info.usage_count == 5
-        assert info.type_list == ["bool"]
+        assert info.definition_types == ["bool"]
 
     def test_info_with_data(self) -> None:
         """Test setting info with definitions and usages."""
         defn = SettingDefinitionItem(
+            file="settings.py",
             value=True,
             statement="DEBUG = True",
             lineno=1,
             type="bool",
         )
         usage = SettingUsageItem(
+            file="views.py",
             statement="if settings.DEBUG:",
             lineno=10,
         )
         info = SettingInfo(
             definition_count=1,
             usage_count=1,
-            type_list=["bool"],
-            definitions={"settings.py": [defn]},
-            usages={"views.py": [usage]},
+            definition_types=["bool"],
+            definitions=[defn],
+            usages=[usage],
         )
         assert len(info.definitions) == 1
         assert len(info.usages) == 1
@@ -137,9 +143,9 @@ class TestDjangoSettingsOutput:
         info = SettingInfo(
             definition_count=1,
             usage_count=2,
-            type_list=["bool"],
-            definitions={},
-            usages={},
+            definition_types=["bool"],
+            definitions=[],
+            usages=[],
         )
         summary = DjangoSettingsSummary(
             total_count=1,
@@ -161,9 +167,9 @@ class TestDjangoSettingsOutput:
         info = SettingInfo(
             definition_count=1,
             usage_count=0,
-            type_list=["str"],
-            definitions={},
-            usages={},
+            definition_types=["str"],
+            definitions=[],
+            usages=[],
         )
         summary = DjangoSettingsSummary(
             total_count=1,

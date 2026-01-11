@@ -12,21 +12,18 @@ class TestSignalUsage:
         """Test creating basic signal usage."""
         usage = SignalUsage(
             file="signals.py",
-            line=10,
-            column=0,
+            lineno=10,
             handler="my_handler",
-            pattern="receiver_decorator",
         )
         assert usage.file == "signals.py"
-        assert usage.line == 10
+        assert usage.lineno == 10
         assert usage.handler == "my_handler"
 
     def test_usage_with_sender(self) -> None:
         """Test usage with sender."""
         usage = SignalUsage(
             file="models.py",
-            line=20,
-            column=4,
+            lineno=20,
             sender="MyModel",
         )
         assert usage.sender == "MyModel"
@@ -51,8 +48,7 @@ class TestSignalInfo:
         """Test signal info with receivers."""
         usage = SignalUsage(
             file="handlers.py",
-            line=5,
-            column=0,
+            lineno=5,
             handler="on_save",
         )
         info = SignalInfo(

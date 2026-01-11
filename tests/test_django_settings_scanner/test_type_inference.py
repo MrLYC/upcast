@@ -19,7 +19,7 @@ class TestBooleanSettings:
 
         assert "DEBUG" in result.results
         debug_info = result.results["DEBUG"]
-        assert "bool" in debug_info.type_list
+        assert "bool" in debug_info.definition_types
 
     def test_false_value(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test False boolean value."""
@@ -43,7 +43,7 @@ class TestStringSettings:
 
         assert "SECRET_KEY" in result.results
         secret_info = result.results["SECRET_KEY"]
-        assert "str" in secret_info.type_list
+        assert "str" in secret_info.definition_types
 
     def test_multiline_string(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test multiline string value."""
@@ -72,7 +72,7 @@ class TestNumericSettings:
 
         assert "MAX_CONNECTIONS" in result.results
         info = result.results["MAX_CONNECTIONS"]
-        assert "int" in info.type_list
+        assert "int" in info.definition_types
 
     def test_float_value(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test float value."""
@@ -96,7 +96,7 @@ class TestListSettings:
 
         assert "ALLOWED_HOSTS" in result.results
         info = result.results["ALLOWED_HOSTS"]
-        assert "list" in info.type_list
+        assert "list" in info.definition_types
 
     def test_empty_list(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test empty list."""
@@ -125,7 +125,7 @@ CONFIG = {
 
         assert "CONFIG" in result.results
         info = result.results["CONFIG"]
-        assert "dict" in info.type_list
+        assert "dict" in info.definition_types
 
     def test_nested_dict(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test nested dictionary."""
@@ -156,7 +156,7 @@ class TestTupleSettings:
 
         assert "ADMINS" in result.results
         info = result.results["ADMINS"]
-        assert "tuple" in info.type_list
+        assert "tuple" in info.definition_types
 
 
 class TestDynamicSettings:
@@ -174,7 +174,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'default')
 
         assert "SECRET_KEY" in result.results
         info = result.results["SECRET_KEY"]
-        assert "dynamic" in info.type_list
+        assert "dynamic" in info.definition_types
 
     def test_computed_value(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test computed setting value."""

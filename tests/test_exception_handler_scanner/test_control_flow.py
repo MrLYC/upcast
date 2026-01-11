@@ -23,7 +23,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.pass_count == 1
 
     def test_return_statement(self, tmp_path, scanner):
@@ -41,7 +41,7 @@ def process():
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.return_count == 1
 
     def test_raise_statement(self, tmp_path, scanner):
@@ -58,7 +58,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.raise_count == 1
 
     def test_break_statement(self, tmp_path, scanner):
@@ -76,7 +76,7 @@ for item in items:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.break_count == 1
 
     def test_continue_statement(self, tmp_path, scanner):
@@ -94,7 +94,7 @@ for item in items:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.continue_count == 1
 
     def test_multiple_control_flow(self, tmp_path, scanner):
@@ -118,10 +118,10 @@ def process():
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert handler.except_clauses[0].pass_count == 1
-        assert handler.except_clauses[0].continue_count == 1
-        assert handler.except_clauses[1].return_count == 1
-        assert handler.except_clauses[2].raise_count == 1
+        assert handler.exception_blocks[0].pass_count == 1
+        assert handler.exception_blocks[0].continue_count == 1
+        assert handler.exception_blocks[1].return_count == 1
+        assert handler.exception_blocks[2].raise_count == 1
 
     def test_raise_new_exception(self, tmp_path, scanner):
         """Test detection of raising new exceptions."""
@@ -137,7 +137,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.raise_count == 1
 
     def test_raise_from(self, tmp_path, scanner):
@@ -154,7 +154,7 @@ except ValueError as e:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.raise_count == 1
 
     def test_return_with_value(self, tmp_path, scanner):
@@ -173,5 +173,5 @@ def process():
 
         handler = output.results[0]
         # Return in try block
-        except_clause = handler.except_clauses[0]
+        except_clause = handler.exception_blocks[0]
         assert except_clause.return_count == 1

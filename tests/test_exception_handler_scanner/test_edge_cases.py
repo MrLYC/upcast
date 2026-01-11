@@ -46,8 +46,8 @@ finally:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        assert len(handler.except_clauses) == 0
-        assert handler.finally_clause is not None
+        assert len(handler.exception_blocks) == 0
+        assert handler.finally_lineno is not None
 
     def test_try_in_lambda(self, tmp_path, scanner):
         """Test try block in lambda expression."""
@@ -128,8 +128,8 @@ except (
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
-        assert len(clause.exception_types) == 4
+        clause = handler.exception_blocks[0]
+        assert len(clause.exceptions) == 4
 
     def test_invalid_syntax_file(self, tmp_path, scanner):
         """Test handling of file with invalid Python syntax."""
@@ -167,9 +167,9 @@ finally:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert len(handler.except_clauses) == 2
-        assert handler.else_clause is not None
-        assert handler.finally_clause is not None
+        assert len(handler.exception_blocks) == 2
+        assert handler.else_lineno is not None
+        assert handler.finally_lineno is not None
 
     def test_exception_in_async_function(self, tmp_path, scanner):
         """Test exception handlers in async functions."""

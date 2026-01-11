@@ -259,11 +259,9 @@ class TestRenderToMarkdown:
                     receivers=[
                         SignalUsage(
                             file="handlers.py",
-                            line=20,
-                            column=0,
+                            lineno=20,
                             handler="save_handler",
-                            pattern="receiver_decorator",
-                            code="@receiver(post_save)",
+                            statement="@receiver(post_save)",
                         )
                     ],
                     senders=[],

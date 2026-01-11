@@ -76,9 +76,9 @@ class PureClass:
         assert len(output.results) == 1
 
         handler = output.results[0]
-        assert handler.lineno is not None
-        assert len(handler.except_clauses) == 1
-        assert "ValueError" in handler.except_clauses[0].exception_types
+        assert handler.try_lineno is not None
+        assert len(handler.exception_blocks) == 1
+        assert "ValueError" in handler.exception_blocks[0].exceptions
 
     def test_scan_multiple_except_clauses(self, tmp_path, scanner, multiple_except_clauses):
         """Test scanning try block with multiple except clauses."""
@@ -91,10 +91,10 @@ class PureClass:
         assert output.summary.total_except_clauses == 3
 
         handler = output.results[0]
-        assert len(handler.except_clauses) == 3
-        assert "ValueError" in handler.except_clauses[0].exception_types
-        assert "KeyError" in handler.except_clauses[1].exception_types
-        assert "Exception" in handler.except_clauses[2].exception_types
+        assert len(handler.exception_blocks) == 3
+        assert "ValueError" in handler.exception_blocks[0].exceptions
+        assert "KeyError" in handler.exception_blocks[1].exceptions
+        assert "Exception" in handler.exception_blocks[2].exceptions
 
     def test_scan_try_except_else(self, tmp_path, scanner, try_except_else):
         """Test scanning try-except with else clause."""
@@ -105,9 +105,9 @@ class PureClass:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        assert handler.else_clause is not None
-        assert handler.else_clause.line is not None
-        assert handler.else_clause.lines > 0
+        assert handler.else_lineno is not None
+        assert handler.else_lineno is not None
+        assert handler.else_lines > 0
 
     def test_scan_try_except_finally(self, tmp_path, scanner, try_except_finally):
         """Test scanning try-except with finally clause."""
@@ -118,9 +118,9 @@ class PureClass:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        assert handler.finally_clause is not None
-        assert handler.finally_clause.line is not None
-        assert handler.finally_clause.lines > 0
+        assert handler.finally_lineno is not None
+        assert handler.finally_lineno is not None
+        assert handler.finally_lines > 0
 
     def test_scan_try_except_else_finally(self, tmp_path, scanner, try_except_else_finally):
         """Test scanning try-except with both else and finally."""
@@ -131,8 +131,8 @@ class PureClass:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        assert handler.else_clause is not None
-        assert handler.finally_clause is not None
+        assert handler.else_lineno is not None
+        assert handler.finally_lineno is not None
 
     def test_scan_bare_except(self, tmp_path, scanner, bare_except):
         """Test scanning bare except clause."""
@@ -143,8 +143,8 @@ class PureClass:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        # Bare except has empty exception_types list
-        assert handler.except_clauses[0].exception_types == []
+        # Bare except has empty exceptions list
+        assert handler.exception_blocks[0].exceptions == []
 
     def test_scan_multiple_exception_types(self, tmp_path, scanner, multiple_exception_types):
         """Test scanning except clause with multiple exception types."""
@@ -155,11 +155,11 @@ class PureClass:
 
         assert output.summary.total_handlers == 1
         handler = output.results[0]
-        exception_types = handler.except_clauses[0].exception_types
-        assert len(exception_types) == 3
-        assert "ValueError" in exception_types
-        assert "KeyError" in exception_types
-        assert "TypeError" in exception_types
+        exceptions = handler.exception_blocks[0].exceptions
+        assert len(exceptions) == 3
+        assert "ValueError" in exceptions
+        assert "KeyError" in exceptions
+        assert "TypeError" in exceptions
 
     def test_scan_directory(self, tmp_path, scanner):
         """Test scanning a directory with multiple files."""

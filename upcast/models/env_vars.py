@@ -11,16 +11,14 @@ class EnvVarLocation(BaseModel):
     Attributes:
         file: File path
         line: Line number
-        column: Column number
-        pattern: Access pattern (e.g., os.environ['VAR'], os.getenv('VAR'))
-        code: Code snippet
+        statement: Code snippet containing the env var access
+        type: Inferred type (string, int, bool, etc.) or 'unknown'
     """
 
     file: str = Field(description="File path")
     line: int | None = Field(ge=1, description="Line number")
-    column: int | None = Field(ge=0, description="Column number")
-    pattern: str = Field(description="Access pattern")
-    code: str | None = Field(None, description="Code snippet")
+    statement: str | None = Field(None, description="Code snippet")
+    type: str = Field(default="unknown", description="Inferred type")
 
 
 class EnvVarInfo(BaseModel):
@@ -30,12 +28,14 @@ class EnvVarInfo(BaseModel):
         name: Environment variable name
         required: Whether variable is required (no default provided)
         default_value: Default value if provided
+        types: Aggregated types from all locations
         locations: List of access locations
     """
 
     name: str = Field(description="Environment variable name")
     required: bool = Field(description="Whether variable is required")
     default_value: str | None = Field(None, description="Default value if provided")
+    types: list[str] = Field(default_factory=list, description="Aggregated types")
     locations: list[EnvVarLocation] = Field(description="Access locations")
 
 

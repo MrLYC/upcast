@@ -15,23 +15,17 @@ class SignalUsage(BaseModel):
 
     Attributes:
         file: Relative path from project root
-        line: Line number (1-based)
-        column: Column number (0-based)
+        lineno: Line number (1-based)
         handler: Handler function name (for receivers)
-        pattern: Usage pattern type (e.g., 'receiver_decorator', 'send')
-        code: Source code snippet
         sender: Sender class if specified
-        context: Additional context (class, function, etc.)
+        statement: Source code snippet
     """
 
     file: str = Field(description="Relative path from project root")
-    line: int = Field(ge=1, description="Line number (1-based)")
-    column: int = Field(ge=0, description="Column number (0-based)")
+    lineno: int = Field(ge=1, description="Line number (1-based)")
     handler: str | None = Field(None, description="Handler function name")
-    pattern: str | None = Field(None, description="Usage pattern type")
-    code: str | None = Field(None, description="Source code snippet")
     sender: str | None = Field(None, description="Sender class if specified")
-    context: dict[str, Any] | None = Field(None, description="Additional context")
+    statement: str | None = Field(None, description="Source code snippet")
 
 
 class SignalInfo(BaseModel):

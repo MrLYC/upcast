@@ -4,110 +4,78 @@ import pytest
 from pydantic import ValidationError
 
 from upcast.models.exceptions import (
-    ExceptClause,
-    ElseClause,
-    FinallyClause,
+    ExceptionBlock,
     ExceptionHandler,
     ExceptionHandlerSummary,
     ExceptionHandlerOutput,
 )
 
 
-class TestExceptClauseModel:
-    """Test ExceptClause model validation."""
+class TestExceptionBlockModel:
+    """Test ExceptionBlock model validation."""
 
-    def test_except_clause_valid(self):
-        """Test valid ExceptClause creation."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=["ValueError"],
+    def test_exception_block_valid(self):
+        """Test valid ExceptionBlock creation."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=["ValueError"],
             lines=3,
             log_error_count=1,
             pass_count=0,
         )
-        assert clause.line == 10
-        assert clause.exception_types == ["ValueError"]
-        assert clause.lines == 3
-        assert clause.log_error_count == 1
+        assert block.lineno == 10
+        assert block.exceptions == ["ValueError"]
+        assert block.lines == 3
+        assert block.log_error_count == 1
 
-    def test_except_clause_multiple_exception_types(self):
-        """Test ExceptClause with multiple exception types."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=["ValueError", "KeyError", "TypeError"],
+    def test_exception_block_multiple_exceptions(self):
+        """Test ExceptionBlock with multiple exception types."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=["ValueError", "KeyError", "TypeError"],
             lines=5,
         )
-        assert len(clause.exception_types) == 3
-        assert "ValueError" in clause.exception_types
+        assert len(block.exceptions) == 3
+        assert "ValueError" in block.exceptions
 
-    def test_except_clause_bare_except(self):
-        """Test ExceptClause for bare except (empty exception_types)."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=[],
+    def test_exception_block_bare_except(self):
+        """Test ExceptionBlock for bare except (empty exceptions)."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=[],
             lines=2,
         )
-        assert clause.exception_types == []
-        assert clause.lines == 2
+        assert block.exceptions == []
+        assert block.lines == 2
 
-    def test_except_clause_with_logging(self):
-        """Test ExceptClause with logging counts."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=["Exception"],
+    def test_exception_block_with_logging(self):
+        """Test ExceptionBlock with logging counts."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=["Exception"],
             lines=5,
             log_error_count=2,
             log_exception_count=1,
             log_warning_count=1,
         )
-        assert clause.log_error_count == 2
-        assert clause.log_exception_count == 1
-        assert clause.log_warning_count == 1
-        assert clause.log_debug_count == 0  # Default
+        assert block.log_error_count == 2
+        assert block.log_exception_count == 1
+        assert block.log_warning_count == 1
+        assert block.log_debug_count == 0
 
-    def test_except_clause_with_control_flow(self):
-        """Test ExceptClause with control flow counts."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=["ValueError"],
+    def test_exception_block_with_control_flow(self):
+        """Test ExceptionBlock with control flow counts."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=["ValueError"],
             lines=3,
             return_count=1,
             raise_count=1,
             pass_count=0,
         )
-        assert clause.return_count == 1
-        assert clause.raise_count == 1
-        assert clause.break_count == 0  # Default
-
-
-class TestElseClauseModel:
-    """Test ElseClause model validation."""
-
-    def test_else_clause_valid(self):
-        """Test valid ElseClause creation."""
-        clause = ElseClause(line=15, lines=3)
-        assert clause.line == 15
-        assert clause.lines == 3
-
-    def test_else_clause_negative_line(self):
-        """Test that negative line number is rejected."""
-        with pytest.raises(ValidationError):
-            ElseClause(line=-1, lines=3)
-
-
-class TestFinallyClauseModel:
-    """Test FinallyClause model validation."""
-
-    def test_finally_clause_valid(self):
-        """Test valid FinallyClause creation."""
-        clause = FinallyClause(line=20, lines=2)
-        assert clause.line == 20
-        assert clause.lines == 2
-
-    def test_finally_clause_zero_lines(self):
-        """Test FinallyClause with zero lines."""
-        clause = FinallyClause(line=20, lines=0)
-        assert clause.lines == 0
+        assert block.return_count == 1
+        assert block.raise_count == 1
+        assert block.break_count == 0
 
 
 class TestExceptionHandlerModel:
@@ -117,48 +85,70 @@ class TestExceptionHandlerModel:
         """Test valid ExceptionHandler creation."""
         handler = ExceptionHandler(
             file="test.py",
-            lineno=10,
-            end_lineno=15,
+            try_lineno=10,
             try_lines=3,
-            except_clauses=[ExceptClause(line=13, exception_types=["ValueError"], lines=2)],
+            else_lineno=None,
+            else_lines=None,
+            finally_lineno=None,
+            finally_lines=None,
+            exception_blocks=[ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2)],
         )
         assert handler.file == "test.py"
-        assert handler.lineno == 10
-        assert handler.end_lineno == 15
-        assert len(handler.except_clauses) == 1
+        assert handler.try_lineno == 10
+        assert handler.try_lines == 3
+        assert len(handler.exception_blocks) == 1
 
     def test_exception_handler_with_else_finally(self):
         """Test ExceptionHandler with else and finally clauses."""
         handler = ExceptionHandler(
             file="test.py",
-            lineno=10,
-            end_lineno=20,
+            try_lineno=10,
             try_lines=3,
-            except_clauses=[ExceptClause(line=13, exception_types=["ValueError"], lines=2)],
-            else_clause=ElseClause(line=15, lines=2),
-            finally_clause=FinallyClause(line=17, lines=3),
+            else_lineno=15,
+            else_lines=2,
+            finally_lineno=17,
+            finally_lines=3,
+            exception_blocks=[ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2)],
         )
-        assert handler.else_clause is not None
-        assert handler.finally_clause is not None
-        assert handler.else_clause.line == 15
-        assert handler.finally_clause.line == 17
+        assert handler.else_lineno == 15
+        assert handler.else_lines == 2
+        assert handler.finally_lineno == 17
+        assert handler.finally_lines == 3
 
-    def test_exception_handler_multiple_except_clauses(self):
-        """Test ExceptionHandler with multiple except clauses."""
+    def test_exception_handler_multiple_blocks(self):
+        """Test ExceptionHandler with multiple exception blocks."""
         handler = ExceptionHandler(
             file="test.py",
-            lineno=10,
-            end_lineno=20,
+            try_lineno=10,
             try_lines=3,
-            except_clauses=[
-                ExceptClause(line=13, exception_types=["ValueError"], lines=2),
-                ExceptClause(line=15, exception_types=["KeyError"], lines=2),
-                ExceptClause(line=17, exception_types=["Exception"], lines=2),
+            else_lineno=None,
+            else_lines=None,
+            finally_lineno=None,
+            finally_lines=None,
+            exception_blocks=[
+                ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2),
+                ExceptionBlock(lineno=15, exceptions=["KeyError"], lines=2),
+                ExceptionBlock(lineno=17, exceptions=["Exception"], lines=2),
             ],
         )
-        assert len(handler.except_clauses) == 3
-        assert handler.except_clauses[0].exception_types == ["ValueError"]
-        assert handler.except_clauses[1].exception_types == ["KeyError"]
+        assert len(handler.exception_blocks) == 3
+        assert handler.exception_blocks[0].exceptions == ["ValueError"]
+        assert handler.exception_blocks[1].exceptions == ["KeyError"]
+
+    def test_exception_handler_nested(self):
+        """Test ExceptionHandler with nested flag."""
+        handler = ExceptionHandler(
+            file="test.py",
+            try_lineno=10,
+            try_lines=3,
+            else_lineno=None,
+            else_lines=None,
+            finally_lineno=None,
+            finally_lines=None,
+            nested_exceptions=True,
+            exception_blocks=[ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2)],
+        )
+        assert handler.nested_exceptions is True
 
 
 class TestExceptionHandlerSummaryModel:
@@ -206,10 +196,13 @@ class TestExceptionHandlerOutputModel:
             results=[
                 ExceptionHandler(
                     file="test.py",
-                    lineno=10,
-                    end_lineno=15,
+                    try_lineno=10,
                     try_lines=3,
-                    except_clauses=[ExceptClause(line=13, exception_types=["ValueError"], lines=2)],
+                    else_lineno=None,
+                    else_lines=None,
+                    finally_lineno=None,
+                    finally_lines=None,
+                    exception_blocks=[ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2)],
                 )
             ],
         )
@@ -244,10 +237,13 @@ class TestExceptionHandlerOutputModel:
             results=[
                 ExceptionHandler(
                     file="test.py",
-                    lineno=10,
-                    end_lineno=15,
+                    try_lineno=10,
                     try_lines=3,
-                    except_clauses=[ExceptClause(line=13, exception_types=["ValueError"], lines=2)],
+                    else_lineno=None,
+                    else_lines=None,
+                    finally_lineno=None,
+                    finally_lines=None,
+                    exception_blocks=[ExceptionBlock(lineno=13, exceptions=["ValueError"], lines=2)],
                 )
             ],
         )

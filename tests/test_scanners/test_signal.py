@@ -19,50 +19,38 @@ class TestSignalUsageModel:
         """Test creating valid SignalUsage."""
         usage = SignalUsage(
             file="app/signals.py",
-            line=10,
-            column=4,
+            lineno=10,
             handler="handle_post_save",
-            pattern="receiver_decorator",
         )
 
         assert usage.file == "app/signals.py"
-        assert usage.line == 10
-        assert usage.column == 4
+        assert usage.lineno == 10
         assert usage.handler == "handle_post_save"
 
     def test_signal_usage_with_optional_fields(self):
         """Test SignalUsage with all optional fields."""
         usage = SignalUsage(
             file="app/signals.py",
-            line=10,
-            column=0,
-            code="@receiver(post_save, sender=User)",
+            lineno=10,
             sender="User",
-            context={"class": "SignalHandlers", "type": "method"},
+            statement="@receiver(post_save, sender=User)",
         )
 
         assert usage.sender == "User"
-        assert usage.context["class"] == "SignalHandlers"
+        assert usage.statement == "@receiver(post_save, sender=User)"
 
     def test_signal_usage_validates_line_number(self):
         """Test that line number must be >= 1."""
         with pytest.raises(ValidationError):
-            SignalUsage(file="test.py", line=0, column=0)
-
-    def test_signal_usage_validates_column_number(self):
-        """Test that column number must be >= 0."""
-        with pytest.raises(ValidationError):
-            SignalUsage(file="test.py", line=1, column=-1)
+            SignalUsage(file="test.py", lineno=0)
 
     def test_signal_usage_minimal(self):
         """Test SignalUsage with minimal required fields."""
-        usage = SignalUsage(file="test.py", line=1, column=0)
+        usage = SignalUsage(file="test.py", lineno=1)
 
         assert usage.file == "test.py"
-        assert usage.line == 1
-        assert usage.column == 0
+        assert usage.lineno == 1
         assert usage.handler is None
-        assert usage.pattern is None
 
 
 class TestSignalInfoModel:
@@ -74,7 +62,7 @@ class TestSignalInfoModel:
             signal="post_save",
             type="django",
             category="model_signals",
-            receivers=[SignalUsage(file="app/signals.py", line=10, column=0, handler="handle_save")],
+            receivers=[SignalUsage(file="app/signals.py", lineno=10, handler="handle_save")],
             senders=[],
         )
 
@@ -103,7 +91,7 @@ class TestSignalInfoModel:
             signal="task_success",
             type="celery",
             category="task_signals",
-            receivers=[SignalUsage(file="app/tasks.py", line=20, column=0, handler="on_task_success")],
+            receivers=[SignalUsage(file="app/tasks.py", lineno=20, handler="on_task_success")],
             senders=[],
         )
 
@@ -196,14 +184,14 @@ class TestSignalOutputModel:
                 signal="post_save",
                 type="django",
                 category="model_signals",
-                receivers=[SignalUsage(file="app/signals.py", line=10, column=0)],
+                receivers=[SignalUsage(file="app/signals.py", lineno=10)],
                 senders=[],
             ),
             SignalInfo(
                 signal="pre_delete",
                 type="django",
                 category="model_signals",
-                receivers=[SignalUsage(file="app/signals.py", line=20, column=0)],
+                receivers=[SignalUsage(file="app/signals.py", lineno=20)],
                 senders=[],
             ),
         ]

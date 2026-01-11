@@ -343,7 +343,9 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             targets[module].add(symbol)
 
         # Convert to TargetModule list
-        return [TargetModule(module=module, symbols=sorted(symbols)) for module, symbols in sorted(targets.items())]
+        return [
+            TargetModule(module_path=module, symbols=sorted(symbols)) for module, symbols in sorted(targets.items())
+        ]
 
     def _calculate_summary(
         self,

@@ -14,11 +14,10 @@ class SignalUsage:
     """Represents a single usage of a signal (send or receive)."""
 
     file: str  # Relative path from project root
-    line: int  # Line number (1-based)
-    column: int  # Column number (0-based)
-    pattern: str  # Usage pattern type
-    code: str  # Source code snippet
+    lineno: int  # Line number (1-based)
+    handler: str | None = None  # Handler function name
     sender: str | None = None  # Sender if specified
+    statement: str | None = None  # Source code snippet
 
 
 def _get_scope_context(node: nodes.NodeNG) -> dict[str, Any]:
@@ -583,11 +582,10 @@ def parse_signal_send(
     pattern = "send_robust_method" if method_type == "send_robust" else "send_method"
     usage = SignalUsage(
         file=_get_relative_path(file_path, root_path),
-        line=node.lineno,
-        column=node.col_offset,
-        pattern=pattern,
-        code=_extract_code_snippet(node),
+        lineno=node.lineno,
+        handler=None,
         sender=sender,
+        statement=_extract_code_snippet(node),
     )
 
     return (signal_name, usage)

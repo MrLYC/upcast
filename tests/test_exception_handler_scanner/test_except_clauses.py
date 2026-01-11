@@ -23,8 +23,8 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
-        assert clause.exception_types == ["ValueError"]
+        clause = handler.exception_blocks[0]
+        assert clause.exceptions == ["ValueError"]
 
     def test_multiple_exception_types_tuple(self, tmp_path, scanner):
         """Test detection of multiple exception types in tuple."""
@@ -40,11 +40,11 @@ except (ValueError, KeyError, TypeError):
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
-        assert len(clause.exception_types) == 3
-        assert "ValueError" in clause.exception_types
-        assert "KeyError" in clause.exception_types
-        assert "TypeError" in clause.exception_types
+        clause = handler.exception_blocks[0]
+        assert len(clause.exceptions) == 3
+        assert "ValueError" in clause.exceptions
+        assert "KeyError" in clause.exceptions
+        assert "TypeError" in clause.exceptions
 
     def test_builtin_exceptions(self, tmp_path, scanner):
         """Test detection of various builtin exceptions."""
@@ -64,10 +64,10 @@ except AttributeError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert len(handler.except_clauses) == 3
-        assert "IOError" in handler.except_clauses[0].exception_types
-        assert "RuntimeError" in handler.except_clauses[1].exception_types
-        assert "AttributeError" in handler.except_clauses[2].exception_types
+        assert len(handler.exception_blocks) == 3
+        assert "IOError" in handler.exception_blocks[0].exceptions
+        assert "RuntimeError" in handler.exception_blocks[1].exceptions
+        assert "AttributeError" in handler.exception_blocks[2].exceptions
 
     def test_custom_exception_class(self, tmp_path, scanner):
         """Test detection of custom exception classes."""
@@ -86,7 +86,7 @@ except CustomError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert "CustomError" in handler.except_clauses[0].exception_types
+        assert "CustomError" in handler.exception_blocks[0].exceptions
 
     def test_exception_with_as_clause(self, tmp_path, scanner):
         """Test except clause with 'as' variable binding."""
@@ -102,7 +102,7 @@ except ValueError as e:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert "ValueError" in handler.except_clauses[0].exception_types
+        assert "ValueError" in handler.exception_blocks[0].exceptions
 
     def test_module_qualified_exception(self, tmp_path, scanner):
         """Test detection of module-qualified exceptions."""
@@ -120,10 +120,10 @@ except requests.exceptions.RequestException:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        exception_types = handler.except_clauses[0].exception_types
+        exceptions = handler.exception_blocks[0].exceptions
         # Should capture the full qualified name
-        assert len(exception_types) == 1
-        assert "requests.exceptions.RequestException" in exception_types[0]
+        assert len(exceptions) == 1
+        assert "requests.exceptions.RequestException" in exceptions[0]
 
     def test_except_clause_line_count(self, tmp_path, scanner):
         """Test that except clause line count is correct."""
@@ -141,7 +141,7 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.lines >= 3  # At least 3 lines of code
 
     def test_sequential_try_blocks(self, tmp_path, scanner):
@@ -163,8 +163,8 @@ except KeyError:
         output = scanner.scan(file_path)
 
         assert len(output.results) == 2
-        assert "ValueError" in output.results[0].except_clauses[0].exception_types
-        assert "KeyError" in output.results[1].except_clauses[0].exception_types
+        assert "ValueError" in output.results[0].exception_blocks[0].exceptions
+        assert "KeyError" in output.results[1].exception_blocks[0].exceptions
 
     def test_exception_hierarchy(self, tmp_path, scanner):
         """Test detection of exception hierarchy (base before specific)."""
@@ -182,9 +182,9 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        assert len(handler.except_clauses) == 2
-        assert "Exception" in handler.except_clauses[0].exception_types
-        assert "ValueError" in handler.except_clauses[1].exception_types
+        assert len(handler.exception_blocks) == 2
+        assert "Exception" in handler.exception_blocks[0].exceptions
+        assert "ValueError" in handler.exception_blocks[1].exceptions
 
     def test_try_lines_count(self, tmp_path, scanner):
         """Test that try block line count is correct."""
@@ -219,5 +219,5 @@ except ValueError:
         output = scanner.scan(file_path)
 
         handler = output.results[0]
-        clause = handler.except_clauses[0]
+        clause = handler.exception_blocks[0]
         assert clause.pass_count == 1

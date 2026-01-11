@@ -11,12 +11,14 @@ class SettingDefinitionItem(BaseModel):
     """A single definition of a setting.
 
     Attributes:
+        file: File path
         value: Inferred static value, None if cannot infer
         statement: Code statement
         lineno: Line number
         type: Inferred type (e.g., 'str', 'int', 'bool', 'dict', 'list', 'dynamic')
     """
 
+    file: str = Field(description="File path")
     value: Any | None = Field(None, description="Inferred static value")
     statement: str = Field(description="Code statement")
     lineno: int = Field(ge=1, description="Line number")
@@ -27,10 +29,12 @@ class SettingUsageItem(BaseModel):
     """A single usage of a setting.
 
     Attributes:
+        file: File path
         statement: Code statement
         lineno: Line number
     """
 
+    file: str = Field(description="File path")
     statement: str = Field(description="Code statement")
     lineno: int = Field(ge=1, description="Line number")
 
@@ -41,16 +45,16 @@ class SettingInfo(BaseModel):
     Attributes:
         definition_count: Number of definitions
         usage_count: Number of usages
-        type_list: List of possible types inferred from definitions
-        definitions: Definitions keyed by file path (relative)
-        usages: Usages keyed by file path (relative)
+        definition_types: List of possible types inferred from definitions
+        definitions: List of definitions
+        usages: List of usages
     """
 
     definition_count: int = Field(ge=0, description="Number of definitions")
     usage_count: int = Field(ge=0, description="Number of usages")
-    type_list: list[str] = Field(description="List of possible types")
-    definitions: dict[str, list[SettingDefinitionItem]] = Field(description="Definitions by file")
-    usages: dict[str, list[SettingUsageItem]] = Field(description="Usages by file")
+    definition_types: list[str] = Field(description="List of possible types")
+    definitions: list[SettingDefinitionItem] = Field(description="Definitions")
+    usages: list[SettingUsageItem] = Field(description="Usages")
 
 
 class DjangoSettingsSummary(ScannerSummary):

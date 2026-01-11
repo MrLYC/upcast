@@ -82,16 +82,20 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         if not isinstance(var_name, str):
             return
 
+        if not var_name:
+            var_name = "..."
+
         # Extract default value
         default_value = None
-        required = True
+        required = False if func_name.endswith(".get") else True
+
         if len(node.args) >= 2:
-            default_value = safe_infer_value(node.args[1], default="<dynamic>")
+            default_value = safe_infer_value(node.args[1])
             required = False
         elif node.keywords:
             for kw in node.keywords:
                 if kw.arg == "default":
-                    default_value = safe_infer_value(kw.value, default="<dynamic>")
+                    default_value = safe_infer_value(kw.value)
                     required = False
                     break
 
@@ -99,9 +103,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
-            column=node.col_offset,
-            pattern=f"{func_name}('{var_name}')",
-            code=safe_as_string(node),
+            statement=safe_as_string(node),
+            type="unknown",
         )
         self._add_env_var(
             name=var_name,
@@ -136,9 +139,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
-            column=node.col_offset,
-            pattern=f"{value_str}['{node.slice.value}']",
-            code=safe_as_string(node),
+            statement=safe_as_string(node),
+            type="unknown",
         )
         self._add_env_var(
             name=node.slice.value,
@@ -160,10 +162,15 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
                 name=name,
                 required=required,
                 default_value=default_value,
+                types=[],
                 locations=[],
             )
 
         self.env_vars[name].locations.append(location)
+
+        # Aggregate types from locations
+        if location.type and location.type not in self.env_vars[name].types:
+            self.env_vars[name].types.append(location.type)
 
         # Update required status (if ANY usage is required, mark as required)
         if required:

@@ -16,8 +16,8 @@ class TestTargetModuleModel:
 
     def test_target_module_valid(self):
         """Test valid TargetModule creation."""
-        target = TargetModule(module="myapp.models", symbols=["User", "Post"])
-        assert target.module == "myapp.models"
+        target = TargetModule(module_path="myapp.models", symbols=["User", "Post"])
+        assert target.module_path == "myapp.models"
         assert len(target.symbols) == 2
 
 
@@ -45,7 +45,7 @@ class TestUnitTestInfoModel:
             line_range=(5, 10),
             body_md5="def456",
             assert_count=2,
-            targets=[TargetModule(module="myapp.models", symbols=["User"])],
+            targets=[TargetModule(module_path="myapp.models", symbols=["User"])],
         )
         assert len(test.targets) == 1
 
