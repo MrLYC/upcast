@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 39
 - **已扫描文件数**: 2368
-- **扫描耗时**: 10734 毫秒
+- **扫描耗时**: 20924 毫秒
 
 - **Django 接收器**: 54
 - **Django 发送器**: 31
@@ -19,8 +19,8 @@
 
 ### post_save
 
-**类型**: django  
-**类别**: model_signals  
+**类型**: django
+**类别**: model_signals
 
 #### 接收器
 
@@ -41,8 +41,8 @@
 
 ### cnative_custom_domain_updated
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -56,8 +56,8 @@
 
 ### application_default_module_switch
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -73,8 +73,8 @@
 
 ### post_appenv_deploy
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -93,8 +93,8 @@
 
 ### on_release_created
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -108,8 +108,8 @@
 
 ### application_member_updated
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -124,8 +124,8 @@
 
 ### prepare_use_application_code
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -139,8 +139,8 @@
 
 ### prepare_use_application_name
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -154,8 +154,8 @@
 
 ### before_finishing_application_creation
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -169,8 +169,8 @@
 
 ### prepare_change_application_name
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -184,8 +184,8 @@
 
 ### module_environment_offline_success
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -200,8 +200,8 @@
 
 ### application_logo_updated
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -217,8 +217,8 @@
 
 ### post_create_application
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -236,8 +236,8 @@
 
 ### pre_appenv_deploy
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -252,8 +252,8 @@
 
 ### pre_phase_start
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -267,8 +267,8 @@
 
 ### post_phase_end
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -282,8 +282,8 @@
 
 ### processes_updated
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -297,8 +297,8 @@
 
 ### setting_changed
 
-**类型**: django  
-**类别**: other_signals  
+**类型**: django
+**类别**: other_signals
 
 #### 接收器
 
@@ -312,8 +312,8 @@
 
 ### product_create_or_update_by_operator
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -334,8 +334,8 @@
 
 ### post_cnative_env_deploy
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -354,8 +354,8 @@
 
 ### post_create_application
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -381,8 +381,8 @@
 
 ### application_member_updated
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -399,8 +399,8 @@
 
 ### application_default_module_switch
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -415,8 +415,8 @@
 
 ### application_logo_updated
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -430,8 +430,8 @@
 
 ### prepare_change_application_name
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -450,8 +450,8 @@
 
 ### module_environment_offline_success
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -470,8 +470,8 @@
 
 ### post_phase_end
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -485,8 +485,8 @@
 
 ### post_appenv_deploy
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -501,8 +501,8 @@
 
 ### post_change_app_router
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -516,8 +516,8 @@
 
 ### rollback_change_app_router
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -531,8 +531,8 @@
 
 ### on_module_initialized
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -552,8 +552,8 @@
 
 ### empty_svn_accounts_fetched
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -567,8 +567,8 @@
 
 ### svn_account_updated
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -582,8 +582,8 @@
 
 ### repo_updated
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 
 #### 发送器
@@ -597,8 +597,8 @@
 
 ### before_finishing_application_creation
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -613,8 +613,8 @@
 
 ### processes_updated
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -628,8 +628,8 @@
 
 ### sig_task_pre_call
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -648,8 +648,8 @@
 
 ### sig_task_post_call
 
-**类型**: django  
-**类别**: custom_signals  
+**类型**: django
+**类别**: custom_signals
 
 #### 接收器
 
@@ -668,8 +668,8 @@
 
 ### setup_logging
 
-**类型**: celery  
-**类别**: other_signals  
+**类型**: celery
+**类别**: other_signals
 
 #### 接收器
 

@@ -57,6 +57,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                     statement=f"async def {node.name}",
                     function=function,
                     class_name=class_name,
+                    block=self._get_block_name(node),
+                    details=None,
+                    api_call=None,
                 )
                 self._add_pattern(patterns, "asyncio", "async_function", usage)
 
@@ -86,7 +89,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(patterns, scan_duration_ms)
-        return ConcurrencyPatternOutput(summary=summary, results=patterns)
+        return ConcurrencyPatternOutput(
+            summary=summary, results=patterns, metadata={"scanner_name": "concurrency-patterns"}
+        )
 
     def _build_executor_mapping(self, module: nodes.Module, imports: dict[str, str]) -> dict[str, str]:
         """Build mapping of variable names to executor types.
@@ -157,6 +162,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
+            details=None,
+            api_call=None,
         )
 
     def _detect_thread_creation(
@@ -194,7 +202,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_threadpool_executor(
@@ -222,7 +232,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_process_creation(
@@ -260,7 +272,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_processpool_executor(
@@ -288,7 +302,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_executor_submit(
@@ -331,6 +347,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                 statement=safe_as_string(node),
                 function=function,
                 class_name=class_name,
+                block=self._get_block_name(node),
                 details=details if details else None,
                 api_call="submit",
             )
@@ -373,6 +390,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details,
             api_call="create_task",
         )
@@ -421,9 +439,27 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details,
             api_call="run_in_executor",
         )
+
+    def _get_block_name(self, node: nodes.NodeNG) -> str | None:
+        """Get immediate containing block name (if, for, while, etc.)."""
+        parent = node.parent
+        if isinstance(parent, nodes.If):
+            return "if"
+        elif isinstance(parent, nodes.For):
+            return "for"
+        elif isinstance(parent, nodes.While):
+            return "while"
+        elif isinstance(parent, nodes.With):
+            return "with"
+        elif isinstance(parent, nodes.Try):
+            return "try"
+        elif isinstance(parent, nodes.ExceptHandler):
+            return "except"
+        return None
 
     def _get_qualified_name(self, node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
         """Get qualified name of a function/attribute."""

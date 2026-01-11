@@ -1,4 +1,5 @@
-metadata: {}
+metadata:
+  scanner_name: exception-handlers
 results:
 - else_clause: null
   end_lineno: 37
@@ -25794,7 +25795,7 @@ results:
   try_lines: 2
 summary:
   files_scanned: 422
-  scan_duration_ms: 9575
+  scan_duration_ms: 41345
   total_count: 1189
   total_except_clauses: 1189
   total_handlers: 1092

@@ -66,7 +66,9 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(operations_by_category, scan_duration_ms)
-        return BlockingOperationsOutput(summary=summary, results=operations_by_category)
+        return BlockingOperationsOutput(
+            summary=summary, results=operations_by_category, metadata={"scanner_name": "blocking-operations"}
+        )
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> BlockingOperation | None:
         """Check a node for blocking operations."""
@@ -97,6 +99,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         statement=safe_as_string(node),
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
+                        block=self._get_block_name(node),
                     )
 
         return None
@@ -119,6 +122,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         statement=safe_as_string(node),
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
+                        block=self._get_block_name(node),
                     )
         return None
 
@@ -159,6 +163,23 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             if isinstance(parent, nodes.ClassDef):
                 return parent.name
             parent = parent.parent
+        return None
+
+    def _get_block_name(self, node: nodes.NodeNG) -> str | None:
+        """Get immediate containing block name (if, for, while, etc.)."""
+        parent = node.parent
+        if isinstance(parent, nodes.If):
+            return "if"
+        elif isinstance(parent, nodes.For):
+            return "for"
+        elif isinstance(parent, nodes.While):
+            return "while"
+        elif isinstance(parent, nodes.With):
+            return "with"
+        elif isinstance(parent, nodes.Try):
+            return "try"
+        elif isinstance(parent, nodes.ExceptHandler):
+            return "except"
         return None
 
     def _calculate_summary(

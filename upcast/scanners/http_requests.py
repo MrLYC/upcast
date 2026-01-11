@@ -64,7 +64,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(requests_info, scan_duration_ms)
 
-        return HttpRequestOutput(summary=summary, results=requests_info)
+        return HttpRequestOutput(summary=summary, results=requests_info, metadata={"scanner_name": "http-requests"})
 
     def _extract_url_with_imports(self, node: nodes.Call, imports: dict[str, str]) -> str | None:
         """Extract URL from request call with import context.

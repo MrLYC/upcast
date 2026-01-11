@@ -1,7 +1,9 @@
-metadata: {}
+metadata:
+  scanner_name: blocking-operations
 results:
   database:
-  - category: database
+  - block: null
+    category: database
     class_name: ClusterManager
     column: 35
     file: apiserver/paasng/paas_wl/infras/cluster/models.py
@@ -9,7 +11,8 @@ results:
     line: 216
     operation: self.select_for_update
     statement: self.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: ClusterManager
     column: 35
     file: apiserver/paasng/paas_wl/infras/cluster/models.py
@@ -17,7 +20,8 @@ results:
     line: 217
     operation: self.select_for_update
     statement: self.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: ResourcePoolProvider
     column: 16
     file: apiserver/paasng/paasng/accessories/services/providers/base.py
@@ -25,7 +29,8 @@ results:
     line: 72
     operation: select_for_update
     statement: PreCreatedInstance.objects.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: Application
     column: 15
     file: apiserver/paasng/paasng/platform/applications/models.py
@@ -33,7 +38,8 @@ results:
     line: 363
     operation: select_for_update
     statement: self.modules.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: Application
     column: 15
     file: apiserver/paasng/paasng/platform/applications/models.py
@@ -44,7 +50,8 @@ results:
   subprocess: []
   synchronization: []
   time_based:
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: WaitPodDelete
     column: 12
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
@@ -52,7 +59,8 @@ results:
     line: 215
     operation: time.sleep
     statement: time.sleep(self._check_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: PodScheduleHandler
     column: 16
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
@@ -60,7 +68,8 @@ results:
     line: 308
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: CommandHandler
     column: 16
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
@@ -68,7 +77,8 @@ results:
     line: 565
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: CommandHandler
     column: 16
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
@@ -76,7 +86,8 @@ results:
     line: 573
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KNamespace
     column: 12
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
@@ -84,7 +95,8 @@ results:
     line: 568
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KNamespace
     column: 12
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
@@ -92,7 +104,8 @@ results:
     line: 594
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KPod
     column: 12
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
@@ -100,7 +113,8 @@ results:
     line: 654
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: WaitDelete
     column: 12
     file: apiserver/paasng/paas_wl/infras/resources/kube_res/base.py
@@ -108,7 +122,8 @@ results:
     line: 681
     operation: time.sleep
     statement: time.sleep(self._check_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
     file: apiserver/paasng/paasng/misc/monitoring/monitor/management/commands/init_alert_rules.py
@@ -116,7 +131,8 @@ results:
     line: 49
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
     file: apiserver/paasng/paasng/misc/monitoring/monitor/management/commands/init_dashboards.py
@@ -124,7 +140,8 @@ results:
     line: 49
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
     file: apiserver/paasng/paasng/plat_admin/admin_cli/deploy.py
@@ -132,7 +149,8 @@ results:
     line: 56
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: PipelineBuildProcessExecutor
     column: 12
     file: apiserver/paasng/paasng/platform/engine/deploy/bg_build/executors.py
@@ -140,7 +158,8 @@ results:
     line: 338
     operation: time.sleep
     statement: time.sleep(self.polling_result_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/conftest.py
@@ -148,7 +167,8 @@ results:
     line: 57
     operation: time.sleep
     statement: time.sleep(5)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
@@ -156,7 +176,8 @@ results:
     line: 127
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: IngressNginxReloadChecker
     column: 20
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
@@ -164,7 +185,8 @@ results:
     line: 149
     operation: time.sleep
     statement: time.sleep(0.2)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: IngressNginxReloadChecker
     column: 12
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
@@ -172,7 +194,8 @@ results:
     line: 151
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestBatchOps
     column: 12
     file: apiserver/paasng/tests/paas_wl/infras/resources/base/test_kres.py
@@ -180,7 +203,8 @@ results:
     line: 175
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestBatchOps
     column: 12
     file: apiserver/paasng/tests/paas_wl/infras/resources/base/test_kres.py
@@ -188,7 +212,8 @@ results:
     line: 193
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestDeploymentCoordinator
     column: 8
     file: apiserver/paasng/tests/paasng/platform/engine/workflow/test_flow.py
@@ -196,7 +221,8 @@ results:
     line: 114
     operation: time.sleep
     statement: time.sleep(0.2)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 4
     file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
@@ -204,7 +230,8 @@ results:
     line: 45
     operation: time.sleep
     statement: time.sleep(window_size)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 4
     file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
@@ -212,7 +239,8 @@ results:
     line: 68
     operation: time.sleep
     statement: time.sleep(window_size)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Sentinel
     column: 12
     file: svc-rabbitmq/tasks/management/commands/worker.py
@@ -220,7 +248,8 @@ results:
     line: 100
     operation: time.sleep
     statement: sleep(cycle)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Cluster
     column: 12
     file: svc-rabbitmq/tasks/management/commands/worker.py
@@ -228,7 +257,8 @@ results:
     line: 134
     operation: time.sleep
     statement: sleep(0.1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 16
     file: svc-rabbitmq/vendor/management/commands/consumer.py
@@ -236,7 +266,8 @@ results:
     line: 68
     operation: time.sleep
     statement: time.sleep(delay)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
     file: svc-rabbitmq/vendor/management/commands/evict_connections.py
@@ -244,7 +275,8 @@ results:
     line: 152
     operation: time.sleep
     statement: time.sleep(interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 20
     file: svc-rabbitmq/vendor/management/commands/producer.py
@@ -252,7 +284,8 @@ results:
     line: 116
     operation: time.sleep
     statement: time.sleep(delay)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 20
     file: svc-rabbitmq/vendor/management/commands/recovery_connections.py
@@ -260,7 +293,8 @@ results:
     line: 190
     operation: time.sleep
     statement: time.sleep(sleep)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
     file: svc-rabbitmq/vendor/management/commands/sync_user_policies.py
@@ -273,5 +307,5 @@ summary:
     database: 5
     time_based: 28
   files_scanned: 21
-  scan_duration_ms: 11176
+  scan_duration_ms: 20983
   total_count: 33

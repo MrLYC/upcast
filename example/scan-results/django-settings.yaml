@@ -1,4 +1,5 @@
-metadata: {}
+metadata:
+  scanner_name: django-settings
 results:
   ACCESS_CONTROL_CONFIG:
     definition_count: 1
@@ -10002,7 +10003,7 @@ results:
     usages: {}
 summary:
   files_scanned: 2368
-  scan_duration_ms: 38003
+  scan_duration_ms: 92110
   total_count: 474
   total_definitions: 616
   total_settings: 474

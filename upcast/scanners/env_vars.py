@@ -43,7 +43,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         return EnvVarOutput(
             summary=summary,
             results=self.env_vars,
-            metadata={"scanner_name": "env_vars"},
+            metadata={"scanner_name": "env-vars"},
         )
 
     def scan_file(self, file_path: Path) -> None:

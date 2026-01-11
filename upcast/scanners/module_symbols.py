@@ -198,7 +198,11 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                         # Use full path including the imported symbol name
                         full_module_path = f"{resolved_modname}.{name}"
                         symbols.imported_symbols[name] = ImportedSymbol(
-                            module_path=full_module_path, attributes=[], blocks=current_blocks
+                            module_path=full_module_path,
+                            attributes=[],
+                            lineno=node.lineno or 0,
+                            statement=safe_as_string(node) or "",
+                            blocks=current_blocks,
                         )
 
     def _resolve_relative_import(self, modname: str, level: int, package_path: str) -> str:
@@ -374,6 +378,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 symbols.variables[var_name] = Variable(
                     module_path=module_path,
                     attributes=[],
+                    lineno=node.lineno or 0,
                     value=value_str,
                     statement=statement,
                     blocks=block_stack.copy(),
@@ -418,6 +423,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         decorators = self._extract_decorators(node.decorators)
 
         symbols.functions[func_name] = Function(
+            lineno=node.lineno or 0,
+            is_async=isinstance(node, nodes.AsyncFunctionDef),
             signature=signature,
             docstring=docstring,
             body_md5=body_md5,
@@ -474,6 +481,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         decorators = self._extract_decorators(node.decorators)
 
         symbols.classes[class_name] = Class(
+            lineno=node.lineno or 0,
             docstring=docstring,
             body_md5=body_md5,
             attributes=class_attrs,
@@ -500,7 +508,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for node in decorator_nodes.nodes:
             if isinstance(node, nodes.Name):
                 # Simple decorator: @decorator
-                decorators.append(Decorator(name=node.name, args=[], kwargs={}))
+                decorators.append(Decorator(name=node.name, lineno=node.lineno or 0, args=[], kwargs={}))
             elif isinstance(node, nodes.Call):
                 # Decorator with arguments: @decorator(args, kwargs)
                 func_name = safe_as_string(node.func) or "unknown"
@@ -520,11 +528,11 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                         # Convert to string if not already
                         kwargs[keyword.arg] = str(value) if not isinstance(value, str) else value
 
-                decorators.append(Decorator(name=func_name, args=args, kwargs=kwargs))
+                decorators.append(Decorator(name=func_name, lineno=node.lineno or 0, args=args, kwargs=kwargs))
             else:
                 # Complex decorator, just extract as string
                 name = safe_as_string(node) or "unknown"
-                decorators.append(Decorator(name=name, args=[], kwargs={}))
+                decorators.append(Decorator(name=name, lineno=node.lineno or 0, args=[], kwargs={}))
 
         return decorators
 
@@ -549,6 +557,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 symbols.imported_symbols[name] = ImportedSymbol(
                     module_path=symbol.module_path,
                     attributes=self.symbol_usage[name],
+                    lineno=symbol.lineno,
+                    statement=symbol.statement,
                     blocks=symbol.blocks,
                 )
 
@@ -558,6 +568,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 symbols.variables[name] = Variable(
                     module_path=var.module_path,
                     attributes=self.symbol_usage[name],
+                    lineno=var.lineno,
                     value=var.value,
                     statement=var.statement,
                     blocks=var.blocks,
@@ -567,6 +578,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for name, func in symbols.functions.items():
             if name in self.symbol_usage:
                 symbols.functions[name] = Function(
+                    lineno=func.lineno,
+                    is_async=func.is_async,
                     signature=func.signature,
                     docstring=func.docstring,
                     body_md5=func.body_md5,
@@ -579,6 +592,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for name, cls in symbols.classes.items():
             if name in self.symbol_usage:
                 symbols.classes[name] = Class(
+                    lineno=cls.lineno,
                     docstring=cls.docstring,
                     body_md5=cls.body_md5,
                     attributes=cls.attributes,

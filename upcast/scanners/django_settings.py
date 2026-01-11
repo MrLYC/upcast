@@ -181,6 +181,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         return DjangoSettingsOutput(
             summary=summary,
             results=results,
+            metadata={"scanner_name": "django-settings"},
         )
 
     def _is_settings_file(self, file_path: Path) -> bool:

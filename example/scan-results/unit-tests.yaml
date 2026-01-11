@@ -1,4 +1,5 @@
-metadata: {}
+metadata:
+  scanner_name: unit-tests
 results:
   apiserver/paasng/tests/api/apigw/test_ai_agent.py:
   - assert_count: 5
@@ -26972,7 +26973,7 @@ results:
       - configure_regions
 summary:
   files_scanned: 331
-  scan_duration_ms: 3312
+  scan_duration_ms: 6434
   total_assertions: 3658
   total_count: 1607
   total_files: 331

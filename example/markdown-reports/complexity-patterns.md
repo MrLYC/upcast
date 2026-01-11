@@ -1,7 +1,7 @@
 # complexity-patterns 扫描报告
 
 ## 元数据
-暂无元数据。
+- **scanner_name**: complexity-patterns
 
 ## 概要信息
 - **总数量**: 88
@@ -22,9 +22,9 @@
 
 #### detect_state
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 183-204 (共 22 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 183-204 (共 22 行, 0 行注释)
 **描述**: Detect the final state from status.conditions
 
 **函数签名**:
@@ -69,9 +69,9 @@ def detect_state(self) -> ModelResState:
 
 #### serialize
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 52-108 (共 57 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 52-108 (共 57 行, 0 行注释)
 **描述**: serialize obj into Ingress(networking.k8s.io/v1)
 
 **函数签名**:
@@ -124,9 +124,9 @@ def serialize(self, obj: 'DevSandboxIngress', original_obj: Optional[ResourceIns
 
 #### deserialize
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 194-246 (共 53 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 194-246 (共 53 行, 0 行注释)
 **描述**: Generate a ProcInstance by given Pod object
 
 **函数签名**:
@@ -181,9 +181,9 @@ def deserialize(self, app: WlApp, kube_data: ResourceInstance) -> 'Instance':
 
 #### sync
 
-**复杂度分数**: 17  
-**严重程度**: high_risk  
-**行数**: 129-213 (共 85 行, 0 行注释)  
+**复杂度分数**: 17
+**严重程度**: high_risk
+**行数**: 129-213 (共 85 行, 0 行注释)
 **描述**: Sync ProcessSpecs data with given processes.
 
 **函数签名**:
@@ -252,9 +252,9 @@ def sync(self, processes: List[ProcessTmpl]):
 
 #### process_spec_updator
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 181-199 (共 19 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 181-199 (共 19 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -295,9 +295,9 @@ def process_spec_updator(process: ProcessTmpl) -> Tuple[bool, ProcessSpec]:
 
 #### register_cluster
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 135-207 (共 73 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 135-207 (共 73 行, 0 行注释)
 **描述**: Register a cluster to db, work Like update_or_create, but will validate some-attr
 
 **函数签名**:
@@ -357,9 +357,9 @@ def register_cluster(self, region: str, name: str, type: str = ClusterType.NORMA
 
 #### create_or_update
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 290-335 (共 46 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 290-335 (共 46 行, 0 行注释)
 **描述**: Create or update a resource by name
 
 **函数签名**:
@@ -416,9 +416,9 @@ def create_or_update(self, name: str, namespace: Namespace = None, body: Optiona
 
 #### __search
 
-**复杂度分数**: 15  
-**严重程度**: warning  
-**行数**: 35-78 (共 44 行, 0 行注释)  
+**复杂度分数**: 15
+**严重程度**: warning
+**行数**: 35-78 (共 44 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -477,9 +477,9 @@ def __search(self, parts, resources, reqParams):
 
 #### watch_by_app
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 463-509 (共 47 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 463-509 (共 47 行, 0 行注释)
 **描述**: Get notified when resource changes
 
 **函数签名**:
@@ -542,9 +542,9 @@ def watch_by_app(self, app: WlApp, labels: Optional[Dict] = None, ignore_unknown
 
 #### check_pod_health_status
 
-**复杂度分数**: 16  
-**严重程度**: high_risk  
-**行数**: 89-150 (共 62 行, 0 行注释)  
+**复杂度分数**: 16
+**严重程度**: high_risk
+**行数**: 89-150 (共 62 行, 0 行注释)
 **描述**: Check if the pod is healthy
 
 **函数签名**:
@@ -608,9 +608,9 @@ def check_pod_health_status(pod: kmodels.V1Pod) -> HealthStatus:
 
 #### make_json_field
 
-**复杂度分数**: 13  
-**严重程度**: warning  
-**行数**: 66-148 (共 83 行, 0 行注释)  
+**复杂度分数**: 13
+**严重程度**: warning
+**行数**: 66-148 (共 83 行, 0 行注释)
 **描述**: 生成会自动进行类型转换为 `py_model` 的 JSONField
 
 **函数签名**:
@@ -701,9 +701,9 @@ def make_json_field(cls_name: str, py_model: Type[M], decoder: Callable[[M], Dic
 
 #### handle
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 82-123 (共 42 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 82-123 (共 42 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -761,9 +761,9 @@ def handle(self, *args, **options):
 
 #### serialize
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 55-112 (共 58 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 55-112 (共 58 行, 0 行注释)
 **描述**: serialize obj into Ingress(networking.k8s.io/v1beta1)
 
 **函数签名**:
@@ -811,9 +811,9 @@ def serialize(self, obj: 'ProcessIngress', original_obj: Optional[ResourceInstan
 
 #### serialize
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 214-274 (共 61 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 214-274 (共 61 行, 0 行注释)
 **描述**: serialize obj into Ingress(networking.k8s.io/v1)
 
 **函数签名**:
@@ -864,9 +864,9 @@ def serialize(self, obj: 'ProcessIngress', original_obj: Optional[ResourceInstan
 
 #### count_filters_options_from_logs
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 104-143 (共 40 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 104-143 (共 40 行, 0 行注释)
 **描述**: 从日志样本(logs) 中统计 ES 日志的字段分布, 返回对应的 FieldFilters. 会忽略无可选 options 的 filters
 
 **函数签名**:
@@ -923,9 +923,9 @@ def count_filters_options_from_logs(logs: List, properties: Dict[str, FieldFilte
 
 #### handle
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 66-105 (共 40 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 66-105 (共 40 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -976,9 +976,9 @@ def handle(self, app_code, region, cluster_name, all_clusters, edge_disable, dry
 
 #### handle
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 37-76 (共 40 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 37-76 (共 40 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1032,9 +1032,9 @@ def handle(self, name, region, id, dry_run, *args, **options):
 
 #### _request
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 34-73 (共 40 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 34-73 (共 40 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1088,9 +1088,9 @@ def _request(self, method, path, data, timeout=10):
 
 #### dig_tags_local_repo
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 36-68 (共 33 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 36-68 (共 33 行, 0 行注释)
 **描述**: Dig a local repo to find proper tags for this module
 
 **函数签名**:
@@ -1139,9 +1139,9 @@ def dig_tags_local_repo(local_path: str | PathLike):
 
 #### back_to_previous_stage
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 121-157 (共 37 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 121-157 (共 37 行, 0 行注释)
 **描述**: 回滚当前发布阶段至上一阶段: 重置 release.current_stage, 并将 release.current_stage 设置成 previous_stage
 
 **函数签名**:
@@ -1192,9 +1192,9 @@ def back_to_previous_stage(self, operator: str):
 
 #### make_release_validator
 
-**复杂度分数**: 17  
-**严重程度**: high_risk  
-**行数**: 480-554 (共 75 行, 0 行注释)  
+**复杂度分数**: 17
+**严重程度**: high_risk
+**行数**: 480-554 (共 75 行, 0 行注释)
 **描述**: make a validator to validate ReleaseVersion object
 
 **函数签名**:
@@ -1267,9 +1267,9 @@ def make_release_validator(plugin: PluginInstance, version_rule: PluginReleaseVe
 
 #### validator
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 526-552 (共 27 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 526-552 (共 27 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1314,9 +1314,9 @@ def validator(self, attrs: Dict):
 
 #### gen_site_role_perm_map
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 62-123 (共 62 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 62-123 (共 62 行, 0 行注释)
 **描述**: 根据不同的用户角色，生成对应的权限映射表
 
 **函数签名**:
@@ -1380,9 +1380,9 @@ def gen_site_role_perm_map(role: SiteRole) -> Dict[SiteAction, bool]:
 
 #### _migrate_single
 
-**复杂度分数**: 20  
-**严重程度**: high_risk  
-**行数**: 144-264 (共 121 行, 0 行注释)  
+**复杂度分数**: 20
+**严重程度**: high_risk
+**行数**: 144-264 (共 121 行, 0 行注释)
 **描述**: 迁移单个应用权限数据
 
 **函数签名**:
@@ -1482,9 +1482,9 @@ def _migrate_single(self, idx: int, app: Dict) -> List:
 
 #### check_drf_view_perm
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 85-122 (共 38 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 85-122 (共 38 行, 0 行注释)
 **描述**: Check if a DRF view function has configured permission properly.
 
 **函数签名**:
@@ -1533,9 +1533,9 @@ def check_drf_view_perm(view_func, is_admin42: bool):
 
 #### filter_queryset
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 50-77 (共 28 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 50-77 (共 28 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1586,9 +1586,9 @@ def filter_queryset(self, queryset):
 
 #### get_results
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 353-401 (共 49 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 353-401 (共 49 行, 0 行注释)
 **描述**: Return simple apps as result
 
 **函数签名**:
@@ -1641,9 +1641,9 @@ def get_results(self) -> Generator[SimpleApp, None, None]:
 
 #### filter_queryset
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 141-180 (共 40 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 141-180 (共 40 行, 0 行注释)
 **描述**: Filter applications by given parameters
 
 **函数签名**:
@@ -1695,9 +1695,9 @@ def filter_queryset(cls, queryset: QuerySet, include_inactive=False, regions=Non
 
 #### import_bkapp_spec_entity
 
-**复杂度分数**: 13  
-**严重程度**: warning  
-**行数**: 71-124 (共 54 行, 0 行注释)  
+**复杂度分数**: 13
+**严重程度**: warning
+**行数**: 71-124 (共 54 行, 0 行注释)
 **描述**: Import a BkApp spec entity to the current module, will overwrite existing data.
 
 **函数签名**:
@@ -1763,9 +1763,9 @@ def import_bkapp_spec_entity(module: Module, spec_entity: v1alpha2_entity.BkAppS
 
 #### apply_to_proc_overlay
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 204-247 (共 44 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 204-247 (共 44 行, 0 行注释)
 **描述**: Apply changes to the sub-fields in the 'envOverlay' field which is related
 
 **函数签名**:
@@ -1811,9 +1811,9 @@ def apply_to_proc_overlay(self, model_res: crd.BkAppResource, module: Module):
 
 #### to_internal_value
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 131-160 (共 30 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 131-160 (共 30 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1859,9 +1859,9 @@ def to_internal_value(self, data: Dict) -> ApplicationDesc:
 
 #### to_internal_value
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 122-155 (共 34 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 122-155 (共 34 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1909,9 +1909,9 @@ def to_internal_value(self, data: Dict) -> ApplicationDesc:
 
 #### to_internal_value
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 80-153 (共 74 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 80-153 (共 74 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -1966,9 +1966,9 @@ def to_internal_value(self, data) -> DeploymentDesc:
 
 #### _find_module_desc_data
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 367-415 (共 49 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 367-415 (共 49 行, 0 行注释)
 **描述**: Find a module's desc data in the json data. This function can be used in both v2 and v3
 
 **函数签名**:
@@ -2028,9 +2028,9 @@ def _find_module_desc_data(json_data: Dict, module_name: Optional[str], modules_
 
 #### _start_following_logs
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 333-373 (共 41 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 333-373 (共 41 行, 0 行注释)
 **描述**: 通过轮询，检查流水线是否执行完成，并逐批获取执行日志
 
 **函数签名**:
@@ -2080,9 +2080,9 @@ def _start_following_logs(self, pb: entities.PipelineBuild):
 
 #### get_status
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 164-213 (共 50 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 164-213 (共 50 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2130,9 +2130,9 @@ def get_status(self) -> PollingResult:
 
 #### release_by_k8s_operator
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 84-180 (共 97 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 84-180 (共 97 行, 0 行注释)
 **描述**: Create a new release for given environment(which will be handled by k8s operator).
 
 **函数签名**:
@@ -2200,9 +2200,9 @@ def release_by_k8s_operator(env: ModuleEnvironment, revision: AppModelRevision, 
 
 #### get_deploy_desc_handler_by_version
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 175-224 (共 50 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 175-224 (共 50 行, 0 行注释)
 **描述**: Get the description handler for the given module and version.
 
 **函数签名**:
@@ -2265,9 +2265,9 @@ def get_deploy_desc_handler_by_version(module: Module, operator: str, version_in
 
 #### download_source_to_dir
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 237-307 (共 71 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 237-307 (共 71 行, 0 行注释)
 **描述**: Download and extract the module's source files to local path, will generate Procfile if necessary
 
 **函数签名**:
@@ -2328,9 +2328,9 @@ def download_source_to_dir(module: Module, operator: str, deployment: Deployment
 
 #### _evaluate_by_user_visit
 
-**复杂度分数**: 15  
-**严重程度**: warning  
-**行数**: 156-196 (共 41 行, 0 行注释)  
+**复杂度分数**: 15
+**严重程度**: warning
+**行数**: 156-196 (共 41 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2382,9 +2382,9 @@ def _evaluate_by_user_visit(self):
 
 #### _update_or_create_operation_report
 
-**复杂度分数**: 17  
-**严重程度**: high_risk  
-**行数**: 52-124 (共 73 行, 0 行注释)  
+**复杂度分数**: 17
+**严重程度**: high_risk
+**行数**: 52-124 (共 73 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2439,9 +2439,9 @@ def _update_or_create_operation_report(app: Application):
 
 #### send_idle_email_to_app_developers
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 168-234 (共 67 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 168-234 (共 67 行, 0 行注释)
 **描述**: 发送应用闲置模块邮件给应用管理员/开发者
 
 **函数签名**:
@@ -2514,9 +2514,9 @@ def send_idle_email_to_app_developers(app_codes: List[str], only_specified_users
 
 #### initialize_app_model_resource
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 257-318 (共 62 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 257-318 (共 62 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2570,9 +2570,9 @@ def initialize_app_model_resource(self, bkapp_spec: Dict[str, Any]):
 
 #### calculate_gap_seconds_interval
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 70-97 (共 28 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 70-97 (共 28 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2624,9 +2624,9 @@ def calculate_gap_seconds_interval(gap_seconds, wide=False) -> str:
 
 #### i18n
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 50-98 (共 49 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 50-98 (共 49 行, 0 行注释)
 **描述**: `i18n` decorator will extend those fields wrapped by `I18NField` in the serializer.
 
 **函数签名**:
@@ -2688,9 +2688,9 @@ def i18n(cls_or_languages: Optional[Union[Optional[List[str]], SerializerType]] 
 
 #### _make_json_field
 
-**复杂度分数**: 17  
-**严重程度**: high_risk  
-**行数**: 290-382 (共 93 行, 0 行注释)  
+**复杂度分数**: 17
+**严重程度**: high_risk
+**行数**: 290-382 (共 93 行, 0 行注释)
 **描述**: 生成会自动进行类型转换为 `py_model` 的 `base_class`
 
 **函数签名**:
@@ -2778,9 +2778,9 @@ def _make_json_field(base_class: Type[F], cls_name: str, py_model: Type[M], modu
 
 #### compile
 
-**复杂度分数**: 16  
-**严重程度**: high_risk  
-**行数**: 66-133 (共 68 行, 0 行注释)  
+**复杂度分数**: 16
+**严重程度**: high_risk
+**行数**: 66-133 (共 68 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2861,9 +2861,9 @@ def compile(self, sl: str):
 
 #### test_retrieve
 
-**复杂度分数**: 14  
-**严重程度**: warning  
-**行数**: 53-77 (共 25 行, 0 行注释)  
+**复杂度分数**: 14
+**严重程度**: warning
+**行数**: 53-77 (共 25 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2904,9 +2904,9 @@ def test_retrieve(self, api_client, bk_cnative_app, bk_module, web, celery_worke
 
 #### test_save
 
-**复杂度分数**: 21  
-**严重程度**: critical  
-**行数**: 79-212 (共 134 行, 0 行注释)  
+**复杂度分数**: 21
+**严重程度**: critical
+**行数**: 79-212 (共 134 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -2960,9 +2960,9 @@ def test_save(self, api_client, bk_cnative_app, bk_module, web, celery_worker):
 
 #### test_sync
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 75-97 (共 23 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 75-97 (共 23 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3001,9 +3001,9 @@ def test_sync(self, bk_plugin_app, sys_api_client):
 
 #### test_create_with_image
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 493-541 (共 49 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 493-541 (共 49 行, 0 行注释)
 **描述**: 托管方式：仅镜像
 
 **函数签名**:
@@ -3048,9 +3048,9 @@ def test_create_with_image(self, api_client):
 
 #### test_configvar_by_key
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 32-92 (共 61 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 32-92 (共 61 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3101,9 +3101,9 @@ def test_configvar_by_key(api_client, bk_module, init_env, init_value, update_en
 
 #### test_update_market_app
 
-**复杂度分数**: 14  
-**严重程度**: warning  
-**行数**: 113-164 (共 52 行, 0 行注释)  
+**复杂度分数**: 14
+**严重程度**: warning
+**行数**: 113-164 (共 52 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3163,9 +3163,9 @@ def test_update_market_app(self, api_client, bk_app_full):
 
 #### test_create_with_image
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 120-171 (共 52 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 120-171 (共 52 行, 0 行注释)
 **描述**: 托管方式：仅镜像
 
 **函数签名**:
@@ -3211,9 +3211,9 @@ def test_create_with_image(self, bk_cnative_app, api_client):
 
 #### test_deploy_processes
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 142-170 (共 29 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 142-170 (共 29 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3258,9 +3258,9 @@ def test_deploy_processes(self, wl_app, web_process):
 
 #### test_deploy_success
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 115-145 (共 31 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 115-145 (共 31 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3302,9 +3302,9 @@ def test_deploy_success(self, controller, bk_app, module_name, user_dev_wl_app):
 
 #### test_switch
 
-**复杂度分数**: 16  
-**严重程度**: high_risk  
-**行数**: 57-102 (共 46 行, 0 行注释)  
+**复杂度分数**: 16
+**严重程度**: high_risk
+**行数**: 57-102 (共 46 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3349,9 +3349,9 @@ def test_switch(self, wl_app):
 
 #### test_sync
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 106-156 (共 51 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 106-156 (共 51 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3394,9 +3394,9 @@ def test_sync(self, wl_app):
 
 #### testlist_gen_cnative_process_specs
 
-**复杂度分数**: 20  
-**严重程度**: high_risk  
-**行数**: 35-84 (共 50 行, 0 行注释)  
+**复杂度分数**: 20
+**严重程度**: high_risk
+**行数**: 35-84 (共 50 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3442,9 +3442,9 @@ def testlist_gen_cnative_process_specs():
 
 #### test_init_cluster
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 47-74 (共 28 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 47-74 (共 28 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3486,9 +3486,9 @@ def test_init_cluster(https_enabled, expect):
 
 #### test_domains
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 130-143 (共 14 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 130-143 (共 14 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3526,9 +3526,9 @@ def test_domains(self, region):
 
 #### test_secret_volume
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 81-95 (共 15 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 81-95 (共 15 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3566,9 +3566,9 @@ def test_secret_volume(self, wl_app, secret_volume_addon_template):
 
 #### test_provision
 
-**复杂度分数**: 13  
-**严重程度**: warning  
-**行数**: 110-147 (共 38 行, 0 行注释)  
+**复杂度分数**: 13
+**严重程度**: warning
+**行数**: 110-147 (共 38 行, 0 行注释)
 **描述**: Test service instance provision
 
 **函数签名**:
@@ -3614,9 +3614,9 @@ def test_provision(self, mocked_provision, get_cluster_egress_info, store, bk_mo
 
 #### test_bind_with_specs
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 224-248 (共 25 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 224-248 (共 25 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3655,9 +3655,9 @@ def test_bind_with_specs(self, store, bk_module, bk_service_ver, specs, ok):
 
 #### test_bound_with_diff_app_zone
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 334-396 (共 63 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 334-396 (共 63 行, 0 行注释)
 **描述**: 测试不同环境绑定不一样的 plan, 依赖 specifications[app_zone]
 
 **函数签名**:
@@ -3706,9 +3706,9 @@ def test_bound_with_diff_app_zone(self, g_cluster, store, bk_module, bk_service_
 
 #### test_execute_current_stage
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 154-177 (共 24 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 154-177 (共 24 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3750,9 +3750,9 @@ def test_execute_current_stage(self, release, stage_class_setter):
 
 #### test_release_version
 
-**复杂度分数**: 18  
-**严重程度**: high_risk  
-**行数**: 182-312 (共 131 行, 0 行注释)  
+**复杂度分数**: 18
+**严重程度**: high_risk
+**行数**: 182-312 (共 131 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3821,9 +3821,9 @@ def test_release_version(self, thirdparty_client, pd, plugin, api_client, iam_po
 
 #### test_match_different_scope
 
-**复杂度分数**: 13  
-**严重程度**: warning  
-**行数**: 25-48 (共 24 行, 0 行注释)  
+**复杂度分数**: 13
+**严重程度**: warning
+**行数**: 25-48 (共 24 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3867,9 +3867,9 @@ def test_match_different_scope(self):
 
 #### test_get_by_container_name
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 94-119 (共 26 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 94-119 (共 26 行, 0 行注释)
 **描述**: 测试 对象转换 dict
 
 **函数签名**:
@@ -3908,9 +3908,9 @@ def test_get_by_container_name(self):
 
 #### test_get_by_container_name
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 198-224 (共 27 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 198-224 (共 27 行, 0 行注释)
 **描述**: 测试对象转换为 dict
 
 **函数签名**:
@@ -3952,9 +3952,9 @@ def test_get_by_container_name(self):
 
 #### test_edit
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 175-244 (共 70 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 175-244 (共 70 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -3999,9 +3999,9 @@ def test_edit(self, legacy_tag, legacy_app, sys_light_api_client, is_lapp, data,
 
 #### test_integrated
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 69-98 (共 30 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 69-98 (共 30 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4038,9 +4038,9 @@ def test_integrated(self, bk_module, proc_web, proc_celery):
 
 #### test_normal
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 159-185 (共 27 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 159-185 (共 27 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4076,9 +4076,9 @@ def test_normal(self, bk_module, proc_web, proc_celery):
 
 #### test_integrated
 
-**复杂度分数**: 21  
-**严重程度**: critical  
-**行数**: 37-99 (共 63 行, 0 行注释)  
+**复杂度分数**: 21
+**严重程度**: critical
+**行数**: 37-99 (共 63 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4128,9 +4128,9 @@ def test_integrated(self, bk_module, proc_web, proc_celery):
 
 #### test_generate_env_vars_without_metadata
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 39-51 (共 13 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 39-51 (共 13 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4168,9 +4168,9 @@ def test_generate_env_vars_without_metadata(self, build_proc, wl_app):
 
 #### test_start_normal
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 98-138 (共 41 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 98-138 (共 41 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4211,9 +4211,9 @@ def test_start_normal(self, builder_class, bk_deployment_full):
 
 #### test_start_build
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 157-198 (共 42 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 157-198 (共 42 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4257,9 +4257,9 @@ def test_start_build(self, builder_class, bk_cnative_app, bk_module_full, bk_dep
 
 #### test_migrate_and_rollback
 
-**复杂度分数**: 13  
-**严重程度**: warning  
-**行数**: 103-136 (共 34 行, 0 行注释)  
+**复杂度分数**: 13
+**严重程度**: warning
+**行数**: 103-136 (共 34 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4304,9 +4304,9 @@ def test_migrate_and_rollback(self, bk_app, bk_module, image_repository_module, 
 
 #### test_bind_image
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 35-69 (共 35 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 35-69 (共 35 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4352,9 +4352,9 @@ def test_bind_image(bk_module, slugbuilder, slugrunner, slugbuilder_attrs, slugr
 
 #### test_bind_buildpack
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 72-121 (共 50 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 72-121 (共 50 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4410,9 +4410,9 @@ def test_bind_buildpack(bk_module, slugbuilder, slugrunner, buildpack, slugbuild
 
 #### test_list_all_repositories
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 179-220 (共 42 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 179-220 (共 42 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4452,9 +4452,9 @@ def test_list_all_repositories(self, client, github_repo_url, user_credentials):
 
 #### _remove_useless_newline
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 589-617 (共 29 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 589-617 (共 29 行, 0 行注释)
 **描述**: 去除 go-yaml unmarshal 中不需要的换行
 
 **函数签名**:
@@ -4499,9 +4499,9 @@ def _remove_useless_newline(self):
 
 #### guard
 
-**复杂度分数**: 10  
-**严重程度**: acceptable  
-**行数**: 67-101 (共 35 行, 0 行注释)  
+**复杂度分数**: 10
+**严重程度**: acceptable
+**行数**: 67-101 (共 35 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4553,9 +4553,9 @@ def guard(self):
 
 #### is_idle
 
-**复杂度分数**: 15  
-**严重程度**: warning  
-**行数**: 64-96 (共 33 行, 0 行注释)  
+**复杂度分数**: 15
+**严重程度**: warning
+**行数**: 64-96 (共 33 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4603,9 +4603,9 @@ def is_idle(self, ignore_consumer: bool = False, max_idle: Optional[timedelta] =
 
 #### run_once
 
-**复杂度分数**: 15  
-**严重程度**: warning  
-**行数**: 87-144 (共 58 行, 0 行注释)  
+**复杂度分数**: 15
+**严重程度**: warning
+**行数**: 87-144 (共 58 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4669,9 +4669,9 @@ def run_once(self, client: Client, max_idle_seconds: int, safe_peer_host: typing
 
 #### channel_is_activated
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 117-143 (共 27 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 117-143 (共 27 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4715,9 +4715,9 @@ def channel_is_activated(self, channel, ignore_consumer):
 
 #### handle
 
-**复杂度分数**: 11  
-**严重程度**: warning  
-**行数**: 44-83 (共 40 行, 0 行注释)  
+**复杂度分数**: 11
+**严重程度**: warning
+**行数**: 44-83 (共 40 行, 0 行注释)
 
 **函数签名**:
 ```python
@@ -4763,9 +4763,9 @@ def handle(self, host: Optional[str], port: Optional[str], password: Optional[st
 
 #### handle
 
-**复杂度分数**: 12  
-**严重程度**: warning  
-**行数**: 86-122 (共 37 行, 0 行注释)  
+**复杂度分数**: 12
+**严重程度**: warning
+**行数**: 86-122 (共 37 行, 0 行注释)
 
 **函数签名**:
 ```python

@@ -83,7 +83,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(results, scan_duration_ms, warnings)
 
-        return RedisUsageOutput(summary=summary, results=results)
+        return RedisUsageOutput(summary=summary, results=results, metadata={"scanner_name": "redis-usage"})
 
     def _is_settings_file(self, file_path: Path) -> bool:
         """Check if file is a Django settings file."""
