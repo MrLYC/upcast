@@ -673,6 +673,6 @@ summary:
   django_receivers: 54
   django_senders: 31
   files_scanned: 2368
-  scan_duration_ms: 21837
+  scan_duration_ms: 21407
   total_count: 39
   unused_custom_signals: 0

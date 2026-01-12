@@ -5,7 +5,8 @@ from typing import ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
+from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.metrics import MetricDefinition, MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
@@ -108,15 +109,15 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
     def _extract_string_arg(self, call_node: nodes.Call, pos: int | None, kwarg_name: str | None = None) -> str | None:
         """Extract string argument by position or keyword."""
         if pos is not None and len(call_node.args) > pos:
-            value = safe_infer_value(call_node.args[pos])
-            if isinstance(value, str):
+            value = infer_value(call_node.args[pos]).get_if_type(str)
+            if value is not None:
                 return value
 
         if kwarg_name:
             for keyword in call_node.keywords or []:
                 if keyword.arg == kwarg_name:
-                    value = safe_infer_value(keyword.value)
-                    if isinstance(value, str):
+                    value = infer_value(keyword.value).get_if_type(str)
+                    if value is not None:
                         return value
 
         return None
@@ -125,7 +126,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         """Extract label names from metric definition."""
         for keyword in call_node.keywords or []:
             if keyword.arg in ("labelnames", "labels"):
-                value = safe_infer_value(keyword.value)
+                value = infer_value(keyword.value).get_exact()
                 if isinstance(value, (list, tuple)):
                     return [str(v) for v in value if isinstance(v, str)]
         return []
@@ -134,7 +135,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         """Extract buckets for Histogram metrics."""
         for keyword in call_node.keywords or []:
             if keyword.arg == "buckets":
-                value = safe_infer_value(keyword.value)
+                value = infer_value(keyword.value).get_exact()
                 if isinstance(value, (list, tuple)):
                     return [float(v) for v in value if isinstance(v, (int, float))]
         return None

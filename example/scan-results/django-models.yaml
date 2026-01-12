@@ -12,8 +12,7 @@ results:
         name: name
         parameters:
           max_length: 64
-          validators:
-          - '`validate_app_name`'
+          validators: '`[validate_app_name]`'
         type: models.SlugField
         verbose_name: null
       owner:
@@ -607,8 +606,7 @@ results:
         verbose_name: '`_(''所属模块'')`'
     line: 1
     meta:
-      indexes:
-      - '`models.Index(fields=[''application_id'', ''module_id''])`'
+      indexes: '`[models.Index(fields=[''application_id'', ''module_id''])]`'
     module: apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource
     name: AppModelResource
     relationships:
@@ -694,8 +692,7 @@ results:
         verbose_name: '`_(''应用模型（YAML 格式）'')`'
     line: 1
     meta:
-      indexes:
-      - '`models.Index(fields=[''application_id'', ''module_id''])`'
+      indexes: '`[models.Index(fields=[''application_id'', ''module_id''])]`'
     module: apiserver.paasng.paas_wl.bk_app.cnative.specs.models.app_resource
     name: AppModelRevision
     relationships: []
@@ -1761,8 +1758,7 @@ results:
         parameters:
           max_length: 128
           unique: true
-          validators:
-          - '`RegexValidator(DNS_SAFE_PATTERN)`'
+          validators: '`[RegexValidator(DNS_SAFE_PATTERN)]`'
         type: models.CharField
         verbose_name: null
       region:
@@ -1841,8 +1837,7 @@ results:
         parameters:
           max_length: 128
           unique: true
-          validators:
-          - '`RegexValidator(DNS_SAFE_PATTERN)`'
+          validators: '`[RegexValidator(DNS_SAFE_PATTERN)]`'
         type: models.CharField
         verbose_name: null
       region:
@@ -8436,7 +8431,7 @@ results:
       type: models.ForeignKey
 summary:
   files_scanned: 167
-  scan_duration_ms: 4051
+  scan_duration_ms: 3970
   total_count: 167
   total_fields: 684
   total_models: 167

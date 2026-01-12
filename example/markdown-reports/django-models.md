@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 167
 - **已扫描文件数**: 167
-- **扫描耗时**: 3970 毫秒
+- **扫描耗时**: 3944 毫秒
 
 - **模型总数**: 167
 - **字段总数**: 684
@@ -27,7 +27,7 @@
 |--------|------|------|------|----------|------|
 | owner | models.CharField | 1 | - | - | {"max_length": 64} |
 | region | models.CharField | 1 | - | - | {"max_length": 32} |
-| name | models.SlugField | 1 | - | - | {"max_length": 64, "validators": ["`validate_app_name`"]} |
+| name | models.SlugField | 1 | - | - | {"max_length": 64, "validators": "`[validate_app_name]`"} |
 | type | models.CharField | 1 | - | 应用类型 | {"db_index": true, "default": "`WlAppType.DEFAULT.value`", "max_length": 16} |
 
 
@@ -245,7 +245,7 @@
 
 | 选项 | 值 |
 |------|-----|
-| indexes | ["`models.Index(fields=['application_id', 'module_id'])`"] |
+| indexes | `[models.Index(fields=['application_id', 'module_id'])]` |
 
 ---
 
@@ -276,7 +276,7 @@
 
 | 选项 | 值 |
 |------|-----|
-| indexes | ["`models.Index(fields=['application_id', 'module_id'])`"] |
+| indexes | `[models.Index(fields=['application_id', 'module_id'])]` |
 
 ---
 
@@ -892,7 +892,7 @@
 | 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
 |--------|------|------|------|----------|------|
 | region | models.CharField | 1 | - | - | {"max_length": 32} |
-| name | models.CharField | 1 | - | - | {"max_length": 128, "unique": true, "validators": ["`RegexValidator(DNS_SAFE_PATTERN)`"]} |
+| name | models.CharField | 1 | - | - | {"max_length": 128, "unique": true, "validators": "`[RegexValidator(DNS_SAFE_PATTERN)]`"} |
 
 
 #### Meta 选项
@@ -917,7 +917,7 @@
 |--------|------|------|------|----------|------|
 | auto_match_cns | models.TextField | 1 | - | - | {"max_length": 2048} |
 | region | models.CharField | 1 | - | - | {"max_length": 32} |
-| name | models.CharField | 1 | - | - | {"max_length": 128, "unique": true, "validators": ["`RegexValidator(DNS_SAFE_PATTERN)`"]} |
+| name | models.CharField | 1 | - | - | {"max_length": 128, "unique": true, "validators": "`[RegexValidator(DNS_SAFE_PATTERN)]`"} |
 
 
 #### Meta 选项

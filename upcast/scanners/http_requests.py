@@ -6,7 +6,8 @@ from typing import Any, ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
+from upcast.common.inference import infer_string_pattern, infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.http_requests import HttpRequestInfo, HttpRequestOutput, HttpRequestSummary, HttpRequestUsage
@@ -144,15 +145,14 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         # Check keyword arguments first
         for keyword in node.keywords or []:
             if keyword.arg == "method":
-                method_value = safe_infer_value(keyword.value)
-                if isinstance(method_value, str):
-                    return method_value
+                method = infer_value(keyword.value).get_if_type(str)
+                if method:
+                    return method
 
-        # Check first positional argument
         if node.args and len(node.args) > 0:
-            method_value = safe_infer_value(node.args[0])
-            if isinstance(method_value, str):
-                return method_value
+            method = infer_value(node.args[0]).get_if_type(str)
+            if method:
+                return method
 
         return None
 
@@ -239,13 +239,10 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 pattern = self._clean_uninferable(pattern)
                 return self._merge_consecutive_dots(pattern)
 
-        # Fall back to literal inference for static URLs
-        url_value = safe_infer_value(url_node)
-        if isinstance(url_value, str):
-            # Filter out "Uninferable"
-            if "Uninferable" in url_value:
-                return None
-            return url_value
+        url_result = infer_value(url_node)
+        url = url_result.get_if_type(str)
+        if url and "Uninferable" not in url:
+            return url
 
         return None
 
@@ -516,10 +513,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                         else:
                             parts.append("...")
                     elif isinstance(value.value, nodes.Attribute):
-                        # For attribute access (e.g., settings.URL), try to infer
-                        attr_value = safe_infer_value(value.value)
-                        # Only use if it's a valid string and doesn't contain "Uninferable"
-                        if isinstance(attr_value, str) and "Uninferable" not in attr_value:
+                        attr_result = infer_value(value.value)
+                        attr_value = attr_result.get_if_type(str)
+                        if attr_value and "Uninferable" not in attr_value:
                             parts.append(attr_value)
                         else:
                             parts.append("...")
@@ -551,21 +547,19 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             if isinstance(node, nodes.Assign):
                 for target in node.targets:
                     if isinstance(target, nodes.AssignName) and target.name == var_name:
-                        # Found the assignment, try to infer the value
-                        value = safe_infer_value(node.value)
-                        # Only return if it's a valid string (not Uninferable)
-                        if isinstance(value, str) and value and "Uninferable" not in value:
+                        result = infer_value(node.value)
+                        value = result.get_if_type(str)
+                        if value and "Uninferable" not in value:
                             return value
 
-        # Look in module-level assignments
         module = context_node.root()
         for node in module.body:
             if isinstance(node, nodes.Assign):
                 for target in node.targets:
                     if isinstance(target, nodes.AssignName) and target.name == var_name:
-                        value = safe_infer_value(node.value)
-                        # Only return if it's a valid string (not Uninferable)
-                        if isinstance(value, str) and value and "Uninferable" not in value:
+                        result = infer_value(node.value)
+                        value = result.get_if_type(str)
+                        if value and "Uninferable" not in value:
                             return value
 
         return None
@@ -584,23 +578,31 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         return any(indicator in node_str for indicator in query_indicators)
 
     def _extract_params(self, node: nodes.Call) -> dict[str, Any] | None:
-        """Extract query parameters from params keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "params":
-                params_value = safe_infer_value(keyword.value)
-                if isinstance(params_value, dict):
-                    return params_value
-                # If we can't infer the exact value, omit field
-                return None
+                return infer_value(keyword.value).get_if_type(dict)
+        return None
+
+    def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
+        for keyword in node.keywords or []:
+            if keyword.arg == "headers":
+                return infer_value(keyword.value).get_if_type(dict)
+        return None
+
+    def _extract_json_body(self, node: nodes.Call) -> dict[str, Any] | None:
+        for keyword in node.keywords or []:
+            if keyword.arg == "json":
+                return infer_value(keyword.value).get_if_type(dict)
+        return None
         return None
 
     def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
         """Extract headers from headers keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "headers":
-                headers_value = safe_infer_value(keyword.value)
-                if isinstance(headers_value, dict):
-                    return headers_value
+                headers_result = infer_value(keyword.value)
+                if isinstance(headers_result.value, dict):
+                    return headers_result.value
                 # If we can't infer the exact value, omit field
                 return None
         return None
@@ -609,9 +611,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         """Extract JSON body from json keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "json":
-                json_value = safe_infer_value(keyword.value)
-                if isinstance(json_value, dict):
-                    return json_value
+                json_result = infer_value(keyword.value)
+                if isinstance(json_result.value, dict):
+                    return json_result.value
                 # If we can't infer the exact value, omit field
                 return None
         return None
@@ -620,21 +622,18 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         """Extract form data from data keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "data":
-                data_value = safe_infer_value(keyword.value)
+                data_result = infer_value(keyword.value)
                 # Data can be dict, string, bytes, or other types
-                if data_value is not None:
-                    return data_value
+                if data_result.value is not None:
+                    return data_result.value
                 # If we can't infer the exact value, omit field
                 return None
         return None
 
     def _extract_timeout(self, node: nodes.Call) -> float | int | None:
-        """Extract timeout parameter."""
         for keyword in node.keywords or []:
             if keyword.arg == "timeout":
-                timeout_value = safe_infer_value(keyword.value)
-                if isinstance(timeout_value, (int, float)):
-                    return timeout_value
+                return infer_value(keyword.value).get_if_type((int, float))
         return None
 
     def _aggregate_requests(self, requests_by_url: dict[str, list[HttpRequestUsage]]) -> dict[str, HttpRequestInfo]:

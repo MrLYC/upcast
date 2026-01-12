@@ -10277,7 +10277,7 @@ results:
     usages: []
 summary:
   files_scanned: 2368
-  scan_duration_ms: 65517
+  scan_duration_ms: 69115
   total_count: 473
   total_definitions: 615
   total_settings: 473

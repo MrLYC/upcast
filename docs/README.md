@@ -218,6 +218,16 @@ upcast scan-blocking-operations . \
 - 优化代码复杂度？参考 [complexity-patterns.md](scanners/complexity-patterns.md)
 - 分析并发模式？阅读 [concurrency-patterns.md](scanners/concurrency-patterns.md)
 
+## 技术文档
+
+除了扫描器文档外，我们还提供以下技术文档：
+
+- **[类型推导机制](type-inference.md)** - Upcast 静态类型和值推导系统的详细说明
+  - 推导能力分级（可推导/部分推导/不可推导）
+  - 核心 API 使用指南
+  - 支持的 Python 语法覆盖
+  - 实际应用场景和最佳实践
+
 ## 相关资源
 
 - [主 README](../README.md) - 项目概述和快速开始

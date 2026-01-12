@@ -5,7 +5,8 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
+from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
@@ -78,8 +79,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         # Extract variable name
         if not node.args:
             return
-        var_name = safe_infer_value(node.args[0])
-        if not isinstance(var_name, str):
+        var_name = infer_value(node.args[0]).get_if_type(str)
+        if var_name is None:
             return
 
         if not var_name:
@@ -90,12 +91,12 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         required = False if func_name.endswith(".get") else True
 
         if len(node.args) >= 2:
-            default_value = safe_infer_value(node.args[1])
+            default_value = infer_value(node.args[1]).get_exact()
             required = False
         elif node.keywords:
             for kw in node.keywords:
                 if kw.arg == "default":
-                    default_value = safe_infer_value(kw.value)
+                    default_value = infer_value(kw.value).get_exact()
                     required = False
                     break
 

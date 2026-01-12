@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 56
 - **已扫描文件数**: 14
-- **扫描耗时**: 20323 毫秒
+- **扫描耗时**: 20343 毫秒
 
 - **请求总数**: 56
 - **唯一 URL 数**: 8
@@ -84,6 +84,15 @@
 | apiserver/paasng/paasng/accessories/paas_analysis/clients.py | 82 | POST | `requests.post(self.base_url + url, json={'site_type': 'app', 'extra_info': {'paas_app_code': app_code, 'module_name': module_name, 'environment': env}}, auth=self.auth)` | 否 | 否 | 不适用 |
 | apiserver/paasng/paasng/accessories/paas_analysis/clients.py | 102 | POST | `requests.post(self.base_url + url, json={'site_type': 'custom', 'extra_info': {'site_name': site_name}}, auth=self.auth)` | 否 | 否 | 不适用 |
 
+#### 额外参数
+**JSON 主体** (行 82):
+```
+{'site_type': 'app', 'extra_info': {'paas_app_code': None, 'module_name': None, 'environment': None}}
+```
+**JSON 主体** (行 102):
+```
+{'site_type': 'custom', 'extra_info': {'site_name': None}}
+```
 
 
 ### .../api/overview
@@ -110,11 +119,20 @@
 |------|------|------|------|------|----------|------|
 | apiserver/paasng/paasng/infras/oauth2/api.py | 101 | POST | `requests.post(url, json=data, headers=self.headers)` | 否 | 否 | 不适用 |
 
+#### 额外参数
+**请求头** (行 101):
+```
+{'X-Bk-App-Code': None, 'X-Bk-App-Secret': None}
+```
+**JSON 主体** (行 101):
+```
+{'bk_app_code': None, 'name': None}
+```
 
 
 ### .../api/v1/apps/.../access-keys
 
-**主要方法**: GET
+**主要方法**: POST
 **主要库**: requests
 
 #### 请求详情
@@ -124,11 +142,20 @@
 | apiserver/paasng/paasng/infras/oauth2/api.py | 114 | POST | `requests.post(url, headers=self.headers)` | 否 | 否 | 不适用 |
 | apiserver/paasng/paasng/infras/oauth2/api.py | 139 | GET | `requests.get(url, headers=self.headers)` | 否 | 否 | 不适用 |
 
+#### 额外参数
+**请求头** (行 114):
+```
+{'X-Bk-App-Code': None, 'X-Bk-App-Secret': None}
+```
+**请求头** (行 139):
+```
+{'X-Bk-App-Code': None, 'X-Bk-App-Secret': None}
+```
 
 
 ### .../api/v1/apps/.../access-keys/...
 
-**主要方法**: PUT
+**主要方法**: DELETE
 **主要库**: requests
 
 #### 请求详情
@@ -138,6 +165,19 @@
 | apiserver/paasng/paasng/infras/oauth2/api.py | 122 | DELETE | `requests.delete(url, headers=self.headers)` | 否 | 否 | 不适用 |
 | apiserver/paasng/paasng/infras/oauth2/api.py | 131 | PUT | `requests.put(url, json=data, headers=self.headers)` | 否 | 否 | 不适用 |
 
+#### 额外参数
+**请求头** (行 122):
+```
+{'X-Bk-App-Code': None, 'X-Bk-App-Secret': None}
+```
+**请求头** (行 131):
+```
+{'X-Bk-App-Code': None, 'X-Bk-App-Secret': None}
+```
+**JSON 主体** (行 131):
+```
+{'enabled': None}
+```
 
 
 ### https://example.com/api?BK_PASSWORD=123456&api_key=abcdef

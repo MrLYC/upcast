@@ -10,7 +10,8 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.ast_utils import safe_as_string, safe_infer_value
+from upcast.common.ast_utils import safe_as_string
+from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.module_symbols import (
@@ -384,7 +385,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                     continue
 
                 # Extract value
-                value_obj = safe_infer_value(node.value, default=None)
+                value_obj = infer_value(node.value).get_exact()
                 value_str = str(value_obj) if value_obj is not None else None
                 statement = safe_as_string(node) or ""
 
@@ -529,7 +530,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 # Extract args - ensure all values are strings
                 args = []
                 for arg in node.args:
-                    value = safe_infer_value(arg, default=safe_as_string(arg) or "")
+                    result = infer_value(arg)
+                    value = result.value if result.value is not None else (safe_as_string(arg) or "")
                     # Convert to string if not already
                     args.append(str(value) if not isinstance(value, str) else value)
 
@@ -537,7 +539,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 kwargs = {}
                 for keyword in node.keywords:
                     if keyword.arg:
-                        value = safe_infer_value(keyword.value, default=safe_as_string(keyword.value) or "")
+                        result = infer_value(keyword.value)
+                        value = result.value if result.value is not None else (safe_as_string(keyword.value) or "")
                         # Convert to string if not already
                         kwargs[keyword.arg] = str(value) if not isinstance(value, str) else value
 

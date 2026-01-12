@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 7679
 - **已扫描文件数**: 2368
-- **扫描耗时**: 26134 毫秒
+- **扫描耗时**: 25951 毫秒
 
 - **Total Modules**: 2368
 - **Total Imports**: 17215
@@ -49437,7 +49437,7 @@ s-mart(镜像): 'image:镜像 tag'
 | DEFAULT_PROC_SPEC_PLAN | Starter | `DEFAULT_PROC_SPEC_PLAN = 'Starter'` | module |
 | PREMIUM_PROC_SPEC_PLAN | 4C2G5R | `PREMIUM_PROC_SPEC_PLAN = '4C2G5R'` | module |
 | ULTIMATE_PROC_SPEC_PLAN | 4C4G5R | `ULTIMATE_PROC_SPEC_PLAN = '4C4G5R'` | module |
-| ENGINE_PROC_REPLICAS_BY_TYPE | {} | `ENGINE_PROC_REPLICAS_BY_TYPE = {('web', 'stag'): 1, ('web', 'prod'): 2}` | module |
+| ENGINE_PROC_REPLICAS_BY_TYPE | 不适用 | `ENGINE_PROC_REPLICAS_BY_TYPE = {('web', 'stag'): 1, ('web', 'prod'): 2}` | module |
 | ENGINE_APP_SOURCE_SIZE_WARNING_THRESHOLD_MB | 300 | `ENGINE_APP_SOURCE_SIZE_WARNING_THRESHOLD_MB = 300` | module |
 | ENGINE_OFFLINE_RESUMABLE_SECS | 60 | `ENGINE_OFFLINE_RESUMABLE_SECS = 60` | module |
 | DEFAULT_RUNTIME_IMAGES | 不适用 | `DEFAULT_RUNTIME_IMAGES = settings.get('DEFAULT_RUNTIME_IMAGES', {DEFAULT_REGION_NAME: 'blueking'})` | module |
@@ -49704,7 +49704,7 @@ s-mart(镜像): 'image:镜像 tag'
 | PREMIUM_PROC_SPEC_PLAN | 4C2G5R | `PREMIUM_PROC_SPEC_PLAN = '4C2G5R'` | module |
 | ULTIMATE_PROC_SPEC_PLAN | 4C4G5R | `ULTIMATE_PROC_SPEC_PLAN = '4C4G5R'` | module |
 | DEFAULT_PROC_SPEC_PLANS | {'Starter': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '1024Mi'}, 'requests': {'cpu': '100m', 'memory': '256Mi'}}, '4C1G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '1024Mi'}, 'requests': {'cpu': '100m', 'memory': '256Mi'}}, '4C2G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '2048Mi'}, 'requests': {'cpu': '100m', 'memory': '896Mi'}}, '4C4G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '4096Mi'}, 'requests': {'cpu': '100m', 'memory': '2048Mi'}}} | `DEFAULT_PROC_SPEC_PLANS = {'Starter': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '1024Mi'}, 'requests': {'cpu': '100m', 'memory': '256Mi'}}, '4C1G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '1024Mi'}, 'requests': {'cpu': '100m', 'memory': '256Mi'}}, '4C2G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '2048Mi'}, 'requests': {'cpu': '100m', 'memory': '896Mi'}}, '4C4G5R': {'max_replicas': 5, 'limits': {'cpu': '4096m', 'memory': '4096Mi'}, 'requests': {'cpu': '100m', 'memory': '2048Mi'}}}` | module |
-| ENGINE_PROC_REPLICAS_BY_TYPE | {} | `ENGINE_PROC_REPLICAS_BY_TYPE = {('web', 'stag'): 1, ('web', 'prod'): 2}` | module |
+| ENGINE_PROC_REPLICAS_BY_TYPE | 不适用 | `ENGINE_PROC_REPLICAS_BY_TYPE = {('web', 'stag'): 1, ('web', 'prod'): 2}` | module |
 | MONITOR_CONFIG | 不适用 | `MONITOR_CONFIG = settings.get('MONITOR_CONFIG', {})` | module |
 | FOR_TESTS_APISERVER_URL | 不适用 | `FOR_TESTS_APISERVER_URL = settings.get('FOR_TESTS_APISERVER_URL', 'http://localhost:28080')` | module |
 | FOR_TESTS_CA_DATA | 不适用 | `FOR_TESTS_CA_DATA = settings.get('FOR_TESTS_CA_DATA', '')` | module |

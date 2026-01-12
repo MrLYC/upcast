@@ -199,7 +199,9 @@ results:
       form: null
       headers: null
       is_async: false
-      json_body: null
+      json_body:
+        params: null
+        plan_id: null
       line: 211
       method: POST
       params: null
@@ -310,7 +312,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
       form: null
-      headers: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
       is_async: false
       json_body: null
       line: 39
@@ -321,7 +325,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
       form: null
-      headers: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
       is_async: false
       json_body: null
       line: 41
@@ -332,7 +338,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
       form: null
-      headers: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
       is_async: false
       json_body: null
       line: 43
@@ -343,7 +351,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
       form: null
-      headers: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
       is_async: false
       json_body: null
       line: 45
@@ -354,7 +364,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
       form: null
-      headers: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
       is_async: false
       json_body: null
       line: 47
@@ -365,9 +377,17 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
-      json_body: null
+      json_body:
+        app_code: null
+        app_secret: null
+        bk_ticket: null
+        env_name: null
+        grant_type: authorization_code
+        rtx: null
       line: 240
       method: POST
       params: null
@@ -378,7 +398,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
       json_body: null
       line: 261
@@ -391,9 +413,12 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
-      json_body: null
+      json_body:
+        access_token: null
       line: 278
       method: GET
       params: null
@@ -403,9 +428,17 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
-      json_body: null
+      json_body:
+        app_code: null
+        app_secret: null
+        bk_token: null
+        env_name: null
+        grant_type: authorization_code
+        id_provider: bk_login
       line: 295
       method: POST
       params: null
@@ -416,9 +449,15 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
-      json_body: null
+      json_body:
+        app_code: null
+        env_name: null
+        grant_type: refresh_token
+        refresh_token: null
       line: 316
       method: POST
       params: null
@@ -429,9 +468,12 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
       form: null
-      headers: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
       is_async: false
-      json_body: null
+      json_body:
+        access_token: null
       line: 333
       method: POST
       params: null
@@ -527,9 +569,13 @@ results:
     usages:
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
-      headers: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
       is_async: false
-      json_body: null
+      json_body:
+        bk_app_code: null
+        name: null
       line: 101
       method: POST
       params: null
@@ -542,7 +588,9 @@ results:
     usages:
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
-      headers: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
       is_async: false
       json_body: null
       line: 114
@@ -553,7 +601,9 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
-      headers: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
       is_async: false
       json_body: null
       line: 139
@@ -568,7 +618,9 @@ results:
     usages:
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
-      headers: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
       is_async: false
       json_body: null
       line: 122
@@ -579,9 +631,12 @@ results:
       timeout: null
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
-      headers: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
       is_async: false
-      json_body: null
+      json_body:
+        enabled: null
       line: 131
       method: PUT
       params: null
@@ -596,7 +651,12 @@ results:
       form: null
       headers: null
       is_async: false
-      json_body: null
+      json_body:
+        extra_info:
+          environment: null
+          module_name: null
+          paas_app_code: null
+        site_type: app
       line: 82
       method: POST
       params: null
@@ -609,7 +669,10 @@ results:
       form: null
       headers: null
       is_async: false
-      json_body: null
+      json_body:
+        extra_info:
+          site_name: null
+        site_type: custom
       line: 102
       method: POST
       params: null
@@ -682,7 +745,7 @@ summary:
   by_library:
     requests: 56
   files_scanned: 14
-  scan_duration_ms: 20260
+  scan_duration_ms: 20494
   total_count: 56
   total_requests: 56
   unique_urls: 8

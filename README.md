@@ -13,6 +13,7 @@ A comprehensive static analysis toolkit for Python projects. Upcast provides 15 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
 - **📚 Scanner Documentation**: [docs/README.md](docs/README.md) - Detailed scanner rules and field references
+- **🔬 Type Inference**: [docs/type-inference.md](docs/type-inference.md) - Static type and value inference mechanism
 
 ## Quick Start
 

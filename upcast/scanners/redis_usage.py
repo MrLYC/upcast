@@ -8,7 +8,8 @@ from typing import ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
+from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.redis_usage import (
@@ -103,10 +104,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             if isinstance(node, nodes.JoinedStr):
                 return self._handle_fstring(node)
 
-            # Try to infer the actual value using astroid
-            const_val = safe_infer_value(node)
-            if const_val is not None and isinstance(const_val, str):
-                return const_val
+            const_value = infer_value(node).get_if_type(str)
+            if const_value is not None:
+                return const_value
 
             # If we can't infer the value, return ...
             if isinstance(node, nodes.Name):
@@ -336,9 +336,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
                 first_host = cv.elts[0]
                 if isinstance(first_host, (nodes.Tuple, nodes.List)) and len(first_host.elts) >= 2:
                     config.host = safe_as_string(first_host.elts[0])
-                    port_val = safe_infer_value(first_host.elts[1])
-                    if isinstance(port_val, int):
-                        config.port = port_val
+                    port = infer_value(first_host.elts[1]).get_if_type(int)
+                    if port is not None:
+                        config.port = port
 
     def _extract_rest_framework_config(self, node: nodes.Assign, rel_path: str) -> RedisUsage | None:
         """Extract REST_FRAMEWORK throttling configuration."""
@@ -431,9 +431,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
         for keyword in node.keywords:
             if keyword.arg == "timeout":
-                timeout_val = safe_infer_value(keyword.value)
-                if isinstance(timeout_val, (int, float)):
-                    timeout = int(timeout_val)
+                timeout = infer_value(keyword.value).get_if_type((int, float))
+                if timeout is not None:
+                    timeout = int(timeout)
 
         return RedisUsage(
             type=RedisUsageType.DISTRIBUTED_LOCK,
@@ -459,17 +459,16 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             key = self._clean_key_pattern(self._infer_key_pattern(node.args[0]))
 
         if method == "set":
-            # Check for timeout parameter
             if len(node.args) >= 3:
-                timeout_val = safe_infer_value(node.args[2])
-                if isinstance(timeout_val, (int, float)):
+                timeout_val = infer_value(node.args[2]).get_if_type((int, float))
+                if timeout_val is not None:
                     timeout = int(timeout_val)
                     has_ttl = True
 
             for keyword in node.keywords:
                 if keyword.arg in ("timeout", "ttl"):
-                    timeout_val = safe_infer_value(keyword.value)
-                    if isinstance(timeout_val, (int, float)):
+                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
+                    if timeout_val is not None:
                         timeout = int(timeout_val)
                         has_ttl = True
 
@@ -602,17 +601,16 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         if operation == "setex":
             has_ttl = True
             if len(node.args) >= 2:
-                timeout_val = safe_infer_value(node.args[1])
-                if isinstance(timeout_val, (int, float)):
+                timeout_val = infer_value(node.args[1]).get_if_type((int, float))
+                if timeout_val is not None:
                     timeout = int(timeout_val)
 
         elif operation == "set":
-            # Check for ex or px parameters
             for keyword in node.keywords:
                 if keyword.arg in ("ex", "px", "exat", "pxat"):
                     has_ttl = True
-                    timeout_val = safe_infer_value(keyword.value)
-                    if isinstance(timeout_val, (int, float)):
+                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
+                    if timeout_val is not None:
                         timeout = int(timeout_val)
 
             if not has_ttl and not is_pipeline:
