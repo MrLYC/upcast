@@ -190,7 +190,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         Returns:
             Mapping of import names to library types
         """
-        imports = {}
+        imports: dict[str, str] = {}
 
         for node in module.nodes_of_class((nodes.Import, nodes.ImportFrom)):
             if isinstance(node, nodes.Import):
@@ -470,7 +470,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         args = self._extract_arguments(call, message_node)
 
         # Check for sensitive data
-        sensitive_patterns = []
+        sensitive_patterns: list[str] = []
         if self.check_sensitive:
             _, sensitive_patterns = self._check_sensitive(message, args)
 

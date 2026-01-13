@@ -214,7 +214,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
     def _extract_caches_config(self, node: nodes.Assign, rel_path: str) -> list[RedisUsage]:
         """Extract CACHES configuration."""
-        usages = []
+        usages: list[RedisUsage] = []
         value = node.value
 
         if not isinstance(value, nodes.Dict):
@@ -289,7 +289,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
     def _extract_channel_layers_config(self, node: nodes.Assign, rel_path: str) -> list[RedisUsage]:
         """Extract CHANNEL_LAYERS configuration."""
-        usages = []
+        usages: list[RedisUsage] = []
         value = node.value
 
         if not isinstance(value, nodes.Dict):
@@ -386,8 +386,8 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         self, module: nodes.Module, rel_path: str, imports: dict[str, str]
     ) -> tuple[list[RedisUsage], list[str]]:
         """Scan for Django cache API usage."""
-        usages = []
-        warnings = []
+        usages: list[RedisUsage] = []
+        warnings: list[str] = []
 
         # Check if cache is imported
         cache_imported = "cache" in imports or any("cache" in imp for imp in imports.values())
@@ -492,8 +492,8 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         self, module: nodes.Module, rel_path: str, imports: dict[str, str]
     ) -> tuple[list[RedisUsage], list[str]]:
         """Scan for direct redis-py usage."""
-        usages = []
-        warnings = []
+        usages: list[RedisUsage] = []
+        warnings: list[str] = []
 
         # Check if redis is imported
         redis_imported = "redis" in imports or any("redis" in imp.lower() for imp in imports.values())

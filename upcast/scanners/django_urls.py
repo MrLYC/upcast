@@ -132,8 +132,6 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                     name=None,
                     converters=[],
                     named_groups=[],
-                    viewset_module=None,
-                    viewset_name=None,
                     basename=None,
                     router_type=None,
                     is_partial=False,

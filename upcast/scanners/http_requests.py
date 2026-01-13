@@ -401,11 +401,11 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         Returns:
             Normalized URL pattern
         """
-        parts = []
+        parts: list[str | nodes.NodeNG] = []
         self._collect_binop_parts(node, parts)
 
         # Convert parts to pattern
-        result_parts = []
+        result_parts: list[str] = []
         for part in parts:
             if isinstance(part, str):
                 # Static string - preserve it
@@ -450,7 +450,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         Returns:
             Normalized URL pattern
         """
-        parts = []
+        parts: list[str] = []
         for value in node.values:
             if isinstance(value, nodes.Const):
                 # Static part - preserve it
@@ -479,10 +479,10 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         """
         # For BinOp, try to resolve each part
         if isinstance(node, nodes.BinOp) and node.op == "+":
-            parts = []
+            parts: list[str] = []
             self._collect_binop_parts(node, parts)
 
-            resolved_parts = []
+            resolved_parts: list[str] = []
             for part in parts:
                 if isinstance(part, str):
                     resolved_parts.append(part)
@@ -500,7 +500,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         # For f-strings, try to resolve variables
         if isinstance(node, nodes.JoinedStr):
-            parts = []
+            parts: list[str] = []
             for value in node.values:
                 if isinstance(value, nodes.Const):
                     parts.append(str(value.value))
@@ -583,18 +583,6 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 return infer_value(keyword.value).get_if_type(dict)
         return None
 
-    def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
-        for keyword in node.keywords or []:
-            if keyword.arg == "headers":
-                return infer_value(keyword.value).get_if_type(dict)
-        return None
-
-    def _extract_json_body(self, node: nodes.Call) -> dict[str, Any] | None:
-        for keyword in node.keywords or []:
-            if keyword.arg == "json":
-                return infer_value(keyword.value).get_if_type(dict)
-        return None
-        return None
 
     def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
         """Extract headers from headers keyword argument."""
