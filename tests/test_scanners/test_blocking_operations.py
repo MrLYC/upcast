@@ -94,7 +94,7 @@ def foo():
 
         assert output.summary.total_count == 1
         assert len(output.results["time_based"]) == 1
-        
+
         operation = output.results["time_based"][0]
         assert operation.operation == "time.sleep"
         assert operation.duration == 5
@@ -195,4 +195,3 @@ def foo():
         assert output.summary.total_count == 1
         operation = output.results["time_based"][0]
         assert operation.duration == 300
-

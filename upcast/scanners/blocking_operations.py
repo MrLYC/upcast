@@ -91,7 +91,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             for pattern in patterns:
                 if self._matches_pattern(func_name, pattern):
                     duration = self._extract_timing_values(node, func_name)
-                    
+
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -117,7 +117,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                     self._matches_pattern(func_name, p) for p in self.BLOCKING_PATTERNS["synchronization"]
                 ):
                     duration = self._extract_timing_values(context_expr, func_name)
-                    
+
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -137,11 +137,11 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
         if "sleep" in func_name:
             if node.args:
                 return infer_value(node.args[0]).get_if_type((int, float))
-        
+
         for keyword in node.keywords:
             if keyword.arg == "timeout":
                 return infer_value(keyword.value).get_if_type((int, float))
-        
+
         return None
 
     def _get_qualified_name(self, node: nodes.NodeNG, imports: dict[str, str]) -> str | None:

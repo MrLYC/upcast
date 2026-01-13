@@ -34,7 +34,7 @@ class TestBasicClasses:
             class Calculator:
                 def add(self, a, b):
                     return a + b
-                
+
                 def subtract(self, a, b):
                     return a - b
         """)
@@ -75,10 +75,10 @@ class TestBasicClasses:
             dedent("""
             class Class1:
                 pass
-            
+
             class Class2:
                 pass
-            
+
             class Class3:
                 pass
         """)
@@ -104,7 +104,7 @@ class TestClassInheritance:
             dedent("""
             class Parent:
                 pass
-            
+
             class Child(Parent):
                 pass
         """)
@@ -124,10 +124,10 @@ class TestClassInheritance:
             dedent("""
             class Mixin1:
                 pass
-            
+
             class Mixin2:
                 pass
-            
+
             class Combined(Mixin1, Mixin2):
                 pass
         """)
@@ -250,7 +250,7 @@ class TestClassBodyMD5:
             dedent("""
             class Class1:
                 value = 1
-            
+
             class Class2:
                 value = 2
         """)
@@ -275,7 +275,7 @@ class TestPrivateClasses:
             dedent("""
             class _Private:
                 pass
-            
+
             class Public:
                 pass
         """)
@@ -295,7 +295,7 @@ class TestPrivateClasses:
             dedent("""
             class _Private:
                 pass
-            
+
             class Public:
                 pass
         """)

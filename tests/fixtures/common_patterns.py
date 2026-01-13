@@ -18,10 +18,10 @@ def example_function(x: int) -> int:
 SIMPLE_CLASS = """
 class ExampleClass:
     '''Example class.'''
-    
+
     def __init__(self, value):
         self.value = value
-    
+
     def method(self):
         return self.value
 """
@@ -147,7 +147,7 @@ class MyClass:
     @property
     def value(self):
         return self._value
-    
+
     @value.setter
     def value(self, v):
         self._value = v
@@ -159,7 +159,7 @@ class MyClass:
     @staticmethod
     def static_method():
         return "static"
-    
+
     @classmethod
     def class_method(cls):
         return cls.__name__

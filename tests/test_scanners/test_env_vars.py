@@ -43,7 +43,7 @@ class TestEnvVarLocationModel:
 
         assert location.file == "test.py"
         assert location.line == 1
-                        
+
 
 class TestEnvVarInfoModel:
     """Tests for EnvVarInfo Pydantic model."""

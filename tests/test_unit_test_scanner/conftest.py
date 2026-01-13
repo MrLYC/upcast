@@ -28,7 +28,7 @@ def test_class_fixture():
 class TestMath:
     def test_addition(self):
         assert 1 + 1 == 2
-    
+
     def test_subtraction(self):
         assert 2 - 1 == 1
 """
@@ -43,7 +43,7 @@ import unittest
 class TestMath(unittest.TestCase):
     def test_addition(self):
         self.assertEqual(1 + 1, 2)
-    
+
     def test_subtraction(self):
         self.assertEqual(2 - 1, 1)
 """

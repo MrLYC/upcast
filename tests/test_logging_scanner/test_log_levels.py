@@ -132,7 +132,7 @@ class TestMultipleLevels:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             logger.debug("Debug")
             logger.info("Info")
             logger.warning("Warning")
@@ -155,7 +155,7 @@ class TestMultipleLevels:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             logger.info("Info 1")
             logger.info("Info 2")
             logger.error("Error 1")
@@ -178,7 +178,7 @@ class TestLoguruLevels:
         test_file.write_text(
             dedent("""
             from loguru import logger
-            
+
             logger.debug("Debug")
             logger.info("Info")
             logger.warning("Warning")

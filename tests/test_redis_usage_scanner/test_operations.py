@@ -17,7 +17,7 @@ class TestCacheOperations:
         test_file.write_text(
             dedent("""
             from django.core.cache import cache
-            
+
             def get_user():
                 return cache.get("user:123")
         """)
@@ -38,7 +38,7 @@ class TestCacheOperations:
         test_file.write_text(
             dedent("""
             from django.core.cache import cache
-            
+
             def save_user():
                 cache.set("user:123", data, 300)
         """)
@@ -55,7 +55,7 @@ class TestCacheOperations:
         test_file.write_text(
             dedent("""
             from django.core.cache import cache
-            
+
             def remove_user():
                 cache.delete("user:123")
         """)
@@ -76,7 +76,7 @@ class TestDirectRedisOperations:
         test_file.write_text(
             dedent("""
             import redis
-            
+
             client = redis.Redis()
             value = client.get("key")
             client.set("key", "value")
@@ -96,7 +96,7 @@ class TestDirectRedisOperations:
         test_file.write_text(
             dedent("""
             import redis
-            
+
             client = redis.Redis()
             pipe = client.pipeline()
             pipe.set("key1", "value1")

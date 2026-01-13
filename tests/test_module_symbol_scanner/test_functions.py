@@ -68,10 +68,10 @@ class TestBasicFunctions:
             dedent("""
             def func1():
                 pass
-            
+
             def func2():
                 pass
-            
+
             def func3():
                 pass
         """)
@@ -195,7 +195,7 @@ class TestFunctionBodyMD5:
             dedent("""
             def func1():
                 return 1
-            
+
             def func2():
                 return 2
         """)
@@ -220,7 +220,7 @@ class TestPrivateFunctions:
             dedent("""
             def _private():
                 pass
-            
+
             def public():
                 pass
         """)
@@ -240,7 +240,7 @@ class TestPrivateFunctions:
             dedent("""
             def _private():
                 pass
-            
+
             def public():
                 pass
         """)

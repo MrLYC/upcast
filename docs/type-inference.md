@@ -51,7 +51,7 @@ class InferenceResult:
     confidence: Literal["exact", "partial", "unknown"]  # 推导置信度
     is_static: bool  # 是否完全静态（无动态部分）
     node: nodes.NodeNG  # 原始 AST 节点
-    
+
     @property
     def is_dynamic(self) -> bool:
         """是否包含动态部分"""
@@ -76,17 +76,17 @@ if result.confidence == "exact":
     # 完全静态值，可以直接使用
     url = result.value  # "https://api.com/users"
     print(f"Static URL: {url}")
-    
+
 elif result.confidence == "partial":
     # 部分推导，包含动态标记
     pattern = result.value  # "https://api.com/users/..."
     print(f"URL pattern: {pattern}")
-    
+
     # 可以提取静态前缀
     if isinstance(pattern, str):
         static_prefix = pattern.split("...")[0]
         print(f"Base URL: {static_prefix}")
-        
+
 else:  # unknown
     # 无法推导，记录原始表达式
     expr = result.node.as_string()
@@ -102,23 +102,23 @@ else:  # unknown
 class StringPattern:
     """字符串模式推导结果（专门用于字符串推导）"""
     parts: list[str | Ellipsis]  # 静态部分和动态部分（Ellipsis 表示 ...）
-    
+
     @property
     def is_static(self) -> bool:
         """是否完全静态"""
         return ... not in self.parts
-    
+
     def to_pattern(self) -> str:
         """转换为模式字符串（用 ... 标记动态部分）"""
         return "".join("..." if p is ... else p for p in self.parts)
-    
+
     def static_prefix(self) -> str:
         """获取静态前缀"""
         for i, part in enumerate(self.parts):
             if part is ...:
                 return "".join(self.parts[:i])
         return "".join(self.parts)
-    
+
     def static_parts(self) -> list[str]:
         """获取所有静态部分"""
         return [p for p in self.parts if p is not ...]

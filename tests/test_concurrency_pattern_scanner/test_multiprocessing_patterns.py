@@ -188,7 +188,7 @@ class ProcessManager:
     def create_process(self):
         p = multiprocessing.Process(target=self.worker)
         p.start()
-    
+
     def worker(self):
         pass
 """

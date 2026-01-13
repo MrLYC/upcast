@@ -274,7 +274,7 @@ def test_complex_function_with_all_constructs(low_threshold_scanner, tmp_path):
     code = """
 def very_complex_func(x, y, items):
     result = "default" if x > 0 else "none"
-    
+
     if y > 0:
         for item in items:
             while item > 0:
@@ -284,7 +284,7 @@ def very_complex_func(x, y, items):
                         item -= 1
                 except ValueError:
                     break
-    
+
     return result
 """
     file_path = tmp_path / "test.py"

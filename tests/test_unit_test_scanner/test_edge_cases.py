@@ -29,7 +29,7 @@ class TestInvalidSyntax:
             dedent("""
             def test_valid():
                 assert True
-            
+
             # Invalid function below
             def test_broken(
                 assert False
@@ -53,7 +53,7 @@ class TestNonTestFunctions:
             dedent("""
             def helper_function():
                 return 42
-            
+
             def test_actual_test():
                 assert helper_function() == 42
         """)
@@ -75,7 +75,7 @@ class TestNonTestFunctions:
                 def test_nested():
                     assert True
                 return test_nested
-            
+
             def test_top_level():
                 assert True
         """)
@@ -96,7 +96,7 @@ class TestNonTestFunctions:
             class RegularClass:
                 def test_method(self):
                     assert True
-            
+
             def test_function():
                 assert True
         """)
@@ -168,7 +168,7 @@ class TestBodyMD5:
             dedent("""
             def test_one():
                 assert 1 == 1
-            
+
             def test_two():
                 assert 1 == 1
         """)
@@ -189,7 +189,7 @@ class TestBodyMD5:
             dedent("""
             def test_one():
                 assert 1 == 1
-            
+
             def test_two():
                 assert 2 == 2
         """)
@@ -210,7 +210,7 @@ class TestBodyMD5:
             def test_with_comment():
                 # This is a comment
                 assert 1 == 1
-            
+
             def test_without_comment():
                 assert 1 == 1
         """)

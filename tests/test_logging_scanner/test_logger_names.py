@@ -154,10 +154,10 @@ class TestMultipleLoggers:
         test_file.write_text(
             dedent("""
             import logging
-            
+
             logger1 = logging.getLogger("app.service1")
             logger2 = logging.getLogger("app.service2")
-            
+
             logger1.info("From service1")
             logger2.info("From service2")
         """)

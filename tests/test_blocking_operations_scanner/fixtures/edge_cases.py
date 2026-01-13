@@ -18,10 +18,10 @@ def outer():
     def inner():
         time.sleep(1)
         return nested_sleep()
-    
+
     def nested_sleep():
         time.sleep(0.5)
-    
+
     return inner()
 """
 
@@ -58,7 +58,7 @@ import threading
 class LockManager:
     def __init__(self):
         self.lock = threading.Lock()
-    
+
     def acquire(self):
         self.lock.acquire()
         self.lock.release()
@@ -66,7 +66,7 @@ class LockManager:
 class NestedLocks:
     def __init__(self):
         self.manager = LockManager()
-    
+
     def do_work(self):
         self.manager.lock.acquire()
 """
@@ -162,11 +162,11 @@ import time
 
 def class_decorator(cls):
     original_init = cls.__init__
-    
+
     def new_init(self, *args, **kwargs):
         time.sleep(0.1)
         original_init(self, *args, **kwargs)
-    
+
     cls.__init__ = new_init
     return cls
 
@@ -183,12 +183,12 @@ import time
 class PropertyExample:
     def __init__(self):
         self._value = 0
-    
+
     @property
     def value(self):
         time.sleep(0.1)
         return self._value
-    
+
     @value.setter
     def value(self, val):
         time.sleep(0.1)
@@ -203,7 +203,7 @@ class MyContextManager:
     def __enter__(self):
         time.sleep(0.1)
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         time.sleep(0.1)
         return False
@@ -220,17 +220,17 @@ import time
 class SpecialMethods:
     def __init__(self):
         time.sleep(0.1)
-    
+
     def __call__(self):
         time.sleep(0.2)
-    
+
     def __enter__(self):
         time.sleep(0.1)
         return self
-    
+
     def __exit__(self, *args):
         time.sleep(0.1)
-    
+
     def __del__(self):
         time.sleep(0.1)
 """
@@ -248,7 +248,7 @@ def pure_computation():
 class PureClass:
     def __init__(self):
         self.value = 42
-    
+
     def compute(self):
         return self.value * 2
 """

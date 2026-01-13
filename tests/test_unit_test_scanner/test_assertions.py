@@ -73,7 +73,7 @@ class TestUnittestAssertions:
         test_file.write_text(
             dedent("""
             import unittest
-            
+
             class TestMath(unittest.TestCase):
                 def test_equality(self):
                     self.assertEqual(1, 1)
@@ -94,7 +94,7 @@ class TestUnittestAssertions:
         test_file.write_text(
             dedent("""
             import unittest
-            
+
             class TestVariousAsserts(unittest.TestCase):
                 def test_all_types(self):
                     self.assertEqual(1, 1)
@@ -126,7 +126,7 @@ class TestPytestRaises:
         test_file.write_text(
             dedent("""
             import pytest
-            
+
             def test_exception():
                 with pytest.raises(ValueError):
                     raise ValueError("error")
@@ -145,7 +145,7 @@ class TestPytestRaises:
         test_file.write_text(
             dedent("""
             import pytest
-            
+
             def test_exception_message():
                 with pytest.raises(ValueError, match="error"):
                     raise ValueError("error")
@@ -168,7 +168,7 @@ class TestMixedAssertions:
         test_file.write_text(
             dedent("""
             import pytest
-            
+
             def test_mixed():
                 assert 1 == 1
                 with pytest.raises(ValueError):
@@ -191,7 +191,7 @@ class TestMixedAssertions:
             def test_one():
                 assert 1 == 1
                 assert 2 == 2
-            
+
             def test_two():
                 assert 3 == 3
         """)

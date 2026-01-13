@@ -68,7 +68,7 @@ import requests
 class APIClient:
     def get_users(self):
         return requests.get('https://api.example.com/users')
-    
+
     def create_user(self, data):
         return requests.post('https://api.example.com/users', json=data)
 """

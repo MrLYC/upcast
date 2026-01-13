@@ -58,7 +58,7 @@ class TestEmptyAndMinimalFiles:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             def foo():
                 pass
         """)
@@ -81,7 +81,7 @@ class TestNonLoggingMethodCalls:
             class MyClass:
                 def info(self, msg):
                     print(msg)
-            
+
             obj = MyClass()
             obj.info("Not a log call")
         """)
@@ -99,7 +99,7 @@ class TestNonLoggingMethodCalls:
             dedent("""
             def logger():
                 return "Not a logger"
-            
+
             # This is a function call, not a logger creation
             result = logger()
         """)
@@ -121,7 +121,7 @@ class TestComplexLogMessages:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             logger.info('''This is a
             multiline
             message''')
@@ -143,7 +143,7 @@ class TestComplexLogMessages:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             # This shouldn't crash the scanner
             try:
                 logger.info()
@@ -165,10 +165,10 @@ class TestComplexLogMessages:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             def get_message():
                 return "Dynamic message"
-            
+
             logger.info(get_message())
         """)
         )
@@ -295,11 +295,11 @@ class TestLineNumbers:
             dedent("""
             import logging
             logger = logging.getLogger(__name__)
-            
+
             logger.info("Line 5")
             logger.info("Line 6")
-            
-            
+
+
             logger.info("Line 9")
         """)
         )

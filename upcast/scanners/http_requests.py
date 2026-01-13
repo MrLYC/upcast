@@ -500,7 +500,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         # For f-strings, try to resolve variables
         if isinstance(node, nodes.JoinedStr):
-            parts: list[str] = []
+            parts = []
             for value in node.values:
                 if isinstance(value, nodes.Const):
                     parts.append(str(value.value))

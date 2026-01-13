@@ -233,7 +233,7 @@ import os
 class Config:
     HOST = os.getenv('HOST', 'localhost')
     PORT = os.environ['PORT']
-    
+
     def get_url(self):
         return os.getenv('URL')
 """

@@ -178,7 +178,7 @@ class TestSummaryStatistics:
         test_file.write_text(
             dedent("""
             from django.core.cache import cache
-            
+
             cache.get("key1")
             cache.get("key2")
             cache.set("key3", "value")
@@ -201,9 +201,9 @@ class TestLineNumberTracking:
         test_file.write_text(
             dedent("""
             from django.core.cache import cache
-            
+
             cache.get("key1")  # Line 3
-            
+
             cache.get("key2")  # Line 5
         """)
         )

@@ -16,7 +16,7 @@ class TestBasicTargetResolution:
         test_file.write_text(
             dedent("""
             from myapp.utils import helper
-            
+
             def test_helper():
                 result = helper()
                 assert result
@@ -38,7 +38,7 @@ class TestBasicTargetResolution:
             from myapp.utils import helper
             from otherapp.tools import tool
             from thirdparty.lib import external
-            
+
             def test_mixed():
                 result1 = helper()
                 result2 = tool()
@@ -65,7 +65,7 @@ class TestBasicTargetResolution:
             dedent("""
             from myapp.utils import helper
             from other.package import external
-            
+
             def test_mixed():
                 result1 = helper()
                 result2 = external()
@@ -93,7 +93,7 @@ class TestImportStyles:
         test_file.write_text(
             dedent("""
             import myapp.utils as utils
-            
+
             def test_utils():
                 result = utils.helper()
                 assert result
@@ -113,7 +113,7 @@ class TestImportStyles:
         test_file.write_text(
             dedent("""
             from myapp.utils import helper as h
-            
+
             def test_helper():
                 result = h()
                 assert result
@@ -137,7 +137,7 @@ class TestTargetSymbols:
         test_file.write_text(
             dedent("""
             from myapp.utils import helper, unused
-            
+
             def test_helper():
                 result = helper()
                 assert result
@@ -157,7 +157,7 @@ class TestTargetSymbols:
         test_file.write_text(
             dedent("""
             from myapp.utils import zebra, alpha, beta
-            
+
             def test_all():
                 zebra()
                 alpha()

@@ -281,7 +281,7 @@ class AsyncWorker:
     async def process(self):
         task = asyncio.create_task(self.worker())
         await task
-    
+
     async def worker(self):
         await asyncio.sleep(1)
         return "done"

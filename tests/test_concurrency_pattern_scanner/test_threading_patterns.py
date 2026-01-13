@@ -166,7 +166,7 @@ class ThreadManager:
     def create_thread(self):
         t = threading.Thread(target=self.worker)
         t.start()
-    
+
     def worker(self):
         pass
 """

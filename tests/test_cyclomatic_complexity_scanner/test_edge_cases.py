@@ -145,7 +145,7 @@ class MyClass:
         if x > 0:
             return x
         return 0
-    
+
     def method_two(self, y):
         for i in range(y):
             if i > 10:
@@ -174,7 +174,7 @@ class MyClass:
         if x > 0:
             return x
         return 0
-    
+
     @classmethod
     def class_method(cls, y):
         while y > 0:

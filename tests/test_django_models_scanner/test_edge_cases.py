@@ -18,7 +18,7 @@ from django.db import models
 class Article(models.Model):
     title = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
 """
@@ -38,7 +38,7 @@ from django.db import models
 
 class Article(models.Model):
     title = models.CharField(max_length=100)
-    
+
     class Meta:
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
@@ -60,7 +60,7 @@ from django.db import models
 
 class Article(models.Model):
     title = models.CharField(max_length=100)
-    
+
     class Meta:
         db_table = 'custom_articles'
 """
@@ -81,7 +81,7 @@ from django.db import models
 class Article(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField()
-    
+
     class Meta:
         unique_together = [['title', 'slug']]
 """
@@ -102,7 +102,7 @@ from django.db import models
 class Article(models.Model):
     title = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         indexes = [
             models.Index(fields=['title']),
@@ -130,7 +130,7 @@ from django.db import models
 class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         abstract = True
 
@@ -205,7 +205,7 @@ from django.db import models
 
 class Article(models.Model):
     title = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return self.title
 """
@@ -224,10 +224,10 @@ from django.db import models
 class Article(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    
+
     def get_preview(self):
         return self.content[:100]
-    
+
     def is_long(self):
         return len(self.content) > 1000
 """
@@ -246,7 +246,7 @@ from django.db import models
 class Article(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    
+
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -309,7 +309,7 @@ from django.db import models
 class Article(models.Model):
     STATUS_DRAFT = 'draft'
     STATUS_PUBLISHED = 'published'
-    
+
     title = models.CharField(max_length=100)
     status = models.CharField(max_length=20)
 """
