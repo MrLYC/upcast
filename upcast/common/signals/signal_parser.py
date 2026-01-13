@@ -579,7 +579,6 @@ def parse_signal_send(
                     sender = safe_as_string(value)
 
     # Create SignalUsage
-    pattern = "send_robust_method" if method_type == "send_robust" else "send_method"
     usage = SignalUsage(
         file=_get_relative_path(file_path, root_path),
         lineno=node.lineno,

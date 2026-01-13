@@ -134,9 +134,8 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
 
     def _extract_timing_values(self, node: nodes.Call, func_name: str) -> int | float | None:
         """Extract duration value from blocking operation calls."""
-        if "sleep" in func_name:
-            if node.args:
-                return infer_value(node.args[0]).get_if_type((int, float))
+        if "sleep" in func_name and node.args:
+            return infer_value(node.args[0]).get_if_type((int, float))
 
         for keyword in node.keywords:
             if keyword.arg == "timeout":

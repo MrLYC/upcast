@@ -379,6 +379,8 @@ def infer_type(node: nodes.NodeNG) -> tuple[str, Confidence]:
 
             if isinstance(inferred, nodes.Tuple):
                 return "tuple", "exact"
+        else:
+            return "unknown", "unknown"
 
         return "unknown", "unknown"
 

@@ -88,7 +88,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
 
         # Extract default value
         default_value = None
-        required = False if func_name.endswith(".get") else True
+        required = not func_name.endswith(".get")
 
         if len(node.args) >= 2:
             default_value = infer_value(node.args[1]).get_exact()

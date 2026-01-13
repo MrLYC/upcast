@@ -147,7 +147,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
             definitions = definitions_by_setting.get(setting_name, [])
             usages = usages_by_setting.get(setting_name, [])
 
-            definition_types = sorted(set(defn.type for defn in definitions))
+            definition_types = sorted({defn.type for defn in definitions})
 
             results[setting_name] = SettingInfo(
                 definition_count=len(definitions),
