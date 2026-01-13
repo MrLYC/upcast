@@ -7,6 +7,7 @@ from typing import ClassVar
 from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
+from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.blocking_operations import (
@@ -86,10 +87,11 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
         if not func_name:
             return None
 
-        # Check against patterns
         for category, patterns in self.BLOCKING_PATTERNS.items():
             for pattern in patterns:
                 if self._matches_pattern(func_name, pattern):
+                    duration = self._extract_timing_values(node, func_name)
+                    
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -100,6 +102,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
                         block=self._get_block_name(node),
+                        duration=duration,
                     )
 
         return None
@@ -113,6 +116,8 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                 if func_name and any(
                     self._matches_pattern(func_name, p) for p in self.BLOCKING_PATTERNS["synchronization"]
                 ):
+                    duration = self._extract_timing_values(context_expr, func_name)
+                    
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -123,7 +128,20 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
                         block=self._get_block_name(node),
+                        duration=duration,
                     )
+        return None
+
+    def _extract_timing_values(self, node: nodes.Call, func_name: str) -> int | float | None:
+        """Extract duration value from blocking operation calls."""
+        if "sleep" in func_name:
+            if node.args:
+                return infer_value(node.args[0]).get_if_type((int, float))
+        
+        for keyword in node.keywords:
+            if keyword.arg == "timeout":
+                return infer_value(keyword.value).get_if_type((int, float))
+        
         return None
 
     def _get_qualified_name(self, node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
