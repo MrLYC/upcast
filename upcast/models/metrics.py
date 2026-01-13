@@ -5,6 +5,20 @@ from pydantic import BaseModel, Field
 from upcast.models.base import ScannerOutput, ScannerSummary
 
 
+class MetricDefinition(BaseModel):
+    """A definition of a metric.
+
+    Attributes:
+        file: File path
+        line: Line number
+        statement: Code statement
+    """
+
+    file: str = Field(description="File path")
+    line: int | None = Field(None, ge=1, description="Line number")
+    statement: str = Field(description="Code statement")
+
+
 class MetricUsage(BaseModel):
     """A usage of a metric.
 
@@ -32,8 +46,10 @@ class MetricInfo(BaseModel):
         namespace: Metric namespace
         subsystem: Metric subsystem
         unit: Metric unit
+        metric_name: Full metric name including namespace and subsystem
         custom_collector: Whether it's a custom collector
         buckets: Histogram buckets
+        definitions: List of metric definitions
         usages: List of metric usages
     """
 
@@ -44,8 +60,10 @@ class MetricInfo(BaseModel):
     namespace: str | None = Field(None, description="Metric namespace")
     subsystem: str | None = Field(None, description="Metric subsystem")
     unit: str | None = Field(None, description="Metric unit")
+    metric_name: str = Field(description="Full metric name")
     custom_collector: bool = Field(description="Custom collector")
     buckets: list[float] | None = Field(None, description="For Histogram")
+    definitions: list[MetricDefinition] = Field(description="Metric definitions")
     usages: list[MetricUsage] = Field(description="Metric usages")
 
 

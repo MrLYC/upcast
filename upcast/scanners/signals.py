@@ -196,13 +196,10 @@ class SignalScanner(BaseScanner[SignalOutput]):
         """
         return {
             "file": usage_dict.get("file", ""),
-            "line": usage_dict.get("line", 1),
-            "column": usage_dict.get("column", 0),
+            "lineno": usage_dict.get("lineno", usage_dict.get("line", 1)),
             "handler": usage_dict.get("handler"),
-            "pattern": usage_dict.get("pattern"),
-            "code": usage_dict.get("code"),
             "sender": usage_dict.get("sender"),
-            "context": usage_dict.get("context"),
+            "statement": usage_dict.get("statement", usage_dict.get("code")),
         }
 
     def _calculate_summary(

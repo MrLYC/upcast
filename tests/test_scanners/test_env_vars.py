@@ -20,35 +20,29 @@ class TestEnvVarLocationModel:
         location = EnvVarLocation(
             file="app/config.py",
             line=10,
-            column=4,
-            pattern="os.getenv('DATABASE_URL')",
-            code="db_url = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')",
+            statement="os.getenv('DATABASE_URL')",
         )
 
         assert location.file == "app/config.py"
         assert location.line == 10
-        assert location.column == 4
-        assert "DATABASE_URL" in location.pattern
+        assert "DATABASE_URL" in location.statement
 
     def test_location_validates_line_number(self):
         """Test that line number must be >= 1."""
         with pytest.raises(ValidationError):
-            EnvVarLocation(file="test.py", line=0, column=0, pattern="test")
+            EnvVarLocation(file="test.py", line=0, statement="test")
 
-    def test_location_validates_column_number(self):
-        """Test that column number must be >= 0."""
-        with pytest.raises(ValidationError):
-            EnvVarLocation(file="test.py", line=1, column=-1)
+    def test_location_statement_required(self):
+        """Test that statement is required."""
+        location = EnvVarLocation(file="test.py", line=1, statement="test")
+        assert location.statement == "test"
 
     def test_location_with_optional_fields(self):
         """Test EnvVarLocation with only required fields."""
-        location = EnvVarLocation(file="test.py", line=1, column=0, pattern="test_pattern")
+        location = EnvVarLocation(file="test.py", line=1, statement="test_pattern")
 
         assert location.file == "test.py"
         assert location.line == 1
-        assert location.column == 0
-        assert location.pattern == "test_pattern"
-        assert location.code is None
 
 
 class TestEnvVarInfoModel:
@@ -60,7 +54,7 @@ class TestEnvVarInfoModel:
             name="API_KEY",
             required=True,
             default_value="",
-            locations=[EnvVarLocation(file="api.py", line=5, column=0, pattern="os.getenv('API_KEY')")],
+            locations=[EnvVarLocation(file="api.py", line=5, statement="os.getenv('API_KEY')")],
         )
 
         assert info.name == "API_KEY"
@@ -74,7 +68,7 @@ class TestEnvVarInfoModel:
             name="DEBUG",
             required=False,
             default_value="False",
-            locations=[EnvVarLocation(file="settings.py", line=10, column=0, pattern="os.getenv('DEBUG')")],
+            locations=[EnvVarLocation(file="settings.py", line=10, statement="os.getenv('DEBUG')")],
         )
 
         assert info.required is False
@@ -86,8 +80,8 @@ class TestEnvVarInfoModel:
             name="DATABASE_URL",
             required=True,
             locations=[
-                EnvVarLocation(file="db.py", line=10, column=0, pattern="os.environ['DATABASE_URL']"),
-                EnvVarLocation(file="migrations.py", line=20, column=0, pattern="os.getenv('DATABASE_URL')"),
+                EnvVarLocation(file="db.py", line=10, statement="os.environ['DATABASE_URL']"),
+                EnvVarLocation(file="migrations.py", line=20, statement="os.getenv('DATABASE_URL')"),
             ],
         )
 
@@ -166,13 +160,13 @@ class TestEnvVarOutputModel:
             "API_KEY": EnvVarInfo(
                 name="API_KEY",
                 required=True,
-                locations=[EnvVarLocation(file="api.py", line=10, column=0, pattern="os.getenv('API_KEY')")],
+                locations=[EnvVarLocation(file="api.py", line=10, statement="os.getenv('API_KEY')")],
             ),
             "DEBUG": EnvVarInfo(
                 name="DEBUG",
                 required=False,
                 default_value="False",
-                locations=[EnvVarLocation(file="settings.py", line=20, column=0, pattern="os.getenv('DEBUG')")],
+                locations=[EnvVarLocation(file="settings.py", line=20, statement="os.getenv('DEBUG')")],
             ),
         }
 

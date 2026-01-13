@@ -1,0 +1,45 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **URL配置模块总数**: {{ summary.total_modules }}
+- **URL模式总数**: {{ summary.total_patterns }}
+{% endblock %}
+
+{% block results %}
+{% for module_path, url_module in results.items() %}
+
+### URL配置模块: {{ module_path }}
+
+| 类型 | 模式 | 视图 | 名称 | 命名空间 | 详情 |
+|------|------|------|------|---------|------|
+{% for pattern in url_module.urlpatterns %}
+| {{ pattern.type }} | {{ pattern.pattern or '不适用' }} | {{ pattern.view_module }}.{{ pattern.view_name }} if pattern.view_name else (pattern.include_module or '不适用') | {{ pattern.name or '不适用' }} | {{ pattern.namespace or '不适用' }} | {% if pattern.converters %}转换器: {{ pattern.converters | join(', ') }}{% endif %}{% if pattern.named_groups %}分组: {{ pattern.named_groups | join(', ') }}{% endif %}{% if pattern.basename %}基础名: {{ pattern.basename }}{% endif %}{% if pattern.router_type %}路由器: {{ pattern.router_type }}{% endif %} |
+{% endfor %}
+
+{% if url_module.urlpatterns %}
+#### 模式详情
+
+{% for pattern in url_module.urlpatterns %}
+**{{ pattern.type }}**: `{{ pattern.pattern or '不适用' }}`
+{% if pattern.description %}
+- 描述: {{ pattern.description }}
+{% endif %}
+{% if pattern.note %}
+- 备注: {{ pattern.note }}
+{% endif %}
+- 视图: {{ pattern.view_module }}.{{ pattern.view_name }} if pattern.view_name else pattern.include_module
+{% if pattern.is_partial %}
+- 状态: 不完整的模式
+{% endif %}
+{% if pattern.is_conditional %}
+- 状态: 条件模式
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

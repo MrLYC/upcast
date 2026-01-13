@@ -8,8 +8,9 @@ from typing import ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.redis_usage import (
     RedisConfig,
@@ -83,7 +84,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(results, scan_duration_ms, warnings)
 
-        return RedisUsageOutput(summary=summary, results=results)
+        return RedisUsageOutput(summary=summary, results=results, metadata={"scanner_name": "redis-usage"})
 
     def _is_settings_file(self, file_path: Path) -> bool:
         """Check if file is a Django settings file."""
@@ -103,10 +104,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             if isinstance(node, nodes.JoinedStr):
                 return self._handle_fstring(node)
 
-            # Try to infer the actual value using astroid
-            const_val = safe_infer_value(node)
-            if const_val is not None and isinstance(const_val, str):
-                return const_val
+            const_value = infer_value(node).get_if_type(str)
+            if const_value is not None:
+                return const_value
 
             # If we can't infer the value, return ...
             if isinstance(node, nodes.Name):
@@ -214,7 +214,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
     def _extract_caches_config(self, node: nodes.Assign, rel_path: str) -> list[RedisUsage]:
         """Extract CACHES configuration."""
-        usages = []
+        usages: list[RedisUsage] = []
         value = node.value
 
         if not isinstance(value, nodes.Dict):
@@ -289,7 +289,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
     def _extract_channel_layers_config(self, node: nodes.Assign, rel_path: str) -> list[RedisUsage]:
         """Extract CHANNEL_LAYERS configuration."""
-        usages = []
+        usages: list[RedisUsage] = []
         value = node.value
 
         if not isinstance(value, nodes.Dict):
@@ -336,9 +336,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
                 first_host = cv.elts[0]
                 if isinstance(first_host, (nodes.Tuple, nodes.List)) and len(first_host.elts) >= 2:
                     config.host = safe_as_string(first_host.elts[0])
-                    port_val = safe_infer_value(first_host.elts[1])
-                    if isinstance(port_val, int):
-                        config.port = port_val
+                    port = infer_value(first_host.elts[1]).get_if_type(int)
+                    if port is not None:
+                        config.port = port
 
     def _extract_rest_framework_config(self, node: nodes.Assign, rel_path: str) -> RedisUsage | None:
         """Extract REST_FRAMEWORK throttling configuration."""
@@ -386,8 +386,8 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         self, module: nodes.Module, rel_path: str, imports: dict[str, str]
     ) -> tuple[list[RedisUsage], list[str]]:
         """Scan for Django cache API usage."""
-        usages = []
-        warnings = []
+        usages: list[RedisUsage] = []
+        warnings: list[str] = []
 
         # Check if cache is imported
         cache_imported = "cache" in imports or any("cache" in imp for imp in imports.values())
@@ -431,9 +431,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
         for keyword in node.keywords:
             if keyword.arg == "timeout":
-                timeout_val = safe_infer_value(keyword.value)
-                if isinstance(timeout_val, (int, float)):
-                    timeout = int(timeout_val)
+                timeout = infer_value(keyword.value).get_if_type((int, float))
+                if timeout is not None:
+                    timeout = int(timeout)
 
         return RedisUsage(
             type=RedisUsageType.DISTRIBUTED_LOCK,
@@ -459,17 +459,16 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             key = self._clean_key_pattern(self._infer_key_pattern(node.args[0]))
 
         if method == "set":
-            # Check for timeout parameter
             if len(node.args) >= 3:
-                timeout_val = safe_infer_value(node.args[2])
-                if isinstance(timeout_val, (int, float)):
+                timeout_val = infer_value(node.args[2]).get_if_type((int, float))
+                if timeout_val is not None:
                     timeout = int(timeout_val)
                     has_ttl = True
 
             for keyword in node.keywords:
                 if keyword.arg in ("timeout", "ttl"):
-                    timeout_val = safe_infer_value(keyword.value)
-                    if isinstance(timeout_val, (int, float)):
+                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
+                    if timeout_val is not None:
                         timeout = int(timeout_val)
                         has_ttl = True
 
@@ -493,8 +492,8 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         self, module: nodes.Module, rel_path: str, imports: dict[str, str]
     ) -> tuple[list[RedisUsage], list[str]]:
         """Scan for direct redis-py usage."""
-        usages = []
-        warnings = []
+        usages: list[RedisUsage] = []
+        warnings: list[str] = []
 
         # Check if redis is imported
         redis_imported = "redis" in imports or any("redis" in imp.lower() for imp in imports.values())
@@ -602,17 +601,16 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         if operation == "setex":
             has_ttl = True
             if len(node.args) >= 2:
-                timeout_val = safe_infer_value(node.args[1])
-                if isinstance(timeout_val, (int, float)):
+                timeout_val = infer_value(node.args[1]).get_if_type((int, float))
+                if timeout_val is not None:
                     timeout = int(timeout_val)
 
         elif operation == "set":
-            # Check for ex or px parameters
             for keyword in node.keywords:
                 if keyword.arg in ("ex", "px", "exat", "pxat"):
                     has_ttl = True
-                    timeout_val = safe_infer_value(keyword.value)
-                    if isinstance(timeout_val, (int, float)):
+                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
+                    if timeout_val is not None:
                         timeout = int(timeout_val)
 
             if not has_ttl and not is_pipeline:

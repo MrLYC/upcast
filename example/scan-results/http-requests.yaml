@@ -1,701 +1,751 @@
-metadata: {}
+metadata:
+  scanner_name: http-requests
 results:
-  "...":
+  '...':
     library: requests
     method: GET
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/accessories/cloudapi/components/http.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 38
-        method: REQUEST
+    - file: apiserver/paasng/paasng/accessories/cloudapi/components/http.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 38
+      method: REQUEST
+      params: null
+      session_based: false
+      statement: requests.request(method, url, **kwargs)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 56
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 118
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 128
+      method: GET
+      params: null
+      session_based: false
+      statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
+        ''end_time'': end_time.isoformat()}, auth=self.auth)'
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 160
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 185
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 202
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 212
+      method: GET
+      params: null
+      session_based: false
+      statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
+        ''end_time'': end_time.isoformat()}, auth=self.auth)'
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 240
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 271
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 296
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.base_url + url, params=params, auth=self.auth)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 140
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.config.meta_info_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+      timeout: 15
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 151
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.config.index_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+      timeout: 15
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 162
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(self.config.create_service_url, json=data, auth=self.auth,
+        timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 175
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 187
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 199
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body:
         params: null
-        session_based: false
-        statement: requests.request(method, url, **kwargs)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/dev_sandbox/management/commands/renew_dev_sandbox_expired_at.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 56
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 118
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 128
-        method: GET
-        params: null
-        session_based: false
-        statement:
-          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
-          'end_time': end_time.isoformat()}, auth=self.auth)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 160
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 185
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 202
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 212
-        method: GET
-        params: null
-        session_based: false
-        statement:
-          "requests.get(self.base_url + url, params={'start_time': start_time.isoformat(),
-          'end_time': end_time.isoformat()}, auth=self.auth)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 240
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 271
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 296
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.base_url + url, params=params, auth=self.auth)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 140
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.config.meta_info_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 151
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.config.index_url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 162
-        method: PUT
-        params: null
-        session_based: false
-        statement:
-          requests.put(self.config.create_service_url, json=data, auth=self.auth,
-          timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 175
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 187
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 199
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url, json=data, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 211
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url, json=payload, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 223
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 235
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
-        timeout: 15
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 250
-        method: DELETE
-        params: null
-        session_based: false
-        statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
-        timeout: 30
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 261
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url, json=config, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 268
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url, json=params, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
-        timeout: 300
-      - data: null
-        file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 275
-        method: DELETE
-        params: null
-        session_based: false
-        statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
-        timeout: 30
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
-        headers:
-          content-type: application/json
-        is_async: false
-        json_body: null
-        line: 64
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url=url, headers=self.headers, auth=self.auth, json=json)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
-        headers:
-          content-type: application/json
-        is_async: false
-        json_body: null
-        line: 69
-        method: DELETE
-        params: null
-        session_based: false
-        statement: requests.delete(url=url, headers=self.headers, auth=self.auth, json=json)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
-        headers:
-          content-type: application/json
-        is_async: false
-        json_body: null
-        line: 73
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url=url, headers=self.headers, auth=self.auth, json=json)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 39
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url=url, headers=headers, params=data, timeout=timeout)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 41
-        method: HEAD
-        params: null
-        session_based: false
-        statement: requests.head(url=url, headers=headers, timeout=timeout)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 43
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url=url, headers=headers, json=data, timeout=timeout)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 45
-        method: DELETE
-        params: null
-        session_based: false
-        statement: requests.delete(url=url, headers=headers, json=data)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 47
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url=url, headers=headers, json=data)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 240
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
-          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
-          rtx=username, **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 261
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          requests.post(url=self.refresh_url, params=dict(app_code=self.app_code,
-          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
-          headers=self.app_info_headers)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 278
-        method: GET
-        params: null
-        session_based: false
-        statement:
-          "requests.get(url=self.validate_url, json={'access_token': access_token},
-          headers=self.app_info_headers)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 295
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
-          app_secret=self.app_secret, env_name=self.env_name, grant_type='authorization_code',
-          id_provider='bk_login', **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 316
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          requests.post(url=self.refresh_url, json=dict(app_code=self.app_code,
-          env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
-          headers=self.app_info_headers)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 333
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "requests.post(url=self.validate_url, json={'access_token': access_token},
-          headers=self.app_info_headers)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 100
-        method: REQUEST
-        params: null
-        session_based: false
-        statement: requests.request(method, url, **kwargs)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/misc/search/backends.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 83
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(self.BKDOC_SEARCH_BASE_URL.format(keyword))
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 147
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(logo_url, stream=True)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 156
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(settings.APPLICATION_DEFAULT_LOGO, stream=True)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 33
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(target_url, stream=True)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 105
-        method: GET
-        params: null
-        session_based: false
-        statement:
-          requests.get(url, params=params, timeout=self.TIMEOUT, verify=self.SSL_VERIFY,
-          **kwargs)
-        timeout: 60
-  ".../api/overview":
+        plan_id: null
+      line: 211
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url, json=payload, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 223
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+      timeout: 15
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 235
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url, auth=self.auth, timeout=self.REQUEST_LIST_TIMEOUT)
+      timeout: 15
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 250
+      method: DELETE
+      params: null
+      session_based: false
+      statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
+      timeout: 30
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 261
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url, json=config, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 268
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url, json=params, auth=self.auth, timeout=self.REQUEST_CREATE_TIMEOUT)
+      timeout: 300
+    - file: apiserver/paasng/paasng/accessories/servicehub/remote/client.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 275
+      method: DELETE
+      params: null
+      session_based: false
+      statement: requests.delete(url, auth=self.auth, timeout=self.REQUEST_DELETE_TIMEOUT)
+      timeout: 30
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
+      headers:
+        content-type: application/json
+      is_async: false
+      json_body: null
+      line: 64
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url=url, headers=self.headers, auth=self.auth, json=json)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
+      headers:
+        content-type: application/json
+      is_async: false
+      json_body: null
+      line: 69
+      method: DELETE
+      params: null
+      session_based: false
+      statement: requests.delete(url=url, headers=self.headers, auth=self.auth, json=json)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
+      headers:
+        content-type: application/json
+      is_async: false
+      json_body: null
+      line: 73
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url=url, headers=self.headers, auth=self.auth, json=json)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
+      is_async: false
+      json_body: null
+      line: 39
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url=url, headers=headers, params=data, timeout=timeout)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
+      is_async: false
+      json_body: null
+      line: 41
+      method: HEAD
+      params: null
+      session_based: false
+      statement: requests.head(url=url, headers=headers, timeout=timeout)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
+      is_async: false
+      json_body: null
+      line: 43
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url=url, headers=headers, json=data, timeout=timeout)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
+      is_async: false
+      json_body: null
+      line: 45
+      method: DELETE
+      params: null
+      session_based: false
+      statement: requests.delete(url=url, headers=headers, json=data)
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/services/providers/sentry/client.py
+      form: null
+      headers:
+        Authorization: null
+        Content-Type: application/json
+      is_async: false
+      json_body: null
+      line: 47
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url=url, headers=headers, json=data)
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body:
+        app_code: null
+        app_secret: null
+        bk_ticket: null
+        env_name: null
+        grant_type: authorization_code
+        rtx: null
+      line: 240
+      method: POST
+      params: null
+      session_based: false
+      statement: 'requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
+        app_secret=self.app_secret, env_name=self.env_name, grant_type=''authorization_code'',
+        rtx=username, **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)'
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body: null
+      line: 261
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url=self.refresh_url, params=dict(app_code=self.app_code,
+        env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
+        headers=self.app_info_headers)
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body:
+        access_token: null
+      line: 278
+      method: GET
+      params: null
+      session_based: false
+      statement: 'requests.get(url=self.validate_url, json={''access_token'': access_token},
+        headers=self.app_info_headers)'
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body:
+        app_code: null
+        app_secret: null
+        bk_token: null
+        env_name: null
+        grant_type: authorization_code
+        id_provider: bk_login
+      line: 295
+      method: POST
+      params: null
+      session_based: false
+      statement: 'requests.post(url=self.auth_url, json=dict(app_code=self.app_code,
+        app_secret=self.app_secret, env_name=self.env_name, grant_type=''authorization_code'',
+        id_provider=''bk_login'', **{self.COOKIE_KEY: user_credential}), headers=self.app_info_headers)'
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body:
+        app_code: null
+        env_name: null
+        grant_type: refresh_token
+        refresh_token: null
+      line: 316
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url=self.refresh_url, json=dict(app_code=self.app_code,
+        env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
+        headers=self.app_info_headers)
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/accounts/oauth/backends.py
+      form: null
+      headers:
+        X-BK-APP-CODE: null
+        X-BK-APP-SECRET: null
+      is_async: false
+      json_body:
+        access_token: null
+      line: 333
+      method: POST
+      params: null
+      session_based: false
+      statement: 'requests.post(url=self.validate_url, json={''access_token'': access_token},
+        headers=self.app_info_headers)'
+      timeout: null
+    - file: apiserver/paasng/paasng/misc/monitoring/metrics/clients/prometheus.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 100
+      method: REQUEST
+      params: null
+      session_based: false
+      statement: requests.request(method, url, **kwargs)
+      timeout: null
+    - file: apiserver/paasng/paasng/misc/search/backends.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 83
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(self.BKDOC_SEARCH_BASE_URL.format(keyword))
+      timeout: null
+    - file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 147
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(logo_url, stream=True)
+      timeout: null
+    - file: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 156
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(settings.APPLICATION_DEFAULT_LOGO, stream=True)
+      timeout: null
+    - file: apiserver/paasng/paasng/platform/sourcectl/package/downloader.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 33
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(target_url, stream=True)
+      timeout: null
+    - file: apiserver/paasng/paasng/platform/sourcectl/svn/admin.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 105
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url, params=params, timeout=self.TIMEOUT, verify=self.SSL_VERIFY,
+        **kwargs)
+      timeout: 60
+  '.../api/overview':
     library: requests
     method: GET
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 54
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url, auth=self.auth)
-        timeout: null
-  ".../api/v1/apps":
+    - file: apiserver/paasng/paasng/accessories/services/providers/rabbitmq/provider.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 54
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url, auth=self.auth)
+      timeout: null
+  '.../api/v1/apps':
     library: requests
     method: POST
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/infras/oauth2/api.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 101
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url, json=data, headers=self.headers)
-        timeout: null
-  ".../api/v1/apps/.../access-keys":
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
+      is_async: false
+      json_body:
+        bk_app_code: null
+        name: null
+      line: 101
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url, json=data, headers=self.headers)
+      timeout: null
+  '.../api/v1/apps/.../access-keys':
     library: requests
     method: POST
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/infras/oauth2/api.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 114
-        method: POST
-        params: null
-        session_based: false
-        statement: requests.post(url, headers=self.headers)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/oauth2/api.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 139
-        method: GET
-        params: null
-        session_based: false
-        statement: requests.get(url, headers=self.headers)
-        timeout: null
-  ".../api/v1/apps/.../access-keys/...":
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
+      is_async: false
+      json_body: null
+      line: 114
+      method: POST
+      params: null
+      session_based: false
+      statement: requests.post(url, headers=self.headers)
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
+      is_async: false
+      json_body: null
+      line: 139
+      method: GET
+      params: null
+      session_based: false
+      statement: requests.get(url, headers=self.headers)
+      timeout: null
+  '.../api/v1/apps/.../access-keys/...':
     library: requests
-    method: PUT
+    method: DELETE
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/infras/oauth2/api.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 122
-        method: DELETE
-        params: null
-        session_based: false
-        statement: requests.delete(url, headers=self.headers)
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/infras/oauth2/api.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 131
-        method: PUT
-        params: null
-        session_based: false
-        statement: requests.put(url, json=data, headers=self.headers)
-        timeout: null
-  ".../sites/register":
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
+      is_async: false
+      json_body: null
+      line: 122
+      method: DELETE
+      params: null
+      session_based: false
+      statement: requests.delete(url, headers=self.headers)
+      timeout: null
+    - file: apiserver/paasng/paasng/infras/oauth2/api.py
+      form: null
+      headers:
+        X-Bk-App-Code: null
+        X-Bk-App-Secret: null
+      is_async: false
+      json_body:
+        enabled: null
+      line: 131
+      method: PUT
+      params: null
+      session_based: false
+      statement: requests.put(url, json=data, headers=self.headers)
+      timeout: null
+  '.../sites/register':
     library: requests
     method: POST
     usages:
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 82
-        method: POST
-        params: null
-        session_based: false
-        statement: "requests.post(self.base_url + url, json={'site_type': 'app',
-          'extra_info': {'paas_app_code': app_code, 'module_name': module_name,
-          'environment': env}}, auth=self.auth)"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 102
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "requests.post(self.base_url + url, json={'site_type': 'custom',
-          'extra_info': {'site_name': site_name}}, auth=self.auth)"
-        timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body:
+        extra_info:
+          environment: null
+          module_name: null
+          paas_app_code: null
+        site_type: app
+      line: 82
+      method: POST
+      params: null
+      session_based: false
+      statement: 'requests.post(self.base_url + url, json={''site_type'': ''app'',
+        ''extra_info'': {''paas_app_code'': app_code, ''module_name'': module_name,
+        ''environment'': env}}, auth=self.auth)'
+      timeout: null
+    - file: apiserver/paasng/paasng/accessories/paas_analysis/clients.py
+      form: null
+      headers: null
+      is_async: false
+      json_body:
+        extra_info:
+          site_name: null
+        site_type: custom
+      line: 102
+      method: POST
+      params: null
+      session_based: false
+      statement: 'requests.post(self.base_url + url, json={''site_type'': ''custom'',
+        ''extra_info'': {''site_name'': site_name}}, auth=self.auth)'
+      timeout: null
   https://example.com/api:
     library: requests
     method: POST
     usages:
-      - data: null
-        file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-        headers: null
-        is_async: false
-        json_body:
-          BK_PASSWORD: "123456"
-          api_key: abcdef
-        line: 37
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "Request('POST', 'https://example.com/api', json={'BK_PASSWORD':
-          '123456', 'api_key': 'abcdef'})"
-        timeout: null
-      - data:
-          BK_PASSWORD: "123456"
-          api_key: abcdef
-        file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 47
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "Request('POST', 'https://example.com/api', data={'BK_PASSWORD':
-          '123456', 'api_key': 'abcdef'})"
-        timeout: null
-      - data: null
-        file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-        headers:
-          BK_PASSWORD: "123456"
-          api_key: abcdef
-        is_async: false
-        json_body: null
-        line: 57
-        method: POST
-        params: null
-        session_based: false
-        statement:
-          "Request('POST', 'https://example.com/api', headers={'BK_PASSWORD':
-          '123456', 'api_key': 'abcdef'})"
-        timeout: null
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
+      headers: null
+      is_async: false
+      json_body:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      line: 37
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', json={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      headers: null
+      is_async: false
+      json_body: null
+      line: 47
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', data={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
+      headers:
+        BK_PASSWORD: '123456'
+        api_key: abcdef
+      is_async: false
+      json_body: null
+      line: 57
+      method: POST
+      params: null
+      session_based: false
+      statement: 'Request(''POST'', ''https://example.com/api'', headers={''BK_PASSWORD'':
+        ''123456'', ''api_key'': ''abcdef''})'
+      timeout: null
   https://example.com/api?BK_PASSWORD=123456&api_key=abcdef:
     library: requests
     method: GET
     usages:
-      - data: null
-        file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
-        headers: null
-        is_async: false
-        json_body: null
-        line: 28
-        method: GET
-        params: null
-        session_based: false
-        statement: Request('GET', 'https://example.com/api?BK_PASSWORD=123456&api_key=abcdef')
-        timeout: null
+    - file: apiserver/paasng/tests/paasng/test_utils/test_masked_curlify.py
+      form: null
+      headers: null
+      is_async: false
+      json_body: null
+      line: 28
+      method: GET
+      params: null
+      session_based: false
+      statement: Request('GET', 'https://example.com/api?BK_PASSWORD=123456&api_key=abcdef')
+      timeout: null
 summary:
   by_library:
     requests: 56
   files_scanned: 14
-  scan_duration_ms: 11964
+  scan_duration_ms: 20494
   total_count: 56
   total_requests: 56
   unique_urls: 8

@@ -5,8 +5,9 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
 
@@ -43,7 +44,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         return EnvVarOutput(
             summary=summary,
             results=self.env_vars,
-            metadata={"scanner_name": "env_vars"},
+            metadata={"scanner_name": "env-vars"},
         )
 
     def scan_file(self, file_path: Path) -> None:
@@ -78,20 +79,24 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         # Extract variable name
         if not node.args:
             return
-        var_name = safe_infer_value(node.args[0])
-        if not isinstance(var_name, str):
+        var_name = infer_value(node.args[0]).get_if_type(str)
+        if var_name is None:
             return
+
+        if not var_name:
+            var_name = "..."
 
         # Extract default value
         default_value = None
-        required = True
+        required = not func_name.endswith(".get")
+
         if len(node.args) >= 2:
-            default_value = safe_infer_value(node.args[1], default="<dynamic>")
+            default_value = infer_value(node.args[1]).get_exact()
             required = False
         elif node.keywords:
             for kw in node.keywords:
                 if kw.arg == "default":
-                    default_value = safe_infer_value(kw.value, default="<dynamic>")
+                    default_value = infer_value(kw.value).get_exact()
                     required = False
                     break
 
@@ -99,9 +104,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
-            column=node.col_offset,
-            pattern=f"{func_name}('{var_name}')",
-            code=safe_as_string(node),
+            statement=safe_as_string(node),
+            type="unknown",
         )
         self._add_env_var(
             name=var_name,
@@ -136,9 +140,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
-            column=node.col_offset,
-            pattern=f"{value_str}['{node.slice.value}']",
-            code=safe_as_string(node),
+            statement=safe_as_string(node),
+            type="unknown",
         )
         self._add_env_var(
             name=node.slice.value,
@@ -160,10 +163,15 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
                 name=name,
                 required=required,
                 default_value=default_value,
+                types=[],
                 locations=[],
             )
 
         self.env_vars[name].locations.append(location)
+
+        # Aggregate types from locations
+        if location.type and location.type not in self.env_vars[name].types:
+            self.env_vars[name].types.append(location.type)
 
         # Update required status (if ANY usage is required, mark as required)
         if required:

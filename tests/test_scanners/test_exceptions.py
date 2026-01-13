@@ -1,24 +1,22 @@
 """Tests for ExceptionHandlerScanner."""
 
-from upcast.scanners.exceptions import (
-    ExceptClause,
-    ExceptionHandlerScanner,
-)
+from upcast.models.exceptions import ExceptionBlock
+from upcast.scanners.exceptions import ExceptionHandlerScanner
 
 
 class TestExceptionModels:
     """Tests for exception handler models."""
 
-    def test_valid_except_clause(self):
-        """Test creating valid ExceptClause."""
-        clause = ExceptClause(
-            line=10,
-            exception_types=["ValueError", "TypeError"],
+    def test_valid_exception_block(self):
+        """Test creating valid ExceptionBlock."""
+        block = ExceptionBlock(
+            lineno=10,
+            exceptions=["ValueError", "TypeError"],
             lines=3,
             log_error_count=1,
         )
-        assert clause.line == 10
-        assert len(clause.exception_types) == 2
+        assert block.lineno == 10
+        assert len(block.exceptions) == 2
 
 
 class TestExceptionHandlerScannerIntegration:

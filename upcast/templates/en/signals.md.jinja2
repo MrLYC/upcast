@@ -1,0 +1,47 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Django Receivers**: {{ summary.django_receivers }}
+- **Django Senders**: {{ summary.django_senders }}
+- **Celery Receivers**: {{ summary.celery_receivers }}
+- **Celery Senders**: {{ summary.celery_senders }}
+- **Custom Signals Defined**: {{ summary.custom_signals_defined }}
+- **Unused Custom Signals**: {{ summary.unused_custom_signals }}
+{% endblock %}
+
+{% block results %}
+{% for signal_info in results %}
+
+### {{ signal_info.signal }}
+
+**Type**: {{ signal_info.type }}
+**Category**: {{ signal_info.category }}
+{% if signal_info.status %}
+**Status**: {{ signal_info.status }}
+{% endif %}
+
+{% if signal_info.receivers %}
+#### Receivers
+
+| File | Line | Handler | Pattern | Sender | Code |
+|------|------|---------|---------|--------|------|
+{% for receiver in signal_info.receivers %}
+| {{ receiver.file }} | {{ receiver.line }} | {{ receiver.handler or 'N/A' }} | {{ receiver.pattern or 'N/A' }} | {{ receiver.sender or 'N/A' }} | {{ receiver.code or 'N/A' }} |
+{% endfor %}
+{% endif %}
+
+{% if signal_info.senders %}
+#### Senders
+
+| File | Line | Pattern | Sender | Code |
+|------|------|---------|--------|------|
+{% for sender in signal_info.senders %}
+| {{ sender.file }} | {{ sender.line }} | {{ sender.pattern or 'N/A' }} | {{ sender.sender or 'N/A' }} | {{ sender.code or 'N/A' }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

@@ -250,8 +250,8 @@ class SignalChecker:
         # Convert usage to sender dict for backward compatibility
         sender_dict = {
             "file": usage.file,
-            "line": usage.line,
-            "pattern": usage.pattern,
+            "lineno": usage.lineno,
+            "statement": usage.statement,
         }
         if usage.sender:
             sender_dict["sender"] = usage.sender
@@ -271,11 +271,10 @@ class SignalChecker:
         """
         return SignalUsage(
             file=handler.get("file", "<unknown>"),
-            line=handler.get("line", 0),
-            column=handler.get("column", 0),
-            pattern=handler.get("pattern", "unknown"),
-            code=handler.get("code", ""),
+            lineno=handler.get("line", 1),
+            handler=handler.get("handler"),
             sender=handler.get("sender"),
+            statement=handler.get("code"),
         )
 
     def check_file(self, file_path: str) -> None:

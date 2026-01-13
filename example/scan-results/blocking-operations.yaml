@@ -1,41 +1,52 @@
-metadata: {}
+metadata:
+  scanner_name: blocking-operations
 results:
   database:
-  - category: database
+  - block: null
+    category: database
     class_name: ClusterManager
     column: 35
+    duration: null
     file: apiserver/paasng/paas_wl/infras/cluster/models.py
     function: switch_default_cluster
     line: 216
     operation: self.select_for_update
     statement: self.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: ClusterManager
     column: 35
+    duration: null
     file: apiserver/paasng/paas_wl/infras/cluster/models.py
     function: switch_default_cluster
     line: 217
     operation: self.select_for_update
     statement: self.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: ResourcePoolProvider
     column: 16
+    duration: null
     file: apiserver/paasng/paasng/accessories/services/providers/base.py
     function: create
     line: 72
     operation: select_for_update
     statement: PreCreatedInstance.objects.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: Application
     column: 15
+    duration: null
     file: apiserver/paasng/paasng/platform/applications/models.py
     function: get_module_with_lock
     line: 363
     operation: select_for_update
     statement: self.modules.select_for_update()
-  - category: database
+  - block: null
+    category: database
     class_name: Application
     column: 15
+    duration: null
     file: apiserver/paasng/paasng/platform/applications/models.py
     function: get_default_module_with_lock
     line: 367
@@ -44,225 +55,281 @@ results:
   subprocess: []
   synchronization: []
   time_based:
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: WaitPodDelete
     column: 12
+    duration: 1
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
     function: wait
     line: 215
     operation: time.sleep
     statement: time.sleep(self._check_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: PodScheduleHandler
     column: 16
+    duration: null
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
     function: _wait_pod_succeeded
     line: 308
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: CommandHandler
     column: 16
+    duration: null
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
     function: wait_for_succeeded
     line: 565
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: CommandHandler
     column: 16
+    duration: null
     file: apiserver/paasng/paas_wl/bk_app/deploy/app_res/controllers.py
     function: wait_for_succeeded
     line: 573
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KNamespace
     column: 12
+    duration: null
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
     function: wait_for_default_sa
     line: 568
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KNamespace
     column: 12
+    duration: null
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
     function: wait_until_removed
     line: 594
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: KPod
     column: 12
+    duration: null
     file: apiserver/paasng/paas_wl/infras/resources/base/kres.py
     function: wait_for_status
     line: 654
     operation: time.sleep
     statement: time.sleep(check_period)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: WaitDelete
     column: 12
+    duration: 1
     file: apiserver/paasng/paas_wl/infras/resources/kube_res/base.py
     function: wait
     line: 681
     operation: time.sleep
     statement: time.sleep(self._check_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
+    duration: 1
     file: apiserver/paasng/paasng/misc/monitoring/monitor/management/commands/init_alert_rules.py
     function: handle
     line: 49
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
+    duration: 1
     file: apiserver/paasng/paasng/misc/monitoring/monitor/management/commands/init_dashboards.py
     function: handle
     line: 49
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
+    duration: 1
     file: apiserver/paasng/paasng/plat_admin/admin_cli/deploy.py
     function: wait_for_release
     line: 56
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: PipelineBuildProcessExecutor
     column: 12
+    duration: 2
     file: apiserver/paasng/paasng/platform/engine/deploy/bg_build/executors.py
     function: _start_following_logs
     line: 338
     operation: time.sleep
     statement: time.sleep(self.polling_result_interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
+    duration: 5
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/conftest.py
     function: sleep_only
     line: 57
     operation: time.sleep
     statement: time.sleep(5)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 8
+    duration: 1
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
     function: get_ingress_nginx_pod
     line: 127
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: IngressNginxReloadChecker
     column: 20
+    duration: 0.2
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
     function: check_keyword_from_logs
     line: 149
     operation: time.sleep
     statement: time.sleep(0.2)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: IngressNginxReloadChecker
     column: 12
+    duration: 1
     file: apiserver/paasng/tests/paas_wl/e2e/ingress/utils.py
     function: check_keyword_from_logs
     line: 151
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestBatchOps
     column: 12
+    duration: 1
     file: apiserver/paasng/tests/paas_wl/infras/resources/base/test_kres.py
     function: test_delete_collection
     line: 175
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestBatchOps
     column: 12
+    duration: 1
     file: apiserver/paasng/tests/paas_wl/infras/resources/base/test_kres.py
     function: test_delete_individual
     line: 193
     operation: time.sleep
     statement: time.sleep(1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: TestDeploymentCoordinator
     column: 8
+    duration: 0.2
     file: apiserver/paasng/tests/paasng/platform/engine/workflow/test_flow.py
     function: test_lock_timeout
     line: 114
     operation: time.sleep
     statement: time.sleep(0.2)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 4
+    duration: 3
     file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
     function: test_UserActionRateLimiter
     line: 45
     operation: time.sleep
     statement: time.sleep(window_size)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: null
     column: 4
+    duration: 3
     file: apiserver/paasng/tests/paasng/test_utils/test_rate_limit.py
     function: test_rate_limits_on_view_func
     line: 68
     operation: time.sleep
     statement: time.sleep(window_size)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Sentinel
     column: 12
+    duration: null
     file: svc-rabbitmq/tasks/management/commands/worker.py
     function: guard
     line: 100
     operation: time.sleep
     statement: sleep(cycle)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Cluster
     column: 12
+    duration: 0.1
     file: svc-rabbitmq/tasks/management/commands/worker.py
     function: start
     line: 134
     operation: time.sleep
     statement: sleep(0.1)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 16
+    duration: null
     file: svc-rabbitmq/vendor/management/commands/consumer.py
     function: on_message
     line: 68
     operation: time.sleep
     statement: time.sleep(delay)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
+    duration: null
     file: svc-rabbitmq/vendor/management/commands/evict_connections.py
     function: run
     line: 152
     operation: time.sleep
     statement: time.sleep(interval)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 20
+    duration: null
     file: svc-rabbitmq/vendor/management/commands/producer.py
     function: publish
     line: 116
     operation: time.sleep
     statement: time.sleep(delay)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 20
+    duration: null
     file: svc-rabbitmq/vendor/management/commands/recovery_connections.py
     function: handle
     line: 190
     operation: time.sleep
     statement: time.sleep(sleep)
-  - category: time_based
+  - block: null
+    category: time_based
     class_name: Command
     column: 12
+    duration: null
     file: svc-rabbitmq/vendor/management/commands/sync_user_policies.py
     function: handle
     line: 99
@@ -273,5 +340,5 @@ summary:
     database: 5
     time_based: 28
   files_scanned: 21
-  scan_duration_ms: 10350
+  scan_duration_ms: 20464
   total_count: 33

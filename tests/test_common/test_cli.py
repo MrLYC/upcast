@@ -39,7 +39,7 @@ class TestAddScannerArguments:
         assert "verbose" in params
 
     def test_format_option_has_choices(self):
-        """Test that format option restricts to yaml/json."""
+        """Test that format option restricts to yaml/json/markdown."""
 
         @click.command()
         @add_scanner_arguments
@@ -48,7 +48,7 @@ class TestAddScannerArguments:
 
         format_param = next(p for p in dummy_command.params if p.name == "format")
         assert isinstance(format_param.type, click.Choice)
-        assert format_param.type.choices == ("yaml", "json")
+        assert format_param.type.choices == ["yaml", "json", "markdown"]
 
     def test_multiple_patterns_supported(self):
         """Test that include/exclude support multiple values."""

@@ -1,289 +1,362 @@
-"""Tests for complexity calculation in complexity_parser.py."""
+"""Tests for complexity calculation in CyclomaticComplexityScanner.
 
-from pathlib import Path
+Tests cover:
+- Base complexity
+- Individual constructs (if, for, while, except, assert, ternary)
+- Boolean operators
+- Comprehensions
+- Combined constructs
+"""
 
 import pytest
-from astroid import parse
-from upcast.cyclomatic_complexity_scanner.complexity_parser import (
-    calculate_complexity,
-)
 
 
-class TestComplexityCalculation:
-    """Tests for basic complexity calculation."""
-
-    def test_simple_function(self):
-        """Test that a simple function has complexity 1."""
-        source = """
-def simple():
+def test_base_complexity_simple_function(low_threshold_scanner, tmp_path):
+    """Test that a simple function has base complexity of 1."""
+    code = """
+def simple_func():
     return 42
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 1
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_if(self):
-        """Test that if statement adds 1 to complexity."""
-        source = """
-def with_if(x):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 1
+    assert result.results["test.py"][0].severity == "healthy"
+
+
+def test_single_if_statement(low_threshold_scanner, tmp_path):
+    """Test that a single if statement adds 1 to complexity."""
+    code = """
+def func_with_if(x):
     if x > 0:
         return x
-    return -x
+    return 0
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 2  # 1 base + 1 if
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_if_elif(self):
-        """Test that if-elif adds complexity."""
-        source = """
-def with_elif(x):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 2  # Base 1 + if 1
+
+
+def test_multiple_if_statements(low_threshold_scanner, tmp_path):
+    """Test that multiple if statements each add 1 to complexity."""
+    code = """
+def func_with_multiple_ifs(x, y):
     if x > 0:
-        return "positive"
-    elif x < 0:
-        return "negative"
-    return "zero"
+        return x
+    if y > 0:
+        return y
+    return 0
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 1 if + 1 elif
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_if_elif_else(self):
-        """Test that else doesn't add complexity."""
-        source = """
-def with_else(x):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + if 1 + if 1
+
+
+def test_nested_if_statements(low_threshold_scanner, tmp_path):
+    """Test that nested if statements each add 1 to complexity."""
+    code = """
+def func_with_nested_ifs(x, y):
     if x > 0:
-        return "positive"
-    elif x < 0:
-        return "negative"
-    else:
-        return "zero"
+        if y > 0:
+            return x + y
+    return 0
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 1 if + 1 elif (else doesn't count)
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_for_loop(self):
-        """Test that for loop adds 1 to complexity."""
-        source = """
-def with_loop(items):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + if 1 + if 1
+
+
+def test_for_loop_complexity(low_threshold_scanner, tmp_path):
+    """Test that a for loop adds 1 to complexity."""
+    code = """
+def func_with_for(items):
     total = 0
     for item in items:
         total += item
     return total
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 2  # 1 base + 1 for
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_while_loop(self):
-        """Test that while loop adds 1 to complexity."""
-        source = """
-def with_while(n):
-    count = 0
-    while n > 0:
-        count += 1
-        n -= 1
-    return count
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 2  # Base 1 + for 1
+
+
+def test_while_loop_complexity(low_threshold_scanner, tmp_path):
+    """Test that a while loop adds 1 to complexity."""
+    code = """
+def func_with_while(x):
+    while x > 0:
+        x -= 1
+    return x
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 2  # 1 base + 1 while
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_exception_handler(self):
-        """Test that exception handlers add to complexity."""
-        source = """
-def with_except(value):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 2  # Base 1 + while 1
+
+
+def test_except_handler_complexity(low_threshold_scanner, tmp_path):
+    """Test that except handlers add 1 to complexity each."""
+    code = """
+def func_with_except():
     try:
-        return int(value)
+        risky_operation()
     except ValueError:
-        return 0
-    except TypeError:
-        return -1
+        handle_value_error()
+    except KeyError:
+        handle_key_error()
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 1 ValueError + 1 TypeError
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_and_operator(self):
-        """Test that 'and' operator adds to complexity."""
-        source = """
-def with_and(x, y):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + except 1 + except 1
+
+
+def test_assert_statement_complexity(low_threshold_scanner, tmp_path):
+    """Test that assert statements add 1 to complexity."""
+    code = """
+def func_with_assert(x):
+    assert x > 0
+    assert x < 100
+    return x
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
+
+    result = low_threshold_scanner.scan(tmp_path)
+
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + assert 1 + assert 1
+
+
+def test_ternary_if_expression_complexity(low_threshold_scanner, tmp_path):
+    """Test that ternary if expressions (IfExp) add 1 to complexity."""
+    code = """
+def func_with_ternary(x):
+    return "positive" if x > 0 else "negative"
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
+
+    result = low_threshold_scanner.scan(tmp_path)
+
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 2  # Base 1 + ternary if 1
+
+
+def test_boolean_and_operator_complexity(low_threshold_scanner, tmp_path):
+    """Test that boolean AND operators add 1 to complexity."""
+    code = """
+def func_with_and(x, y):
     if x > 0 and y > 0:
         return x + y
     return 0
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 1 if + 1 and
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_or_operator(self):
-        """Test that 'or' operator adds to complexity."""
-        source = """
-def with_or(x, y):
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + if 1 + and 1
+
+
+def test_boolean_or_operator_complexity(low_threshold_scanner, tmp_path):
+    """Test that boolean OR operators add 1 to complexity."""
+    code = """
+def func_with_or(x, y):
     if x > 0 or y > 0:
-        return max(x, y)
-    return 0
+        return True
+    return False
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 1 if + 1 or
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_multiple_bool_ops(self):
-        """Test that multiple boolean operators add to complexity."""
-        source = """
-def with_multiple_ops(x, y, z):
-    if x > 0 and y > 0 and z > 0:
-        return x + y + z
-    return 0
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + if 1 + or 1
+
+
+def test_multiple_boolean_operators(low_threshold_scanner, tmp_path):
+    """Test that multiple boolean operators each add 1 to complexity."""
+    code = """
+def func_with_multiple_bools(x, y, z):
+    if x > 0 and y > 0 or z > 0:
+        return True
+    return False
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 4  # 1 base + 1 if + 2 and operators
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_ternary(self):
-        """Test that ternary expression adds to complexity."""
-        source = """
-def with_ternary(x):
-    return x if x > 0 else 0
-"""
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 4  # Base 1 + if 1 + and 1 + or 1
 
-        assert complexity == 2  # 1 base + 1 ternary
 
-    def test_function_with_list_comprehension(self):
-        """Test that list comprehension with if adds to complexity."""
-        source = """
-def with_comprehension(items):
+def test_list_comprehension_with_if(low_threshold_scanner, tmp_path):
+    """Test that if clauses in comprehensions add 1 to complexity."""
+    code = """
+def func_with_comprehension(items):
     return [x for x in items if x > 0]
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 2  # 1 base + 1 comprehension if
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_multiple_comprehension_ifs(self):
-        """Test that multiple if clauses in comprehension add complexity."""
-        source = """
-def with_multiple_ifs(items):
-    return [x for x in items if x > 0 if x % 2 == 0]
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 2  # Base 1 + if in comprehension 1
+
+
+def test_comprehension_with_multiple_ifs(low_threshold_scanner, tmp_path):
+    """Test that multiple if clauses in comprehensions each add 1."""
+    code = """
+def func_with_multiple_comp_ifs(items):
+    return [x for x in items if x > 0 if x < 100]
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 2 comprehension ifs
+    result = low_threshold_scanner.scan(tmp_path)
 
-    def test_function_with_assert(self):
-        """Test that assert with condition adds to complexity."""
-        source = """
-def with_assert(value):
-    assert value > 0
-    return value * 2
-"""
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + if 1 + if 1
 
-        assert complexity == 2  # 1 base + 1 assert
 
-    def test_nested_conditions(self):
-        """Test nested if statements."""
-        source = """
-def nested(x, y):
-    if x > 0:
-        if y > 0:
-            return x + y
-        return x
+def test_combined_constructs_complexity(low_threshold_scanner, tmp_path):
+    """Test combined constructs calculate correct total complexity."""
+    code = """
+def combined_func(x, y, items):
+    if x > 0 and y > 0:
+        for item in items:
+            if item > 10:
+                return item
     return 0
 """
-        module = parse(source)
-        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
-        complexity = calculate_complexity(func)
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-        assert complexity == 3  # 1 base + 2 if statements
+    result = low_threshold_scanner.scan(tmp_path)
+
+    assert result.summary.total_count == 1
+    # Base 1 + if 1 + and 1 + for 1 + if 1 = 5
+    assert result.results["test.py"][0].complexity == 5
 
 
-class TestComplexFixtures:
-    """Test complexity calculation using fixture files."""
+def test_complex_function_with_all_constructs(low_threshold_scanner, tmp_path):
+    """Test function with multiple different constructs."""
+    code = """
+def very_complex_func(x, y, items):
+    result = "default" if x > 0 else "none"
 
-    @pytest.fixture
-    def simple_fixture_path(self):
-        """Path to simple.py fixture."""
-        return Path(__file__).parent / "fixtures" / "simple.py"
+    if y > 0:
+        for item in items:
+            while item > 0:
+                try:
+                    if item > 10 and item < 100:
+                        assert item != 50
+                        item -= 1
+                except ValueError:
+                    break
 
-    @pytest.fixture
-    def complex_fixture_path(self):
-        """Path to complex.py fixture."""
-        return Path(__file__).parent / "fixtures" / "complex.py"
+    return result
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-    def test_simple_fixture_complexities(self, simple_fixture_path):
-        """Test expected complexities from simple.py fixture."""
-        with open(simple_fixture_path, encoding="utf-8") as f:
-            source = f.read()
+    result = low_threshold_scanner.scan(tmp_path)
 
-        module = parse(source)
-        functions = list(module.nodes_of_class(parse("def f(): pass").body[0].__class__))
+    assert result.summary.total_count == 1
+    # Base 1 + ternary 1 + if 1 + for 1 + while 1 + if 1 + and 1 + assert 1 + except 1 = 9
+    assert result.results["test.py"][0].complexity == 9
+    assert result.results["test.py"][0].severity == "acceptable"
 
-        expected = {
-            "simple_function": 1,
-            "function_with_if": 2,
-            "function_with_if_elif": 3,
-            "function_with_loop": 2,
-            "function_with_while": 2,
-        }
 
-        for func in functions:
-            if func.name in expected:
-                complexity = calculate_complexity(func)
-                assert complexity == expected[func.name], (
-                    f"{func.name}: expected {expected[func.name]}, got {complexity}"
-                )
+def test_elif_statements_complexity(low_threshold_scanner, tmp_path):
+    """Test that elif statements add 1 to complexity each."""
+    code = """
+def func_with_elif(x):
+    if x > 100:
+        return "high"
+    elif x > 50:
+        return "medium"
+    elif x > 0:
+        return "low"
+    else:
+        return "zero or negative"
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
 
-    def test_complex_fixture_complexities(self, complex_fixture_path):
-        """Test expected complexities from complex.py fixture."""
-        with open(complex_fixture_path, encoding="utf-8") as f:
-            source = f.read()
+    result = low_threshold_scanner.scan(tmp_path)
 
-        module = parse(source)
-        functions = list(module.nodes_of_class(parse("def f(): pass").body[0].__class__))
+    assert result.summary.total_count == 1
+    # Base 1 + if 1 + elif 1 + elif 1 = 4
+    assert result.results["test.py"][0].complexity == 4
 
-        # Note: These are minimum expected values
-        expected_min = {
-            "complex_function": 7,  # Multiple conditions and loops
-            "function_with_try_except": 3,  # 1 base + 1 if + 2 except
-            "function_with_ternary": 3,  # 1 base + 2 ternary
-            "function_with_comprehension": 3,  # 1 base + comprehension ifs
-            "async_function_complex": 5,  # Multiple conditions
-            "complex_method": 6,  # Complex method in class
-        }
 
-        for func in functions:
-            if func.name in expected_min:
-                complexity = calculate_complexity(func)
-                assert complexity >= expected_min[func.name], (
-                    f"{func.name}: expected at least {expected_min[func.name]}, got {complexity}"
-                )
+def test_nested_loops_complexity(low_threshold_scanner, tmp_path):
+    """Test that nested loops each add 1 to complexity."""
+    code = """
+def func_with_nested_loops(matrix):
+    total = 0
+    for row in matrix:
+        for item in row:
+            total += item
+    return total
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
+
+    result = low_threshold_scanner.scan(tmp_path)
+
+    assert result.summary.total_count == 1
+    assert result.results["test.py"][0].complexity == 3  # Base 1 + for 1 + for 1
+
+
+def test_match_case_not_counted(low_threshold_scanner, tmp_path):
+    """Test that match/case statements are handled (Python 3.10+)."""
+    code = """
+def func_with_match(value):
+    match value:
+        case 1:
+            return "one"
+        case 2:
+            return "two"
+        case _:
+            return "other"
+"""
+    file_path = tmp_path / "test.py"
+    file_path.write_text(code)
+
+    # This may parse differently depending on Python version
+    # We just ensure it doesn't crash
+    result = low_threshold_scanner.scan(tmp_path)
+
+    assert result.summary.total_count >= 0  # Just ensure it doesn't crash

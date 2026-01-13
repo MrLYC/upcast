@@ -10,8 +10,9 @@ from pathlib import Path
 
 from astroid import nodes
 
-from upcast.common.ast_utils import safe_as_string, safe_infer_value
+from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.module_symbols import (
     Class,
@@ -73,9 +74,22 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             scan_duration_ms=int((time.time() - start_time) * 1000),
         )
 
+        filtered_results = {
+            file_path: symbols
+            for file_path, symbols in self.results.items()
+            if (
+                symbols.imported_modules
+                or symbols.imported_symbols
+                or symbols.star_imported
+                or symbols.variables
+                or symbols.functions
+                or symbols.classes
+            )
+        }
+
         return ModuleSymbolOutput(
             summary=summary,
-            results=self.results,
+            results=filtered_results,
             metadata={"scanner_name": "module_symbols"},
         )
 
@@ -198,7 +212,11 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                         # Use full path including the imported symbol name
                         full_module_path = f"{resolved_modname}.{name}"
                         symbols.imported_symbols[name] = ImportedSymbol(
-                            module_path=full_module_path, attributes=[], blocks=current_blocks
+                            module_path=full_module_path,
+                            attributes=[],
+                            lineno=node.lineno or 0,
+                            statement=safe_as_string(node) or "",
+                            blocks=current_blocks,
                         )
 
     def _resolve_relative_import(self, modname: str, level: int, package_path: str) -> str:
@@ -367,13 +385,14 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                     continue
 
                 # Extract value
-                value_obj = safe_infer_value(node.value, default=None)
+                value_obj = infer_value(node.value).get_exact()
                 value_str = str(value_obj) if value_obj is not None else None
                 statement = safe_as_string(node) or ""
 
                 symbols.variables[var_name] = Variable(
                     module_path=module_path,
                     attributes=[],
+                    lineno=node.lineno or 0,
                     value=value_str,
                     statement=statement,
                     blocks=block_stack.copy(),
@@ -418,6 +437,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         decorators = self._extract_decorators(node.decorators)
 
         symbols.functions[func_name] = Function(
+            lineno=node.lineno or 0,
+            is_async=isinstance(node, nodes.AsyncFunctionDef),
             signature=signature,
             docstring=docstring,
             body_md5=body_md5,
@@ -474,6 +495,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         decorators = self._extract_decorators(node.decorators)
 
         symbols.classes[class_name] = Class(
+            lineno=node.lineno or 0,
             docstring=docstring,
             body_md5=body_md5,
             attributes=class_attrs,
@@ -500,7 +522,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for node in decorator_nodes.nodes:
             if isinstance(node, nodes.Name):
                 # Simple decorator: @decorator
-                decorators.append(Decorator(name=node.name, args=[], kwargs={}))
+                decorators.append(Decorator(name=node.name, lineno=node.lineno or 0, args=[], kwargs={}))
             elif isinstance(node, nodes.Call):
                 # Decorator with arguments: @decorator(args, kwargs)
                 func_name = safe_as_string(node.func) or "unknown"
@@ -508,7 +530,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 # Extract args - ensure all values are strings
                 args = []
                 for arg in node.args:
-                    value = safe_infer_value(arg, default=safe_as_string(arg) or "")
+                    result = infer_value(arg)
+                    value = result.value if result.value is not None else (safe_as_string(arg) or "")
                     # Convert to string if not already
                     args.append(str(value) if not isinstance(value, str) else value)
 
@@ -516,15 +539,16 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 kwargs = {}
                 for keyword in node.keywords:
                     if keyword.arg:
-                        value = safe_infer_value(keyword.value, default=safe_as_string(keyword.value) or "")
+                        result = infer_value(keyword.value)
+                        value = result.value if result.value is not None else (safe_as_string(keyword.value) or "")
                         # Convert to string if not already
                         kwargs[keyword.arg] = str(value) if not isinstance(value, str) else value
 
-                decorators.append(Decorator(name=func_name, args=args, kwargs=kwargs))
+                decorators.append(Decorator(name=func_name, lineno=node.lineno or 0, args=args, kwargs=kwargs))
             else:
                 # Complex decorator, just extract as string
                 name = safe_as_string(node) or "unknown"
-                decorators.append(Decorator(name=name, args=[], kwargs={}))
+                decorators.append(Decorator(name=name, lineno=node.lineno or 0, args=[], kwargs={}))
 
         return decorators
 
@@ -549,6 +573,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 symbols.imported_symbols[name] = ImportedSymbol(
                     module_path=symbol.module_path,
                     attributes=self.symbol_usage[name],
+                    lineno=symbol.lineno,
+                    statement=symbol.statement,
                     blocks=symbol.blocks,
                 )
 
@@ -558,6 +584,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 symbols.variables[name] = Variable(
                     module_path=var.module_path,
                     attributes=self.symbol_usage[name],
+                    lineno=var.lineno,
                     value=var.value,
                     statement=var.statement,
                     blocks=var.blocks,
@@ -567,6 +594,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for name, func in symbols.functions.items():
             if name in self.symbol_usage:
                 symbols.functions[name] = Function(
+                    lineno=func.lineno,
+                    is_async=func.is_async,
                     signature=func.signature,
                     docstring=func.docstring,
                     body_md5=func.body_md5,
@@ -579,6 +608,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         for name, cls in symbols.classes.items():
             if name in self.symbol_usage:
                 symbols.classes[name] = Class(
+                    lineno=cls.lineno,
                     docstring=cls.docstring,
                     body_md5=cls.body_md5,
                     attributes=cls.attributes,

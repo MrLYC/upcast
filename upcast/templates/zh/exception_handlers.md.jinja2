@@ -1,0 +1,49 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+
+### 异常处理器统计
+根据 ExceptionHandlerSummary 字段的额外汇总统计信息。
+{% endblock %}
+
+{% block results %}
+{% if results %}
+{% set handlers_by_file = {} %}
+{% for handler in results %}
+  {% if handler.file not in handlers_by_file %}
+    {% set _ = handlers_by_file.update({handler.file: []}) %}
+  {% endif %}
+  {% set _ = handlers_by_file[handler.file].append(handler) %}
+{% endfor %}
+
+{% for file_path, handlers in handlers_by_file.items() %}
+
+### 文件: `{{ file_path }}`
+
+{% for handler in handlers %}
+#### 异常处理器 (行 {{ handler.lineno }}-{{ handler.end_lineno }})
+
+- **Try 块**: {{ handler.try_lines }} 行
+- **Except 子句数量**: {{ handler.except_clauses|length }}
+{% if handler.else_clause %}
+- **Else 子句**: 第 {{ handler.else_clause.line }} 行 ({{ handler.else_clause.lines }} 行)
+{% endif %}
+{% if handler.finally_clause %}
+- **Finally 子句**: 第 {{ handler.finally_clause.line }} 行 ({{ handler.finally_clause.lines }} 行)
+{% endif %}
+
+**Except 子句详情:**
+{% for except_clause in handler.except_clauses %}
+- 第 {{ except_clause.line }} 行: {{ except_clause.exception_types|join(', ') or '(bare except)' }} ({{ except_clause.lines }} 行)
+  - 日志调用: debug={{ except_clause.log_debug_count }}, info={{ except_clause.log_info_count }}, warning={{ except_clause.log_warning_count }}, error={{ except_clause.log_error_count }}, exception={{ except_clause.log_exception_count }}, critical={{ except_clause.log_critical_count }}
+  - 控制流: pass={{ except_clause.pass_count }}, return={{ except_clause.return_count }}, raise={{ except_clause.raise_count }}, break={{ except_clause.break_count }}, continue={{ except_clause.continue_count }}
+{% endfor %}
+
+---
+{% endfor %}
+{% endfor %}
+{% else %}
+未找到异常处理器。
+{% endif %}
+{% endblock %}

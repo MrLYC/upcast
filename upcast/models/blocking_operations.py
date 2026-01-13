@@ -17,6 +17,8 @@ class BlockingOperation(BaseModel):
         statement: Code statement containing the operation
         function: Containing function name if applicable
         class_name: Containing class name if applicable
+        block: Code block name (e.g., if, for, while, etc.) if applicable
+        duration: Duration in seconds (sleep time, timeout value, etc.)
     """
 
     file: str = Field(description="File path")
@@ -27,6 +29,8 @@ class BlockingOperation(BaseModel):
     statement: str | None = Field(None, description="Code statement")
     function: str | None = Field(None, description="Containing function")
     class_name: str | None = Field(None, description="Containing class")
+    block: str | None = Field(None, description="Code block name (if, for, while, etc.)")
+    duration: int | float | None = Field(None, description="Duration in seconds (sleep time, timeout value, etc.)")
 
 
 class BlockingOperationsSummary(ScannerSummary):

@@ -18,7 +18,7 @@ class HttpRequestUsage(BaseModel):
         params: Query parameters
         headers: Request headers
         json_body: JSON request body
-        data: Form data
+        form: Form data
         timeout: Request timeout
         session_based: Whether using requests.Session
         is_async: Whether using async library
@@ -31,7 +31,7 @@ class HttpRequestUsage(BaseModel):
     params: dict[str, Any] | None = Field(None, description="Query parameters")
     headers: dict[str, Any] | None = Field(None, description="Request headers")
     json_body: dict[str, Any] | None = Field(None, description="JSON body")
-    data: Any | None = Field(None, description="Form data")
+    form: Any | None = Field(None, description="Form data")
     timeout: float | int | None = Field(None, description="Timeout")
     session_based: bool = Field(description="Using session")
     is_async: bool = Field(description="Async request")

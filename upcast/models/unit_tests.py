@@ -9,11 +9,11 @@ class TargetModule(BaseModel):
     """A module targeted by test imports.
 
     Attributes:
-        module: Module path (e.g., 'myapp.models')
+        module_path: Module path (e.g., 'myapp.models')
         symbols: Imported symbols from the module
     """
 
-    module: str = Field(description="Module path")
+    module_path: str = Field(description="Module path")
     symbols: list[str] = Field(description="Imported symbols")
 
 

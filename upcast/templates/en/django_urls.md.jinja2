@@ -1,0 +1,45 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Modules**: {{ summary.total_modules }}
+- **Total Patterns**: {{ summary.total_patterns }}
+{% endblock %}
+
+{% block results %}
+{% for module_path, url_module in results.items() %}
+
+### URLconf Module: {{ module_path }}
+
+| Type | Pattern | View | Name | Namespace | Details |
+|------|---------|------|------|-----------|---------|
+{% for pattern in url_module.urlpatterns %}
+| {{ pattern.type }} | {{ pattern.pattern or 'N/A' }} | {{ pattern.view_module }}.{{ pattern.view_name }} if pattern.view_name else (pattern.include_module or 'N/A') | {{ pattern.name or 'N/A' }} | {{ pattern.namespace or 'N/A' }} | {% if pattern.converters %}Converters: {{ pattern.converters | join(', ') }}{% endif %}{% if pattern.named_groups %}Groups: {{ pattern.named_groups | join(', ') }}{% endif %}{% if pattern.basename %}Basename: {{ pattern.basename }}{% endif %}{% if pattern.router_type %}Router: {{ pattern.router_type }}{% endif %} |
+{% endfor %}
+
+{% if url_module.urlpatterns %}
+#### Pattern Details
+
+{% for pattern in url_module.urlpatterns %}
+**{{ pattern.type }}**: `{{ pattern.pattern or 'N/A' }}`
+{% if pattern.description %}
+- Description: {{ pattern.description }}
+{% endif %}
+{% if pattern.note %}
+- Note: {{ pattern.note }}
+{% endif %}
+- View: {{ pattern.view_module }}.{{ pattern.view_name }} if pattern.view_name else pattern.include_module
+{% if pattern.is_partial %}
+- Status: Incomplete pattern
+{% endif %}
+{% if pattern.is_conditional %}
+- Status: Conditional pattern
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

@@ -60,7 +60,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 modules[rel_path] = results
 
         summary = self._calculate_summary(modules)
-        return ComplexityOutput(summary=summary, results=modules)
+        return ComplexityOutput(summary=summary, results=modules, metadata={"scanner_name": "complexity-patterns"})
 
     def _scan_module(self, module: nodes.Module) -> list[ComplexityResult]:
         """Scan a module for high complexity functions."""

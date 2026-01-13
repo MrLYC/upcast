@@ -26,6 +26,8 @@ class ImportedSymbol(BaseModel):
 
     module_path: str = Field(..., description="Source module path like 'xxx.yyy'")
     attributes: list[str] = Field(default_factory=list, description="Accessed attributes on this symbol")
+    lineno: int = Field(..., description="Line number where import statement occurs")
+    statement: str = Field(..., description="Import statement source code")
     blocks: list[str] = Field(default_factory=list, description="Block contexts where import occurs")
 
 
@@ -45,6 +47,7 @@ class Variable(BaseModel):
 
     module_path: str = Field(..., description="Variable's module path like 'path.to.file'")
     attributes: list[str] = Field(default_factory=list, description="Accessed attributes on this variable")
+    lineno: int = Field(..., description="Line number where variable is defined")
     value: str | None = Field(None, description="String representation of value (for simple types)")
     statement: str = Field(..., description="Assignment statement source code")
     blocks: list[str] = Field(default_factory=list, description="Block contexts where variable is defined")
@@ -56,6 +59,7 @@ class Decorator(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     name: str = Field(..., description="Decorator name")
+    lineno: int = Field(..., description="Line number where decorator is applied")
     args: list[str] = Field(default_factory=list, description="Positional arguments")
     kwargs: dict[str, str] = Field(default_factory=dict, description="Keyword arguments")
 
@@ -65,6 +69,8 @@ class Function(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
+    lineno: int = Field(..., description="Line number where function is defined")
+    is_async: bool = Field(..., description="Whether function is async")
     signature: str = Field(..., description="Function signature like 'def func(arg1: int) -> bool'")
     docstring: str | None = Field(None, description="Function's docstring")
     body_md5: str = Field(..., description="MD5 hash of function body")
@@ -78,6 +84,7 @@ class Class(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
+    lineno: int = Field(..., description="Line number where class is defined")
     docstring: str | None = Field(None, description="Class's docstring")
     body_md5: str = Field(..., description="MD5 hash of class body")
     attributes: list[str] = Field(default_factory=list, description="Class attribute names")

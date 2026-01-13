@@ -13,10 +13,8 @@ from astroid import nodes
 from upcast.common.ast_utils import (
     get_qualified_name as common_get_qualified_name,
 )
-from upcast.common.ast_utils import (
-    infer_value_with_fallback,
-)
 from upcast.common.django.model_utils import is_django_field, safe_as_string
+from upcast.common.inference import infer_value
 
 
 # Local inference for backward compatibility
@@ -29,8 +27,14 @@ def infer_literal_value(node: nodes.NodeNG) -> Any:
     Returns:
         Inferred value (with backticks if inference failed)
     """
-    value, _ = infer_value_with_fallback(node)
-    return value
+    result = infer_value(node)
+    if result.confidence == "exact":
+        return result.value
+    # Fallback: return node as string wrapped in backticks
+    try:
+        return f"`{node.as_string()}`"
+    except Exception:
+        return None
 
 
 def _calculate_module_path(file_path: Path, root_path: Path) -> str:

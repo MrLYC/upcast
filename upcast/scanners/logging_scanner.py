@@ -10,8 +10,9 @@ from typing import ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import safe_as_string, safe_infer_value
+from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.logging import FileLoggingInfo, LogCall, LoggingOutput, LoggingSummary
 
@@ -189,7 +190,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         Returns:
             Mapping of import names to library types
         """
-        imports = {}
+        imports: dict[str, str] = {}
 
         for node in module.nodes_of_class((nodes.Import, nodes.ImportFrom)):
             if isinstance(node, nodes.Import):
@@ -284,8 +285,8 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
                 arg = call.args[0]
                 if isinstance(arg, nodes.Name) and arg.name == "__name__":
                     return (module_path, "logging")
-                logger_name = safe_infer_value(arg)
-                return (logger_name if isinstance(logger_name, str) else "root", "logging")
+                logger_name = infer_value(arg).get_if_type(str)
+                return (logger_name if logger_name is not None else "root", "logging")
             return ("root", "logging")
 
         # Loguru: from loguru import logger
@@ -296,8 +297,8 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         # Structlog: structlog.get_logger()
         if "get_logger" in func_name and "structlog" in func_name:
             if call.args:
-                logger_name = safe_infer_value(call.args[0])
-                return (logger_name if isinstance(logger_name, str) else module_path, "structlog")
+                logger_name = infer_value(call.args[0]).get_if_type(str)
+                return (logger_name if logger_name is not None else module_path, "structlog")
             return (module_path, "structlog")
 
         return (None, None)
@@ -469,7 +470,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         args = self._extract_arguments(call, message_node)
 
         # Check for sensitive data
-        sensitive_patterns = []
+        sensitive_patterns: list[str] = []
         if self.check_sensitive:
             _, sensitive_patterns = self._check_sensitive(message, args)
 
@@ -503,15 +504,15 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             return self._extract_fstring_template(node)
         elif isinstance(node, nodes.Name):
             # Variable: try to infer its value
-            inferred = safe_infer_value(node)
-            if isinstance(inferred, str):
+            inferred = infer_value(node).get_if_type(str)
+            if inferred is not None:
                 return inferred
             # If can't infer, return variable name with backticks
             return f"`{node.name}`"
         else:
             # Try to infer the value first
-            inferred = safe_infer_value(node)
-            if isinstance(inferred, str):
+            inferred = infer_value(node).get_if_type(str)
+            if inferred is not None:
                 return inferred
             # Fall back to string representation
             return safe_as_string(node)

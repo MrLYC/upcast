@@ -13,12 +13,16 @@ class DjangoField(BaseModel):
     Attributes:
         name: Field name
         type: Field type (e.g., CharField, ForeignKey)
+        help_text: Field help text for documentation
+        verbose_name: Human-readable field name
         parameters: Field parameters (max_length, null, blank, etc.)
         line: Line number where field is defined
     """
 
     name: str = Field(description="Field name")
     type: str = Field(description="Field type (e.g., CharField, ForeignKey)")
+    help_text: str | None = Field(None, description="Field help text")
+    verbose_name: str | None = Field(None, description="Human-readable field name")
     parameters: dict[str, Any] = Field(description="Field parameters")
     line: int = Field(ge=1, description="Line number")
 

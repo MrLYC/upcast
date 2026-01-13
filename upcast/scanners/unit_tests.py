@@ -76,7 +76,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(tests_by_file, scan_duration_ms)
 
-        return UnitTestOutput(summary=summary, results=tests_by_file)
+        return UnitTestOutput(summary=summary, results=tests_by_file, metadata={"scanner_name": "unit-tests"})
 
     def _scan_file(self, file_path: Path, rel_path: str) -> list[UnitTestInfo]:
         """Scan a single file for unit test functions.
@@ -343,7 +343,9 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             targets[module].add(symbol)
 
         # Convert to TargetModule list
-        return [TargetModule(module=module, symbols=sorted(symbols)) for module, symbols in sorted(targets.items())]
+        return [
+            TargetModule(module_path=module, symbols=sorted(symbols)) for module, symbols in sorted(targets.items())
+        ]
 
     def _calculate_summary(
         self,

@@ -6,8 +6,9 @@ from typing import Any, ClassVar
 
 from astroid import nodes
 
-from upcast.common.ast_utils import get_import_info, safe_as_string, safe_infer_value
+from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.concurrency import ConcurrencyPatternOutput, ConcurrencyPatternSummary, ConcurrencyUsage
 
@@ -57,6 +58,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                     statement=f"async def {node.name}",
                     function=function,
                     class_name=class_name,
+                    block=self._get_block_name(node),
+                    details=None,
+                    api_call=None,
                 )
                 self._add_pattern(patterns, "asyncio", "async_function", usage)
 
@@ -86,7 +90,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(patterns, scan_duration_ms)
-        return ConcurrencyPatternOutput(summary=summary, results=patterns)
+        return ConcurrencyPatternOutput(
+            summary=summary, results=patterns, metadata={"scanner_name": "concurrency-patterns"}
+        )
 
     def _build_executor_mapping(self, module: nodes.Module, imports: dict[str, str]) -> dict[str, str]:
         """Build mapping of variable names to executor types.
@@ -157,6 +163,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
+            details=None,
+            api_call=None,
         )
 
     def _detect_thread_creation(
@@ -175,13 +184,13 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         details: dict[str, Any] = {}
         for keyword in node.keywords or []:
             if keyword.arg == "target":
-                target_value = safe_infer_value(keyword.value)
+                target_value = infer_value(keyword.value).get_exact()
                 if target_value:
                     details["target"] = str(target_value)
                 else:
                     details["target"] = safe_as_string(keyword.value)
             elif keyword.arg == "name":
-                name_value = safe_infer_value(keyword.value)
+                name_value = infer_value(keyword.value).get_exact()
                 if name_value:
                     details["name"] = name_value
 
@@ -194,7 +203,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_threadpool_executor(
@@ -209,8 +220,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         details: dict[str, Any] = {}
         for keyword in node.keywords or []:
             if keyword.arg == "max_workers":
-                max_workers = safe_infer_value(keyword.value)
-                if isinstance(max_workers, int):
+                max_workers = infer_value(keyword.value).get_if_type(int)
+                if max_workers is not None:
                     details["max_workers"] = max_workers
 
         function, class_name = self._extract_context(node)
@@ -222,7 +233,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_process_creation(
@@ -241,13 +254,13 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         details: dict[str, Any] = {}
         for keyword in node.keywords or []:
             if keyword.arg == "target":
-                target_value = safe_infer_value(keyword.value)
+                target_value = infer_value(keyword.value).get_exact()
                 if target_value:
                     details["target"] = str(target_value)
                 else:
                     details["target"] = safe_as_string(keyword.value)
             elif keyword.arg == "name":
-                name_value = safe_infer_value(keyword.value)
+                name_value = infer_value(keyword.value).get_exact()
                 if name_value:
                     details["name"] = name_value
 
@@ -260,7 +273,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_processpool_executor(
@@ -275,8 +290,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         details: dict[str, Any] = {}
         for keyword in node.keywords or []:
             if keyword.arg == "max_workers":
-                max_workers = safe_infer_value(keyword.value)
-                if isinstance(max_workers, int):
+                max_workers = infer_value(keyword.value).get_if_type(int)
+                if max_workers is not None:
                     details["max_workers"] = max_workers
 
         function, class_name = self._extract_context(node)
@@ -288,7 +303,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details if details else None,
+            api_call=None,
         )
 
     def _detect_executor_submit(
@@ -312,7 +329,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             details: dict[str, Any] = {}
             if node.args:
                 func_arg = node.args[0]
-                func_value = safe_infer_value(func_arg)
+                func_value = infer_value(func_arg).get_exact()
                 if func_value:
                     details["function"] = str(func_value)
                 else:
@@ -331,6 +348,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                 statement=safe_as_string(node),
                 function=function,
                 class_name=class_name,
+                block=self._get_block_name(node),
                 details=details if details else None,
                 api_call="submit",
             )
@@ -354,7 +372,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         if isinstance(coro_arg, nodes.Call):
             coro_name = self._get_qualified_name(coro_arg.func, imports)
         else:
-            coro_value = safe_infer_value(coro_arg)
+            coro_value = infer_value(coro_arg).get_exact()
             if coro_value:
                 coro_name = str(coro_value)
 
@@ -373,6 +391,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details,
             api_call="create_task",
         )
@@ -400,7 +419,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
 
             # Second arg is function
             func_arg = node.args[1]
-            func_value = safe_infer_value(func_arg)
+            func_value = infer_value(func_arg).get_exact()
             func_name = str(func_value) if func_value else safe_as_string(func_arg)
 
         details = {
@@ -421,9 +440,27 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             statement=safe_as_string(node),
             function=function,
             class_name=class_name,
+            block=self._get_block_name(node),
             details=details,
             api_call="run_in_executor",
         )
+
+    def _get_block_name(self, node: nodes.NodeNG) -> str | None:
+        """Get immediate containing block name (if, for, while, etc.)."""
+        parent = node.parent
+        if isinstance(parent, nodes.If):
+            return "if"
+        elif isinstance(parent, nodes.For):
+            return "for"
+        elif isinstance(parent, nodes.While):
+            return "while"
+        elif isinstance(parent, nodes.With):
+            return "with"
+        elif isinstance(parent, nodes.Try):
+            return "try"
+        elif isinstance(parent, nodes.ExceptHandler):
+            return "except"
+        return None
 
     def _get_qualified_name(self, node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
         """Get qualified name of a function/attribute."""

@@ -1,0 +1,53 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **模型总数**: {{ summary.total_models }}
+- **字段总数**: {{ summary.total_fields }}
+- **关系总数**: {{ summary.total_relationships }}
+{% endblock %}
+
+{% block results %}
+{% for model_name, model in results.items() %}
+
+### {{ model.name }}
+
+**模块**: `{{ model.module }}`
+**行号**: {{ model.line }}
+**基类**: {{ model.bases | join(', ') }}
+{% if model.description %}
+**描述**: {{ model.description }}
+{% endif %}
+
+#### 字段
+
+| 字段名 | 类型 | 行号 | 说明 | 显示名称 | 参数 |
+|--------|------|------|------|----------|------|
+{% for field_name, field in model.fields.items() %}
+| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.help_text or '-' }} | {{ field.verbose_name or '-' }} | {{ field.parameters | tojson }} |
+{% endfor %}
+
+{% if model.relationships %}
+#### 关系
+
+| 字段 | 类型 | 目标模型 | 关联名 | 删除策略 |
+|------|------|----------|--------|----------|
+{% for rel in model.relationships %}
+| {{ rel.field }} | {{ rel.type }} | {{ rel.to }} | {{ rel.related_name or '不适用' }} | {{ rel.on_delete or '不适用' }} |
+{% endfor %}
+{% endif %}
+
+{% if model.meta %}
+#### Meta 选项
+
+| 选项 | 值 |
+|------|-----|
+{% for key, value in model.meta.items() %}
+| {{ key }} | {{ value }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

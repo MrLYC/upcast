@@ -8,6 +8,7 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.blocking_operations import (
     BlockingOperation,
@@ -66,7 +67,9 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(operations_by_category, scan_duration_ms)
-        return BlockingOperationsOutput(summary=summary, results=operations_by_category)
+        return BlockingOperationsOutput(
+            summary=summary, results=operations_by_category, metadata={"scanner_name": "blocking-operations"}
+        )
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> BlockingOperation | None:
         """Check a node for blocking operations."""
@@ -84,10 +87,11 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
         if not func_name:
             return None
 
-        # Check against patterns
         for category, patterns in self.BLOCKING_PATTERNS.items():
             for pattern in patterns:
                 if self._matches_pattern(func_name, pattern):
+                    duration = self._extract_timing_values(node, func_name)
+
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -97,6 +101,8 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         statement=safe_as_string(node),
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
+                        block=self._get_block_name(node),
+                        duration=duration,
                     )
 
         return None
@@ -110,6 +116,8 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                 if func_name and any(
                     self._matches_pattern(func_name, p) for p in self.BLOCKING_PATTERNS["synchronization"]
                 ):
+                    duration = self._extract_timing_values(context_expr, func_name)
+
                     return BlockingOperation(
                         file=file_path,
                         line=node.lineno,
@@ -119,7 +127,20 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                         statement=safe_as_string(node),
                         function=self._get_function_name(node),
                         class_name=self._get_class_name(node),
+                        block=self._get_block_name(node),
+                        duration=duration,
                     )
+        return None
+
+    def _extract_timing_values(self, node: nodes.Call, func_name: str) -> int | float | None:
+        """Extract duration value from blocking operation calls."""
+        if "sleep" in func_name and node.args:
+            return infer_value(node.args[0]).get_if_type((int, float))
+
+        for keyword in node.keywords:
+            if keyword.arg == "timeout":
+                return infer_value(keyword.value).get_if_type((int, float))
+
         return None
 
     def _get_qualified_name(self, node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
@@ -159,6 +180,23 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             if isinstance(parent, nodes.ClassDef):
                 return parent.name
             parent = parent.parent
+        return None
+
+    def _get_block_name(self, node: nodes.NodeNG) -> str | None:
+        """Get immediate containing block name (if, for, while, etc.)."""
+        parent = node.parent
+        if isinstance(parent, nodes.If):
+            return "if"
+        elif isinstance(parent, nodes.For):
+            return "for"
+        elif isinstance(parent, nodes.While):
+            return "while"
+        elif isinstance(parent, nodes.With):
+            return "with"
+        elif isinstance(parent, nodes.Try):
+            return "try"
+        elif isinstance(parent, nodes.ExceptHandler):
+            return "except"
         return None
 
     def _calculate_summary(

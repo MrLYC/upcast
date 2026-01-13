@@ -8,10 +8,12 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 14 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 15 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
+- **📚 Scanner Documentation**: [docs/README.md](docs/README.md) - Detailed scanner rules and field references
+- **🔬 Type Inference**: [docs/type-inference.md](docs/type-inference.md) - Static type and value inference mechanism
 
 ## Quick Start
 
@@ -70,9 +72,11 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 
 ## Scanners
 
-Upcast provides 14 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 15 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
+>
+> 📖 **Detailed documentation:** For complete field references and scanning rules, see [Scanner Documentation](docs/README.md).
 
 ### Django Scanners
 
@@ -1303,10 +1307,94 @@ Benefits:
 - **14 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
-- **Multiple Output Formats**: YAML (human-readable) and JSON (machine-readable)
+- **Multiple Output Formats**: YAML, JSON, and Markdown with multi-language support
 - **Aggregated Results**: Group findings by variable/model/metric name
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Well-Tested**: Comprehensive test suite with high coverage
+
+## Markdown Rendering
+
+Upcast can render scanner outputs directly to markdown format using the `--format markdown` option. This provides readable documentation with support for multiple languages.
+
+### Basic Usage
+
+```bash
+# Scan and output as markdown (English)
+upcast scan-complexity-patterns . --format markdown -o report.md
+
+# Scan and output as markdown (Chinese)
+upcast scan-env-vars . --format markdown --markdown-language zh
+
+# Specify custom title
+upcast scan-django-models . --format markdown --markdown-title "Django Models Report"
+
+# Output to stdout
+upcast scan-http-requests . --format markdown
+```
+
+### Features
+
+- **Multi-Language Support**: Templates available in English (`en`) and Chinese (`zh`)
+- **Integrated with All Scanners**: Works with all 13 scanner commands
+- **Structured Output**: Consistent format with metadata, summary, and detailed results
+- **Readable Tables**: Field details presented in organized markdown tables
+- **Customizable**: Override output filename, language, and document title
+
+### Markdown Options
+
+All scanner commands support these markdown-specific options:
+
+- `--format markdown`: Output format (use instead of yaml or json)
+- `--markdown-language [en|zh]`: Language for markdown output (default: en)
+- `--markdown-title TEXT`: Custom title for the markdown document
+
+### Example Outputs
+
+See [`example/markdown-examples/`](example/markdown-examples/) for rendered markdown examples:
+
+- **English**: `http-requests-en.md`, `django-models-en.md`, `complexity-patterns-en.md`
+- **Chinese**: `http-requests-zh.md`, `django-models-zh.md`, `complexity-patterns-zh.md`
+
+### Programmatic Usage
+
+You can also use the render module programmatically:
+
+```python
+from upcast.models.http_requests import HttpRequestOutput
+from upcast.render import render_to_markdown, render_to_file
+
+# Load scanner output
+output = HttpRequestOutput(...)
+
+# Render to string
+markdown = render_to_markdown(output, language='en', title='HTTP Requests')
+
+# Or render directly to file
+render_to_file(output, 'output.md', language='en', title='HTTP Requests')
+```
+
+### Supported Scanner Types
+
+All scanner outputs can be rendered to markdown:
+
+- HTTP Requests (`HttpRequestOutput`)
+- Django Models (`DjangoModelOutput`)
+- Code Complexity (`ComplexityOutput`)
+- Environment Variables (`EnvVarOutput`)
+- Signal Usage (`SignalOutput`)
+- And all other scanner types...
+
+### Template Customization
+
+Templates are located in `upcast/templates/{language}/`:
+
+- `base.md.jinja2` - Base template for all scanners
+- `http_requests.md.jinja2` - HTTP request analysis template
+- `django_models.md.jinja2` - Django model analysis template
+- `complexity.md.jinja2` - Complexity analysis template
+- And more...
+
+You can create custom templates for new languages by adding a new language directory with the required templates.
 
 ## Integration Testing
 

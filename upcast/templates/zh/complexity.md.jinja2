@@ -1,0 +1,50 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **高复杂度函数数量**: {{ summary.high_complexity_count }}
+
+### 按严重程度统计函数数
+{% for severity, count in summary.by_severity.items() %}
+- **{{ severity }}**: {{ count }} 个函数
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for module_path, functions in results.items() %}
+
+### 模块: {{ module_path }}
+
+{% for func in functions %}
+
+#### {{ func.name }}
+
+**复杂度分数**: {{ func.complexity }}
+**严重程度**: {{ func.severity }}
+**行数**: {{ func.line }}-{{ func.end_line }} (共 {{ func.code_lines }} 行, {{ func.comment_lines }} 行注释)
+{% if func.description %}
+**描述**: {{ func.description }}
+{% endif %}
+
+**函数签名**:
+```python
+{{ func.signature }}
+```
+
+{% if func.message %}
+**消息**: {{ func.message }}
+{% endif %}
+
+<details>
+<summary>查看源代码</summary>
+
+```python
+{{ func.code }}
+```
+</details>
+
+---
+
+{% endfor %}
+{% endfor %}
+{% endblock %}

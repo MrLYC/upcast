@@ -1,0 +1,67 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **日志调用总数**: {{ summary.total_log_calls }}
+- **敏感调用数**: {{ summary.sensitive_calls }}
+
+### 按库统计调用
+{% for library, count in summary.by_library.items() %}
+- **{{ library }}**: {{ count }} 次调用
+{% endfor %}
+
+### 按级别统计调用
+{% for level, count in summary.by_level.items() %}
+- **{{ level }}**: {{ count }} 次调用
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for file_path, file_info in results.items() %}
+
+### 文件: {{ file_path }}
+
+{% if file_info.logging %}
+#### 标准库日志
+
+| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
+|------|------|--------|------|------|--------|------|
+{% for call in file_info.logging %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ '是' if call.sensitive_patterns else '否' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.loguru %}
+#### Loguru 日志
+
+| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
+|------|------|--------|------|------|--------|------|
+{% for call in file_info.loguru %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ '是' if call.sensitive_patterns else '否' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.structlog %}
+#### Structlog 日志
+
+| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
+|------|------|--------|------|------|--------|------|
+{% for call in file_info.structlog %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ '是' if call.sensitive_patterns else '否' }} |
+{% endfor %}
+{% endif %}
+
+{% if file_info.django %}
+#### Django 日志
+
+| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
+|------|------|--------|------|------|--------|------|
+{% for call in file_info.django %}
+| {{ call.lineno }} | {{ call.level }} | {{ call.logger_name }} | {{ call.message[:80] }}{{ '...' if call.message|length > 80 else '' }} | {{ call.type }} | {{ call.block }} | {{ '是' if call.sensitive_patterns else '否' }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

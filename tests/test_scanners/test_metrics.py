@@ -13,11 +13,13 @@ class TestMetricModels:
         """Test creating valid MetricInfo."""
         metric = MetricInfo(
             name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total HTTP requests",
             custom_collector=False,
             labels=[],
             usages=[],
+            definitions=[],
         )
         assert metric.name == "http_requests_total"
         assert metric.type == "Counter"

@@ -1,10 +1,12 @@
-metadata: {}
+metadata:
+  scanner_name: concurrency-patterns
 results:
   asyncio: {}
   celery: {}
   multiprocessing:
     process_creation:
     - api_call: null
+      block: null
       class_name: Cluster
       column: 24
       details:
@@ -18,6 +20,7 @@ results:
   threading:
     thread_creation:
     - api_call: null
+      block: null
       class_name: ParallelChainedGenerator
       column: 19
       details:
@@ -28,6 +31,7 @@ results:
       pattern: thread_creation
       statement: threading.Thread(target=self._consume_gen, args=(gen, ))
     - api_call: null
+      block: null
       class_name: TestBareGitRepoController
       column: 12
       details:
@@ -39,6 +43,7 @@ results:
       statement: threading.Thread(target=httpd.serve_forever)
     thread_pool_executor:
     - api_call: null
+      block: with
       class_name: null
       column: 17
       details: null
@@ -52,5 +57,5 @@ summary:
     multiprocessing: 1
     threading: 3
   files_scanned: 4
-  scan_duration_ms: 11869
+  scan_duration_ms: 21512
   total_count: 4

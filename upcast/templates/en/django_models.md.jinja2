@@ -1,0 +1,53 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Models**: {{ summary.total_models }}
+- **Total Fields**: {{ summary.total_fields }}
+- **Total Relationships**: {{ summary.total_relationships }}
+{% endblock %}
+
+{% block results %}
+{% for model_name, model in results.items() %}
+
+### {{ model.name }}
+
+**Module**: `{{ model.module }}`
+**Line**: {{ model.line }}
+**Base Classes**: {{ model.bases | join(', ') }}
+{% if model.description %}
+**Description**: {{ model.description }}
+{% endif %}
+
+#### Fields
+
+| Field Name | Type | Line | Help Text | Verbose Name | Parameters |
+|------------|------|------|-----------|--------------|------------|
+{% for field_name, field in model.fields.items() %}
+| {{ field.name }} | {{ field.type }} | {{ field.line }} | {{ field.help_text or '-' }} | {{ field.verbose_name or '-' }} | {{ field.parameters | tojson }} |
+{% endfor %}
+
+{% if model.relationships %}
+#### Relationships
+
+| Field | Type | Target Model | Related Name | On Delete |
+|-------|------|--------------|--------------|-----------|
+{% for rel in model.relationships %}
+| {{ rel.field }} | {{ rel.type }} | {{ rel.to }} | {{ rel.related_name or 'N/A' }} | {{ rel.on_delete or 'N/A' }} |
+{% endfor %}
+{% endif %}
+
+{% if model.meta %}
+#### Meta Options
+
+| Option | Value |
+|--------|-------|
+{% for key, value in model.meta.items() %}
+| {{ key }} | {{ value }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

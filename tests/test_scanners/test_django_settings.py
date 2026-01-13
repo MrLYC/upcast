@@ -10,11 +10,13 @@ class TestDjangoSettingsModels:
     def test_valid_setting_definition_item(self):
         """Test creating valid SettingDefinitionItem."""
         item = SettingDefinitionItem(
+            file="settings.py",
             value="DEBUG",
             statement="DEBUG = True",
             lineno=10,
             type="bool",
         )
+        assert item.file == "settings.py"
         assert item.value == "DEBUG"
         assert item.statement == "DEBUG = True"
         assert item.lineno == 10
@@ -23,9 +25,11 @@ class TestDjangoSettingsModels:
     def test_valid_setting_usage_item(self):
         """Test creating valid SettingUsageItem."""
         item = SettingUsageItem(
+            file="views.py",
             statement="if settings.DEBUG:",
             lineno=20,
         )
+        assert item.file == "views.py"
         assert item.statement == "if settings.DEBUG:"
         assert item.lineno == 20
 
@@ -34,13 +38,13 @@ class TestDjangoSettingsModels:
         info = SettingInfo(
             definition_count=1,
             usage_count=2,
-            type_list=["bool"],
-            definitions={"settings.py": []},
-            usages={"views.py": []},
+            definition_types=["bool"],
+            definitions=[],
+            usages=[],
         )
         assert info.definition_count == 1
         assert info.usage_count == 2
-        assert info.type_list == ["bool"]
+        assert info.definition_types == ["bool"]
 
 
 class TestDjangoSettingsScannerIntegration:
@@ -67,13 +71,11 @@ ALLOWED_HOSTS = ['localhost']
         debug_info = output.results["DEBUG"]
         assert debug_info.definition_count == 1
         assert debug_info.usage_count == 0
-        assert "bool" in debug_info.type_list
+        assert "bool" in debug_info.definition_types
 
         # Check definitions
         assert len(debug_info.definitions) > 0
-        first_file = next(iter(debug_info.definitions.keys()))
-        assert len(debug_info.definitions[first_file]) == 1
-        debug_def = debug_info.definitions[first_file][0]
+        debug_def = debug_info.definitions[0]
         assert debug_def.value is True
         assert debug_def.type == "bool"
 
@@ -106,10 +108,10 @@ TIMEOUT = 30
         assert output.summary.total_count == 4
 
         # Check types
-        assert output.results["DEBUG"].type_list == ["bool"]
-        assert output.results["SECRET_KEY"].type_list == ["str"]
-        assert output.results["ALLOWED_HOSTS"].type_list == ["list"]
-        assert output.results["TIMEOUT"].type_list == ["int"]
+        assert output.results["DEBUG"].definition_types == ["bool"]
+        assert output.results["SECRET_KEY"].definition_types == ["str"]
+        assert output.results["ALLOWED_HOSTS"].definition_types == ["list"]
+        assert output.results["TIMEOUT"].definition_types == ["int"]
 
     def test_scanner_detects_usages(self, tmp_path):
         """Test scanner detects settings usages."""
@@ -136,9 +138,7 @@ if settings.DEBUG:
 
         # Check usage details
         assert len(debug_info.usages) > 0
-        usage_file = next(iter(debug_info.usages.keys()))
-        assert len(debug_info.usages[usage_file]) == 1
-        usage = debug_info.usages[usage_file][0]
+        usage = debug_info.usages[0]
         assert "settings.DEBUG" in usage.statement
 
     def test_scanner_summary_statistics(self, tmp_path):
@@ -183,11 +183,10 @@ AUTH_PASSWORD_VALIDATORS = [
         assert "AUTH_PASSWORD_VALIDATORS" in output.results
         validator_info = output.results["AUTH_PASSWORD_VALIDATORS"]
         assert validator_info.definition_count == 1
-        assert "list" in validator_info.type_list
+        assert "list" in validator_info.definition_types
 
         # Check value extraction
-        first_file = next(iter(validator_info.definitions.keys()))
-        validator_def = validator_info.definitions[first_file][0]
+        validator_def = validator_info.definitions[0]
         assert validator_def.value is not None
         assert isinstance(validator_def.value, list)
         assert len(validator_def.value) == 2
@@ -233,8 +232,7 @@ LOGGING_HANDLERS = [
         # Test nested dict
         assert "DATABASES" in output.results
         db_info = output.results["DATABASES"]
-        first_file = next(iter(db_info.definitions.keys()))
-        db_def = db_info.definitions[first_file][0]
+        db_def = db_info.definitions[0]
         assert db_def.value is not None
         assert isinstance(db_def.value, dict)
         assert "default" in db_def.value
@@ -244,8 +242,7 @@ LOGGING_HANDLERS = [
         # Test list of tuples with dicts
         assert "LOGGING_HANDLERS" in output.results
         log_info = output.results["LOGGING_HANDLERS"]
-        first_file = next(iter(log_info.definitions.keys()))
-        log_def = log_info.definitions[first_file][0]
+        log_def = log_info.definitions[0]
         assert log_def.value is not None
         assert isinstance(log_def.value, list)
         assert len(log_def.value) == 2

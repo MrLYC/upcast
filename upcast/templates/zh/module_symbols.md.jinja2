@@ -1,0 +1,78 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Modules**: {{ summary.total_modules }}
+- **Total Imports**: {{ summary.total_imports }}
+- **Total Symbols**: {{ summary.total_symbols }}
+{% endblock %}
+
+{% block results %}
+{% for file_path, module in results.items() %}
+
+### 模块: {{ file_path }}
+
+{% if module.imported_modules %}
+#### 导入的模块
+
+| 模块路径 | 访问的属性 | 代码块 |
+|---------|-----------|-------|
+{% for name, imported in module.imported_modules.items() %}
+| {{ imported.module_path }} | {{ imported.attributes | join(', ') if imported.attributes else '不适用' }} | {{ imported.blocks | join(', ') if imported.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.imported_symbols %}
+#### 导入的符号
+
+| 符号名 | 来自模块 | 访问的属性 | 代码块 |
+|--------|---------|-----------|-------|
+{% for name, symbol in module.imported_symbols.items() %}
+| {{ name }} | {{ symbol.module_path }} | {{ symbol.attributes | join(', ') if symbol.attributes else '不适用' }} | {{ symbol.blocks | join(', ') if symbol.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.star_imported %}
+#### 星号导入
+
+| 模块路径 | 代码块 |
+|---------|-------|
+{% for star in module.star_imported %}
+| {{ star.module_path }} | {{ star.blocks | join(', ') if star.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.variables %}
+#### 模块变量
+
+| 变量名 | 值 | 语句 | 代码块 |
+|--------|---|------|-------|
+{% for name, var in module.variables.items() %}
+| {{ name }} | {{ var.value or '不适用' }} | `{{ var.statement }}` | {{ var.blocks | join(', ') if var.blocks else 'module' }} |
+{% endfor %}
+{% endif %}
+
+{% if module.functions %}
+#### 函数
+
+| 函数名 | 签名 | 装饰器 | 文档字符串 |
+|--------|------|--------|----------|
+{% for name, func in module.functions.items() %}
+| {{ name }} | `{{ func.signature }}` | {{ func.decorators | map(attribute='name') | join(', ') if func.decorators else '无' }} | {{ func.docstring[:50] + '...' if func.docstring and func.docstring|length > 50 else (func.docstring or '不适用') }} |
+{% endfor %}
+{% endif %}
+
+{% if module.classes %}
+#### 类
+
+| 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
+|------|------|------|------|--------|----------|
+{% for name, cls in module.classes.items() %}
+| {{ name }} | {{ cls.bases | join(', ') if cls.bases else '无' }} | {{ cls.methods | join(', ') if cls.methods else '无' }} | {{ cls.attributes | join(', ') if cls.attributes else '无' }} | {{ cls.decorators | map(attribute='name') | join(', ') if cls.decorators else '无' }} | {{ cls.docstring[:50] + '...' if cls.docstring and cls.docstring|length > 50 else (cls.docstring or '不适用') }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+{% endblock %}

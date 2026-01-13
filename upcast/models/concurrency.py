@@ -18,6 +18,7 @@ class ConcurrencyUsage(BaseModel):
         statement: Code statement
         function: Enclosing function name
         class_name: Enclosing class name
+        block: Code block name (if, for, while, etc.) if applicable
         details: Pattern-specific details (target, max_workers, coroutine, executor_type, etc.)
         api_call: Specific API method called (e.g., create_task, submit, run_in_executor)
     """
@@ -29,6 +30,7 @@ class ConcurrencyUsage(BaseModel):
     statement: str | None = Field(None, description="Code statement")
     function: str | None = Field(None, description="Enclosing function name")
     class_name: str | None = Field(None, description="Enclosing class name")
+    block: str | None = Field(None, description="Code block name (if, for, while, etc.)")
     details: dict[str, Any] | None = Field(None, description="Pattern-specific details")
     api_call: str | None = Field(None, description="Specific API method called")
 

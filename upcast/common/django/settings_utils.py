@@ -5,7 +5,7 @@ from typing import Any
 import astroid
 from astroid import nodes
 
-from upcast.common.ast_utils import infer_value_with_fallback
+from upcast.common.inference import infer_value
 
 
 def _check_inferred_types(node: nodes.Name) -> bool:
@@ -200,9 +200,7 @@ def extract_getattr_default(node: nodes.Call) -> Any:
     # getattr takes 2 or 3 arguments: getattr(obj, name[, default])
     if len(node.args) >= 3:
         default_arg = node.args[2]
-        # Use common inference with fallback
-        value, _success = infer_value_with_fallback(default_arg)
-        return value
+        return infer_value(default_arg).value
 
     return None
 

@@ -92,7 +92,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(models, scan_duration_ms)
 
-        return DjangoModelOutput(summary=summary, results=models)
+        return DjangoModelOutput(summary=summary, results=models, metadata={"scanner_name": "django-models"})
 
     def _scan_file(self, file_path: Path) -> dict[str, dict[str, Any]]:
         """Scan a single file for Django models.
@@ -148,10 +148,24 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             for field_name, field_info in model_data.get("fields", {}).items():
                 # Get line number from field_info or default to model line
                 line = field_info.get("line", model_data.get("line", 1))
+
+                # Extract metadata fields
+                help_text = field_info.get("help_text")
+                verbose_name = field_info.get("verbose_name")
+
+                # Extract parameters, excluding fields that are already DjangoField attributes
+                parameters = {
+                    k: v
+                    for k, v in field_info.items()
+                    if k not in ("type", "name", "line", "help_text", "verbose_name")
+                }
+
                 fields[field_name] = DjangoField(
                     name=field_name,
                     type=field_info.get("type", "Unknown"),
-                    parameters=field_info,
+                    help_text=help_text,
+                    verbose_name=verbose_name,
+                    parameters=parameters,
                     line=line,
                 )
 
