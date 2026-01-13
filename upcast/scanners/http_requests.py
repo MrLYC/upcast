@@ -583,7 +583,6 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 return infer_value(keyword.value).get_if_type(dict)
         return None
 
-
     def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
         """Extract headers from headers keyword argument."""
         for keyword in node.keywords or []:

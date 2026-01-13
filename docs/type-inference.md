@@ -5,6 +5,7 @@
 Upcast 的类型推导系统基于 **astroid** 静态分析库构建，通过 AST（抽象语法树）分析实现**无需执行代码**的类型和值推导。本文档详细说明推导能力、实现机制和使用场景。
 
 **设计原则**：
+
 - ✅ **安全优先**：不执行任何代码，完全静态分析
 - ✅ **实用主义**：不追求 100% 精确，但覆盖常见场景
 - ✅ **结构化返回**：使用数据类封装推导结果，便于编程处理
@@ -21,13 +22,14 @@ Upcast 的类型推导系统基于 **astroid** 静态分析库构建，通过 AS
 
 本文档使用统一的分级语义：
 
-| 级别       | 含义                                      | 返回结果                                          |
-| ---------- | ----------------------------------------- | ------------------------------------------------- |
-| ✅ 可推导  | 在静态分析下**稳定、确定**                | `InferenceResult(42, "exact", True)`              |
-| ⚠️ 部分推导 | 类型可推导，但值包含动态部分              | `InferenceResult("api/...", "partial", False)`    |
-| ❌ 不可推导 | 必须退化为 unknown                        | `InferenceResult(None, "unknown", False)`         |
+| 级别        | 含义                         | 返回结果                                       |
+| ----------- | ---------------------------- | ---------------------------------------------- |
+| ✅ 可推导   | 在静态分析下**稳定、确定**   | `InferenceResult(42, "exact", True)`           |
+| ⚠️ 部分推导 | 类型可推导，但值包含动态部分 | `InferenceResult("api/...", "partial", False)` |
+| ❌ 不可推导 | 必须退化为 unknown           | `InferenceResult(None, "unknown", False)`      |
 
 **结构化返回的优势**：
+
 - ✅ 调用方可以明确判断推导质量（通过 `confidence` 字段）
 - ✅ 可以区分完全静态和包含动态部分（通过 `is_static` 字段）
 - ✅ 保留原始 AST 节点（通过 `node` 字段），便于调试和进一步分析
@@ -60,13 +62,14 @@ class InferenceResult:
 
 **置信度说明**：
 
-| 置信度 | 含义 | 示例 |
-|--------|------|------|
-| `exact` | 完全静态，值确定 | `x = 42` → `InferenceResult(42, "exact", True)` |
+| 置信度    | 含义                   | 示例                                                           |
+| --------- | ---------------------- | -------------------------------------------------------------- |
+| `exact`   | 完全静态，值确定       | `x = 42` → `InferenceResult(42, "exact", True)`                |
 | `partial` | 部分推导，包含动态部分 | `f"api/{id}"` → `InferenceResult("api/...", "partial", False)` |
-| `unknown` | 完全无法推导 | `func()` → `InferenceResult(None, "unknown", False)` |
+| `unknown` | 完全无法推导           | `func()` → `InferenceResult(None, "unknown", False)`           |
 
 **使用示例**：
+
 ```python
 from upcast.common.ast_utils import infer_value_structured
 
@@ -125,6 +128,7 @@ class StringPattern:
 ```
 
 **使用示例**：
+
 ```python
 from upcast.common.ast_utils import infer_string_pattern
 
@@ -148,6 +152,7 @@ print(result.is_static)
 ```
 
 **应用场景**：
+
 - **HTTP 请求扫描**：提取 URL 模式和基础 URL
 - **Redis 使用扫描**：提取 key 模式和命名空间
 - **日志消息分析**：区分静态文本和动态插值
@@ -161,10 +166,12 @@ print(result.is_static)
 **用途**：推导节点的字面量值，失败时返回反引号包裹的表达式。
 
 **返回值**：
+
 - `(value, True)` - 成功推导出字面量值
 - `("`expression`", False)` - 失败时返回表达式字符串（用反引号包裹）
 
 **示例**：
+
 ```python
 from upcast.common.ast_utils import infer_value_with_fallback
 
@@ -186,10 +193,12 @@ value, success = infer_value_with_fallback(Call(...))
 **用途**：推导节点的 Python 类型。
 
 **返回值**：
+
 - `("int"|"str"|"bool"|"float"|"None", True)` - 成功推导类型
 - `("unknown", False)` - 失败时返回 "unknown"
 
 **示例**：
+
 ```python
 from upcast.common.ast_utils import infer_type_with_fallback
 
@@ -209,6 +218,7 @@ type_name, success = infer_type_with_fallback(Call(...))
 **用途**：简化版值推导，失败时返回默认值（而非反引号表达式）。
 
 **示例**：
+
 ```python
 from upcast.common.ast_utils import safe_infer_value
 
@@ -226,6 +236,7 @@ value = safe_infer_value(Name("unknown"), default="N/A")
 **用途**：获取类或函数的完全限定名（包括模块路径）。
 
 **示例**：
+
 ```python
 from upcast.common.ast_utils import get_qualified_name
 
@@ -268,6 +279,7 @@ d = {1, 2, 3}           # ✅ 类型: set[int], 值: {1, 2, 3}
 ```
 
 **实现**：
+
 - `nodes.List` → 递归推导每个元素
 - `nodes.Dict` → 递归推导 key-value 对
 - `nodes.Tuple` / `nodes.Set` 同理
@@ -295,11 +307,13 @@ e = True and False # ✅ 类型: bool, 值: False
 Upcast 在 astroid 基础上扩展了**字符串模式推导**能力，用于 URL、Redis key 等场景。
 
 **关键规则**：
+
 - ✅ **字符串静态部分**：保留原样
 - ✅ **字符串动态部分**：用 `...` 代替
 - ❌ **非字符串无法推导**：用 `<dynamic>` 标记
 
 **为什么区分 `...` 和 `<dynamic>`？**
+
 - `...` 仅用于字符串模板，表示"这里有动态内容"，但静态部分仍然可读
 - `<dynamic>` 表示"完全不知道这个值是什么"，适用于非字符串类型
 
@@ -323,6 +337,7 @@ url = f"{protocol}://{host}/{path}"
 遍历 f-string 的各个部分，对于常量节点保留其字面量值，对于变量或表达式节点用 `...` 替代，最后拼接成完整字符串。这样可以保留 URL、Redis key 等字符串模板的静态部分，同时标记出动态部分。
 
 **应用场景**：
+
 - HTTP 请求扫描器：`upcast/scanners/http_requests.py:231-243`
 - Redis 使用扫描器：`upcast/scanners/redis_usage.py:133-142`
 
@@ -385,9 +400,9 @@ else:
     x = "hello"
 ```
 
-| 类型                  | 值  |
-| --------------------- | --- |
-| ✅ `Union[int, str]`   | ❌  |
+| 类型                 | 值  |
+| -------------------- | --- |
+| ✅ `Union[int, str]` | ❌  |
 
 **实现**：astroid 自动合并多个赋值路径的类型。
 
@@ -401,9 +416,9 @@ if condition:
 # x 可能未定义
 ```
 
-| 类型                | 值  |
-| ------------------- | --- |
-| ✅ `Optional[int]`   | ❌  |
+| 类型               | 值  |
+| ------------------ | --- |
+| ✅ `Optional[int]` | ❌  |
 
 ---
 
@@ -413,9 +428,9 @@ if condition:
 x = 1 if flag else "no"
 ```
 
-| 类型                  | 值  |
-| --------------------- | --- |
-| ✅ `Union[int, str]`   | ❌  |
+| 类型                 | 值  |
+| -------------------- | --- |
+| ✅ `Union[int, str]` | ❌  |
 
 ---
 
@@ -426,10 +441,10 @@ x = a or 0        # 常见模式：提供默认值
 y = a and b       # 短路求值
 ```
 
-| 表达式  | 类型                           | 值  |
-| ------- | ------------------------------ | --- |
-| `a or 0` | ✅ `Union[type(a), int]`        | ❌  |
-| `a and b` | ✅ `Union[type(a), type(b)]`    | ❌  |
+| 表达式    | 类型                         | 值  |
+| --------- | ---------------------------- | --- |
+| `a or 0`  | ✅ `Union[type(a), int]`     | ❌  |
+| `a and b` | ✅ `Union[type(a), type(b)]` | ❌  |
 
 ---
 
@@ -444,8 +459,8 @@ def get_port():
 port = get_port()
 ```
 
-| 类型    | 值  |
-| ------- | --- |
+| 类型     | 值  |
+| -------- | --- |
 | ✅ `int` | ❌  |
 
 ---
@@ -461,9 +476,9 @@ def get_value(flag):
 x = get_value(True)
 ```
 
-| 类型                  | 值  |
-| --------------------- | --- |
-| ✅ `Union[int, str]`   | ❌  |
+| 类型                 | 值  |
+| -------------------- | --- |
+| ✅ `Union[int, str]` | ❌  |
 
 ---
 
@@ -476,8 +491,8 @@ def log_message(msg):
 result = log_message("hello")
 ```
 
-| 类型         | 值       |
-| ------------ | -------- |
+| 类型          | 值        |
+| ------------- | --------- |
 | ✅ `NoneType` | ✅ `None` |
 
 ---
@@ -492,10 +507,10 @@ a = identity(42)
 b = identity("hello")
 ```
 
-| 变量  | 类型           | 值  |
-| ----- | -------------- | --- |
-| `a`   | ✅ `int`        | ❌  |
-| `b`   | ✅ `str`        | ❌  |
+| 变量         | 类型               | 值  |
+| ------------ | ------------------ | --- |
+| `a`          | ✅ `int`           | ❌  |
+| `b`          | ✅ `str`           | ❌  |
 | `identity()` | ⚠️ `Any` / `Union` | ❌  |
 
 **说明**：需要进行**调用点分析**（Call-site Analysis），astroid 有限支持。
@@ -513,8 +528,8 @@ def fetch_user(user_id: int) -> dict:
 result = fetch_user(123)
 ```
 
-| 类型    | 值  |
-| ------- | --- |
+| 类型      | 值  |
+| --------- | --- |
 | ✅ `dict` | ❌  |
 
 **实现**：优先使用 `.returns` 注解，其次推导 `return` 语句。
@@ -528,9 +543,9 @@ port: int = 8080
 name: str = "app"
 ```
 
-| 类型    | 值      |
-| ------- | ------- |
-| ✅ `int` | ✅ `8080` |
+| 类型     | 值         |
+| -------- | ---------- |
+| ✅ `int` | ✅ `8080`  |
 | ✅ `str` | ✅ `"app"` |
 
 ---
@@ -545,11 +560,11 @@ b = dict([("x", 1), ("y", 2)])
 c = set([1, 2, 2])
 ```
 
-| 变量  | 类型                  | 值  |
-| ----- | --------------------- | --- |
-| `a`   | ✅ `list[int]`         | ❌  |
-| `b`   | ✅ `dict[str, int]`    | ❌  |
-| `c`   | ✅ `set[int]`          | ❌  |
+| 变量 | 类型                | 值  |
+| ---- | ------------------- | --- |
+| `a`  | ✅ `list[int]`      | ❌  |
+| `b`  | ✅ `dict[str, int]` | ❌  |
+| `c`  | ✅ `set[int]`       | ❌  |
 
 ---
 
@@ -559,8 +574,8 @@ c = set([1, 2, 2])
 squares = [x**2 for x in range(10)]
 ```
 
-| 类型         | 值  |
-| ------------ | --- |
+| 类型           | 值  |
+| -------------- | --- |
 | ✅ `list[int]` | ❌  |
 
 ---
@@ -571,9 +586,9 @@ squares = [x**2 for x in range(10)]
 mapping = {i: str(i) for i in range(3)}
 ```
 
-| 类型                  | 值  |
-| --------------------- | --- |
-| ✅ `dict[int, str]`    | ❌  |
+| 类型                | 值  |
+| ------------------- | --- |
+| ✅ `dict[int, str]` | ❌  |
 
 ---
 
@@ -585,8 +600,8 @@ mapping = {i: str(i) for i in range(3)}
 a = [1, 2, 3][0]
 ```
 
-| 类型    | 值              |
-| ------- | --------------- |
+| 类型     | 值                |
+| -------- | ----------------- |
 | ✅ `int` | ⚠️ `1` (可选实现) |
 
 **说明**：字面量容器的下标**理论上可推导值**，但当前实现未启用。
@@ -599,8 +614,8 @@ a = [1, 2, 3][0]
 b = [1, 2, 3][1:]
 ```
 
-| 类型         | 值  |
-| ------------ | --- |
+| 类型           | 值  |
+| -------------- | --- |
 | ✅ `list[int]` | ❌  |
 
 ---
@@ -614,11 +629,11 @@ c = int("123")
 d = bool(0)
 ```
 
-| 函数    | 类型     | 值  |
-| ------- | -------- | --- |
-| `len()` | ✅ `int`  | ❌  |
-| `str()` | ✅ `str`  | ❌  |
-| `int()` | ✅ `int`  | ❌  |
+| 函数     | 类型      | 值  |
+| -------- | --------- | --- |
+| `len()`  | ✅ `int`  | ❌  |
+| `str()`  | ✅ `str`  | ❌  |
+| `int()`  | ✅ `int`  | ❌  |
 | `bool()` | ✅ `bool` | ❌  |
 
 ---
@@ -637,9 +652,9 @@ user = User()
 uid = user.id
 ```
 
-| 变量   | 类型    | 值  |
-| ------ | ------- | --- |
-| `uid`  | ✅ `int` | ❌  |
+| 变量  | 类型     | 值  |
+| ----- | -------- | --- |
+| `uid` | ✅ `int` | ❌  |
 
 ---
 
@@ -653,8 +668,8 @@ class Calculator:
 result = Calculator().add(1, 2)
 ```
 
-| 类型    | 值  |
-| ------- | --- |
+| 类型     | 值  |
+| -------- | --- |
 | ✅ `int` | ❌  |
 
 ---
@@ -667,23 +682,23 @@ result = Calculator().add(1, 2)
 a, b = (1, "hello")
 ```
 
-| 变量  | 类型    | 值        |
-| ----- | ------- | --------- |
-| `a`   | ✅ `int` | ✅ `1`     |
-| `b`   | ✅ `str` | ✅ `"hello"` |
+| 变量 | 类型     | 值           |
+| ---- | -------- | ------------ |
+| `a`  | ✅ `int` | ✅ `1`       |
+| `b`  | ✅ `str` | ✅ `"hello"` |
 
 ---
 
-#### 10.2 带 * 的解包
+#### 10.2 带 \* 的解包
 
 ```python
 a, *rest = [1, 2, 3, 4]
 ```
 
-| 变量    | 类型         | 值  |
-| ------- | ------------ | --- |
-| `a`     | ✅ `int`      | ⚠️  |
-| `rest`  | ✅ `list[int]` | ❌  |
+| 变量   | 类型           | 值  |
+| ------ | -------------- | --- |
+| `a`    | ✅ `int`       | ⚠️  |
+| `rest` | ✅ `list[int]` | ❌  |
 
 ---
 
@@ -692,6 +707,7 @@ a, *rest = [1, 2, 3, 4]
 ### 场景 1：HTTP 请求 URL 推导
 
 **代码示例**（来自 `http_requests.py`）：
+
 ```python
 BASE_URL = "https://api.example.com"
 
@@ -716,6 +732,7 @@ url = build_url(endpoint, params)
 ### 场景 2：Redis Key 模式推导
 
 **代码示例**（来自 `redis_usage.py`）：
+
 ```python
 APP_NAME = "myapp"
 
@@ -743,6 +760,7 @@ cache_key = APP_NAME + ":" + module_name + ":cache"
 ### 场景 3：环境变量默认值推导
 
 **代码示例**（来自 `env_var_scanner.py`）：
+
 ```python
 # 情况 1：字面量默认值
 port = os.getenv("PORT", "8080")
@@ -764,6 +782,7 @@ port = os.getenv("PORT", get_default_port())
 ### 场景 4：日志消息格式推导
 
 **代码示例**（来自 `logging_scanner.py`）：
+
 ```python
 # 情况 1：字符串字面量
 logger.info("User logged in")
@@ -786,18 +805,21 @@ logger.warning("Failed login for %s", username)
 ### 当前限制
 
 1. **跨模块推导**：无法跟踪导入的函数返回值
+
    ```python
    from utils import get_config
    config = get_config()  # ❌ 值: <dynamic>
    ```
 
 2. **循环变量**：无法推导循环迭代中的值
+
    ```python
    for i in range(10):
        x = i * 2  # ✅ 类型: int, ❌ 值: <dynamic>
    ```
 
 3. **递归调用**：可能导致推导失败
+
    ```python
    def factorial(n):
        if n == 0:
@@ -806,6 +828,7 @@ logger.warning("Failed login for %s", username)
    ```
 
 4. **复杂容器**：嵌套深度过大时性能下降
+
    ```python
    data = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]  # 推导慢
    ```
@@ -822,6 +845,7 @@ logger.warning("Failed login for %s", username)
 ### 未来改进方向
 
 1. **表达式混合运算**：
+
    ```python
    # 支持单返回路径的函数参与运算
    def get_base_url():
@@ -833,6 +857,7 @@ logger.warning("Failed login for %s", username)
    ```
 
 2. **更智能的字符串推导**：
+
    ```python
    # 支持多级拼接
    url = f"{protocol}://{host}" + f"/{path}/{resource}"
@@ -841,6 +866,7 @@ logger.warning("Failed login for %s", username)
    ```
 
 3. **类型注解驱动推导**：
+
    ```python
    from typing import Literal
 
@@ -867,6 +893,7 @@ logger.warning("Failed login for %s", username)
 **文件**：`tests/test_prometheus_metrics_scanner/test_ast_utils.py`
 
 测试覆盖：
+
 - 字面量推导
 - 容器推导
 - 函数签名推导
@@ -879,6 +906,7 @@ logger.warning("Failed login for %s", username)
 **文件**：`tests/test_env_var_scanner/test_default_values.py`
 
 测试覆盖：
+
 - `os.getenv()` 默认值推导
 - 类型转换推导（`int()`, `bool()`）
 - 复杂默认值（字典、列表）
@@ -890,6 +918,7 @@ logger.warning("Failed login for %s", username)
 **文件**：`tests/test_scanners/test_redis_usage.py`
 
 测试覆盖：
+
 - f-string 模式
 - `format()` 方法
 - 字符串拼接（`+` 运算符）
@@ -1001,6 +1030,7 @@ print(f"完全动态: {confidence_stats['unknown']} 个")
 **A**: 结构化返回值（`InferenceResult` 和 `StringPattern`）提供了更清晰的语义：
 
 **之前的问题**：
+
 ```python
 # 旧 API：无法区分推导质量
 value = "https://api.com/..."  # 部分推导
@@ -1017,6 +1047,7 @@ elif value == "<dynamic>":
 ```
 
 **现在的方案**：
+
 ```python
 # 新 API：结构化返回
 result = infer_value_structured(node)
@@ -1034,6 +1065,7 @@ else:
 ```
 
 **优势**：
+
 - ✅ 类型安全（不需要解析字符串）
 - ✅ 语义明确（`confidence` 字段直接表达推导质量）
 - ✅ 易于扩展（可以添加更多元数据字段）
@@ -1044,14 +1076,15 @@ else:
 
 **A**: 两者服务于不同的使用场景：
 
-| 特性 | `InferenceResult` | `StringPattern` |
-|------|-------------------|-----------------|
-| **用途** | 通用值推导 | 专门用于字符串模式 |
-| **返回值** | `Any` 类型 | `list[str \| Ellipsis]` |
+| 特性         | `InferenceResult`      | `StringPattern`          |
+| ------------ | ---------------------- | ------------------------ |
+| **用途**     | 通用值推导             | 专门用于字符串模式       |
+| **返回值**   | `Any` 类型             | `list[str \| Ellipsis]`  |
 | **适用场景** | 环境变量、配置项、数值 | URL、Redis key、日志消息 |
-| **动态标记** | `confidence` 字段 | `parts` 中的 `...` |
+| **动态标记** | `confidence` 字段      | `parts` 中的 `...`       |
 
 **示例对比**：
+
 ```python
 # InferenceResult：通用推导
 result = infer_value_structured(node)
@@ -1091,6 +1124,7 @@ else:
 ```
 
 **迁移收益**：
+
 - 更清晰的语义
 - 更好的类型提示
 - 更容易编程处理
@@ -1125,6 +1159,7 @@ else:
 ```
 
 **应用场景**：
+
 - **HTTP 请求分析**：按基础 URL 分组请求
 - **Redis key 分析**：提取命名空间和模式
 - **日志分析**：识别日志模板
@@ -1136,6 +1171,7 @@ else:
 **A**: 推导器提供了优雅降级机制：
 
 **1. 字符串场景**：使用 `StringPattern` 保留静态部分
+
 ```python
 # f"{protocol}://{host}/{path}"
 pattern = infer_string_pattern(node)
@@ -1147,6 +1183,7 @@ if pattern.parts.count(...) > 2:
 ```
 
 **2. 非字符串场景**：检查 `confidence` 字段
+
 ```python
 result = infer_value_structured(node)
 if result.confidence == "unknown":
@@ -1158,6 +1195,7 @@ if result.confidence == "unknown":
 ```
 
 **3. 收集推导统计**：
+
 ```python
 stats = {"exact": 0, "partial": 0, "unknown": 0}
 for node in nodes:
@@ -1174,6 +1212,7 @@ print(f"推导成功率: {stats['exact'] / sum(stats.values()) * 100:.1f}%")
 ### 从旧 API 迁移到结构化 API
 
 **为什么要迁移？**
+
 - ✅ 更清晰的语义（不需要解析字符串判断推导结果）
 - ✅ 更好的类型安全（IDE 自动补全和类型检查）
 - ✅ 更强大的功能（字符串模式提取、静态前缀等）
@@ -1183,6 +1222,7 @@ print(f"推导成功率: {stats['exact'] / sum(stats.values()) * 100:.1f}%")
 ### 迁移步骤 1：更新值推导
 
 **旧代码**：
+
 ```python
 from upcast.common.ast_utils import infer_value_with_fallback
 
@@ -1196,6 +1236,7 @@ else:
 ```
 
 **新代码**：
+
 ```python
 from upcast.common.ast_utils import infer_value_structured
 
@@ -1216,6 +1257,7 @@ else:
 ### 迁移步骤 2：更新字符串模式处理
 
 **旧代码**：
+
 ```python
 # HTTP 请求扫描器
 url = infer_url_pattern(node)  # 返回 "https://api.com/..."
@@ -1230,6 +1272,7 @@ else:
 ```
 
 **新代码**：
+
 ```python
 from upcast.common.ast_utils import infer_string_pattern
 
@@ -1249,6 +1292,7 @@ static_parts = pattern.static_parts()  # ["https://api.com/", ...]
 ### 迁移步骤 3：更新扫描器输出
 
 **旧代码**：
+
 ```python
 # 扫描器返回字符串，包含特殊标记
 results = {
@@ -1259,6 +1303,7 @@ results = {
 ```
 
 **新代码**：
+
 ```python
 from upcast.common.ast_utils import infer_value_structured
 
@@ -1293,6 +1338,7 @@ from upcast.common.ast_utils import infer_value_structured
 ```
 
 **迁移时间表**（建议）：
+
 - **v0.4.0**: 引入新 API，旧 API 正常工作
 - **v0.5.0**: 旧 API 标记为 deprecated
 - **v0.6.0**: 移除旧 API（或保留但仅用于兼容性）

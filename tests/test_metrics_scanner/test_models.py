@@ -44,7 +44,7 @@ class TestMetricInfoModel:
         """Test MetricInfo for Counter."""
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total HTTP requests",
             labels=[],
@@ -54,7 +54,7 @@ class TestMetricInfoModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
         assert metric.name == "http_requests_total"
         assert metric.type == "Counter"
@@ -63,7 +63,7 @@ class TestMetricInfoModel:
         """Test MetricInfo with labels."""
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=["method", "endpoint", "status"],
@@ -73,7 +73,7 @@ class TestMetricInfoModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
         assert len(metric.labels) == 3
         assert "method" in metric.labels
@@ -82,7 +82,7 @@ class TestMetricInfoModel:
         """Test MetricInfo with namespace and subsystem."""
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=[],
@@ -92,7 +92,7 @@ class TestMetricInfoModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
         assert metric.namespace == "myapp"
         assert metric.subsystem == "api"
@@ -102,7 +102,7 @@ class TestMetricInfoModel:
         """Test MetricInfo for Histogram with buckets."""
         metric = MetricInfo(
             name="request_duration_seconds",
-                    metric_name="request_duration_seconds",
+            metric_name="request_duration_seconds",
             type="Histogram",
             help="Request duration",
             labels=[],
@@ -112,7 +112,7 @@ class TestMetricInfoModel:
             custom_collector=False,
             buckets=[0.1, 0.5, 1.0, 5.0],
             definitions=[],
-                    usages=[],
+            usages=[],
         )
         assert metric.type == "Histogram"
         assert metric.buckets == [0.1, 0.5, 1.0, 5.0]
@@ -134,7 +134,7 @@ class TestMetricInfoModel:
 
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=[],
@@ -144,7 +144,7 @@ class TestMetricInfoModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[usage1, usage2],
+            usages=[usage1, usage2],
         )
         assert len(metric.usages) == 2
 
@@ -201,7 +201,7 @@ class TestPrometheusMetricOutputModel:
         """Test valid PrometheusMetricOutput creation."""
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=[],
@@ -211,7 +211,7 @@ class TestPrometheusMetricOutputModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
 
         output = PrometheusMetricOutput(
@@ -245,7 +245,7 @@ class TestPrometheusMetricOutputModel:
         """Test output with multiple metrics."""
         metric1 = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=[],
@@ -255,11 +255,11 @@ class TestPrometheusMetricOutputModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
         metric2 = MetricInfo(
             name="active_connections",
-                    metric_name="active_connections",
+            metric_name="active_connections",
             type="Gauge",
             help="Active connections",
             labels=[],
@@ -269,7 +269,7 @@ class TestPrometheusMetricOutputModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
 
         output = PrometheusMetricOutput(
@@ -291,7 +291,7 @@ class TestPrometheusMetricOutputModel:
         """Test that output can be serialized to dict/JSON."""
         metric = MetricInfo(
             name="http_requests_total",
-                    metric_name="http_requests_total",
+            metric_name="http_requests_total",
             type="Counter",
             help="Total requests",
             labels=[],
@@ -301,7 +301,7 @@ class TestPrometheusMetricOutputModel:
             custom_collector=False,
             buckets=None,
             definitions=[],
-                    usages=[],
+            usages=[],
         )
 
         output = PrometheusMetricOutput(

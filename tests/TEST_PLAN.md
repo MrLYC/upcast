@@ -4,23 +4,23 @@
 
 ## 测试覆盖状态
 
-| # | 扫描器 | 文档 | 当前测试 | 目标测试 | 状态 | 优先级 |
-|---|--------|------|---------|---------|------|--------|
-| 1 | blocking_operations | ✅ | 52 行 | 33 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 2 | concurrency | ✅ | 50 行 | 70+ 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 3 | django_urls | ✅ | 59 行 | 54 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 4 | exceptions | ✅ | 52 行 | 62 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 5 | metrics | ✅ | 52 行 | 54 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 6 | unit_tests | ✅ | 52 行 | 62 个测试 | ⚠️ 待完成 | 🔴 高 |
-| 7 | logging | ✅ | ~14KB | +42 个测试 | ⚠️ 待增强 | 🟡 中 |
-| 8 | redis_usage | ✅ | ~6KB | +46 个测试 | ⚠️ 待增强 | 🟡 中 |
-| 9 | module_symbols | ✅ | ~20KB | +66 个测试 | ⚠️ 待增强 | 🟡 中 |
-| 10 | complexity | ✅ | 322 行 | - | ✅ 完善 | 🟢 低 |
-| 11 | django_models | ✅ | 169 行 | - | ✅ 完善 | 🟢 低 |
-| 12 | django_settings | ✅ | 253 行 | - | ✅ 完善 | 🟢 低 |
-| 13 | env_vars | ✅ | 381 行 | - | ✅ 完善 | 🟢 低 |
-| 14 | http_requests | ✅ | 395 行 | - | ✅ 完善 | 🟢 低 |
-| 15 | signals | ✅ | 357 行 | - | ✅ 完善 | 🟢 低 |
+| #   | 扫描器              | 文档 | 当前测试 | 目标测试   | 状态      | 优先级 |
+| --- | ------------------- | ---- | -------- | ---------- | --------- | ------ |
+| 1   | blocking_operations | ✅   | 52 行    | 33 个测试  | ⚠️ 待完成 | 🔴 高  |
+| 2   | concurrency         | ✅   | 50 行    | 70+ 个测试 | ⚠️ 待完成 | 🔴 高  |
+| 3   | django_urls         | ✅   | 59 行    | 54 个测试  | ⚠️ 待完成 | 🔴 高  |
+| 4   | exceptions          | ✅   | 52 行    | 62 个测试  | ⚠️ 待完成 | 🔴 高  |
+| 5   | metrics             | ✅   | 52 行    | 54 个测试  | ⚠️ 待完成 | 🔴 高  |
+| 6   | unit_tests          | ✅   | 52 行    | 62 个测试  | ⚠️ 待完成 | 🔴 高  |
+| 7   | logging             | ✅   | ~14KB    | +42 个测试 | ⚠️ 待增强 | 🟡 中  |
+| 8   | redis_usage         | ✅   | ~6KB     | +46 个测试 | ⚠️ 待增强 | 🟡 中  |
+| 9   | module_symbols      | ✅   | ~20KB    | +66 个测试 | ⚠️ 待增强 | 🟡 中  |
+| 10  | complexity          | ✅   | 322 行   | -          | ✅ 完善   | 🟢 低  |
+| 11  | django_models       | ✅   | 169 行   | -          | ✅ 完善   | 🟢 低  |
+| 12  | django_settings     | ✅   | 253 行   | -          | ✅ 完善   | 🟢 低  |
+| 13  | env_vars            | ✅   | 381 行   | -          | ✅ 完善   | 🟢 低  |
+| 14  | http_requests       | ✅   | 395 行   | -          | ✅ 完善   | 🟢 低  |
+| 15  | signals             | ✅   | 357 行   | -          | ✅ 完善   | 🟢 低  |
 
 **总计新增测试：** ~489 个
 
@@ -31,10 +31,12 @@
 **文档：** `docs/scanners/blocking-operations.md`
 
 ### 测试目标
+
 - 33 个测试
 - 覆盖 4 个类别：time_based, synchronization, subprocess, database
 
 ### 测试文件结构
+
 ```
 tests/test_blocking_operations_scanner/
 ├── __init__.py
@@ -53,6 +55,7 @@ tests/test_blocking_operations_scanner/
 ```
 
 ### 关键测试点
+
 - ✅ time.sleep, asyncio.sleep 检测
 - ✅ threading.Lock, asyncio.Lock, Semaphore 检测
 - ✅ subprocess.call, multiprocessing.Process 检测
@@ -62,6 +65,7 @@ tests/test_blocking_operations_scanner/
 - ✅ summary.by_category 统计
 
 ### 状态
+
 - [ ] fixtures 创建
 - [ ] test_models.py
 - [ ] test_integration.py
@@ -75,10 +79,12 @@ tests/test_blocking_operations_scanner/
 **文档：** `docs/scanners/concurrency-patterns.md`
 
 ### 测试目标
+
 - 70+ 个测试
 - 覆盖 4 个类别：threading, multiprocessing, asyncio, celery
 
 ### 测试文件结构
+
 ```
 tests/test_concurrency_pattern_scanner/ (已存在，扩展)
 ├── fixtures/ (扩展)
@@ -96,6 +102,7 @@ tests/test_concurrency_pattern_scanner/ (已存在，扩展)
 ```
 
 ### 关键测试点
+
 - ✅ threading.Thread, ThreadPoolExecutor
 - ✅ multiprocessing.Process, Pool, ProcessPoolExecutor
 - ✅ async def, await, asyncio.create_task, gather
@@ -105,6 +112,7 @@ tests/test_concurrency_pattern_scanner/ (已存在，扩展)
 - ✅ summary.by_category 统计
 
 ### 状态
+
 - [ ] fixtures 扩展
 - [ ] test_models.py
 - [ ] test_integration.py 扩展
@@ -121,10 +129,12 @@ tests/test_concurrency_pattern_scanner/ (已存在，扩展)
 **文档：** `docs/scanners/django-urls.md`
 
 ### 测试目标
+
 - 54 个测试
 - 覆盖 3 个类型：path, re_path, include
 
 ### 测试文件结构
+
 ```
 tests/test_django_urls_scanner/ (新建)
 ├── __init__.py
@@ -147,6 +157,7 @@ tests/test_django_urls_scanner/ (新建)
 ```
 
 ### 关键测试点
+
 - ✅ path(), re_path(), include() 检测
 - ✅ view_name, name, namespace 提取
 - ✅ URL converters (<int:id>, <str:slug>) 提取
@@ -156,6 +167,7 @@ tests/test_django_urls_scanner/ (新建)
 - ✅ nested includes
 
 ### 状态
+
 - [ ] 目录创建
 - [ ] fixtures 创建
 - [ ] test_models.py
@@ -172,10 +184,12 @@ tests/test_django_urls_scanner/ (新建)
 **文档：** `docs/scanners/exception-handlers.md`
 
 ### 测试目标
+
 - 62 个测试
 - 覆盖 try-except-else-finally 完整结构
 
 ### 测试文件结构
+
 ```
 tests/test_exceptions_scanner/ (新建)
 ├── __init__.py
@@ -199,6 +213,7 @@ tests/test_exceptions_scanner/ (新建)
 ```
 
 ### 关键测试点
+
 - ✅ try-except-else-finally 检测
 - ✅ 多个 except 子句
 - ✅ bare except (空异常列表)
@@ -209,6 +224,7 @@ tests/test_exceptions_scanner/ (新建)
 - ✅ 行数统计
 
 ### 状态
+
 - [ ] 目录创建
 - [ ] fixtures 创建
 - [ ] test_models.py
@@ -225,10 +241,12 @@ tests/test_exceptions_scanner/ (新建)
 **文档：** `docs/scanners/metrics.md`
 
 ### 测试目标
+
 - 54 个测试
 - 覆盖 4 种指标类型：Counter, Gauge, Histogram, Summary
 
 ### 测试文件结构
+
 ```
 tests/test_prometheus_metrics_scanner/ (已存在，扩展)
 ├── fixtures/ (扩展)
@@ -248,6 +266,7 @@ tests/test_prometheus_metrics_scanner/ (已存在，扩展)
 ```
 
 ### 关键测试点
+
 - ✅ Counter, Gauge, Histogram, Summary 检测
 - ✅ name, type, help, labels 提取
 - ✅ namespace, subsystem, unit 提取
@@ -258,6 +277,7 @@ tests/test_prometheus_metrics_scanner/ (已存在，扩展)
 - ✅ 使用方法检测 (.inc(), .set(), .observe())
 
 ### 状态
+
 - [ ] fixtures 扩展
 - [ ] test_models.py
 - [ ] test_integration.py 扩展
@@ -272,10 +292,12 @@ tests/test_prometheus_metrics_scanner/ (已存在，扩展)
 **文档：** `docs/scanners/unit-tests.md`
 
 ### 测试目标
+
 - 62 个测试
 - 支持 pytest 和 unittest
 
 ### 测试文件结构
+
 ```
 tests/test_unit_tests_scanner/ (新建)
 ├── __init__.py
@@ -298,7 +320,8 @@ tests/test_unit_tests_scanner/ (新建)
 ```
 
 ### 关键测试点
-- ✅ pytest test_* 函数检测
+
+- ✅ pytest test\_\* 函数检测
 - ✅ unittest TestCase 类检测
 - ✅ assert 语句计数
 - ✅ body_md5 计算
@@ -309,6 +332,7 @@ tests/test_unit_tests_scanner/ (新建)
 - ✅ 参数化测试检测
 
 ### 状态
+
 - [ ] 目录创建
 - [ ] fixtures 创建
 - [ ] test_models.py
@@ -325,10 +349,12 @@ tests/test_unit_tests_scanner/ (新建)
 **文档：** `docs/scanners/logging.md`
 
 ### 测试目标
+
 - +42 个新测试
 - 当前已有基础测试
 
 ### 新增测试文件
+
 ```
 tests/test_logging_scanner/ (扩展)
 ├── test_models.py (8 个测试) (新增)
@@ -340,6 +366,7 @@ tests/test_logging_scanner/ (扩展)
 ```
 
 ### 关键测试点
+
 - ✅ 标准 logging, loguru, structlog, Django 日志
 - ✅ 日志级别检测
 - ✅ 消息类型 (string, fstring, format, percent, template)
@@ -350,6 +377,7 @@ tests/test_logging_scanner/ (扩展)
 - ✅ summary 统计
 
 ### 状态
+
 - [ ] test_models.py
 - [ ] test_libraries.py
 - [ ] test_message_types.py
@@ -364,10 +392,12 @@ tests/test_logging_scanner/ (扩展)
 **文档：** `docs/scanners/redis-usage.md`
 
 ### 测试目标
+
 - +46 个新测试
 - 当前只有 key_inference 测试
 
 ### 新增测试文件
+
 ```
 tests/test_redis_usage_scanner/ (扩展)
 ├── fixtures/ (新增)
@@ -385,6 +415,7 @@ tests/test_redis_usage_scanner/ (扩展)
 ```
 
 ### 关键测试点
+
 - ✅ cache_backend, celery_broker, redis_client 等类型
 - ✅ 库识别 (redis, django_redis, aioredis)
 - ✅ 操作类型 (get, set, delete, incr, lpush, sadd, zadd, hset, etc.)
@@ -393,6 +424,7 @@ tests/test_redis_usage_scanner/ (扩展)
 - ✅ 按 key 模式分组
 
 ### 状态
+
 - [ ] fixtures 创建
 - [ ] test_models.py
 - [ ] test_integration.py
@@ -406,10 +438,12 @@ tests/test_redis_usage_scanner/ (扩展)
 **文档：** `docs/scanners/module-symbols.md`
 
 ### 测试目标
+
 - +66 个新测试
 - 当前有基础测试
 
 ### 新增测试文件
+
 ```
 tests/test_module_symbol_scanner/ (扩展)
 ├── fixtures/ (扩展)
@@ -429,6 +463,7 @@ tests/test_module_symbol_scanner/ (扩展)
 ```
 
 ### 关键测试点
+
 - ✅ import, from import, star import 检测
 - ✅ 函数、类、变量定义检测
 - ✅ 装饰器提取 (name, call, args, kwargs)
@@ -440,6 +475,7 @@ tests/test_module_symbol_scanner/ (扩展)
 - ✅ --include-private 选项
 
 ### 状态
+
 - [ ] fixtures 扩展
 - [ ] test_decorators.py
 - [ ] test_function_detection.py
@@ -453,18 +489,18 @@ tests/test_module_symbol_scanner/ (扩展)
 
 ## 实施时间线
 
-| 阶段 | 任务 | 预计时间 | 状态 |
-|------|------|---------|------|
-| 0 | 创建公共 fixtures 和文档 | 1 小时 | ⚠️ 进行中 |
-| 1 | blocking_operations | 2-3 小时 | ⏳ 待开始 |
-| 2 | concurrency | 4-5 小时 | ⏳ 待开始 |
-| 3 | django_urls | 3-4 小时 | ⏳ 待开始 |
-| 4 | exceptions | 3-4 小时 | ⏳ 待开始 |
-| 5 | metrics | 3-4 小时 | ⏳ 待开始 |
-| 6 | unit_tests | 3-4 小时 | ⏳ 待开始 |
-| 7 | logging (增强) | 2-3 小时 | ⏳ 待开始 |
-| 8 | redis_usage (增强) | 2-3 小时 | ⏳ 待开始 |
-| 9 | module_symbols (增强) | 3-4 小时 | ⏳ 待开始 |
+| 阶段 | 任务                     | 预计时间 | 状态      |
+| ---- | ------------------------ | -------- | --------- |
+| 0    | 创建公共 fixtures 和文档 | 1 小时   | ⚠️ 进行中 |
+| 1    | blocking_operations      | 2-3 小时 | ⏳ 待开始 |
+| 2    | concurrency              | 4-5 小时 | ⏳ 待开始 |
+| 3    | django_urls              | 3-4 小时 | ⏳ 待开始 |
+| 4    | exceptions               | 3-4 小时 | ⏳ 待开始 |
+| 5    | metrics                  | 3-4 小时 | ⏳ 待开始 |
+| 6    | unit_tests               | 3-4 小时 | ⏳ 待开始 |
+| 7    | logging (增强)           | 2-3 小时 | ⏳ 待开始 |
+| 8    | redis_usage (增强)       | 2-3 小时 | ⏳ 待开始 |
+| 9    | module_symbols (增强)    | 3-4 小时 | ⏳ 待开始 |
 
 **总计：** ~25-34 小时
 

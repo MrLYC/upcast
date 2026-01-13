@@ -44,12 +44,16 @@ class TestImportedSymbol:
 
     def test_basic_symbol(self):
         """Test basic symbol import."""
-        symbol = ImportedSymbol(module_path="pathlib", attributes=[], lineno=1, statement="from pathlib import Path", blocks=["module"])
+        symbol = ImportedSymbol(
+            module_path="pathlib", attributes=[], lineno=1, statement="from pathlib import Path", blocks=["module"]
+        )
         assert symbol.module_path == "pathlib"
 
     def test_with_attributes(self):
         """Test symbol with attribute access."""
-        symbol = ImportedSymbol(module_path="pathlib", attributes=["home"], lineno=1, statement="from xxx import yyy", blocks=["module"])
+        symbol = ImportedSymbol(
+            module_path="pathlib", attributes=["home"], lineno=1, statement="from xxx import yyy", blocks=["module"]
+        )
         assert "home" in symbol.attributes
 
 
@@ -82,7 +86,9 @@ class TestVariable:
 
     def test_variable_without_value(self):
         """Test variable without inferred value."""
-        var = Variable(module_path="test.module", attributes=[], lineno=1, value=None, statement="X = compute()", blocks=["module"])
+        var = Variable(
+            module_path="test.module", attributes=[], lineno=1, value=None, statement="X = compute()", blocks=["module"]
+        )
         assert var.value is None
 
 
@@ -109,8 +115,8 @@ class TestFunction:
     def test_basic_function(self):
         """Test basic function."""
         func = Function(
-                    lineno=1,
-                    is_async=False,
+            lineno=1,
+            is_async=False,
             signature="def test() -> None",
             docstring="Test function",
             body_md5="abc123",
@@ -125,8 +131,8 @@ class TestFunction:
     def test_function_with_decorator(self):
         """Test function with decorators."""
         func = Function(
-                    lineno=1,
-                    is_async=False,
+            lineno=1,
+            is_async=False,
             signature="def test() -> None",
             docstring=None,
             body_md5="abc123",
@@ -190,7 +196,11 @@ class TestModuleSymbols:
         """Test module with imports."""
         symbols = ModuleSymbols(
             imported_modules={"os": ImportedModule(module_path="os", attributes=[], blocks=["module"])},
-            imported_symbols={"Path": ImportedSymbol(module_path="pathlib", attributes=[], lineno=1, statement="from xxx import yyy", blocks=["module"])},
+            imported_symbols={
+                "Path": ImportedSymbol(
+                    module_path="pathlib", attributes=[], lineno=1, statement="from xxx import yyy", blocks=["module"]
+                )
+            },
         )
         assert "os" in symbols.imported_modules
         assert "Path" in symbols.imported_symbols

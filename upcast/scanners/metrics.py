@@ -9,7 +9,13 @@ from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.scanner_base import BaseScanner
-from upcast.models.metrics import MetricDefinition, MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
+from upcast.models.metrics import (
+    MetricDefinition,
+    MetricInfo,
+    MetricUsage,
+    PrometheusMetricOutput,
+    PrometheusMetricSummary,
+)
 
 
 class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
