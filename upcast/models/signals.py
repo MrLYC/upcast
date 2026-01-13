@@ -3,8 +3,6 @@
 Models extracted from upcast/scanners/signals.py for shared use.
 """
 
-from typing import Any
-
 from pydantic import BaseModel, Field
 
 from upcast.models.base import ScannerOutput, ScannerSummary

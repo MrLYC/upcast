@@ -9,8 +9,8 @@ from typing import ClassVar
 from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
-from upcast.common.inference import infer_value
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.redis_usage import (
     RedisConfig,

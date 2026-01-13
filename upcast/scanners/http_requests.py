@@ -7,8 +7,8 @@ from typing import Any, ClassVar
 from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
-from upcast.common.inference import infer_string_pattern, infer_value
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.http_requests import HttpRequestInfo, HttpRequestOutput, HttpRequestSummary, HttpRequestUsage
 

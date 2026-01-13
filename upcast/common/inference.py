@@ -403,11 +403,11 @@ def _get_const_type(value: Any) -> str:
 
 
 __all__ = [
+    "DYNAMIC",
     "Confidence",
     "InferenceResult",
     "StringPattern",
-    "DYNAMIC",
-    "infer_value",
     "infer_string_pattern",
     "infer_type",
+    "infer_value",
 ]
