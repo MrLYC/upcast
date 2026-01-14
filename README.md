@@ -67,7 +67,7 @@ upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 **Other common options:**
 
 - `-o, --output FILE`: Save results to file instead of stdout
-- `--format FORMAT`: Choose output format (`yaml` or `json`)
+- `--format FORMAT`: Choose output format (`yaml`, `json`, `markdown`, or `html`)
 - `-v, --verbose`: Enable detailed logging
 
 ## Scanners
@@ -1094,7 +1094,7 @@ results:
 
 - `--sensitive-keywords KEYWORD`: Add custom sensitive keyword patterns (can be repeated)
 - `-o, --output FILE`: Save results to file
-- `--format FORMAT`: Output format (yaml or json)
+- `--format FORMAT`: Output format (yaml, json, markdown, or html)
 - `-v, --verbose`: Enable detailed logging
 
 #### scan-exception-handlers
@@ -1395,6 +1395,56 @@ Templates are located in `upcast/templates/{language}/`:
 - And more...
 
 You can create custom templates for new languages by adding a new language directory with the required templates.
+
+## HTML Report Generation
+
+Upcast can generate standalone HTML reports that include embedded data for download. These single-file reports can be shared and viewed in any browser without a server.
+
+### Basic Usage
+
+```bash
+# Generate HTML report (English)
+upcast scan-complexity-patterns . --format html -o report.html
+
+# Generate HTML report (Chinese)
+upcast scan-env-vars . --format html --markdown-language zh -o env-vars-zh.html
+
+# With custom title
+upcast scan-django-models . --format html --markdown-title "Django Models Report" -o models.html
+```
+
+### Features
+
+- **Standalone HTML**: Single file with all CSS/JS inline, no external dependencies
+- **Embedded Data**: Both YAML and JSON data embedded for download
+- **Download Buttons**: One-click download of scan results in YAML or JSON format
+- **Multi-Language Support**: Available in English (`en`) and Chinese (`zh`)
+- **Responsive Design**: Clean, modern interface that works on all screen sizes
+- **Rendered Markdown**: Scan results displayed as formatted HTML with syntax highlighting
+
+### HTML Options
+
+All scanner commands support these HTML-specific options:
+
+- `--format html`: Output as standalone HTML report
+- `--markdown-language [en|zh]`: Language for UI text (default: en)
+- `--markdown-title TEXT`: Custom title for the report
+
+### Programmatic Usage
+
+```python
+from upcast.models.http_requests import HttpRequestOutput
+from upcast.render import render_to_html, render_to_file
+
+# Load scanner output
+output = HttpRequestOutput(...)
+
+# Render to HTML string
+html = render_to_html(output, language='en', title='HTTP Requests')
+
+# Or render directly to HTML file
+render_to_file(output, 'output.html', language='en', title='HTTP Requests', format='html')
+```
 
 ## Integration Testing
 

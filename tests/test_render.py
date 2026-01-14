@@ -1,4 +1,4 @@
-"""Tests for markdown rendering module."""
+"""Tests for rendering module."""
 
 import tempfile
 from pathlib import Path
@@ -15,14 +15,19 @@ from upcast.models.http_requests import (
     HttpRequestUsage,
 )
 from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, SignalUsage
-from upcast.render import create_jinja_env, get_template_name, render_to_file, render_to_markdown
+from upcast.render import (
+    create_jinja_env,
+    create_jinja_env_html,
+    get_html_template_name,
+    get_template_name,
+    render_to_file,
+    render_to_html,
+    render_to_markdown,
+)
 
 
 class TestGetTemplateName:
-    """Test get_template_name function."""
-
     def test_http_request_output(self):
-        """Test template name for HttpRequestOutput."""
         output = HttpRequestOutput(
             summary=HttpRequestSummary(
                 total_count=1, files_scanned=1, total_requests=1, unique_urls=1, by_library={"requests": 1}
@@ -32,7 +37,6 @@ class TestGetTemplateName:
         assert get_template_name(output) == "http_requests.md.jinja2"
 
     def test_django_model_output(self):
-        """Test template name for DjangoModelOutput."""
         output = DjangoModelOutput(
             summary=DjangoModelSummary(
                 total_count=1, files_scanned=1, total_models=1, total_fields=0, total_relationships=0
@@ -42,7 +46,6 @@ class TestGetTemplateName:
         assert get_template_name(output) == "django_models.md.jinja2"
 
     def test_complexity_output(self):
-        """Test template name for ComplexityOutput."""
         output = ComplexityOutput(
             summary=ComplexitySummary(total_count=1, files_scanned=1, high_complexity_count=0, by_severity={}),
             results={},
@@ -51,31 +54,23 @@ class TestGetTemplateName:
 
 
 class TestCreateJinjaEnv:
-    """Test create_jinja_env function."""
-
     def test_english_environment(self):
-        """Test creating English environment."""
         env = create_jinja_env("en")
         assert env is not None
         assert "base.md.jinja2" in env.list_templates()
 
     def test_chinese_environment(self):
-        """Test creating Chinese environment."""
         env = create_jinja_env("zh")
         assert env is not None
         assert "base.md.jinja2" in env.list_templates()
 
     def test_invalid_language(self):
-        """Test creating environment with invalid language."""
         with pytest.raises(ValueError, match="Template directory not found"):
             create_jinja_env("invalid_lang")
 
 
 class TestRenderToMarkdown:
-    """Test render_to_markdown function."""
-
     def test_render_http_requests_en(self):
-        """Test rendering HTTP requests in English."""
         output = HttpRequestOutput(
             summary=HttpRequestSummary(
                 total_count=2,
@@ -112,7 +107,6 @@ class TestRenderToMarkdown:
         assert "test.py" in markdown
 
     def test_render_django_models_zh(self):
-        """Test rendering Django models in Chinese."""
         output = DjangoModelOutput(
             summary=DjangoModelSummary(
                 total_count=1,
@@ -155,7 +149,6 @@ class TestRenderToMarkdown:
         assert "email" in markdown
 
     def test_render_complexity_en(self):
-        """Test rendering complexity results in English."""
         output = ComplexityOutput(
             summary=ComplexitySummary(
                 total_count=1,
@@ -190,7 +183,6 @@ class TestRenderToMarkdown:
         assert "warning" in markdown
 
     def test_render_env_vars_en(self):
-        """Test rendering environment variables in English."""
         output = EnvVarOutput(
             summary=EnvVarSummary(
                 total_count=2,
@@ -208,9 +200,7 @@ class TestRenderToMarkdown:
                         EnvVarLocation(
                             file="settings.py",
                             line=10,
-                            column=5,
-                            pattern="os.environ['DATABASE_URL']",
-                            code="db_url = os.environ['DATABASE_URL']",
+                            statement="db_url = os.environ['DATABASE_URL']",
                         )
                     ],
                 ),
@@ -222,9 +212,7 @@ class TestRenderToMarkdown:
                         EnvVarLocation(
                             file="settings.py",
                             line=15,
-                            column=5,
-                            pattern="os.getenv('DEBUG', 'False')",
-                            code="debug = os.getenv('DEBUG', 'False')",
+                            statement="debug = os.getenv('DEBUG', 'False')",
                         )
                     ],
                 ),
@@ -239,7 +227,6 @@ class TestRenderToMarkdown:
         assert "Required" in markdown
 
     def test_render_signals_zh(self):
-        """Test rendering signals in Chinese."""
         output = SignalOutput(
             summary=SignalSummary(
                 total_count=1,
@@ -277,11 +264,213 @@ class TestRenderToMarkdown:
         assert "handlers.py" in markdown
 
 
-class TestRenderToFile:
-    """Test render_to_file function."""
+class TestGetHtmlTemplateName:
+    def test_default_template_for_http_request_output(self):
+        output = HttpRequestOutput(
+            summary=HttpRequestSummary(
+                total_count=1, files_scanned=1, total_requests=1, unique_urls=1, by_library={"requests": 1}
+            ),
+            results={},
+        )
+        assert get_html_template_name(output) == "base.html.jinja2"
 
-    def test_render_to_file(self):
-        """Test rendering to a file."""
+    def test_default_template_for_django_model_output(self):
+        output = DjangoModelOutput(
+            summary=DjangoModelSummary(
+                total_count=1, files_scanned=1, total_models=1, total_fields=0, total_relationships=0
+            ),
+            results={},
+        )
+        assert get_html_template_name(output) == "base.html.jinja2"
+
+
+class TestCreateJinjaEnvHtml:
+    def test_english_environment(self):
+        env = create_jinja_env_html("en")
+        assert env is not None
+        assert "base.html.jinja2" in env.list_templates()
+
+    def test_chinese_environment(self):
+        env = create_jinja_env_html("zh")
+        assert env is not None
+        assert "base.html.jinja2" in env.list_templates()
+
+    def test_invalid_language(self):
+        with pytest.raises(ValueError, match="Template directory not found"):
+            create_jinja_env_html("invalid_lang")
+
+
+class TestRenderToHtml:
+    def test_render_http_requests_html_en(self):
+        output = HttpRequestOutput(
+            summary=HttpRequestSummary(
+                total_count=2,
+                files_scanned=1,
+                total_requests=2,
+                unique_urls=1,
+                by_library={"requests": 2},
+            ),
+            results={
+                "https://api.example.com": HttpRequestInfo(
+                    method="GET",
+                    library="requests",
+                    usages=[
+                        HttpRequestUsage(
+                            file="test.py",
+                            line=10,
+                            statement="requests.get('https://api.example.com')",
+                            method="GET",
+                            session_based=False,
+                            is_async=False,
+                        )
+                    ],
+                )
+            },
+            metadata={"scanner": "http_request"},
+        )
+
+        html = render_to_html(output, language="en", title="HTTP Requests Test")
+
+        assert "<!DOCTYPE html>" in html
+        assert "<html" in html
+        assert "</html>" in html
+        assert "HTTP Requests Test" in html
+        assert "https://api.example.com" in html
+        assert "window.__UPCAST_DATA__" in html
+        assert "downloadYAML" in html
+        assert "downloadJSON" in html
+
+    def test_render_django_models_html_zh(self):
+        output = DjangoModelOutput(
+            summary=DjangoModelSummary(
+                total_count=1,
+                files_scanned=1,
+                total_models=1,
+                total_fields=1,
+                total_relationships=0,
+            ),
+            results={
+                "app.models.User": DjangoModel(
+                    name="User",
+                    module="app.models",
+                    bases=["models.Model"],
+                    fields={
+                        "username": DjangoField(
+                            name="username",
+                            type="CharField",
+                            parameters={"max_length": 100},
+                            line=5,
+                        ),
+                    },
+                    relationships=[],
+                    line=3,
+                )
+            },
+        )
+
+        html = render_to_html(output, language="zh", title="Django 模型报告")
+
+        assert "<!DOCTYPE html>" in html
+        assert "Django 模型报告" in html
+        assert "User" in html
+        assert "username" in html
+        assert "下载" in html
+
+    def test_render_complexity_html(self):
+        output = ComplexityOutput(
+            summary=ComplexitySummary(
+                total_count=1,
+                files_scanned=1,
+                high_complexity_count=1,
+                by_severity={"warning": 1},
+            ),
+            results={
+                "test/module.py": [
+                    ComplexityResult(
+                        name="complex_function",
+                        line=10,
+                        end_line=50,
+                        complexity=15,
+                        severity="warning",
+                        message="Function has high complexity",
+                        description="A complex function",
+                        signature="def complex_function(x, y):",
+                        code="def complex_function(x, y):\n    pass",
+                        comment_lines=0,
+                        code_lines=40,
+                    )
+                ]
+            },
+        )
+
+        html = render_to_html(output, language="en", title="Complexity Analysis")
+
+        assert "<!DOCTYPE html>" in html
+        assert "Complexity Analysis" in html
+        assert "complex_function" in html
+        assert "window.__UPCAST_DATA__" in html
+
+    def test_html_contains_yaml_data(self):
+        output = EnvVarOutput(
+            summary=EnvVarSummary(
+                total_count=1,
+                files_scanned=1,
+                total_env_vars=1,
+                required_count=1,
+                optional_count=0,
+            ),
+            results={
+                "DATABASE_URL": EnvVarInfo(
+                    name="DATABASE_URL",
+                    required=True,
+                    default_value=None,
+                    locations=[
+                        EnvVarLocation(
+                            file="settings.py",
+                            line=10,
+                            statement="os.environ['DATABASE_URL']",
+                        )
+                    ],
+                ),
+            },
+        )
+
+        html = render_to_html(output, language="en", title="Env Vars")
+
+        assert "DATABASE_URL" in html
+
+    def test_html_contains_json_data(self):
+        output = EnvVarOutput(
+            summary=EnvVarSummary(
+                total_count=1,
+                files_scanned=1,
+                total_env_vars=1,
+                required_count=1,
+                optional_count=0,
+            ),
+            results={
+                "API_KEY": EnvVarInfo(
+                    name="API_KEY",
+                    required=True,
+                    default_value=None,
+                    locations=[
+                        EnvVarLocation(
+                            file="config.py",
+                            line=5,
+                            statement="os.environ['API_KEY']",
+                        )
+                    ],
+                ),
+            },
+        )
+
+        html = render_to_html(output, language="en", title="API Keys")
+
+        assert "API_KEY" in html
+
+
+class TestRenderToFile:
+    def test_render_to_markdown_file(self):
         output = HttpRequestOutput(
             summary=HttpRequestSummary(
                 total_count=1,
@@ -302,8 +491,28 @@ class TestRenderToFile:
             assert "Test Output" in content
             assert "Total Requests" in content
 
+    def test_render_to_html_file(self):
+        output = HttpRequestOutput(
+            summary=HttpRequestSummary(
+                total_count=1,
+                files_scanned=1,
+                total_requests=1,
+                unique_urls=1,
+                by_library={"requests": 1},
+            ),
+            results={},
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_path = Path(tmpdir) / "output.html"
+            render_to_file(output, output_path, language="en", title="HTML Test", format="html")
+
+            assert output_path.exists()
+            content = output_path.read_text()
+            assert "<!DOCTYPE html>" in content
+            assert "HTML Test" in content
+
     def test_render_to_file_creates_directory(self):
-        """Test that render_to_file creates parent directories."""
         output = ComplexityOutput(
             summary=ComplexitySummary(
                 total_count=0,
@@ -320,3 +529,20 @@ class TestRenderToFile:
 
             assert output_path.exists()
             assert output_path.parent.exists()
+
+    def test_render_to_file_invalid_format(self):
+        output = HttpRequestOutput(
+            summary=HttpRequestSummary(
+                total_count=1,
+                files_scanned=1,
+                total_requests=1,
+                unique_urls=1,
+                by_library={"requests": 1},
+            ),
+            results={},
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_path = Path(tmpdir) / "output.txt"
+            with pytest.raises(ValueError, match="Invalid format"):
+                render_to_file(output, output_path, language="en", title="Test", format="invalid")

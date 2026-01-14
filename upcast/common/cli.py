@@ -65,10 +65,8 @@ def add_scanner_arguments(func):
         help="Language for markdown output (default: en)",
     )(func)
 
-    format_choice = click.Choice(["yaml", "json", "markdown"], case_sensitive=False)
-    # click.Choice internally normalizes choices to a tuple in some versions.
-    # Keep it as a list to match our test expectations and avoid version drift.
-    format_choice.choices = ["yaml", "json", "markdown"]
+    format_choice = click.Choice(["yaml", "json", "markdown", "html"], case_sensitive=False)
+    format_choice.choices = ["yaml", "json", "markdown", "html"]
     func = click.option(
         "--format",
         type=format_choice,
@@ -236,8 +234,22 @@ def _write_output_file(
             output,
             language=markdown_language,
             title=_get_markdown_title(scanner, markdown_title),
+            format="markdown",
         )
         click.echo(f"Markdown report written to: {output}")
+        return
+
+    if fmt == "html":
+        from upcast.render import render_to_file
+
+        render_to_file(
+            scanner_output,
+            output,
+            language=markdown_language,
+            title=_get_markdown_title(scanner, markdown_title),
+            format="html",
+        )
+        click.echo(f"HTML report written to: {output}")
         return
 
     export_to_yaml(formatted_data, output)
@@ -269,6 +281,17 @@ def _print_output_to_stdout(
             title=_get_markdown_title(scanner, markdown_title),
         )
         click.echo(markdown_output)
+        return
+
+    if fmt == "html":
+        from upcast.render import render_to_html
+
+        html_output = render_to_html(
+            scanner_output,
+            language=markdown_language,
+            title=_get_markdown_title(scanner, markdown_title),
+        )
+        click.echo(html_output)
         return
 
     click.echo(export_to_yaml_string(formatted_data))
@@ -337,9 +360,9 @@ def validate_scanner_arguments(
     validated = {}
 
     # Validate format
-    if format.lower() not in ["yaml", "json", "markdown"]:
+    if format.lower() not in ["yaml", "json", "markdown", "html"]:
         raise click.BadParameter(
-            f"Invalid format '{format}'. Must be 'yaml', 'json', or 'markdown'.",
+            f"Invalid format '{format}'. Must be 'yaml', 'json', 'markdown', or 'html'.",
             param_hint="--format",
         )
     validated["format"] = format.lower()

@@ -48,7 +48,7 @@ class TestAddScannerArguments:
 
         format_param = next(p for p in dummy_command.params if p.name == "format")
         assert isinstance(format_param.type, click.Choice)
-        assert format_param.type.choices == ["yaml", "json", "markdown"]
+        assert format_param.type.choices == ["yaml", "json", "markdown", "html"]
 
     def test_multiple_patterns_supported(self):
         """Test that include/exclude support multiple values."""

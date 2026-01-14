@@ -193,7 +193,7 @@ class PatternBlameScanner(BaseScanner[PatternBlameOutput]):
 
         return all_matches, len(files_with_matches)
 
-    def _identify_pattern(self, match) -> str | None:  # noqa: ANN001
+    def _identify_pattern(self, match) -> str | None:
         """Find which pattern from self.patterns matches the given node."""
         for pattern in self.patterns:
             if match.matches(pattern=pattern):

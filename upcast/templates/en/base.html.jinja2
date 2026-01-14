@@ -1,0 +1,273 @@
+{# English HTML Template - Standalone single-file report #}
+
+{% set i18n = {
+    'download_yaml': 'Download YAML',
+    'download_json': 'Download JSON',
+    'summary': 'Summary',
+    'results': 'Results',
+    'metadata': 'Metadata',
+    'files_scanned': 'Files Scanned',
+    'total_count': 'Total Count',
+    'scan_duration': 'Scan Duration',
+    'generated_at': 'Generated at'
+} %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Upcast Report</title>
+    <style>
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --success-color: #22c55e;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --code-bg: #f1f5f9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 2rem;
+}
+
+.report-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.report-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-color);
+}
+
+.markdown-content {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-content h2 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.markdown-content h3 {
+    font-size: 1.125rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-content li {
+    margin-bottom: 0.25rem;
+}
+
+.markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.875rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+.markdown-content th {
+    background-color: var(--bg-color);
+    font-weight: 600;
+}
+
+.markdown-content tr:hover {
+    background-color: var(--bg-color);
+}
+
+.markdown-content code {
+    background-color: var(--code-bg);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.875em;
+}
+
+.markdown-content pre {
+    background-color: var(--code-bg);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.markdown-content pre code {
+    background: none;
+    padding: 0;
+}
+
+.markdown-content strong {
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+    
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .markdown-content {
+        padding: 1rem;
+    }
+    
+    .markdown-content table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <header class="report-header">
+            <h1>{{ title }}</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="downloadYAML()">
+                    {{ i18n.download_yaml }}
+                </button>
+                <button class="btn btn-secondary" onclick="downloadJSON()">
+                    {{ i18n.download_json }}
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="markdown-content">
+                {{ rendered_markdown | safe }}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        window.__UPCAST_DATA__ = {
+            yaml: {{ yaml_data | tojson }},
+            json: {{ json_data | tojson }},
+            metadata: {{ metadata | tojson }}
+        };
+
+        function downloadYAML() {
+            var data = window.__UPCAST_DATA__;
+            var blob = new Blob([data.yaml], { type: 'text/yaml;charset=utf-8' });
+            downloadBlob(blob, 'scan-results.yaml');
+        }
+
+        function downloadJSON() {
+            var data = window.__UPCAST_DATA__;
+            var blob = new Blob(
+                [JSON.stringify(data.json, null, 2)], 
+                { type: 'application/json;charset=utf-8' }
+            );
+            downloadBlob(blob, 'scan-results.json');
+        }
+
+        function downloadBlob(blob, filename) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

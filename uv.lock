@@ -584,6 +584,18 @@ wheels = [
 ]
 
 [[package]]
+name = "importlib-metadata"
+version = "8.7.1"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
+dependencies = [
+    { name = "zipp", marker = "python_full_version < '3.10'" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/f3/49/3b30cad09e7771a4982d9975a8cbf64f00d4a1ececb53297f1d9a7be1b10/importlib_metadata-8.7.1.tar.gz", hash = "sha256:49fef1ae6440c182052f407c8d34a68f72efc36db9ca90dc0113398f2fdde8bb" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/fa/5e/f8e9a1d23b9c20a551a8a02ea3637b4642e22c2626e3a13a9a29cdea99eb/importlib_metadata-8.7.1-py3-none-any.whl", hash = "sha256:5a1f80bf1daa489495071efbb095d75a634cf28a8bc299581244063b53176151" },
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.1.0"
 source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
@@ -816,6 +828,34 @@ wheels = [
     { url = "https://mirrors.aliyun.com/pypi/packages/92/4e/71e099b7665ad8e5fd74ef63b1c9d9b2b9d28208901ffbe4684da7fb3521/librt-0.7.4-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:2e734c2c54423c6dcc77f58a8585ba83b9f72e422f9edf09cab1096d4a4bdc82" },
     { url = "https://mirrors.aliyun.com/pypi/packages/b3/bd/06c59188a55a5b7fbb38d9b31f7ac32aabc66b912f0c3596c6c0fbfc1ffe/librt-0.7.4-cp39-cp39-win32.whl", hash = "sha256:a34ae11315d4e26326aaf04e21ccd8d9b7de983635fba38d73e203a9c8e3fe3d" },
     { url = "https://mirrors.aliyun.com/pypi/packages/93/c6/532c79748f64d520d130fd4b7aa9d313d6abc614854113bc4de29b6a1eda/librt-0.7.4-cp39-cp39-win_amd64.whl", hash = "sha256:7e4b5ffa1614ad4f32237d739699be444be28de95071bfa4e66a8da9fa777798" },
+]
+
+[[package]]
+name = "markdown"
+version = "3.9"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
+resolution-markers = [
+    "python_full_version < '3.10'",
+]
+dependencies = [
+    { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/8d/37/02347f6d6d8279247a5837082ebc26fc0d5aaeaf75aa013fcbb433c777ab/markdown-3.9.tar.gz", hash = "sha256:d2900fe1782bd33bdbbd56859defef70c2e78fc46668f8eb9df3128138f2cb6a" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/70/ae/44c4a6a4cbb496d93c6257954260fe3a6e91b7bed2240e5dad2a717f5111/markdown-3.9-py3-none-any.whl", hash = "sha256:9f4d91ed810864ea88a6f32c07ba8bee1346c0cc1f6b1f9f6c822f2a9667d280" },
+]
+
+[[package]]
+name = "markdown"
+version = "3.10"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
+resolution-markers = [
+    "python_full_version >= '3.11'",
+    "python_full_version == '3.10.*'",
+]
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/7d/ab/7dd27d9d863b3376fcf23a5a13cb5d024aed1db46f963f1b5735ae43b3be/markdown-3.10.tar.gz", hash = "sha256:37062d4f2aa4b2b6b32aefb80faa300f82cc790cb949a35b8caede34f2b68c0e" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/70/81/54e3ce63502cd085a0c556652a4e1b919c45a446bd1e5300e10c44c8c521/markdown-3.10-py3-none-any.whl", hash = "sha256:b5b99d6951e2e4948d939255596523444c0e677c669700b1d17aa4a8a464cb7c" },
 ]
 
 [[package]]
@@ -1693,6 +1733,8 @@ dependencies = [
     { name = "click", version = "8.1.8", source = { registry = "https://mirrors.aliyun.com/pypi/simple" }, marker = "python_full_version < '3.10'" },
     { name = "click", version = "8.3.1", source = { registry = "https://mirrors.aliyun.com/pypi/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "jinja2" },
+    { name = "markdown", version = "3.9", source = { registry = "https://mirrors.aliyun.com/pypi/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "markdown", version = "3.10", source = { registry = "https://mirrors.aliyun.com/pypi/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pydantic" },
     { name = "pyyaml" },
 ]
@@ -1734,6 +1776,7 @@ requires-dist = [
     { name = "flake8", marker = "extra == 'dev'", specifier = ">=7.1.1" },
     { name = "ipdb", marker = "extra == 'dev'", specifier = ">=0.13.13" },
     { name = "jinja2", specifier = ">=3.1.0" },
+    { name = "markdown", specifier = ">=3.9" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.5.1" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.4.0" },
     { name = "pydantic", specifier = ">=2.9.2" },
@@ -1778,4 +1821,13 @@ source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
 sdist = { url = "https://mirrors.aliyun.com/pypi/packages/24/30/6b0809f4510673dc723187aeaf24c7f5459922d01e2f794277a3dfb90345/wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605" }
 wheels = [
     { url = "https://mirrors.aliyun.com/pypi/packages/af/b5/123f13c975e9f27ab9c0770f514345bd406d0e8d3b7a0723af9d43f710af/wcwidth-0.2.14-py2.py3-none-any.whl", hash = "sha256:a7bb560c8aee30f9957e5f9895805edd20602f2d7f720186dfd906e82b4982e1" },
+]
+
+[[package]]
+name = "zipp"
+version = "3.23.0"
+source = { registry = "https://mirrors.aliyun.com/pypi/simple" }
+sdist = { url = "https://mirrors.aliyun.com/pypi/packages/e3/02/0f2892c661036d50ede074e376733dca2ae7c6eb617489437771209d4180/zipp-3.23.0.tar.gz", hash = "sha256:a07157588a12518c9d4034df3fbbee09c814741a33ff63c05fa29d26a2404166" }
+wheels = [
+    { url = "https://mirrors.aliyun.com/pypi/packages/2e/54/647ade08bf0db230bfea292f893923872fd20be6ac6f53b2b936ba839d75/zipp-3.23.0-py3-none-any.whl", hash = "sha256:071652d6115ed432f5ce1d34c336c0adfd6a884660d1e9712a256d3d3bd4b14e" },
 ]
