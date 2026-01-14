@@ -17,6 +17,7 @@ from upcast.scanners import (
     LoggingScanner,
     MetricsScanner,
     ModuleSymbolScanner,
+    PatternBlameScanner,
     RedisUsageScanner,
     UnitTestScanner,
 )
@@ -1127,6 +1128,122 @@ def scan_module_symbols_cmd(
             exclude_patterns=list(exclude) if exclude else None,
             verbose=verbose,
             include_private=include_private,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-pattern-blame")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option(
+    "--markdown-title",
+    type=str,
+    help="Title for markdown output",
+)
+@click.option(
+    "-p",
+    "--pattern",
+    multiple=True,
+    help="ast-grep pattern to search (can be specified multiple times)",
+)
+@click.option(
+    "-f",
+    "--pattern-file",
+    type=click.Path(exists=True),
+    help="File containing patterns (one per line, # for comments)",
+)
+@click.option(
+    "-l",
+    "--lang",
+    type=str,
+    help="Language (python, ts, js, go, java, cpp, rust, etc.)",
+)
+@click.option(
+    "--max-depth",
+    type=int,
+    default=50,
+    help="Maximum number of commits to track per line (default: 50)",
+)
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_pattern_blame_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
+    pattern: tuple[str, ...],
+    pattern_file: Optional[str],
+    lang: Optional[str],
+    max_depth: int,
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan for code patterns and track their git history.
+
+    Combines ast-grep pattern matching with git blame to show
+    all commits that modified matched lines.
+
+    Examples:
+
+        \b
+        # Search for print statements in Python
+        upcast scan-pattern-blame -p "print($MSG)" . --lang python
+
+        \b
+        # Multiple patterns
+        upcast scan-pattern-blame -p "print($MSG)" -p "logging.info($MSG)" .
+
+        \b
+        # Use pattern file
+        upcast scan-pattern-blame -f patterns.txt ./src --lang python
+
+        \b
+        # Track more history
+        upcast scan-pattern-blame -p "console.log($MSG)" . --lang ts --max-depth 100
+    """
+    try:
+        from pathlib import Path
+
+        scanner = PatternBlameScanner(
+            patterns=list(pattern) if pattern else None,
+            pattern_file=Path(pattern_file) if pattern_file else None,
+            lang=lang,
+            max_history_depth=max_depth,
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
         )
         run_scanner_cli(
             scanner=scanner,
