@@ -64,6 +64,8 @@ upcast scan-env-vars . --no-default-excludes
 upcast scan-env-vars . --include "src/**" --exclude "**/*_test.py"
 ```
 
+By default, file discovery also respects the scanned target directory's `.gitignore`, in addition to Upcast's built-in default excludes (such as `venv/`, `build/`, and `dist/`).
+
 **Other common options:**
 
 - `-o, --output FILE`: Save results to file instead of stdout

@@ -16,7 +16,9 @@ def test_workspace():
         workspace = Path(tmpdir)
 
         # Create structure with excluded directories
+        (workspace / ".gitignore").write_text("ignored/\n")
         (workspace / "app").mkdir()
+        (workspace / "ignored").mkdir()
         (workspace / "tests").mkdir()
         (workspace / "venv").mkdir()
 
@@ -35,6 +37,15 @@ class User(models.Model):
 from django.db import models
 
 class TestModel(models.Model):
+    value = models.IntegerField()
+"""
+        )
+
+        (workspace / "ignored" / "models.py").write_text(
+            """
+from django.db import models
+
+class IgnoredModel(models.Model):
     value = models.IntegerField()
 """
         )
@@ -100,6 +111,15 @@ class TestFileFiltering:
         assert "User" in model_names
         assert "VenvModel" not in model_names
         # TestModel might not be found if file is named test_*.py (test files are often excluded)
+
+    def test_django_models_respects_target_gitignore(self, test_workspace):
+        """Test that target directory .gitignore is respected during scanner discovery."""
+        scanner = DjangoModelScanner(verbose=False)
+        result = scanner.scan(test_workspace)
+
+        model_names = [m.name for m in result.results.values()]
+        assert "User" in model_names
+        assert "IgnoredModel" not in model_names
 
     def test_django_models_exclude_pattern(self, test_workspace):
         """Test exclude pattern in Django models scanner."""
