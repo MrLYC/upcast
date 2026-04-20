@@ -155,6 +155,24 @@ class TestBaseScanner:
             file_names = {f.name for f in files}
             assert file_names == {"main.py", "utils.py"}
 
+    def test_get_files_to_scan_respects_target_gitignore(self):
+        """Test scanner file discovery respects target directory .gitignore by default."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmppath = Path(tmpdir)
+
+            (tmppath / ".gitignore").write_text("venv/\nignored.py\n")
+            (tmppath / "main.py").write_text("# main")
+            (tmppath / "ignored.py").write_text("# ignored")
+
+            venv_dir = tmppath / "venv"
+            venv_dir.mkdir()
+            (venv_dir / "lib.py").write_text("# ignored")
+
+            scanner = ConcreteTestScanner(include_patterns=["**/*.py"])
+            files = scanner.get_files_to_scan(tmppath)
+
+            assert files == [tmppath / "main.py"]
+
     def test_get_files_to_scan_multiple_include_patterns(self):
         """Test get_files_to_scan with multiple include patterns."""
         with tempfile.TemporaryDirectory() as tmpdir:

@@ -11,6 +11,7 @@ from typing import Any, Generic, TypeVar
 
 from astroid import nodes
 
+from upcast.common.file_utils import collect_python_files
 from upcast.common.patterns import match_patterns
 from upcast.models.base import ScannerOutput
 
@@ -39,6 +40,7 @@ class BaseScanner(ABC, Generic[T]):
         include_patterns: list[str] | None = None,
         exclude_patterns: list[str] | None = None,
         verbose: bool = False,
+        use_default_excludes: bool = True,
     ):
         """Initialize the base scanner.
 
@@ -46,10 +48,12 @@ class BaseScanner(ABC, Generic[T]):
             include_patterns: Glob patterns for files to include (default: ["**/*.py"])
             exclude_patterns: Glob patterns for files to exclude (default: [])
             verbose: Enable verbose output
+            use_default_excludes: Whether to apply default exclude patterns
         """
         self.include_patterns = include_patterns or ["**/*.py"]
         self.exclude_patterns = exclude_patterns or []
         self.verbose = verbose
+        self.use_default_excludes = use_default_excludes
 
     @abstractmethod
     def scan(self, path: Path) -> T:
@@ -92,14 +96,12 @@ class BaseScanner(ABC, Generic[T]):
         if path.is_file():
             return [path] if self.should_scan_file(path) else []
 
-        # Collect files matching include patterns
-        files: set[Path] = set()
-        for pattern in self.include_patterns:
-            matched = path.glob(pattern)
-            files.update(f for f in matched if f.is_file())
-
-        # Filter with should_scan_file (applies exclude logic)
-        return sorted(f for f in files if self.should_scan_file(f))
+        return collect_python_files(
+            path,
+            include_patterns=self.include_patterns,
+            exclude_patterns=self.exclude_patterns,
+            use_default_excludes=self.use_default_excludes,
+        )
 
     def should_scan_file(self, file_path: Path) -> bool:
         """Check if file should be scanned.
