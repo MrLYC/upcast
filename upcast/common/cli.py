@@ -153,12 +153,16 @@ def run_scanner_cli(
         click.echo(f"Error: Path '{path}' does not exist", err=True)
         sys.exit(1)
 
+    scanner.include_patterns = list(include) if include else None
+    scanner.exclude_patterns = list(exclude) if exclude else None
+    scanner.use_default_excludes = not no_default_excludes
+
     # Collect Python files
     python_files = collect_python_files(
         scan_path,
-        include_patterns=list(include) if include else None,
-        exclude_patterns=list(exclude) if exclude else None,
-        use_default_excludes=not no_default_excludes,
+        include_patterns=scanner.include_patterns,
+        exclude_patterns=scanner.exclude_patterns,
+        use_default_excludes=scanner.use_default_excludes,
     )
 
     if not python_files:

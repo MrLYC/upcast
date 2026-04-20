@@ -159,6 +159,46 @@ class TestRunScannerCli:
 
             self.mock_scanner.scan.assert_called_once()
 
+    def test_propagates_no_default_excludes_to_scanner(self, tmp_path):
+        """Test that CLI propagates default exclude behavior to scanner discovery."""
+        (tmp_path / "test.py").write_text("# test")
+        self.mock_scanner.use_default_excludes = True
+
+        with patch("upcast.common.cli.collect_python_files") as mock_collect:
+            mock_collect.return_value = [tmp_path / "test.py"]
+
+            with patch("upcast.common.cli.click.echo"):
+                run_scanner_cli(
+                    scanner=self.mock_scanner,
+                    path=str(tmp_path),
+                    no_default_excludes=True,
+                )
+
+        assert self.mock_scanner.use_default_excludes is False
+
+    def test_synchronizes_filter_patterns_to_scanner(self, tmp_path):
+        """Test that CLI propagates include/exclude/default-exclude settings to scanner."""
+        (tmp_path / "test.py").write_text("# test")
+        self.mock_scanner.include_patterns = ["**/*.py"]
+        self.mock_scanner.exclude_patterns = []
+        self.mock_scanner.use_default_excludes = True
+
+        with patch("upcast.common.cli.collect_python_files") as mock_collect:
+            mock_collect.return_value = [tmp_path / "test.py"]
+
+            with patch("upcast.common.cli.click.echo"):
+                run_scanner_cli(
+                    scanner=self.mock_scanner,
+                    path=str(tmp_path),
+                    include=("app/**",),
+                    exclude=("tests/**",),
+                    no_default_excludes=True,
+                )
+
+        assert self.mock_scanner.include_patterns == ["app/**"]
+        assert self.mock_scanner.exclude_patterns == ["tests/**"]
+        assert self.mock_scanner.use_default_excludes is False
+
     def test_outputs_to_file_yaml(self, tmp_path):
         """Test that output is written to YAML file."""
         scan_dir = tmp_path / "scan"
