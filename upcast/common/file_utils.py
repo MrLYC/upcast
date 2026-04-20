@@ -1,7 +1,10 @@
 """File discovery and path utilities."""
 
+import os
 from pathlib import Path
 from typing import Optional
+
+from pathspec import GitIgnoreSpec
 
 
 def validate_path(path_str: str) -> Path:
@@ -70,28 +73,98 @@ def collect_python_files(
     Returns:
         Sorted list of Python file paths
     """
-    from upcast.common.patterns import should_exclude
+    from upcast.common.patterns import match_patterns, should_exclude
 
     if path.is_file():
         return [path] if path.suffix == ".py" else []
 
+    gitignore_spec = _load_gitignore_spec(path)
     python_files = []
 
-    for py_file in path.rglob("*.py"):
-        # Apply filtering
-        relative_path = py_file.relative_to(path)
+    for root, dirnames, filenames in os.walk(path, topdown=True):
+        root_path = Path(root)
 
-        if should_exclude(
-            relative_path,
-            include_patterns=include_patterns,
-            exclude_patterns=exclude_patterns,
-            use_default_excludes=use_default_excludes,
-        ):
-            continue
+        dirnames[:] = [
+            dirname
+            for dirname in dirnames
+            if not _should_skip_directory(
+                (root_path / dirname).relative_to(path),
+                gitignore_spec=gitignore_spec,
+                exclude_patterns=exclude_patterns,
+                use_default_excludes=use_default_excludes,
+            )
+        ]
 
-        python_files.append(py_file)
+        for filename in filenames:
+            py_file = root_path / filename
+            relative_path = py_file.relative_to(path)
+
+            if py_file.suffix == ".py":
+                pass
+            elif py_file.suffix == ".pyi" and include_patterns and match_patterns(relative_path, include_patterns):
+                pass
+            else:
+                continue
+
+            if _matches_gitignore(relative_path, gitignore_spec):
+                continue
+
+            if should_exclude(
+                relative_path,
+                include_patterns=include_patterns,
+                exclude_patterns=exclude_patterns,
+                use_default_excludes=use_default_excludes,
+            ):
+                continue
+
+            python_files.append(py_file)
 
     return sorted(python_files)
+
+
+def _load_gitignore_spec(path: Path) -> GitIgnoreSpec | None:
+    """Load .gitignore rules from the target directory root."""
+    gitignore_path = path / ".gitignore"
+    if not gitignore_path.is_file():
+        return None
+
+    lines = gitignore_path.read_text(encoding="utf-8").splitlines()
+    if not lines:
+        return None
+
+    return GitIgnoreSpec.from_lines(lines)
+
+
+def _matches_gitignore(relative_path: Path, gitignore_spec: GitIgnoreSpec | None, *, is_dir: bool = False) -> bool:
+    """Check whether a relative path matches target .gitignore rules."""
+    if gitignore_spec is None:
+        return False
+
+    path_str = relative_path.as_posix()
+    if not path_str or path_str == ".":
+        return False
+
+    if is_dir:
+        path_str = f"{path_str}/"
+
+    return gitignore_spec.match_file(path_str)
+
+
+def _should_skip_directory(
+    relative_path: Path,
+    *,
+    gitignore_spec: GitIgnoreSpec | None,
+    exclude_patterns: Optional[list[str]],
+    use_default_excludes: bool,
+) -> bool:
+    """Check whether a directory should be pruned during discovery."""
+    from upcast.common.patterns import should_exclude
+
+    return should_exclude(
+        relative_path,
+        exclude_patterns=exclude_patterns,
+        use_default_excludes=use_default_excludes,
+    ) or _matches_gitignore(relative_path, gitignore_spec, is_dir=True)
 
 
 def get_relative_path_str(file_path: Path, base_path: Path) -> str:

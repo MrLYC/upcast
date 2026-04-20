@@ -143,6 +143,20 @@ class TestCollectPythonFiles:
         names = [f.name for f in result]
         assert names == ["a.py", "b.py", "c.py"]
 
+    def test_respects_target_gitignore_by_default(self, tmp_path: Path) -> None:
+        """Should skip files ignored by the target directory .gitignore."""
+        (tmp_path / ".gitignore").write_text("venv/\nignored.py\n")
+        (tmp_path / "app.py").write_text("")
+        (tmp_path / "ignored.py").write_text("")
+
+        venv_dir = tmp_path / "venv"
+        venv_dir.mkdir()
+        (venv_dir / "lib.py").write_text("")
+
+        result = collect_python_files(tmp_path)
+
+        assert result == [tmp_path / "app.py"]
+
 
 class TestGetRelativePathStr:
     """Tests for get_relative_path_str function."""
