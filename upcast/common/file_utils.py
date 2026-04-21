@@ -99,9 +99,9 @@ def collect_python_files(
             py_file = root_path / filename
             relative_path = py_file.relative_to(path)
 
-            if py_file.suffix == ".py":
-                pass
-            elif py_file.suffix == ".pyi" and include_patterns and match_patterns(relative_path, include_patterns):
+            if py_file.suffix == ".py" or (
+                py_file.suffix == ".pyi" and include_patterns and match_patterns(relative_path, include_patterns)
+            ):
                 pass
             else:
                 continue
