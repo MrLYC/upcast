@@ -4,12 +4,12 @@
 - **scanner_name**: unit-tests
 
 ## 概要信息
-- **总数量**: 1607
-- **已扫描文件数**: 331
-- **扫描耗时**: 6537 毫秒
+- **总数量**: 1608
+- **已扫描文件数**: 332
+- **扫描耗时**: 14015 毫秒
 
-- **测试总数**: 1607
-- **测试文件总数**: 331
+- **测试总数**: 1608
+- **测试文件总数**: 332
 - **断言总数**: 3658
 
 ## 结果详情
@@ -1971,6 +1971,15 @@
 | test_get_plugin_env_variables | 86-92 | 1 | e09929e6... |  (get_plugin_env_variables) |
 | test_distributor_code_name | 96-104 | 3 | b706d0a9... |  (G),  (partial),  (set_distributors),  (BkPluginAppQuerySet, BkPluginDistributor) |
 | test_tag_id | 106-120 | 3 | 4c5fce60... |  (G),  (partial),  (PluginTagIdType),  (BkPluginAppQuerySet, BkPluginTag) |
+
+---
+
+
+### 测试文件: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/conftest.py
+
+| 测试名称 | 行数 | 断言数 | 主体MD5 | 目标 |
+|---------|------|--------|---------|------|
+| test_release | 278-291 | 0 | 439c1255... |  (G),  (PluginRelease),  (pytest) |
 
 ---
 
