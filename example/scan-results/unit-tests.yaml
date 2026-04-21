@@ -12434,6 +12434,24 @@ results:
       symbols:
       - BkPluginAppQuerySet
       - BkPluginTag
+  apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/conftest.py:
+  - assert_count: 0
+    body_md5: 439c12559da0bd6a874a1321416eda5c
+    file: apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/conftest.py
+    line_range:
+    - 278
+    - 291
+    name: test_release
+    targets:
+    - module_path: django_dynamic_fixture
+      symbols:
+      - G
+    - module_path: paasng.bk_plugins.pluginscenter.models
+      symbols:
+      - PluginRelease
+    - module_path: pytest
+      symbols:
+      - pytest
   apiserver/paasng/tests/paasng/bk_plugins/pluginscenter/iam_adaptor/management/test_providers.py:
   - assert_count: 1
     body_md5: 3d5d9400acfdb9d561f7fd33185b9d19
@@ -26972,9 +26990,9 @@ results:
       symbols:
       - configure_regions
 summary:
-  files_scanned: 331
-  scan_duration_ms: 6553
+  files_scanned: 332
+  scan_duration_ms: 13874
   total_assertions: 3658
-  total_count: 1607
-  total_files: 331
-  total_tests: 1607
+  total_count: 1608
+  total_files: 332
+  total_tests: 1608
