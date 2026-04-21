@@ -99,11 +99,9 @@ def collect_python_files(
             py_file = root_path / filename
             relative_path = py_file.relative_to(path)
 
-            if py_file.suffix == ".py" or (
+            if py_file.suffix != ".py" and not (
                 py_file.suffix == ".pyi" and include_patterns and match_patterns(relative_path, include_patterns)
             ):
-                pass
-            else:
                 continue
 
             if _matches_gitignore(relative_path, gitignore_spec):
