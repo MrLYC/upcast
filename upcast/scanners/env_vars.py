@@ -11,6 +11,9 @@ from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
 
+SUPPORTED_GETENV_MODULES = {"os"}
+SUPPORTED_ENVIRON_MODULES = {"os"}
+
 
 class EnvVarScanner(BaseScanner[EnvVarOutput]):
     """Scanner for environment variable usage (os.environ, os.getenv, etc.)."""
@@ -70,10 +73,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
 
     def _check_getenv_call(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> None:
         """Check if Call node is os.getenv() or similar."""
-        func_name = safe_as_string(node.func)
-
-        # Check for getenv or environ.get patterns
-        if not ("getenv" in func_name or (func_name.endswith(".get") and "environ" in func_name)):
+        if not self._is_supported_getenv_call(node.func, imports):
             return
 
         # Extract variable name
@@ -88,15 +88,17 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
 
         # Extract default value
         default_value = None
-        required = not func_name.endswith(".get")
+        required = True
 
         if len(node.args) >= 2:
-            default_value = infer_value(node.args[1]).get_exact()
+            default_result = infer_value(node.args[1])
+            default_value = default_result.get_exact("<dynamic>")
             required = False
         elif node.keywords:
             for kw in node.keywords:
                 if kw.arg == "default":
-                    default_value = infer_value(kw.value).get_exact()
+                    default_result = infer_value(kw.value)
+                    default_value = default_result.get_exact("<dynamic>")
                     required = False
                     break
 
@@ -104,7 +106,10 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
+            column=getattr(node, "col_offset", None),
             statement=safe_as_string(node),
+            pattern=safe_as_string(node),
+            code=safe_as_string(node),
             type="unknown",
         )
         self._add_env_var(
@@ -116,11 +121,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
 
     def _check_environ_subscript(self, node: nodes.Subscript, file_path: str, imports: dict[str, str]) -> None:
         """Check if Subscript node is os.environ['KEY'] or similar."""
-        value_str = safe_as_string(node.value)
-
-        # Must be exactly os.environ or environ (from import)
-        # Reject cases like .data['key'], api.get()['key'], etc.
-        if not (value_str == "os.environ" or value_str == "environ"):
+        if not self._is_supported_environ_value(node.value, imports):
             return
 
         # Skip Del statements
@@ -140,7 +141,10 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         location = EnvVarLocation(
             file=file_path,
             line=node.lineno,
+            column=getattr(node, "col_offset", None),
             statement=safe_as_string(node),
+            pattern=safe_as_string(node),
+            code=safe_as_string(node),
             type="unknown",
         )
         self._add_env_var(
@@ -163,23 +167,93 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
                 name=name,
                 required=required,
                 default_value=default_value,
+                defaults=[],
                 types=[],
                 locations=[],
             )
 
-        self.env_vars[name].locations.append(location)
+        existing_info = self.env_vars[name]
+        if not self._has_location(existing_info.locations, location):
+            existing_info.locations.append(location)
 
         # Aggregate types from locations
-        if location.type and location.type not in self.env_vars[name].types:
-            self.env_vars[name].types.append(location.type)
+        if location.type and location.type not in existing_info.types:
+            existing_info.types.append(location.type)
 
         # Update required status (if ANY usage is required, mark as required)
         if required:
-            self.env_vars[name].required = True
+            existing_info.required = True
 
-        # Update default value if provided and not already set
-        if default_value is not None and not self.env_vars[name].default_value:
-            self.env_vars[name].default_value = default_value
+        # Preserve all defaults while keeping first default_value as compatibility alias
+        if default_value is not None:
+            if default_value not in existing_info.defaults:
+                existing_info.defaults.append(default_value)
+            if existing_info.default_value is None:
+                existing_info.default_value = default_value
+
+    def _has_location(self, existing_locations: list[EnvVarLocation], location: EnvVarLocation) -> bool:
+        """Return True when the exact same location record already exists."""
+        for existing in existing_locations:
+            if (
+                existing.file == location.file
+                and existing.line == location.line
+                and existing.statement == location.statement
+            ):
+                return True
+        return False
+
+    def _is_supported_getenv_call(
+        self,
+        func: nodes.NodeNG,
+        imports: dict[str, str],
+    ) -> bool:
+        """Return True for supported os.getenv and os.environ.get calls only."""
+        return self._is_supported_getenv_name(func, imports) or self._is_supported_environ_get(func, imports)
+
+    def _is_supported_getenv_name(self, func: nodes.NodeNG, imports: dict[str, str]) -> bool:
+        """Check supported getenv call names, including imported aliases."""
+        if isinstance(func, nodes.Attribute):
+            if func.attrname != "getenv":
+                return False
+            owner_name = safe_as_string(func.expr)
+            owner_root = owner_name.split(".")[0] if owner_name else ""
+            return owner_root in SUPPORTED_GETENV_MODULES or imports.get(owner_root) in SUPPORTED_GETENV_MODULES
+
+        if isinstance(func, nodes.Name):
+            qualified = imports.get(func.name, "")
+            return qualified in {"os.getenv"}
+
+        return False
+
+    def _is_supported_environ_get(self, func: nodes.NodeNG, imports: dict[str, str]) -> bool:
+        """Check supported environ.get call names, including imported aliases."""
+        if not isinstance(func, nodes.Attribute):
+            return False
+
+        if func.attrname != "get":
+            return False
+
+        return self._is_supported_environ_value(func.expr, imports)
+
+    def _is_supported_environ_value(self, value: nodes.NodeNG, imports: dict[str, str]) -> bool:
+        """Check supported environ object references, including imported aliases."""
+        value_str = safe_as_string(value)
+        if value_str == "os.environ" or value_str == "environ":
+            return True
+
+        if isinstance(value, nodes.Attribute):
+            if value.attrname != "environ":
+                return False
+
+            owner_name = safe_as_string(value.expr)
+            owner_root = owner_name.split(".")[0] if owner_name else ""
+            return owner_root in SUPPORTED_ENVIRON_MODULES or imports.get(owner_root) in SUPPORTED_ENVIRON_MODULES
+
+        if isinstance(value, nodes.Name):
+            qualified = imports.get(value.name, "")
+            return qualified == "os.environ"
+
+        return False
 
     def _calculate_summary(
         self,

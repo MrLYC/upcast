@@ -138,11 +138,55 @@ result = obj.getenv('VAR')
 
         result = scanner.scan(tmp_path)
 
-        # The scanner detects any getenv() call containing 'getenv' in the name
-        # This is a limitation of the current implementation
-        assert len(result.results) == 2
-        assert "KEY" in result.results
-        assert "VAR" in result.results
+        # Only supported os.getenv/os.environ.get patterns should be detected
+        assert len(result.results) == 0
+        assert "KEY" not in result.results
+        assert "VAR" not in result.results
+
+    def test_request_environ_get_is_ignored(self, scanner: EnvVarScanner, tmp_path):
+        """Test request.environ.get is not treated as os.environ.get."""
+        code = """
+from flask import request
+
+user_agent = request.environ.get('HTTP_USER_AGENT')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert len(result.results) == 0
+        assert "HTTP_USER_AGENT" not in result.results
+
+    def test_chained_non_env_calls_are_ignored(self, scanner: EnvVarScanner, tmp_path):
+        """Test chained calls after getenv() are not treated as env access."""
+        code = """
+import os
+
+config = os.getenv('PRIMARY', 'a,b').split(',')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "PRIMARY" in result.results
+        assert "," not in result.results
+
+    def test_duplicate_exact_locations_are_deduplicated(self, scanner: EnvVarScanner, tmp_path):
+        """Test repeated exact location records are collapsed."""
+        code = """
+import os
+
+first = os.getenv('DUPLICATE'); second = os.getenv('DUPLICATE')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "DUPLICATE" in result.results
+        assert len(result.results["DUPLICATE"].locations) == 1
 
     def test_commented_out_env_vars(self, scanner: EnvVarScanner, tmp_path):
         """Test commented out environment variable usage."""

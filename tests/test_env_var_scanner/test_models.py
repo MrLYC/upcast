@@ -52,10 +52,12 @@ class TestEnvVarInfo:
             name="DEBUG",
             required=False,
             default_value="False",
+            defaults=["False"],
             locations=[],
         )
         assert info.required is False
         assert info.default_value == "False"
+        assert info.defaults == ["False"]
 
     def test_variable_with_locations(self) -> None:
         """Test variable with multiple locations."""

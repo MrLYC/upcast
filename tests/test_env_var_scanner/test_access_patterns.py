@@ -115,6 +115,20 @@ token = getenv('TOKEN')
         assert "TOKEN" in result.results
         assert result.results["TOKEN"].required is True
 
+    def test_from_os_import_getenv_alias(self, scanner: EnvVarScanner, tmp_path):
+        """Test 'from os import getenv as get' pattern."""
+        code = """
+from os import getenv as get
+token = get('TOKEN')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "TOKEN" in result.results
+        assert result.results["TOKEN"].required is True
+
     def test_from_os_import_environ(self, scanner: EnvVarScanner, tmp_path):
         """Test 'from os import environ' with subscript."""
         code = """
@@ -144,6 +158,35 @@ path = environ.get('PATH', '/usr/bin')
         assert "PATH" in result.results
         assert result.results["PATH"].required is False
         assert result.results["PATH"].default_value == "/usr/bin"
+
+    def test_from_os_import_environ_alias_get(self, scanner: EnvVarScanner, tmp_path):
+        """Test 'from os import environ as env' with .get()."""
+        code = """
+from os import environ as env
+path = env.get('PATH', '/usr/bin')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "PATH" in result.results
+        assert result.results["PATH"].required is False
+        assert result.results["PATH"].default_value == "/usr/bin"
+
+    def test_from_os_import_environ_alias_subscript(self, scanner: EnvVarScanner, tmp_path):
+        """Test 'from os import environ as env' with subscript."""
+        code = """
+from os import environ as env
+user = env['USERNAME']
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "USERNAME" in result.results
+        assert result.results["USERNAME"].required is True
 
     def test_mixed_access_patterns_same_variable(self, scanner: EnvVarScanner, tmp_path):
         """Test same variable accessed with different patterns."""

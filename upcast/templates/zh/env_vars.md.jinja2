@@ -13,8 +13,11 @@
 ### {{ var_name }}
 
 **是否必需**: {{ '是' if var_info.required else '否' }}
-{% if var_info.default_value %}
+{% if var_info.default_value is not none %}
 **默认值**: `{{ var_info.default_value }}`
+{% endif %}
+{% if var_info.defaults and var_info.defaults|length > 1 %}
+**全部默认值**: {% for default in var_info.defaults %}`{{ default }}`{% if not loop.last %}, {% endif %}{% endfor %}
 {% endif %}
 
 #### 使用位置

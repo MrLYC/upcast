@@ -17,7 +17,10 @@ class EnvVarLocation(BaseModel):
 
     file: str = Field(description="File path")
     line: int | None = Field(ge=1, description="Line number")
+    column: int | None = Field(default=None, ge=0, description="Column number")
     statement: str | None = Field(None, description="Code snippet")
+    pattern: str | None = Field(default=None, description="Matched access pattern")
+    code: str | None = Field(default=None, description="Full source snippet")
     type: str = Field(default="unknown", description="Inferred type")
 
 
@@ -35,6 +38,7 @@ class EnvVarInfo(BaseModel):
     name: str = Field(description="Environment variable name")
     required: bool = Field(description="Whether variable is required")
     default_value: str | None = Field(None, description="Default value if provided")
+    defaults: list[str] = Field(default_factory=list, description="All distinct default values")
     types: list[str] = Field(default_factory=list, description="Aggregated types")
     locations: list[EnvVarLocation] = Field(description="Access locations")
 

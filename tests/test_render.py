@@ -218,6 +218,7 @@ class TestRenderToMarkdown:
                     name="DEBUG",
                     required=False,
                     default_value="False",
+                    defaults=["False", "True"],
                     locations=[
                         EnvVarLocation(
                             file="settings.py",
@@ -237,6 +238,73 @@ class TestRenderToMarkdown:
         assert "DATABASE_URL" in markdown
         assert "DEBUG" in markdown
         assert "Required" in markdown
+
+    def test_render_env_vars_defaults_list(self):
+        """Test rendering environment variable defaults list."""
+        output = EnvVarOutput(
+            summary=EnvVarSummary(
+                total_count=1,
+                files_scanned=1,
+                total_env_vars=1,
+                required_count=0,
+                optional_count=1,
+            ),
+            results={
+                "MODE": EnvVarInfo(
+                    name="MODE",
+                    required=False,
+                    default_value="dev",
+                    defaults=["dev", "prod"],
+                    locations=[
+                        EnvVarLocation(
+                            file="settings.py",
+                            line=1,
+                            column=1,
+                            pattern="os.getenv('MODE', 'dev')",
+                            code="mode = os.getenv('MODE', 'dev')",
+                        )
+                    ],
+                )
+            },
+        )
+
+        markdown = render_to_markdown(output, language="en", title="Environment Variables")
+
+        assert "dev" in markdown
+        assert "prod" in markdown
+
+    def test_render_env_vars_empty_string_default(self):
+        """Test rendering environment variable empty-string default."""
+        output = EnvVarOutput(
+            summary=EnvVarSummary(
+                total_count=1,
+                files_scanned=1,
+                total_env_vars=1,
+                required_count=0,
+                optional_count=1,
+            ),
+            results={
+                "PREFIX": EnvVarInfo(
+                    name="PREFIX",
+                    required=False,
+                    default_value="",
+                    defaults=[""],
+                    locations=[
+                        EnvVarLocation(
+                            file="settings.py",
+                            line=1,
+                            column=1,
+                            pattern="os.getenv('PREFIX', '')",
+                            code="prefix = os.getenv('PREFIX', '')",
+                        )
+                    ],
+                )
+            },
+        )
+
+        markdown = render_to_markdown(output, language="en", title="Environment Variables")
+
+        assert "Default Value" in markdown
 
     def test_render_signals_zh(self):
         """Test rendering signals in Chinese."""

@@ -13,8 +13,11 @@
 ### {{ var_name }}
 
 **Required**: {{ 'Yes' if var_info.required else 'No' }}
-{% if var_info.default_value %}
+{% if var_info.default_value is not none %}
 **Default Value**: `{{ var_info.default_value }}`
+{% endif %}
+{% if var_info.defaults and var_info.defaults|length > 1 %}
+**All Defaults**: {% for default in var_info.defaults %}`{{ default }}`{% if not loop.last %}, {% endif %}{% endfor %}
 {% endif %}
 
 #### Usage Locations

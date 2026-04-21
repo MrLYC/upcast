@@ -110,7 +110,7 @@ host = os.getenv('HOST', default_host)
         assert result.results["HOST"].default_value == "localhost"
 
     def test_multiple_defaults_same_variable(self, scanner: EnvVarScanner, tmp_path):
-        """Test same variable with different defaults (first one wins)."""
+        """Test same variable with different defaults preserves all defaults."""
         code = """
 import os
 # First access with default 'foo'
@@ -123,8 +123,24 @@ val2 = os.getenv('VAR', 'bar')
 
         result = scanner.scan(tmp_path)
 
-        # First default value should be recorded
         assert result.results["VAR"].default_value == "foo"
+        assert result.results["VAR"].defaults == ["foo", "bar"]
+
+    def test_conflicting_defaults_are_exposed(self, scanner: EnvVarScanner, tmp_path):
+        """Test conflicting defaults keep compatibility alias plus list."""
+        code = """
+import os
+
+value = os.environ.get('MODE', 'dev')
+other = os.environ.get('MODE', 'prod')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.results["MODE"].default_value == "dev"
+        assert result.results["MODE"].defaults == ["dev", "prod"]
 
     def test_required_then_optional(self, scanner: EnvVarScanner, tmp_path):
         """Test variable accessed first without default, then with default."""
