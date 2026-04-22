@@ -102,10 +102,10 @@ class TestBasicFunctions:
         """Signature normalization should not rewrite string literal contents."""
         test_file = tmp_path / "test.py"
         test_file.write_text(
-            dedent('''
+            dedent("""
             def render(sep="  "):
                 return sep
-        ''')
+        """)
         )
 
         scanner = ModuleSymbolScanner()
@@ -115,16 +115,18 @@ class TestBasicFunctions:
         assert "render" in symbols.functions
         signature = symbols.functions["render"].signature
         assert "def render(" in signature
-        assert "sep='  '" in signature or 'sep="  "' in signature or "sep = '  '" in signature or 'sep = "  "' in signature
+        assert (
+            "sep='  '" in signature or 'sep="  "' in signature or "sep = '  '" in signature or 'sep = "  "' in signature
+        )
 
     def test_function_signature_preserves_literal_punctuation_spacing(self, tmp_path):
         """Signature extraction should not rewrite punctuation inside string literals."""
         test_file = tmp_path / "test.py"
         test_file.write_text(
-            dedent('''
+            dedent("""
             def render(template="a : b", wrapper="( x )"):
                 return template, wrapper
-        ''')
+        """)
         )
 
         scanner = ModuleSymbolScanner()

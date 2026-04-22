@@ -131,6 +131,7 @@ class TestCeleryBrokerDetection:
         assert "secret" not in (broker_usage.config.location or "")
         assert "secret" not in (broker_usage.statement or "")
 
+
 class TestChannelsDetection:
     """Test Django Channels configuration detection."""
 

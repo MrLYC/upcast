@@ -71,6 +71,7 @@ class TestUnitTestInfoModel:
         assert test.parametrize == [{"argnames": "value", "case_count": 3}]
         assert test.expanded_count == 3
 
+
 class TestUnitTestSummaryModel:
     """Test UnitTestSummary model."""
 

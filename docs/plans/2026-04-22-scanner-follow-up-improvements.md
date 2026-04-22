@@ -31,6 +31,7 @@
 ### Task 1: Build the regression matrix and fixture inventory
 
 **Files:**
+
 - Modify: `tests/TEST_PLAN.md`
 - Review: `tests/test_http_request_scanner/`
 - Review: `tests/test_concurrency_pattern_scanner/`
@@ -47,6 +48,7 @@
 **Step 1: Write the regression matrix**
 
 Document each deferred improvement as one row in `tests/TEST_PLAN.md` with:
+
 - scanner name
 - bug / enhancement summary
 - target test file
@@ -71,6 +73,7 @@ git commit -m "docs: map follow-up scanner regression work"
 ### Task 2: Exclude HTTP mocks and detect real httpx/aiohttp patterns
 
 **Files:**
+
 - Modify: `upcast/scanners/http_requests.py`
 - Modify: `tests/test_http_request_scanner/test_edge_cases.py`
 - Modify: `tests/test_http_request_scanner/test_scanner_integration.py`
@@ -80,6 +83,7 @@ git commit -m "docs: map follow-up scanner regression work"
 **Step 1: Write the failing tests**
 
 Add focused failing tests for:
+
 - `requests_mock` registration calls that must be ignored
 - real `httpx.Client()` and `httpx.AsyncClient()` request calls that must be detected
 - real `aiohttp.ClientSession()` request calls that must be detected when they are directly visible in AST patterns
@@ -92,6 +96,7 @@ Expected: FAIL on the newly added mock-exclusion and library-detection assertion
 **Step 3: Write minimal implementation**
 
 Update `upcast/scanners/http_requests.py` to:
+
 - reject known mock registration APIs before request classification
 - recognize supported `httpx` call sites
 - recognize supported `aiohttp` request call sites without broadening to speculative patterns
@@ -113,6 +118,7 @@ git commit -m "fix: improve http request scanner precision"
 ### Task 3: Add Celery detection to concurrency patterns
 
 **Files:**
+
 - Modify: `upcast/scanners/concurrency.py`
 - Modify: `tests/test_concurrency_pattern_scanner/test_edge_cases.py`
 - Modify: `tests/test_concurrency_pattern_scanner/test_integration.py`
@@ -122,6 +128,7 @@ git commit -m "fix: improve http request scanner precision"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `@shared_task`
 - `@app.task`
 - direct `.delay()` / `.apply_async()` patterns when they should count as Celery usage
@@ -152,6 +159,7 @@ git commit -m "fix: add celery coverage to concurrency scanner"
 ### Task 4: Tighten logging sensitivity and message extraction
 
 **Files:**
+
 - Modify: `upcast/scanners/logging_scanner.py`
 - Modify: `tests/test_logging_scanner/test_edge_cases.py`
 - Modify: `tests/test_logging_scanner/test_logger_names.py`
@@ -161,6 +169,7 @@ git commit -m "fix: add celery coverage to concurrency scanner"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `headers`, `token`, `password`, `cookie`, `auth`, `secret` sensitivity detection
 - `logging.getLogger("name")` logger-name extraction
 - `.format(...)` and `%` interpolation template cleanup so the message field stores the template rather than the full expression
@@ -173,6 +182,7 @@ Expected: FAIL on new sensitivity and extraction assertions.
 **Step 3: Write minimal implementation**
 
 Update `upcast/scanners/logging_scanner.py` to:
+
 - extend the sensitive-keyword set
 - prefer logical logger names over file-path fallbacks where possible
 - normalize `.format(...)` and `%`-style message extraction to the template string
@@ -194,6 +204,7 @@ git commit -m "fix: improve logging scanner signal quality"
 ### Task 5: Expand Redis operation coverage and TTL accuracy
 
 **Files:**
+
 - Modify: `upcast/scanners/redis_usage.py`
 - Modify: `tests/test_redis_usage_scanner/test_operations.py`
 - Modify: `tests/test_redis_usage_scanner/test_edge_cases.py`
@@ -203,6 +214,7 @@ git commit -m "fix: improve logging scanner signal quality"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `cache.add`, `cache.delete_many`, `cache.clear`, `cache.touch`, `incr`, `decr`
 - dynamic TTL parameters that must not be treated as missing TTL
 - Redis URL configuration detection only if it fits the current model cleanly
@@ -233,6 +245,7 @@ git commit -m "fix: expand redis scanner coverage and ttl handling"
 ### Task 6: Enrich Django URL output with file, line, view, converter, and full path
 
 **Files:**
+
 - Modify: `upcast/models/django_urls.py`
 - Modify: `upcast/scanners/django_urls.py`
 - Modify: `upcast/common/django/view_resolver.py`
@@ -246,6 +259,7 @@ git commit -m "fix: expand redis scanner coverage and ttl handling"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `file` and `line`
 - extracted view name / module where statically resolvable
 - path converters like `<int:pk>`
@@ -277,6 +291,7 @@ git commit -m "feat: enrich django url scanner metadata"
 ### Task 7: Enrich module symbol methods and function arguments
 
 **Files:**
+
 - Modify: `upcast/models/module_symbols.py`
 - Modify: `upcast/scanners/module_symbols.py`
 - Modify: `tests/test_module_symbol_scanner/test_classes.py`
@@ -288,6 +303,7 @@ git commit -m "feat: enrich django url scanner metadata"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - per-method metadata with `line`, `args`, and decorators
 - function argument extraction
 - class-method details that are currently flattened to plain strings
@@ -318,6 +334,7 @@ git commit -m "feat: enrich module symbol scanner details"
 ### Task 8: Enrich unit test scanner with class, fixture, mark, and parametrize structure
 
 **Files:**
+
 - Modify: `upcast/models/unit_tests.py`
 - Modify: `upcast/scanners/unit_tests.py`
 - Modify: `tests/test_unit_test_scanner/test_edge_cases.py`
@@ -330,6 +347,7 @@ git commit -m "feat: enrich module symbol scanner details"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `class TestXxx` hierarchy
 - `@pytest.fixture`
 - `pytest.mark.*`
@@ -362,6 +380,7 @@ git commit -m "feat: enrich unit test scanner structure"
 ### Task 9: Improve Django settings fidelity in a bounded way
 
 **Files:**
+
 - Modify: `upcast/scanners/django_settings.py`
 - Modify: `upcast/models/django_settings.py`
 - Modify: `tests/test_django_settings_scanner/test_edge_cases.py`
@@ -373,6 +392,7 @@ git commit -m "feat: enrich unit test scanner structure"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - standard settings such as `ROOT_URLCONF`, `TEMPLATES`, `WSGI_APPLICATION`, `ALLOWED_HOSTS`, `STATIC_URL`, `MEDIA_URL`
 - tuple/list parsing that must ignore comments rather than inserting `null`
 
@@ -384,6 +404,7 @@ Expected: FAIL on the new bounded settings assertions.
 **Step 3: Write minimal implementation**
 
 Update the Django settings scanner only enough to:
+
 - recognize the targeted standard settings
 - filter comment artifacts out of tuple/list parsing
 
@@ -404,6 +425,7 @@ git commit -m "fix: improve django settings scanner fidelity"
 ### Task 10: Detect signal senders and custom signal definitions
 
 **Files:**
+
 - Modify: `upcast/scanners/signals.py`
 - Modify: `upcast/common/signals/signal_checker.py`
 - Modify: `upcast/common/signals/signal_parser.py`
@@ -414,6 +436,7 @@ git commit -m "fix: improve django settings scanner fidelity"
 **Step 1: Write the failing tests**
 
 Add failing tests for:
+
 - `.send()`
 - `.send_robust()`
 - `Signal()` definitions
@@ -444,6 +467,7 @@ git commit -m "fix: improve signal scanner sender coverage"
 ### Task 11: Revisit complexity comment_lines only if reproduced
 
 **Files:**
+
 - Modify: `upcast/common/code_utils.py`
 - Modify: `upcast/scanners/complexity.py`
 - Modify: `tests/test_cyclomatic_complexity_scanner/test_code_utils.py`

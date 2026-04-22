@@ -160,7 +160,9 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
         else:
             return "critical"
 
-    def _calculate_summary(self, modules: dict[str, list[ComplexityResult]], scan_duration_ms: int) -> ComplexitySummary:
+    def _calculate_summary(
+        self, modules: dict[str, list[ComplexityResult]], scan_duration_ms: int
+    ) -> ComplexitySummary:
         """Calculate summary statistics."""
         all_results = [r for results in modules.values() for r in results]
         by_severity: dict[str, int] = {}

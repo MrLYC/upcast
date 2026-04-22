@@ -592,9 +592,14 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         for child in scope.body:
             if child.fromlineno >= node.lineno:
                 break
-            for assign in child.nodes_of_class(
-                (nodes.AssignName, nodes.AnnAssign, nodes.ExceptHandler, nodes.With, nodes.For, nodes.AsyncFor)
-            ):
+            for assign in child.nodes_of_class((
+                nodes.AssignName,
+                nodes.AnnAssign,
+                nodes.ExceptHandler,
+                nodes.With,
+                nodes.For,
+                nodes.AsyncFor,
+            )):
                 if isinstance(assign, nodes.AssignName) and assign.name == name:
                     return True
                 if (

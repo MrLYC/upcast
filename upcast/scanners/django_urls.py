@@ -218,7 +218,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
     def _parse_path_call(
         self, call_node: nodes.Call, module: nodes.Module, func_name: str, file_path: Path, scan_root: Path
-    ) -> UrlPattern:  # noqa: C901
+    ) -> UrlPattern:
         """Parse a path() or re_path() call.
 
         Args:

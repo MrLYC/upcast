@@ -235,7 +235,9 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
     def _extract_class_name(self, func_node: nodes.FunctionDef) -> str | None:
         """Extract parent test class name if the test is class-based."""
         parent = func_node.parent
-        if isinstance(parent, nodes.ClassDef) and (parent.name.startswith("Test") or self._is_unittest_testcase(parent)):
+        if isinstance(parent, nodes.ClassDef) and (
+            parent.name.startswith("Test") or self._is_unittest_testcase(parent)
+        ):
             return parent.name
         return None
 

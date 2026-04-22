@@ -328,14 +328,14 @@ def documented_function(x: int, y: str = "default") -> bool:
         """Test scanner preserves real comment lines from scanned functions."""
         test_file = tmp_path / "test.py"
         test_file.write_text(
-            '''
+            """
 def function_with_comments(x):
     # comment A
     if x > 0:  # comment B
         # comment C
         return x
     return 0
-'''
+"""
         )
 
         scanner = ComplexityScanner(threshold=1)

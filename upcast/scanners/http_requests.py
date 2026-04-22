@@ -735,7 +735,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 return infer_value(keyword.value).get_if_type((int, float))
         return None
 
-    def _aggregate_requests(self, requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]]) -> dict[str, HttpRequestInfo]:
+    def _aggregate_requests(
+        self, requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]]
+    ) -> dict[str, HttpRequestInfo]:
         """Aggregate requests by URL."""
         result: dict[str, HttpRequestInfo] = {}
 

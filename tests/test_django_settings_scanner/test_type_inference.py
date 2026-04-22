@@ -107,7 +107,9 @@ class TestListSettings:
 
         assert "CUSTOM_LIST" in result.results
 
-    def test_allowed_hosts_list_drops_unextractable_entries(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
+    def test_allowed_hosts_list_drops_unextractable_entries(
+        self, tmp_path: Path, scanner: DjangoSettingsScanner
+    ) -> None:
         """Dynamic list elements should be dropped instead of preserved as None."""
         settings_file = tmp_path / "settings.py"
         settings_file.write_text("""
@@ -171,7 +173,9 @@ class TestTupleSettings:
         info = result.results["ADMINS"]
         assert "tuple" in info.definition_types
 
-    def test_allowed_hosts_tuple_drops_unextractable_entries(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
+    def test_allowed_hosts_tuple_drops_unextractable_entries(
+        self, tmp_path: Path, scanner: DjangoSettingsScanner
+    ) -> None:
         """Dynamic tuple elements should be dropped instead of preserved as None."""
         settings_file = tmp_path / "settings.py"
         settings_file.write_text("""

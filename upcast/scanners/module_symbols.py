@@ -474,7 +474,9 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
 
         params: list[str] = []
 
-        def _format_arg(arg_node: nodes.AssignName, annotation_node: nodes.NodeNG | None, default_node: nodes.NodeNG | None) -> str:
+        def _format_arg(
+            arg_node: nodes.AssignName, annotation_node: nodes.NodeNG | None, default_node: nodes.NodeNG | None
+        ) -> str:
             param_str = arg_node.name
             if annotation_node:
                 param_str += f": {annotation_node.as_string()}"

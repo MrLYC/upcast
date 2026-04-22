@@ -164,7 +164,7 @@ class TestEdgeCases:
 
     def test_celery_task_calls_ignore_shadowed_names(self, tmp_path, create_scanner):
         """Test local parameters do not masquerade as module-level Celery tasks."""
-        code = '''
+        code = """
 from celery import shared_task
 
 @shared_task
@@ -173,7 +173,7 @@ def send_email(user_id):
 
 def trigger(send_email):
     send_email.delay()
-'''
+"""
         file_path = create_test_file(tmp_path, code, "celery_shadowed_name.py")
         scanner = create_scanner(ConcurrencyScanner)
 
