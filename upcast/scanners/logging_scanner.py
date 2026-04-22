@@ -101,7 +101,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
                 results[rel_path] = file_info
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(results, scan_duration_ms)
+        summary = self._calculate_summary(results, len(files), scan_duration_ms)
 
         return LoggingOutput(
             summary=summary,
@@ -776,7 +776,9 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
 
         return len(patterns) > 0, patterns
 
-    def _calculate_summary(self, results: dict[str, FileLoggingInfo], scan_duration_ms: int) -> LoggingSummary:
+    def _calculate_summary(
+        self, results: dict[str, FileLoggingInfo], files_scanned: int, scan_duration_ms: int
+    ) -> LoggingSummary:
         """Calculate summary statistics.
 
         Args:
@@ -811,7 +813,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         return LoggingSummary(
             total_count=total_calls,
             total_log_calls=total_calls,
-            files_scanned=len(results),
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             by_library=by_library,
             by_level=by_level,

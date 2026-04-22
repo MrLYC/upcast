@@ -211,6 +211,31 @@ class TestDirectoryScanning:
         assert output.summary.files_scanned == 2
         assert output.summary.total_log_calls == 2
 
+    def test_scan_directory_counts_python_files_without_logging(self, tmp_path):
+        """files_scanned should count scanned Python files, not only result-bearing files."""
+        (tmp_path / "with_logging.py").write_text(
+            dedent("""
+            import logging
+            logging.info("Has logging")
+        """)
+        )
+
+        (tmp_path / "without_logging.py").write_text(
+            dedent("""
+            def add(a, b):
+                return a + b
+        """)
+        )
+
+        scanner = LoggingScanner()
+        output = scanner.scan(tmp_path)
+
+        assert output.summary.files_scanned == 2
+        assert output.summary.total_log_calls == 1
+        assert len(output.results) == 1
+        assert "with_logging.py" in output.results
+        assert "without_logging.py" not in output.results
+
     def test_scan_nested_directories(self, tmp_path):
         """Scanning should recurse into subdirectories."""
         subdir = tmp_path / "subdir"
