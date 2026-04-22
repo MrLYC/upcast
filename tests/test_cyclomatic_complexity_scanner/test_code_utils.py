@@ -1,5 +1,8 @@
 """Tests for code utilities in upcast/common/code_utils.py."""
 
+from pathlib import Path
+
+import pytest
 from astroid import parse
 
 from upcast.common.code_utils import (
@@ -72,6 +75,40 @@ def multiline(x, y):
         assert "result = x + y" in code
         assert "if result > 0:" in code
         assert "return result" in code
+
+    def test_falls_back_to_as_string_when_source_file_read_fails(self, monkeypatch, tmp_path):
+        """Expected file read failures should still fall back to astroid rendering."""
+        test_file = tmp_path / "module.py"
+        test_file.write_text("def sample():\n    return 42\n")
+        module = parse(test_file.read_text())
+        module.file = str(test_file)
+        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
+
+        def fake_read_text(self, encoding=None):
+            raise OSError("cannot read source")
+
+        monkeypatch.setattr(Path, "read_text", fake_read_text)
+
+        code = extract_function_code(func)
+
+        assert "def sample():" in code
+        assert "return 42" in code
+
+    def test_unexpected_read_errors_are_not_silently_swallowed(self, monkeypatch, tmp_path):
+        """Unexpected read failures should surface instead of being silently ignored."""
+        test_file = tmp_path / "module.py"
+        test_file.write_text("def sample():\n    return 42\n")
+        module = parse(test_file.read_text())
+        module.file = str(test_file)
+        func = next(iter(module.nodes_of_class(parse("def f(): pass").body[0].__class__)))
+
+        def fake_read_text(self, encoding=None):
+            raise RuntimeError("boom")
+
+        monkeypatch.setattr(Path, "read_text", fake_read_text)
+
+        with pytest.raises(RuntimeError, match="boom"):
+            extract_function_code(func)
 
 
 class TestCountCommentLines:

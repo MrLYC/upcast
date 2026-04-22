@@ -230,85 +230,16 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             UrlPattern object
         """
         pattern_type = "re_path" if func_name in ("re_path", "url") else "path"
-        pattern_str: str | None = None
-        converters: list[str] = []
-        named_groups: list[str] = []
-        view_module: str | None = None
-        view_name: str | None = None
-        description: str | None = None
-        name: str | None = None
-        is_partial = False
-        is_conditional = False
-        include_module: str | None = None
-        namespace: str | None = None
         source_file = self._get_source_file(file_path, scan_root)
         line = getattr(call_node, "lineno", None)
+        pattern_str, converters, named_groups = self._extract_path_pattern_metadata(call_node)
+        name = self._extract_pattern_name(call_node)
 
-        # Extract pattern string (first argument)
-        if call_node.args and len(call_node.args) >= 1:
-            pattern_node = call_node.args[0]
-            if isinstance(pattern_node, nodes.Const):
-                pattern_str = str(pattern_node.value)
+        include_pattern = self._build_include_pattern(call_node, module, pattern_str, name, source_file, line)
+        if include_pattern is not None:
+            return include_pattern
 
-                # Parse pattern for converters/named groups
-                pattern_info = parse_url_pattern(pattern_str)
-                if pattern_info["converters"]:
-                    converters = [f"{k}:{v}" for k, v in pattern_info["converters"].items()]
-                if pattern_info["named_groups"]:
-                    named_groups = pattern_info["named_groups"]
-
-        # Extract view (second argument)
-        if call_node.args and len(call_node.args) >= 2:
-            view_node = call_node.args[1]
-
-            # Check if the view is an include() call
-            if isinstance(view_node, nodes.Call):
-                view_func_name = self._get_function_name(view_node.func)
-                if view_func_name == "include":
-                    # This is path(..., include(...))
-                    pattern_type = "include"
-                    include_info = self._parse_include_call(view_node, module)
-                    include_module = include_info["include_module"]
-                    namespace = include_info.get("namespace")
-
-                    # Extract name keyword argument for include
-                    for keyword in call_node.keywords:
-                        if keyword.arg == "name" and isinstance(keyword.value, nodes.Const):
-                            name = str(keyword.value.value)
-
-                    return UrlPattern(
-                        type=pattern_type,
-                        pattern=pattern_str,
-                        view_module=None,
-                        view_name=None,
-                        include_module=include_module,
-                        namespace=namespace,
-                        name=name,
-                        converters=[],
-                        named_groups=[],
-                        basename=None,
-                        router_type=None,
-                        is_partial=False,
-                        is_conditional=False,
-                        description=None,
-                        note=None,
-                        file=source_file,
-                        line=line,
-                        full_path=pattern_str,
-                    )
-
-            # Normal view resolution
-            view_info = resolve_view(view_node, module, self.verbose)
-            view_module = view_info["view_module"]
-            view_name = view_info["view_name"]
-            description = view_info["description"]
-            is_partial = view_info.get("is_partial", False)
-            is_conditional = view_info.get("is_conditional", False)
-
-        # Extract name keyword argument
-        for keyword in call_node.keywords:
-            if keyword.arg == "name" and isinstance(keyword.value, nodes.Const):
-                name = str(keyword.value.value)
+        view_module, view_name, description, is_partial, is_conditional = self._resolve_path_view(call_node, module)
 
         return UrlPattern(
             type=pattern_type,
@@ -330,6 +261,99 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             line=line,
             full_path=pattern_str,
         )
+
+    def _extract_path_pattern_metadata(self, call_node: nodes.Call) -> tuple[str | None, list[str], list[str]]:
+        """Extract the route string plus converters and named groups."""
+        if not call_node.args:
+            return None, [], []
+
+        pattern_node = call_node.args[0]
+        if not isinstance(pattern_node, nodes.Const):
+            return None, [], []
+
+        pattern_str = str(pattern_node.value)
+        pattern_info = parse_url_pattern(pattern_str)
+        converters = [f"{k}:{v}" for k, v in pattern_info["converters"].items()]
+        named_groups = pattern_info["named_groups"] or []
+        return pattern_str, converters, named_groups
+
+    def _extract_pattern_name(self, call_node: nodes.Call) -> str | None:
+        """Extract the optional route name keyword from a path call."""
+        for keyword in call_node.keywords:
+            if keyword.arg == "name" and isinstance(keyword.value, nodes.Const):
+                return str(keyword.value.value)
+        return None
+
+    def _build_include_pattern(
+        self,
+        call_node: nodes.Call,
+        module: nodes.Module,
+        pattern_str: str | None,
+        name: str | None,
+        source_file: str,
+        line: int | None,
+    ) -> UrlPattern | None:
+        """Build a UrlPattern for path(..., include(...)) calls."""
+        view_node = self._get_include_view_call(call_node)
+        if view_node is None:
+            return None
+
+        include_info = self._parse_include_call(view_node, module)
+        return UrlPattern(
+            type="include",
+            pattern=pattern_str,
+            view_module=None,
+            view_name=None,
+            include_module=include_info["include_module"],
+            namespace=include_info.get("namespace"),
+            name=name,
+            converters=[],
+            named_groups=[],
+            basename=None,
+            router_type=None,
+            is_partial=False,
+            is_conditional=False,
+            description=None,
+            note=None,
+            file=source_file,
+            line=line,
+            full_path=pattern_str,
+        )
+
+    def _resolve_path_view(
+        self, call_node: nodes.Call, module: nodes.Module
+    ) -> tuple[str | None, str | None, str | None, bool, bool]:
+        """Resolve normal path view metadata for non-include routes."""
+        view_node = self._get_path_view_node(call_node)
+        if view_node is None:
+            return None, None, None, False, False
+
+        view_info = resolve_view(view_node, module, self.verbose)
+        return (
+            view_info["view_module"],
+            view_info["view_name"],
+            view_info["description"],
+            view_info.get("is_partial", False),
+            view_info.get("is_conditional", False),
+        )
+
+    def _get_path_view_node(self, call_node: nodes.Call) -> nodes.NodeNG | None:
+        """Return the second positional argument from a path-like call."""
+        if len(call_node.args) < 2:
+            return None
+        return call_node.args[1]
+
+    def _get_include_view_call(self, call_node: nodes.Call) -> nodes.Call | None:
+        """Return the include() call used as the second argument, if present."""
+        view_node = self._get_path_view_node(call_node)
+        if not isinstance(view_node, nodes.Call):
+            return None
+        func_node = getattr(view_node, "func", None)
+        if func_node is None:
+            return None
+        if self._get_function_name(func_node) != "include":
+            return None
+        return view_node
 
     def _parse_include_call(self, call_node: nodes.Call, module: nodes.Module) -> dict[str, str | None]:
         """Parse an include() call.

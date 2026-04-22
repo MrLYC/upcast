@@ -39,74 +39,126 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         }
 
         for file_path in files:
-            module = self.parse_file(file_path)
-            if not module:
-                continue
-
-            imports = get_import_info(module)
-            rel_path = get_relative_path_str(file_path, base_path)
-            celery_app_names = self._build_celery_app_mapping(module, imports)
-            celery_task_names = self._collect_celery_task_names(module, imports, celery_app_names)
-
-            # Pass 1: Build executor mapping
-            executor_mapping = self._build_executor_mapping(module, imports)
-
-            # Pass 2: Detect patterns
-            for node in module.nodes_of_class(nodes.FunctionDef):
-                celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
-                if celery_usage:
-                    self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
-
-            # Check async functions
-            for node in module.nodes_of_class(nodes.AsyncFunctionDef):
-                celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
-                if celery_usage:
-                    self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
-
-                function, class_name = self._extract_context(node)
-                usage = ConcurrencyUsage(
-                    file=rel_path,
-                    line=node.lineno,
-                    column=node.col_offset,
-                    pattern="async_function",
-                    statement=f"async def {node.name}",
-                    function=function,
-                    class_name=class_name,
-                    block=self._get_block_name(node),
-                    details=None,
-                    api_call=None,
-                )
-                self._add_pattern(patterns, "asyncio", "async_function", usage)
-
-            # Check await expressions
-            for node in module.nodes_of_class(nodes.Await):
-                usage = self._detect_await(node, rel_path)
-                if usage:
-                    self._add_pattern(patterns, "asyncio", "await", usage)
-
-            # Check all Call nodes for specific patterns
-            for node in module.nodes_of_class(nodes.Call):
-                # Try each detector
-                usage = (
-                    self._detect_thread_creation(node, rel_path, imports)
-                    or self._detect_threadpool_executor(node, rel_path, imports)
-                    or self._detect_process_creation(node, rel_path, imports)
-                    or self._detect_processpool_executor(node, rel_path, imports)
-                    or self._detect_executor_submit(node, rel_path, imports, executor_mapping)
-                    or self._detect_create_task(node, rel_path, imports)
-                    or self._detect_run_in_executor(node, rel_path, imports, executor_mapping)
-                    or self._detect_celery_task_call(node, rel_path, celery_task_names)
-                )
-                if usage:
-                    # Determine category from pattern
-                    category = self._get_category_from_pattern(usage.pattern)
-                    pattern_type = usage.api_call or usage.pattern
-                    self._add_pattern(patterns, category, pattern_type, usage)
+            self._scan_file_patterns(file_path, base_path, patterns)
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
         summary = self._calculate_summary(patterns, scan_duration_ms)
         return ConcurrencyPatternOutput(
             summary=summary, results=patterns, metadata={"scanner_name": "concurrency-patterns"}
+        )
+
+    def _scan_file_patterns(
+        self,
+        file_path: Path,
+        base_path: Path,
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+    ) -> None:
+        """Scan a single file and merge detected concurrency patterns."""
+        module = self.parse_file(file_path)
+        if not module:
+            return
+
+        imports = get_import_info(module)
+        rel_path = get_relative_path_str(file_path, base_path)
+        celery_app_names = self._build_celery_app_mapping(module, imports)
+        celery_task_names = self._collect_celery_task_names(module, imports, celery_app_names)
+        executor_mapping = self._build_executor_mapping(module, imports)
+
+        self._collect_decorator_patterns(module, rel_path, imports, celery_app_names, patterns)
+        self._collect_async_patterns(module, rel_path, imports, celery_app_names, patterns)
+        self._collect_await_patterns(module, rel_path, patterns)
+        self._collect_call_patterns(module, rel_path, imports, executor_mapping, celery_task_names, patterns)
+
+    def _collect_decorator_patterns(
+        self,
+        module: nodes.Module,
+        rel_path: str,
+        imports: dict[str, str],
+        celery_app_names: set[str],
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+    ) -> None:
+        """Collect Celery task decorator patterns from synchronous functions."""
+        for node in module.nodes_of_class(nodes.FunctionDef):
+            celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
+            if celery_usage:
+                self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
+
+    def _collect_async_patterns(
+        self,
+        module: nodes.Module,
+        rel_path: str,
+        imports: dict[str, str],
+        celery_app_names: set[str],
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+    ) -> None:
+        """Collect patterns emitted by async function definitions."""
+        for node in module.nodes_of_class(nodes.AsyncFunctionDef):
+            celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
+            if celery_usage:
+                self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
+
+            function, class_name = self._extract_context(node)
+            usage = ConcurrencyUsage(
+                file=rel_path,
+                line=node.lineno,
+                column=node.col_offset,
+                pattern="async_function",
+                statement=f"async def {node.name}",
+                function=function,
+                class_name=class_name,
+                block=self._get_block_name(node),
+                details=None,
+                api_call=None,
+            )
+            self._add_pattern(patterns, "asyncio", "async_function", usage)
+
+    def _collect_await_patterns(
+        self,
+        module: nodes.Module,
+        rel_path: str,
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+    ) -> None:
+        """Collect await-expression patterns."""
+        for node in module.nodes_of_class(nodes.Await):
+            usage = self._detect_await(node, rel_path)
+            if usage:
+                self._add_pattern(patterns, "asyncio", "await", usage)
+
+    def _collect_call_patterns(
+        self,
+        module: nodes.Module,
+        rel_path: str,
+        imports: dict[str, str],
+        executor_mapping: dict[str, str],
+        celery_task_names: set[str],
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+    ) -> None:
+        """Collect call-driven concurrency patterns."""
+        for node in module.nodes_of_class(nodes.Call):
+            usage = self._detect_call_pattern(node, rel_path, imports, executor_mapping, celery_task_names)
+            if usage:
+                category = self._get_category_from_pattern(usage.pattern)
+                pattern_type = usage.api_call or usage.pattern
+                self._add_pattern(patterns, category, pattern_type, usage)
+
+    def _detect_call_pattern(
+        self,
+        node: nodes.Call,
+        rel_path: str,
+        imports: dict[str, str],
+        executor_mapping: dict[str, str],
+        celery_task_names: set[str],
+    ) -> ConcurrencyUsage | None:
+        """Detect a concurrency pattern from a call node using existing detector order."""
+        return (
+            self._detect_thread_creation(node, rel_path, imports)
+            or self._detect_threadpool_executor(node, rel_path, imports)
+            or self._detect_process_creation(node, rel_path, imports)
+            or self._detect_processpool_executor(node, rel_path, imports)
+            or self._detect_executor_submit(node, rel_path, imports, executor_mapping)
+            or self._detect_create_task(node, rel_path, imports)
+            or self._detect_run_in_executor(node, rel_path, imports, executor_mapping)
+            or self._detect_celery_task_call(node, rel_path, celery_task_names)
         )
 
     def _build_celery_app_mapping(self, module: nodes.Module, imports: dict[str, str]) -> set[str]:
@@ -578,6 +630,14 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         if not isinstance(scope, (nodes.FunctionDef, nodes.AsyncFunctionDef)):
             return False
 
+        return self._scope_has_shadowing_argument(scope, name) or self._scope_has_shadowing_binding(scope, node, name)
+
+    def _scope_has_shadowing_argument(
+        self,
+        scope: nodes.FunctionDef | nodes.AsyncFunctionDef,
+        name: str,
+    ) -> bool:
+        """Return True when a function argument shadows a Celery task name."""
         if any(arg.name == name for arg in scope.args.arguments):
             return True
         if scope.args.vararg and scope.args.vararg == name:
@@ -586,41 +646,46 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             return True
         if any(arg.name == name for arg in getattr(scope.args, "posonlyargs", [])):
             return True
-        if any(arg.name == name for arg in scope.args.kwonlyargs):
-            return True
+        return any(arg.name == name for arg in scope.args.kwonlyargs)
 
+    def _scope_has_shadowing_binding(
+        self,
+        scope: nodes.FunctionDef | nodes.AsyncFunctionDef,
+        node: nodes.NodeNG,
+        name: str,
+    ) -> bool:
+        """Return True when an earlier binding in scope shadows a Celery task name."""
         for child in scope.body:
             if child.fromlineno >= node.lineno:
                 break
-            for assign in child.nodes_of_class((
-                nodes.AssignName,
-                nodes.AnnAssign,
-                nodes.ExceptHandler,
-                nodes.With,
-                nodes.For,
-                nodes.AsyncFor,
-            )):
-                if isinstance(assign, nodes.AssignName) and assign.name == name:
-                    return True
-                if (
-                    isinstance(assign, nodes.AnnAssign)
-                    and isinstance(assign.target, nodes.AssignName)
-                    and assign.target.name == name
-                ):
-                    return True
-                if isinstance(assign, nodes.ExceptHandler) and assign.name == name:
-                    return True
-                if (
-                    isinstance(assign, (nodes.For, nodes.AsyncFor))
-                    and isinstance(assign.target, nodes.AssignName)
-                    and assign.target.name == name
-                ):
-                    return True
-                if isinstance(assign, nodes.With):
-                    for _ctx, alias in assign.items:
-                        if isinstance(alias, nodes.AssignName) and alias.name == name:
-                            return True
+            if self._child_contains_shadowing_binding(child, name):
+                return True
+        return False
 
+    def _child_contains_shadowing_binding(self, child: nodes.NodeNG, name: str) -> bool:
+        """Return True when a scope child contains a binding for the given name."""
+        binding_node_types = (
+            nodes.AssignName,
+            nodes.AnnAssign,
+            nodes.ExceptHandler,
+            nodes.With,
+            nodes.For,
+            nodes.AsyncFor,
+        )
+        return any(self._binding_shadows_name(assign, name) for assign in child.nodes_of_class(binding_node_types))
+
+    def _binding_shadows_name(self, binding: nodes.NodeNG, name: str) -> bool:
+        """Return True when a binding node assigns the target name."""
+        if isinstance(binding, nodes.AssignName):
+            return binding.name == name
+        if isinstance(binding, nodes.AnnAssign):
+            return isinstance(binding.target, nodes.AssignName) and binding.target.name == name
+        if isinstance(binding, nodes.ExceptHandler):
+            return binding.name == name
+        if isinstance(binding, (nodes.For, nodes.AsyncFor)):
+            return isinstance(binding.target, nodes.AssignName) and binding.target.name == name
+        if isinstance(binding, nodes.With):
+            return any(isinstance(alias, nodes.AssignName) and alias.name == name for _ctx, alias in binding.items)
         return False
 
     def _get_block_name(self, node: nodes.NodeNG) -> str | None:

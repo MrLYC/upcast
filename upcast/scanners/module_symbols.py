@@ -472,62 +472,100 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         if not node.args:
             return []
 
+        params = self._extract_positional_function_args(node.args)
+        params.extend(self._extract_vararg_and_kwonly_function_args(node.args))
+        kwarg = self._format_kwarg_param(node.args)
+        if kwarg:
+            params.append(kwarg)
+        return params
+
+    def _format_function_arg(
+        self,
+        arg_node: nodes.AssignName,
+        annotation_node: nodes.NodeNG | None,
+        default_node: nodes.NodeNG | None,
+    ) -> str:
+        """Format a single function parameter string."""
+        param_str = arg_node.name
+        if annotation_node:
+            param_str += f": {annotation_node.as_string()}"
+        if default_node:
+            separator = " = " if annotation_node else "="
+            param_str += f"{separator}{default_node.as_string()}"
+        return param_str
+
+    def _extract_positional_function_args(self, args: nodes.Arguments) -> list[str]:
+        """Extract positional-only and positional arguments in declaration order."""
         params: list[str] = []
-
-        def _format_arg(
-            arg_node: nodes.AssignName, annotation_node: nodes.NodeNG | None, default_node: nodes.NodeNG | None
-        ) -> str:
-            param_str = arg_node.name
-            if annotation_node:
-                param_str += f": {annotation_node.as_string()}"
-            if default_node:
-                separator = " = " if annotation_node else "="
-                param_str += f"{separator}{default_node.as_string()}"
-            return param_str
-
-        positional_only_args = list(getattr(node.args, "posonlyargs", []) or [])
-        positional_args = [*positional_only_args, *(node.args.args or [])]
+        positional_only_args = list(getattr(args, "posonlyargs", []) or [])
+        positional_args = [*positional_only_args, *(args.args or [])]
         positional_annotations = [
-            *(getattr(node.args, "posonlyargs_annotations", []) or []),
-            *(node.args.annotations or []),
+            *(getattr(args, "posonlyargs_annotations", []) or []),
+            *(args.annotations or []),
         ]
-        positional_defaults = node.args.defaults or []
+        positional_defaults = args.defaults or []
         num_without_defaults = len(positional_args) - len(positional_defaults)
 
         for index, arg in enumerate(positional_args):
             annotation = positional_annotations[index] if index < len(positional_annotations) else None
-            default = None
-            if index >= num_without_defaults:
-                default_index = index - num_without_defaults
-                if default_index < len(positional_defaults):
-                    default = positional_defaults[default_index]
-            params.append(_format_arg(arg, annotation, default))
+            default = self._get_positional_default(positional_defaults, index, num_without_defaults)
+            params.append(self._format_function_arg(arg, annotation, default))
             if positional_only_args and index == len(positional_only_args) - 1:
                 params.append("/")
 
-        if node.args.vararg:
-            vararg_str = f"*{node.args.vararg}"
-            if node.args.varargannotation:
-                vararg_str += f": {node.args.varargannotation.as_string()}"
-            params.append(vararg_str)
+        return params
 
-        kwonlyargs = node.args.kwonlyargs or []
-        kwonly_annotations = getattr(node.args, "kwonlyargs_annotations", []) or []
-        kw_defaults = node.args.kw_defaults or []
-        if kwonlyargs and not node.args.vararg:
+    def _get_positional_default(
+        self,
+        positional_defaults: list[nodes.NodeNG],
+        index: int,
+        num_without_defaults: int,
+    ) -> nodes.NodeNG | None:
+        """Return the default node for a positional parameter, if present."""
+        if index < num_without_defaults:
+            return None
+        default_index = index - num_without_defaults
+        if default_index >= len(positional_defaults):
+            return None
+        return positional_defaults[default_index]
+
+    def _extract_vararg_and_kwonly_function_args(self, args: nodes.Arguments) -> list[str]:
+        """Extract vararg and keyword-only arguments."""
+        params: list[str] = []
+        vararg = self._format_vararg_param(args)
+        if vararg:
+            params.append(vararg)
+
+        kwonlyargs = args.kwonlyargs or []
+        if kwonlyargs and not args.vararg:
             params.append("*")
+
+        kwonly_annotations = getattr(args, "kwonlyargs_annotations", []) or []
+        kw_defaults = args.kw_defaults or []
         for index, arg in enumerate(kwonlyargs):
             annotation = kwonly_annotations[index] if index < len(kwonly_annotations) else None
             default = kw_defaults[index] if index < len(kw_defaults) else None
-            params.append(_format_arg(arg, annotation, default))
-
-        if node.args.kwarg:
-            kwarg_str = f"**{node.args.kwarg}"
-            if node.args.kwargannotation:
-                kwarg_str += f": {node.args.kwargannotation.as_string()}"
-            params.append(kwarg_str)
+            params.append(self._format_function_arg(arg, annotation, default))
 
         return params
+
+    def _format_vararg_param(self, args: nodes.Arguments) -> str | None:
+        """Format the vararg parameter, if present."""
+        if not args.vararg:
+            return None
+        vararg_str = f"*{args.vararg}"
+        if args.varargannotation:
+            vararg_str += f": {args.varargannotation.as_string()}"
+        return vararg_str
+
+    def _format_kwarg_param(self, args: nodes.Arguments) -> str | None:
+        """Format the kwargs parameter, if present."""
+        if not args.kwarg:
+            return None
+        kwarg_str = f"**{args.kwarg}"
+        if args.kwargannotation:
+            kwarg_str += f": {args.kwargannotation.as_string()}"
+        return kwarg_str
 
     def _extract_class(self, node: nodes.ClassDef, symbols: ModuleSymbols, block_stack: list[str]) -> None:
         """Extract class definition.

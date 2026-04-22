@@ -180,37 +180,77 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             Tuple of (library, method, session_based, is_async) or empty values if not a request
         """
         if isinstance(func_node, nodes.Attribute):
-            method = func_node.attrname
-            if isinstance(func_node.expr, nodes.Name):
-                module = imports.get(func_node.expr.name, func_node.expr.name)
-                if f"{module}.{method}" == "requests.Request":
-                    return "requests", "request", False, False
-
-                for lib, methods in self.HTTP_LIBRARIES.items():
-                    if module == lib and method in methods:
-                        return lib, method, False, lib == "aiohttp"
-
-                session_info = self._resolve_session_library(func_node.expr.name, func_node, imports)
-                if session_info:
-                    library, is_async = session_info
-                    if method in self.HTTP_LIBRARIES.get(library, []):
-                        return library, method, True, is_async
-        elif isinstance(func_node, nodes.Name):
-            func_name = func_node.name
-            qualified = imports.get(func_name, func_name)
-
-            # Check if this matches an excluded pattern
-            if self._is_excluded(func_name):
-                return None, None, False, False
-
-            if qualified == "requests.Request":
-                return "requests", "request", False, False
-
-            for lib, methods in self.HTTP_LIBRARIES.items():
-                for method in methods:
-                    if qualified == f"{lib}.{method}":
-                        return lib, method, False, lib == "aiohttp"
+            return self._identify_attribute_request(func_node, imports)
+        if isinstance(func_node, nodes.Name):
+            return self._identify_named_request(func_node, imports)
         return None, None, False, False
+
+    def _identify_attribute_request(
+        self,
+        func_node: nodes.Attribute,
+        imports: dict[str, str],
+    ) -> tuple[str | None, str | None, bool, bool]:
+        """Identify requests invoked from attribute access like module.get or session.get."""
+        method = func_node.attrname
+        if not isinstance(func_node.expr, nodes.Name):
+            return None, None, False, False
+
+        module = imports.get(func_node.expr.name) or func_node.expr.name
+        if f"{module}.{method}" == "requests.Request":
+            return "requests", "request", False, False
+
+        direct_request = self._identify_direct_library_request(module, method)
+        if direct_request:
+            return direct_request
+
+        return self._identify_session_based_request(func_node, method, imports)
+
+    def _identify_named_request(
+        self,
+        func_node: nodes.Name,
+        imports: dict[str, str],
+    ) -> tuple[str | None, str | None, bool, bool]:
+        """Identify requests invoked from imported names like get or Request."""
+        func_name = func_node.name
+        qualified = imports.get(func_name, func_name)
+
+        if self._is_excluded(func_name):
+            return None, None, False, False
+        if qualified == "requests.Request":
+            return "requests", "request", False, False
+
+        for lib, methods in self.HTTP_LIBRARIES.items():
+            for method in methods:
+                if qualified == f"{lib}.{method}":
+                    return lib, method, False, lib == "aiohttp"
+
+        return None, None, False, False
+
+    def _identify_direct_library_request(self, module: str, method: str) -> tuple[str, str, bool, bool] | None:
+        """Identify requests made directly on a known HTTP library module."""
+        for lib, methods in self.HTTP_LIBRARIES.items():
+            if module == lib and method in methods:
+                return lib, method, False, lib == "aiohttp"
+        return None
+
+    def _identify_session_based_request(
+        self,
+        func_node: nodes.Attribute,
+        method: str,
+        imports: dict[str, str],
+    ) -> tuple[str | None, str | None, bool, bool]:
+        """Identify requests made through a previously bound session/client object."""
+        if not isinstance(func_node.expr, nodes.Name):
+            return None, None, False, False
+
+        session_info = self._resolve_session_library(func_node.expr.name, func_node, imports)
+        if not session_info:
+            return None, None, False, False
+
+        library, is_async = session_info
+        if method not in self.HTTP_LIBRARIES.get(library, []):
+            return None, None, False, False
+        return library, method, True, is_async
 
     def _resolve_session_library(
         self,
@@ -243,31 +283,70 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         imports: dict[str, str],
     ) -> tuple[str, bool] | None:
         """Find a session/client binding inside a scope or module."""
+        for assign_node in self._iter_local_assignments(owner, line_limit):
+            resolved = self._resolve_assignment_session_binding(assign_node, variable_name, imports)
+            if resolved:
+                return resolved
+
+        for with_node in self._iter_local_with_bindings(owner, line_limit):
+            resolved = self._resolve_with_session_binding(with_node, variable_name, imports)
+            if resolved:
+                return resolved
+
+        return None
+
+    def _iter_local_assignments(self, owner: nodes.NodeNG, line_limit: int | None) -> list[nodes.Assign]:
+        """Return local assignments in owner up to the requested line limit."""
+        assignments: list[nodes.Assign] = []
         for assign_node in owner.nodes_of_class(nodes.Assign):
-            if assign_node.scope() is not owner:
+            if not self._is_local_binding_candidate(assign_node, owner, line_limit):
                 continue
-            if line_limit is not None and getattr(assign_node, "lineno", None) and assign_node.lineno > line_limit:
-                continue
+            assignments.append(assign_node)
+        return assignments
 
-            for target in assign_node.targets:
-                if isinstance(target, nodes.AssignName) and target.name == variable_name:
-                    resolved = self._resolve_session_constructor(assign_node.value, imports)
-                    if resolved:
-                        return resolved
-
+    def _iter_local_with_bindings(
+        self,
+        owner: nodes.NodeNG,
+        line_limit: int | None,
+    ) -> list[nodes.With | nodes.AsyncWith]:
+        """Return local with/async with nodes in owner up to the requested line limit."""
+        with_nodes: list[nodes.With | nodes.AsyncWith] = []
         for with_type in (nodes.With, nodes.AsyncWith):
             for with_node in owner.nodes_of_class(with_type):
-                if with_node.scope() is not owner:
+                if not self._is_local_binding_candidate(with_node, owner, line_limit):
                     continue
-                if line_limit is not None and getattr(with_node, "lineno", None) and with_node.lineno > line_limit:
-                    continue
+                with_nodes.append(with_node)
+        return with_nodes
 
-                for context_expr, optional_vars in with_node.items:
-                    if isinstance(optional_vars, nodes.AssignName) and optional_vars.name == variable_name:
-                        resolved = self._resolve_session_constructor(context_expr, imports)
-                        if resolved:
-                            return resolved
+    def _is_local_binding_candidate(self, candidate: nodes.NodeNG, owner: nodes.NodeNG, line_limit: int | None) -> bool:
+        """Return True when a binding candidate is local to owner and before line_limit."""
+        if candidate.scope() is not owner:
+            return False
+        lineno = getattr(candidate, "lineno", None)
+        return not (line_limit is not None and lineno and lineno > line_limit)
 
+    def _resolve_assignment_session_binding(
+        self,
+        assign_node: nodes.Assign,
+        variable_name: str,
+        imports: dict[str, str],
+    ) -> tuple[str, bool] | None:
+        """Resolve a session binding from a local assignment node."""
+        for target in assign_node.targets:
+            if isinstance(target, nodes.AssignName) and target.name == variable_name:
+                return self._resolve_session_constructor(assign_node.value, imports)
+        return None
+
+    def _resolve_with_session_binding(
+        self,
+        with_node: nodes.With | nodes.AsyncWith,
+        variable_name: str,
+        imports: dict[str, str],
+    ) -> tuple[str, bool] | None:
+        """Resolve a session binding from a with/async with alias."""
+        for context_expr, optional_vars in with_node.items:
+            if isinstance(optional_vars, nodes.AssignName) and optional_vars.name == variable_name:
+                return self._resolve_session_constructor(context_expr, imports)
         return None
 
     def _resolve_session_constructor(self, node: nodes.NodeNG, imports: dict[str, str]) -> tuple[str, bool] | None:

@@ -33,7 +33,7 @@ def extract_function_code(node: nodes.FunctionDef) -> str:
         try:
             source_lines = Path(file_path).read_text(encoding="utf-8").splitlines(keepends=True)
             return "".join(source_lines[start_line - 1 : end_line])
-        except Exception:
+        except (OSError, UnicodeDecodeError):
             pass
 
     try:

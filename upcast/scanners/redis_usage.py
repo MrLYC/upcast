@@ -470,45 +470,9 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
     def _parse_basic_cache_call(self, node: nodes.Call, rel_path: str, method: str) -> RedisUsage:
         """Parse basic cache operation (get, set, etc.)."""
-        has_ttl = False
-        timeout = None
-        warning = None
-        key = None
-
-        # Extract key (first argument)
-        if node.args:
-            key = self._clean_key_pattern(self._infer_key_pattern(node.args[0]))
-
-        if method in {"set", "add"}:
-            if len(node.args) >= 3:
-                has_ttl = True
-                timeout_val = infer_value(node.args[2]).get_if_type((int, float))
-                if timeout_val is not None:
-                    timeout = int(timeout_val)
-
-            for keyword in node.keywords:
-                if keyword.arg in ("timeout", "ttl"):
-                    has_ttl = True
-                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
-                    if timeout_val is not None:
-                        timeout = int(timeout_val)
-
-            if method == "set" and not has_ttl:
-                warning = "No TTL specified for cache.set"
-
-        elif method == "touch":
-            if len(node.args) >= 2:
-                has_ttl = True
-                timeout_val = infer_value(node.args[1]).get_if_type((int, float))
-                if timeout_val is not None:
-                    timeout = int(timeout_val)
-
-            for keyword in node.keywords:
-                if keyword.arg in ("timeout", "ttl"):
-                    has_ttl = True
-                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
-                    if timeout_val is not None:
-                        timeout = int(timeout_val)
+        key = self._extract_cache_key(node)
+        has_ttl, timeout = self._extract_basic_cache_ttl(node, method)
+        warning = self._get_basic_cache_warning(method, has_ttl)
 
         return RedisUsage(
             type=RedisUsageType.DIRECT_CLIENT,
@@ -522,6 +486,56 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             timeout=timeout,
             warning=warning,
         )
+
+    def _extract_cache_key(self, node: nodes.Call) -> str | None:
+        """Extract the normalized cache key from the first argument."""
+        if not node.args:
+            return None
+        return self._clean_key_pattern(self._infer_key_pattern(node.args[0]))
+
+    def _extract_basic_cache_ttl(self, node: nodes.Call, method: str) -> tuple[bool, int | None]:
+        """Extract TTL presence and value for cache methods that support it."""
+        if method in {"set", "add"}:
+            return self._extract_ttl_from_call(node, positional_index=2)
+        if method == "touch":
+            return self._extract_ttl_from_call(node, positional_index=1)
+        return False, None
+
+    def _extract_ttl_from_call(self, node: nodes.Call, positional_index: int) -> tuple[bool, int | None]:
+        """Extract TTL from positional and keyword arguments."""
+        has_ttl = False
+        timeout = None
+
+        if len(node.args) > positional_index:
+            has_ttl = True
+            timeout = self._infer_timeout_value(node.args[positional_index])
+
+        keyword_has_ttl, keyword_timeout = self._extract_ttl_from_keywords(node)
+        if keyword_has_ttl:
+            has_ttl = True
+            timeout = keyword_timeout
+
+        return has_ttl, timeout
+
+    def _extract_ttl_from_keywords(self, node: nodes.Call) -> tuple[bool, int | None]:
+        """Extract TTL from timeout/ttl keyword arguments."""
+        for keyword in node.keywords:
+            if keyword.arg in ("timeout", "ttl"):
+                return True, self._infer_timeout_value(keyword.value)
+        return False, None
+
+    def _infer_timeout_value(self, node: nodes.NodeNG) -> int | None:
+        """Infer an integer timeout value when statically available."""
+        timeout_val = infer_value(node).get_if_type((int, float))
+        if timeout_val is None:
+            return None
+        return int(timeout_val)
+
+    def _get_basic_cache_warning(self, method: str, has_ttl: bool) -> str | None:
+        """Return warning message for cache calls that require TTLs."""
+        if method == "set" and not has_ttl:
+            return "No TTL specified for cache.set"
+        return None
 
     def _scan_direct_redis(
         self, module: nodes.Module, rel_path: str, imports: dict[str, str]
