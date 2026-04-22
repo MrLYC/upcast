@@ -10,6 +10,54 @@ from upcast.scanners.http_requests import HttpRequestsScanner
 class TestEdgeCases:
     """Test edge cases and error handling."""
 
+    def test_invalid_header_keys_are_omitted(self, scanner: HttpRequestsScanner, tmp_path):
+        """Test invalid inferred header keys do not break scanning."""
+        code = """
+import requests
+
+response = requests.get('https://api.example.com/data', headers={None: 'Bearer token'})
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.summary.total_requests == 1
+        usage = result.results["https://api.example.com/data"].usages[0]
+        assert usage.headers is None
+
+    def test_invalid_param_keys_are_omitted(self, scanner: HttpRequestsScanner, tmp_path):
+        """Test invalid inferred param keys do not break scanning."""
+        code = """
+import requests
+
+response = requests.get('https://api.example.com/search', params={None: 'python'})
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.summary.total_requests == 1
+        usage = result.results["https://api.example.com/search"].usages[0]
+        assert usage.params is None
+
+    def test_invalid_json_body_keys_are_omitted(self, scanner: HttpRequestsScanner, tmp_path):
+        """Test invalid inferred json-body keys do not break scanning."""
+        code = """
+import requests
+
+response = requests.post('https://api.example.com/users', json={None: 'Alice'})
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.summary.total_requests == 1
+        usage = result.results["https://api.example.com/users"].usages[0]
+        assert usage.json_body is None
+
     def test_requests_mock_registrations_are_ignored(self, scanner: HttpRequestsScanner):
         """Test that requests-mock registration APIs are excluded from HTTP results."""
         fixture_path = Path(__file__).parent / "fixtures" / "mock_vs_real_requests.py"

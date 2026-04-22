@@ -771,30 +771,33 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
     def _extract_params(self, node: nodes.Call) -> dict[str, Any] | None:
         for keyword in node.keywords or []:
             if keyword.arg == "params":
-                return infer_value(keyword.value).get_if_type(dict)
+                return self._extract_string_key_dict(keyword.value)
         return None
 
     def _extract_headers(self, node: nodes.Call) -> dict[str, Any] | None:
         """Extract headers from headers keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "headers":
-                headers_result = infer_value(keyword.value)
-                if isinstance(headers_result.value, dict):
-                    return headers_result.value
-                # If we can't infer the exact value, omit field
-                return None
+                return self._extract_string_key_dict(keyword.value)
         return None
 
     def _extract_json_body(self, node: nodes.Call) -> dict[str, Any] | None:
         """Extract JSON body from json keyword argument."""
         for keyword in node.keywords or []:
             if keyword.arg == "json":
-                json_result = infer_value(keyword.value)
-                if isinstance(json_result.value, dict):
-                    return json_result.value
-                # If we can't infer the exact value, omit field
-                return None
+                return self._extract_string_key_dict(keyword.value)
         return None
+
+    def _extract_string_key_dict(self, node: nodes.NodeNG) -> dict[str, Any] | None:
+        """Extract a dict only when all inferred keys are strings."""
+        inferred = infer_value(node).value
+        if not isinstance(inferred, dict):
+            return None
+
+        if not all(isinstance(key, str) for key in inferred):
+            return None
+
+        return dict(inferred)
 
     def _extract_data(self, node: nodes.Call) -> Any | None:
         """Extract form data from data keyword argument."""
