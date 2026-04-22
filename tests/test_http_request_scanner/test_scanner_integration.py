@@ -1,5 +1,7 @@
 """Integration tests for HTTP requests scanner."""
 
+from pathlib import Path
+
 import pytest
 
 from upcast.scanners.http_requests import HttpRequestsScanner
@@ -7,6 +9,16 @@ from upcast.scanners.http_requests import HttpRequestsScanner
 
 class TestHttpRequestsScanner:
     """Test HTTP requests scanner integration."""
+
+    def test_scan_httpx_client_session_requests(self, scanner: HttpRequestsScanner):
+        """Test scanning session-based httpx client requests."""
+        fixture_path = Path(__file__).parent / "fixtures" / "mock_vs_real_requests.py"
+
+        result = scanner.scan(fixture_path)
+
+        assert "https://real.example.com/httpx-sync" in result.results
+        assert "https://real.example.com/httpx-async" in result.results
+        assert "https://real.example.com/aiohttp-session" in result.results
 
     def test_scan_requests_get(self, scanner: HttpRequestsScanner, tmp_path):
         """Test scanning requests.get() call."""

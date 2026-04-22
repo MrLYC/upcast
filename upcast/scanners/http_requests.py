@@ -36,6 +36,13 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         "PreparedRequest",  # Internal request preparation
     ]
 
+    SESSION_CONSTRUCTORS: ClassVar[dict[str, tuple[str, bool]]] = {
+        "requests.Session": ("requests", False),
+        "httpx.Client": ("httpx", False),
+        "httpx.AsyncClient": ("httpx", True),
+        "aiohttp.ClientSession": ("aiohttp", True),
+    }
+
     def scan(self, path: Path) -> HttpRequestOutput:
         """Scan for HTTP request patterns."""
         start_time = time.time()
@@ -96,10 +103,15 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return None
 
-    def _check_request_call(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> HttpRequestUsage | None:
+    def _check_request_call(
+        self,
+        node: nodes.Call,
+        file_path: str,
+        imports: dict[str, str],
+    ) -> HttpRequestUsage | None:
         """Check if call is an HTTP request."""
         func = node.func
-        library, method = self._identify_request(func, imports)
+        library, method, session_based, is_async = self._identify_request(func, imports)
 
         if not library:
             return None
@@ -124,8 +136,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             json_body=self._extract_json_body(node),
             form=self._extract_data(node),
             timeout=self._extract_timeout(node),
-            session_based="Session" in safe_as_string(func),
-            is_async=library == "aiohttp" or "async" in safe_as_string(func),
+            session_based=session_based,
+            is_async=is_async,
         )
 
     def _extract_method_from_request_constructor(self, node: nodes.Call) -> str | None:
@@ -156,31 +168,115 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return None
 
-    def _identify_request(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> tuple[str | None, str | None]:
+    def _identify_request(
+        self,
+        func_node: nodes.NodeNG,
+        imports: dict[str, str],
+    ) -> tuple[str | None, str | None, bool, bool]:
         """Identify HTTP library and method.
 
         Returns:
-            Tuple of (library, method) or (None, None) if not a request
+            Tuple of (library, method, session_based, is_async) or empty values if not a request
         """
         if isinstance(func_node, nodes.Attribute):
             method = func_node.attrname
             if isinstance(func_node.expr, nodes.Name):
                 module = imports.get(func_node.expr.name, func_node.expr.name)
                 for lib, methods in self.HTTP_LIBRARIES.items():
-                    if lib in module and method in methods:
-                        return lib, method
+                    if module == lib and method in methods:
+                        return lib, method, False, lib == "aiohttp"
+
+                session_info = self._resolve_session_library(func_node.expr.name, func_node, imports)
+                if session_info:
+                    library, is_async = session_info
+                    if method in self.HTTP_LIBRARIES.get(library, []):
+                        return library, method, True, is_async
         elif isinstance(func_node, nodes.Name):
             func_name = func_node.name
             qualified = imports.get(func_name, func_name)
 
             # Check if this matches an excluded pattern
             if self._is_excluded(func_name):
-                return None, None
+                return None, None, False, False
 
             for lib, methods in self.HTTP_LIBRARIES.items():
-                if lib in qualified and any(m in qualified for m in methods):
-                    return lib, func_name
-        return None, None
+                for method in methods:
+                    if qualified == f"{lib}.{method}":
+                        return lib, method, False, lib == "aiohttp"
+        return None, None, False, False
+
+    def _resolve_session_library(
+        self,
+        variable_name: str,
+        context_node: nodes.NodeNG,
+        imports: dict[str, str],
+    ) -> tuple[str, bool] | None:
+        """Resolve the library for a session/client variable."""
+        owners: list[nodes.NodeNG] = []
+        scope = context_node.scope()
+        module = context_node.root()
+
+        if scope is not None:
+            owners.append(scope)
+        if module is not None and module is not scope:
+            owners.append(module)
+
+        for owner in owners:
+            resolved = self._find_session_binding(owner, variable_name, context_node.lineno, imports)
+            if resolved:
+                return resolved
+
+        return None
+
+    def _find_session_binding(
+        self,
+        owner: nodes.NodeNG,
+        variable_name: str,
+        line_limit: int | None,
+        imports: dict[str, str],
+    ) -> tuple[str, bool] | None:
+        """Find a session/client binding inside a scope or module."""
+        for assign_node in owner.nodes_of_class(nodes.Assign):
+            if line_limit is not None and getattr(assign_node, "lineno", None) and assign_node.lineno > line_limit:
+                continue
+
+            for target in assign_node.targets:
+                if isinstance(target, nodes.AssignName) and target.name == variable_name:
+                    resolved = self._resolve_session_constructor(assign_node.value, imports)
+                    if resolved:
+                        return resolved
+
+        for with_type in (nodes.With, nodes.AsyncWith):
+            for with_node in owner.nodes_of_class(with_type):
+                if line_limit is not None and getattr(with_node, "lineno", None) and with_node.lineno > line_limit:
+                    continue
+
+                for context_expr, optional_vars in with_node.items:
+                    if isinstance(optional_vars, nodes.AssignName) and optional_vars.name == variable_name:
+                        resolved = self._resolve_session_constructor(context_expr, imports)
+                        if resolved:
+                            return resolved
+
+        return None
+
+    def _resolve_session_constructor(self, node: nodes.NodeNG, imports: dict[str, str]) -> tuple[str, bool] | None:
+        """Resolve a session/client constructor call to its library."""
+        if not isinstance(node, nodes.Call):
+            return None
+
+        func = node.func
+        qualified: str | None = None
+
+        if isinstance(func, nodes.Attribute) and isinstance(func.expr, nodes.Name):
+            module = imports.get(func.expr.name, func.expr.name)
+            qualified = f"{module}.{func.attrname}"
+        elif isinstance(func, nodes.Name):
+            qualified = imports.get(func.name, func.name)
+
+        if not qualified:
+            return None
+
+        return self.SESSION_CONSTRUCTORS.get(qualified)
 
     def _is_excluded(self, func_name: str) -> bool:
         """Check if a function name matches excluded patterns.
@@ -208,10 +304,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             True if this is a Request constructor call
         """
         if isinstance(func_node, nodes.Name):
-            func_name = func_node.name
-            qualified = imports.get(func_name, func_name)
+            qualified = imports.get(func_node.name, func_node.name)
             # Check for requests.Request or urllib.request.Request
-            return "Request" in qualified and func_name == "Request"
+            return qualified in {"requests.Request", "urllib.request.Request"}
         return False
 
     def _extract_url_from_node(self, url_node: nodes.NodeNG, context_node: nodes.Call) -> str | None:

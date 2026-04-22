@@ -1,5 +1,7 @@
 """Tests for HTTP request scanner edge cases."""
 
+from pathlib import Path
+
 import pytest
 
 from upcast.scanners.http_requests import HttpRequestsScanner
@@ -7,6 +9,15 @@ from upcast.scanners.http_requests import HttpRequestsScanner
 
 class TestEdgeCases:
     """Test edge cases and error handling."""
+
+    def test_requests_mock_registrations_are_ignored(self, scanner: HttpRequestsScanner):
+        """Test that requests-mock registration APIs are excluded from HTTP results."""
+        fixture_path = Path(__file__).parent / "fixtures" / "mock_vs_real_requests.py"
+
+        result = scanner.scan(fixture_path)
+
+        assert "https://mock.example.com/users" not in result.results
+        assert "https://mock.example.com/orders" not in result.results
 
     def test_empty_file(self, scanner: HttpRequestsScanner, tmp_path):
         """Test scanning empty file."""
