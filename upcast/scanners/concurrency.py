@@ -22,6 +22,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         "ProcessPoolExecutor",
     }
 
+    CELERY_TASK_DECORATORS: ClassVar[set[str]] = {"celery.shared_task"}
+    CELERY_TASK_CALLS: ClassVar[set[str]] = {"delay", "apply_async"}
+
     def scan(self, path: Path) -> ConcurrencyPatternOutput:
         """Scan for concurrency patterns."""
         start_time = time.time()
@@ -42,13 +45,24 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
 
             imports = get_import_info(module)
             rel_path = get_relative_path_str(file_path, base_path)
+            celery_app_names = self._build_celery_app_mapping(module, imports)
+            celery_task_names = self._collect_celery_task_names(module, imports, celery_app_names)
 
             # Pass 1: Build executor mapping
             executor_mapping = self._build_executor_mapping(module, imports)
 
             # Pass 2: Detect patterns
+            for node in module.nodes_of_class(nodes.FunctionDef):
+                celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
+                if celery_usage:
+                    self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
+
             # Check async functions
             for node in module.nodes_of_class(nodes.AsyncFunctionDef):
+                celery_usage = self._detect_celery_task_decorator(node, rel_path, imports, celery_app_names)
+                if celery_usage:
+                    self._add_pattern(patterns, "celery", celery_usage.pattern, celery_usage)
+
                 function, class_name = self._extract_context(node)
                 usage = ConcurrencyUsage(
                     file=rel_path,
@@ -81,6 +95,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                     or self._detect_executor_submit(node, rel_path, imports, executor_mapping)
                     or self._detect_create_task(node, rel_path, imports)
                     or self._detect_run_in_executor(node, rel_path, imports, executor_mapping)
+                    or self._detect_celery_task_call(node, rel_path, celery_task_names)
                 )
                 if usage:
                     # Determine category from pattern
@@ -93,6 +108,36 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         return ConcurrencyPatternOutput(
             summary=summary, results=patterns, metadata={"scanner_name": "concurrency-patterns"}
         )
+
+    def _build_celery_app_mapping(self, module: nodes.Module, imports: dict[str, str]) -> set[str]:
+        """Collect variable names bound to Celery app instances."""
+        app_names: set[str] = set()
+
+        for node in module.nodes_of_class(nodes.Assign):
+            if not isinstance(node.value, nodes.Call):
+                continue
+
+            func_name = self._get_qualified_name(node.value.func, imports)
+            if func_name != "celery.Celery":
+                continue
+
+            for target in node.targets:
+                if isinstance(target, nodes.AssignName):
+                    app_names.add(target.name)
+
+        return app_names
+
+    def _collect_celery_task_names(
+        self, module: nodes.Module, imports: dict[str, str], celery_app_names: set[str]
+    ) -> set[str]:
+        """Collect function names declared as Celery tasks."""
+        task_names: set[str] = set()
+
+        for node in module.nodes_of_class((nodes.FunctionDef, nodes.AsyncFunctionDef)):
+            if self._get_celery_decorator_pattern(node, imports, celery_app_names):
+                task_names.add(node.name)
+
+        return task_names
 
     def _build_executor_mapping(self, module: nodes.Module, imports: dict[str, str]) -> dict[str, str]:
         """Build mapping of variable names to executor types.
@@ -445,6 +490,86 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             api_call="run_in_executor",
         )
 
+    def _get_celery_decorator_pattern(
+        self,
+        node: nodes.FunctionDef | nodes.AsyncFunctionDef,
+        imports: dict[str, str],
+        celery_app_names: set[str],
+    ) -> str | None:
+        """Return the Celery pattern name for a task decorator."""
+        if not node.decorators:
+            return None
+
+        for decorator in node.decorators.nodes:
+            decorator_func = decorator.func if isinstance(decorator, nodes.Call) else decorator
+            qualified_name = self._get_qualified_name(decorator_func, imports)
+
+            if qualified_name in self.CELERY_TASK_DECORATORS:
+                return "celery_shared_task"
+
+            if (
+                isinstance(decorator_func, nodes.Attribute)
+                and decorator_func.attrname == "task"
+                and isinstance(decorator_func.expr, nodes.Name)
+                and decorator_func.expr.name in celery_app_names
+            ):
+                return "celery_app_task"
+
+        return None
+
+    def _detect_celery_task_decorator(
+        self,
+        node: nodes.FunctionDef | nodes.AsyncFunctionDef,
+        file_path: str,
+        imports: dict[str, str],
+        celery_app_names: set[str],
+    ) -> ConcurrencyUsage | None:
+        """Detect Celery task decorators on functions."""
+        pattern = self._get_celery_decorator_pattern(node, imports, celery_app_names)
+        if not pattern:
+            return None
+
+        function, class_name = self._extract_context(node)
+        statement_prefix = "async def" if isinstance(node, nodes.AsyncFunctionDef) else "def"
+        return ConcurrencyUsage(
+            file=file_path,
+            line=node.lineno,
+            column=node.col_offset,
+            pattern=pattern,
+            statement=f"{statement_prefix} {node.name}",
+            function=function,
+            class_name=class_name,
+            block=self._get_block_name(node),
+            details=None,
+            api_call=None,
+        )
+
+    def _detect_celery_task_call(
+        self, node: nodes.Call, file_path: str, celery_task_names: set[str]
+    ) -> ConcurrencyUsage | None:
+        """Detect Celery task invocation calls like .delay() and .apply_async()."""
+        if not isinstance(node.func, nodes.Attribute):
+            return None
+        if node.func.attrname not in self.CELERY_TASK_CALLS:
+            return None
+        if not isinstance(node.func.expr, nodes.Name):
+            return None
+        if node.func.expr.name not in celery_task_names:
+            return None
+        function, class_name = self._extract_context(node)
+        return ConcurrencyUsage(
+            file=file_path,
+            line=node.lineno,
+            column=node.col_offset,
+            pattern=f"celery_{node.func.attrname}",
+            statement=safe_as_string(node),
+            function=function,
+            class_name=class_name,
+            block=self._get_block_name(node),
+            details={"task": node.func.expr.name},
+            api_call=node.func.attrname,
+        )
+
     def _get_block_name(self, node: nodes.NodeNG) -> str | None:
         """Get immediate containing block name (if, for, while, etc.)."""
         parent = node.parent
@@ -479,10 +604,10 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             return "threading"
         elif "process" in pattern.lower():
             return "multiprocessing"
-        elif "async" in pattern.lower() or pattern in ("await", "create_task"):
-            return "asyncio"
         elif "celery" in pattern.lower():
             return "celery"
+        elif "async" in pattern.lower() or pattern in ("await", "create_task"):
+            return "asyncio"
         return "threading"  # default
 
     def _add_pattern(

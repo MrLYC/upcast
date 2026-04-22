@@ -93,6 +93,23 @@ def worker():
         assert output.summary.total_count >= 2
         assert output.summary.files_scanned >= 2
 
+    def test_scan_celery_patterns_fixture(self, fixtures_dir, scanner):
+        """Test scanning a Celery fixture file."""
+        file_path = fixtures_dir / "celery_patterns.py"
+
+        output = scanner.scan(file_path)
+
+        celery_patterns = output.results["celery"]
+        assert "delay" in celery_patterns
+        assert "apply_async" in celery_patterns
+        assert len(celery_patterns["celery_shared_task"]) == 1
+        assert len(celery_patterns["celery_app_task"]) == 1
+        assert len(celery_patterns["delay"]) == 1
+        assert len(celery_patterns["apply_async"]) == 1
+        assert "apply_async" not in output.results["asyncio"]
+        assert output.summary.by_category["celery"] == sum(len(usages) for usages in celery_patterns.values())
+        assert output.summary.by_category["celery"] == 4
+
 
 class TestThreadingPatternDetection:
     """Test detection of threading patterns."""

@@ -264,3 +264,23 @@ def test_summary_statistics(temp_test_file: Path):
     # Verify counts match
     total_from_categories = sum(summary.by_category.values())
     assert total_from_categories == summary.total_count
+
+
+def test_celery_patterns_are_reported(tmp_path: Path):
+    """Test Celery task decorators and calls land in the celery category."""
+    fixture_path = Path(__file__).parent / "test_concurrency_pattern_scanner" / "fixtures" / "celery_patterns.py"
+    scanner = ConcurrencyScanner()
+
+    output = scanner.scan(fixture_path)
+
+    celery_patterns = output.results.get("celery", {})
+    assert "celery_shared_task" in celery_patterns
+    assert "celery_app_task" in celery_patterns
+    assert "delay" in celery_patterns
+    assert "apply_async" in celery_patterns
+    assert len(celery_patterns["celery_shared_task"]) == 1
+    assert len(celery_patterns["celery_app_task"]) == 1
+    assert len(celery_patterns["delay"]) == 1
+    assert len(celery_patterns["apply_async"]) == 1
+    assert output.summary.by_category["celery"] == 4
+    assert "apply_async" not in output.results.get("asyncio", {})

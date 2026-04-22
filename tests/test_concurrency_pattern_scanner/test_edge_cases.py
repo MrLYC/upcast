@@ -150,6 +150,18 @@ def create_custom_thread():
 class TestEdgeCases:
     """Test edge cases and corner scenarios."""
 
+    def test_detects_celery_task_decorators(self, fixtures_dir, scanner):
+        """Test Celery task decorators populate the celery result bucket."""
+        file_path = fixtures_dir / "celery_patterns.py"
+
+        output = scanner.scan(file_path)
+
+        celery_patterns = output.results["celery"]
+        assert "celery_shared_task" in celery_patterns
+        assert "celery_app_task" in celery_patterns
+        assert any("send_email" in (usage.statement or "") for usage in celery_patterns["celery_shared_task"])
+        assert any("rebuild_index" in (usage.statement or "") for usage in celery_patterns["celery_app_task"])
+
     def test_nested_async_functions(self, tmp_path, create_scanner):
         """Test nested async function definitions."""
         code = """
