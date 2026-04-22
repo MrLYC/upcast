@@ -19,6 +19,9 @@ from upcast.models.exceptions import (
 class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
     """Scanner for exception handlers (try/except/else/finally)."""
 
+    _CONTROL_FLOW_NODES = (nodes.Pass, nodes.Return, nodes.Break, nodes.Continue, nodes.Raise)
+    _NESTED_SCOPE_NODES = (nodes.FunctionDef, nodes.AsyncFunctionDef, nodes.ClassDef, nodes.Lambda)
+
     def __init__(
         self,
         include_patterns: list[str] | None = None,
@@ -174,7 +177,7 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
         }
 
         for node in body:
-            for subnode in node.nodes_of_class((nodes.Pass, nodes.Return, nodes.Break, nodes.Continue, nodes.Raise)):
+            for subnode in self._iter_control_flow_nodes(node):
                 if isinstance(subnode, nodes.Pass):
                     counts["pass_count"] += 1
                 elif isinstance(subnode, nodes.Return):
@@ -187,6 +190,25 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
                     counts["raise_count"] += 1
 
         return counts
+
+    def _iter_control_flow_nodes(self, node: nodes.NodeNG):
+        """Yield control-flow nodes without descending into nested scopes."""
+        if isinstance(node, self._NESTED_SCOPE_NODES):
+            return
+
+        stack = [node]
+
+        while stack:
+            current = stack.pop()
+            if isinstance(current, self._CONTROL_FLOW_NODES):
+                yield current
+                continue
+
+            if current is not node and isinstance(current, self._NESTED_SCOPE_NODES):
+                continue
+
+            children = list(current.get_children())
+            stack.extend(reversed(children))
 
     def _check_nested_exceptions(self, body: list[nodes.NodeNG]) -> bool:
         """Check if the try block contains nested try-except blocks."""

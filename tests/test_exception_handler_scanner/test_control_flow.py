@@ -175,3 +175,29 @@ def process():
         # Return in try block
         except_clause = handler.exception_blocks[0]
         assert except_clause.return_count == 1
+
+    def test_ignore_control_flow_in_nested_defs(self, tmp_path, scanner):
+        """Control flow inside nested defs/classes should not count for the except clause."""
+        code = """
+def process():
+    try:
+        operation()
+    except ValueError:
+        def inner():
+            return 123
+
+        class Handler:
+            def fail(self):
+                raise RuntimeError("inside method")
+
+        return 0
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        handler = output.results[0]
+        clause = handler.exception_blocks[0]
+        assert clause.return_count == 1
+        assert clause.raise_count == 0
