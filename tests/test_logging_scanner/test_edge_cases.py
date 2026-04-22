@@ -313,3 +313,21 @@ class TestLineNumbers:
         assert 5 in line_numbers
         assert 6 in line_numbers
         assert 9 in line_numbers
+
+
+class TestSensitivePatterns:
+    """Test sensitive logging detection edge cases."""
+
+    def test_detects_headers_and_auth_cookie_as_sensitive(self):
+        """Header- and auth-related arguments should be treated as sensitive."""
+        fixture_path = Path(__file__).parent / "fixtures" / "sensitive_logging_patterns.py"
+
+        scanner = LoggingScanner()
+        output = scanner.scan(fixture_path)
+        file_info = list(output.results.values())[0]
+
+        headers_call = next(call for call in file_info.logging if call.message == "Headers: %s")
+        auth_cookie_call = next(call for call in file_info.logging if call.message == "Auth cookie %s")
+
+        assert "headers" in {pattern.lower() for pattern in headers_call.sensitive_patterns}
+        assert auth_cookie_call.sensitive_patterns

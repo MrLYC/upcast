@@ -171,3 +171,16 @@ class TestMultipleLoggers:
         logger_names = {call.logger_name for call in file_info.logging}
         assert "app.service1" in logger_names
         assert "app.service2" in logger_names
+
+    def test_self_logger_preserves_explicit_logger_name(self):
+        """self.logger assigned from getLogger should keep the explicit logger name."""
+        fixture_path = Path(__file__).parent / "fixtures" / "sensitive_logging_patterns.py"
+
+        scanner = LoggingScanner()
+        output = scanner.scan(fixture_path)
+        file_info = list(output.results.values())[0]
+
+        service_calls = [call for call in file_info.logging if call.message in {"Headers: %s", "Auth cookie %s"}]
+
+        assert len(service_calls) == 2
+        assert all(call.logger_name == "svc.audit" for call in service_calls)

@@ -22,6 +22,11 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
 
     # Default sensitive keywords that might indicate logging of sensitive data
     DEFAULT_SENSITIVE_KEYWORDS: ClassVar[set[str]] = {
+        "auth",
+        "authorization",
+        "cookie",
+        "header",
+        "headers",
         "password",
         "passwd",
         "pwd",
@@ -258,11 +263,23 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             if isinstance(node.value, nodes.Call):
                 logger_name, lib_type = self._get_logger_name_from_call(node.value, module_path, imports)
                 if logger_name and lib_type:
-                    # Track all assigned variables
-                    for target in node.targets:
-                        if isinstance(target, nodes.AssignName):
-                            loggers[target.name] = logger_name
-                            logger_types[target.name] = lib_type
+                    for target_name in self._get_assignment_target_names(node):
+                        loggers[target_name] = logger_name
+                        logger_types[target_name] = lib_type
+
+    def _get_assignment_target_names(self, node: nodes.Assign) -> list[str]:
+        """Collect assignment target names for logger tracking."""
+        target_names: list[str] = []
+
+        for target in node.targets:
+            if isinstance(target, nodes.AssignName):
+                target_names.append(target.name)
+            elif isinstance(target, nodes.AssignAttr):
+                target_name = safe_as_string(target)
+                if target_name:
+                    target_names.append(target_name)
+
+        return target_names
 
     def _get_logger_name_from_call(
         self, call: nodes.Call, module_path: str, imports: dict[str, str]
@@ -386,7 +403,12 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
 
         elif isinstance(node.func.expr, nodes.Attribute):
             # Handle self.logger, cls.logger patterns
-            if node.func.expr.attrname in {"logger", "log", "_logger"}:
+            expr_name = safe_as_string(node.func.expr)
+            if expr_name:
+                logger_name = loggers.get(expr_name)
+                lib_type = logger_types.get(expr_name, "logging")
+
+            if not logger_name and node.func.expr.attrname in {"logger", "log", "_logger"}:
                 logger_name = module_path
                 lib_type = "logging"
 
@@ -502,6 +524,10 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         elif isinstance(node, nodes.JoinedStr):
             # f-string: extract template without f'' wrapper
             return self._extract_fstring_template(node)
+        elif self._is_format_call(node):
+            return self._extract_format_template(node)
+        elif isinstance(node, nodes.BinOp) and node.op == "%":
+            return self._extract_percent_template(node)
         elif isinstance(node, nodes.Name):
             # Variable: try to infer its value
             inferred = infer_value(node).get_if_type(str)
@@ -516,6 +542,27 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
                 return inferred
             # Fall back to string representation
             return safe_as_string(node)
+
+    def _is_format_call(self, node: nodes.NodeNG) -> bool:
+        return (
+            isinstance(node, nodes.Call)
+            and isinstance(node.func, nodes.Attribute)
+            and node.func.attrname == "format"
+            and isinstance(node.func.expr, nodes.Const)
+            and isinstance(node.func.expr.value, str)
+        )
+
+    def _extract_format_template(self, node: nodes.NodeNG) -> str:
+        if self._is_format_call(node):
+            return str(node.func.expr.value)
+        return safe_as_string(node)
+
+    def _extract_percent_template(self, node: nodes.NodeNG) -> str:
+        if isinstance(node, nodes.BinOp) and node.op == "%":
+            left = node.left
+            if isinstance(left, nodes.Const) and isinstance(left.value, str):
+                return left.value
+        return safe_as_string(node)
 
     def _extract_fstring_template(self, node: nodes.JoinedStr) -> str:
         """Extract f-string template without f'' wrapper.

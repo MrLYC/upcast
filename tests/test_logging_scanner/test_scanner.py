@@ -471,3 +471,14 @@ def test():
     # Fourth call: user_password should be sensitive (contains "password" as word)
     assert calls[3].sensitive_patterns
     assert "user_password" in calls[3].sensitive_patterns
+
+
+def test_preserves_percent_and_format_templates(scanner):
+    """Percent and format-style messages should keep only the template string."""
+    fixture_path = Path(__file__).parent / "fixtures" / "sensitive_logging_patterns.py"
+
+    output = scanner.scan(fixture_path)
+    file_info = next(iter(output.results.values()))
+
+    assert any(call.type == "format" and call.message == "Password {}" for call in file_info.logging)
+    assert any(call.type == "percent" and call.message == "Token %s" for call in file_info.logging)
