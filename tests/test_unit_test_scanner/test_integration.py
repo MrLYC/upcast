@@ -20,6 +20,7 @@ class TestScannerInstantiation:
         scanner = UnitTestScanner()
         assert "**/test_*.py" in scanner.include_patterns
         assert "**/*_test.py" in scanner.include_patterns
+        assert "**/tests.py" in scanner.include_patterns
 
 
 class TestBasicScanning:
@@ -99,6 +100,17 @@ class TestBasicScanning:
 
         assert output.summary.total_tests == 2
         assert output.summary.total_files == 2
+
+    def test_scan_tests_py_file(self, tmp_path, scanner):
+        """Test scanning legacy tests.py files."""
+        file_path = tmp_path / "tests.py"
+        file_path.write_text("def test_legacy(): assert True")
+
+        output = scanner.scan(tmp_path)
+
+        assert output.summary.total_tests == 1
+        assert output.summary.total_files == 1
+        assert "tests.py" in output.results
 
     def test_body_md5_calculation(self, tmp_path, scanner):
         """Test that body MD5 is calculated."""

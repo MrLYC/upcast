@@ -37,7 +37,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             verbose: Enable verbose logging
         """
         # Default patterns to scan only test files (recursively)
-        default_includes = ["**/test_*.py", "**/*_test.py"]
+        default_includes = ["**/test_*.py", "**/*_test.py", "**/tests.py", "tests.py"]
         include_patterns = include_patterns or default_includes
 
         super().__init__(
