@@ -324,6 +324,27 @@ def documented_function(x: int, y: str = "default") -> bool:
         assert result.code_lines > 0  # Should calculate total lines
         # Note: comment_lines may be 0 since astroid's as_string() can strip comments
 
+    def test_scanner_preserves_comment_lines(self, tmp_path):
+        """Test scanner preserves real comment lines from scanned functions."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            '''
+def function_with_comments(x):
+    # comment A
+    if x > 0:  # comment B
+        # comment C
+        return x
+    return 0
+'''
+        )
+
+        scanner = ComplexityScanner(threshold=1)
+        output = scanner.scan(test_file)
+
+        assert "test.py" in output.results
+        result = output.results["test.py"][0]
+        assert result.comment_lines == 3
+
     def test_scanner_records_scan_duration(self):
         """Test scanner records elapsed scan duration in summary."""
         fixture_path = Path(__file__).resolve().parents[1] / "fixtures" / "complexity_duration_sample.py"

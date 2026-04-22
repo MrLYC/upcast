@@ -2,6 +2,7 @@
 
 import io
 import tokenize
+from pathlib import Path
 
 from astroid import nodes
 
@@ -23,6 +24,18 @@ def extract_function_code(node: nodes.FunctionDef) -> str:
         def my_function(x):
             return x + 1
     """
+    module = node.root()
+    file_path = getattr(module, "file", None)
+    start_line = getattr(node, "fromlineno", None) or getattr(node, "lineno", None)
+    end_line = getattr(node, "end_lineno", None) or start_line
+
+    if file_path and start_line and end_line:
+        try:
+            source_lines = Path(file_path).read_text(encoding="utf-8").splitlines(keepends=True)
+            return "".join(source_lines[start_line - 1 : end_line])
+        except Exception:
+            pass
+
     try:
         return node.as_string()
     except Exception:
