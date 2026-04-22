@@ -238,6 +238,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
     ) -> tuple[str, bool] | None:
         """Find a session/client binding inside a scope or module."""
         for assign_node in owner.nodes_of_class(nodes.Assign):
+            if assign_node.scope() is not owner:
+                continue
             if line_limit is not None and getattr(assign_node, "lineno", None) and assign_node.lineno > line_limit:
                 continue
 
@@ -249,6 +251,8 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         for with_type in (nodes.With, nodes.AsyncWith):
             for with_node in owner.nodes_of_class(with_type):
+                if with_node.scope() is not owner:
+                    continue
                 if line_limit is not None and getattr(with_node, "lineno", None) and with_node.lineno > line_limit:
                     continue
 

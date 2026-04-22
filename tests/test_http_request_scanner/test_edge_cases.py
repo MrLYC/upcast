@@ -19,6 +19,15 @@ class TestEdgeCases:
         assert "https://mock.example.com/users" not in result.results
         assert "https://mock.example.com/orders" not in result.results
 
+    def test_session_resolution_does_not_leak_across_scopes(self, scanner: HttpRequestsScanner):
+        """Test that session/client bindings are resolved only within their own lexical scope."""
+        fixture_path = Path(__file__).parent / "fixtures" / "session_scope_leak.py"
+
+        result = scanner.scan(fixture_path)
+
+        assert "https://real.example.com/in-scope" in result.results
+        assert "https://fake.example.com/not-http" not in result.results
+
     def test_empty_file(self, scanner: HttpRequestsScanner, tmp_path):
         """Test scanning empty file."""
         file_path = tmp_path / "empty.py"
