@@ -59,6 +59,7 @@ class Handler:
         output = scanner.scan(file_path)
 
         assert output.summary.total_metrics == 0
+        assert output.summary.files_scanned == 1
 
     def test_scan_counter_metric(self, tmp_path, scanner, counter_metric):
         """Test scanning a Counter metric."""

@@ -46,7 +46,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
                     metrics[metric.name] = metric
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
-        summary = self._calculate_summary(metrics, scan_duration_ms)
+        summary = self._calculate_summary(metrics, len(files), scan_duration_ms)
         return PrometheusMetricOutput(summary=summary, results=metrics, metadata={"scanner_name": "metrics"})
 
     def _parse_metric_definition(
@@ -162,7 +162,9 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         parts.append(name)
         return "_".join(parts)
 
-    def _calculate_summary(self, metrics: dict[str, MetricInfo], scan_duration_ms: int) -> PrometheusMetricSummary:
+    def _calculate_summary(
+        self, metrics: dict[str, MetricInfo], files_scanned: int, scan_duration_ms: int
+    ) -> PrometheusMetricSummary:
         """Calculate summary statistics."""
         by_type: dict[str, int] = {}
         for metric in metrics.values():
@@ -172,7 +174,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
 
         return PrometheusMetricSummary(
             total_count=total_definitions,
-            files_scanned=len({d.file for m in metrics.values() for d in m.definitions}),
+            files_scanned=files_scanned,
             total_metrics=len(metrics),
             by_type=by_type,
             scan_duration_ms=scan_duration_ms,
