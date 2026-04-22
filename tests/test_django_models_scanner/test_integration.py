@@ -310,3 +310,14 @@ class User(models.Model):
         assert result.summary.total_fields >= 3  # At least title, content, username
         assert result.summary.total_relationships >= 1  # author ForeignKey
         assert result.summary.scan_duration_ms >= 0
+
+    def test_preserves_model_and_field_line_numbers(self, scanner: DjangoModelScanner) -> None:
+        """Test scanner preserves source line numbers for models and fields."""
+        fixture_dir = Path(__file__).resolve().parents[1] / "fixtures" / "django_model_line_numbers"
+
+        result = scanner.scan(fixture_dir)
+
+        model = next(iter(result.results.values()))
+        assert model.line == 4
+        assert model.fields["title"].line == 5
+        assert model.fields["is_active"].line == 6

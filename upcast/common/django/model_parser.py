@@ -116,6 +116,7 @@ def parse_model(  # noqa: C901
         "name": class_node.name,
         "qname": qname,
         "module": module_path,
+        "line": class_node.lineno if hasattr(class_node, "lineno") else None,
         "bases": [],
         "fields": {},
         "relationships": {},
@@ -207,6 +208,7 @@ def parse_field(assign_node: nodes.Assign) -> Optional[tuple[str, str, dict[str,
 
         # Extract field options
         options = _extract_field_options(call)
+        options["line"] = assign_node.lineno if hasattr(assign_node, "lineno") else None
     except Exception:
         return None
     else:

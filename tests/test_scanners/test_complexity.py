@@ -1,5 +1,8 @@
 """Tests for ComplexityScanner models and implementation."""
 
+from pathlib import Path
+from unittest.mock import patch
+
 import pytest
 from pydantic import ValidationError
 
@@ -320,3 +323,13 @@ def documented_function(x: int, y: str = "default") -> bool:
         assert "def documented_function" in result.code
         assert result.code_lines > 0  # Should calculate total lines
         # Note: comment_lines may be 0 since astroid's as_string() can strip comments
+
+    def test_scanner_records_scan_duration(self):
+        """Test scanner records elapsed scan duration in summary."""
+        fixture_path = Path(__file__).resolve().parents[1] / "fixtures" / "complexity_duration_sample.py"
+        scanner = ComplexityScanner(threshold=1)
+
+        with patch("time.perf_counter", side_effect=[20.0, 20.5]):
+            output = scanner.scan(fixture_path)
+
+        assert output.summary.scan_duration_ms == 500

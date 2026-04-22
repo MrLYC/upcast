@@ -1,5 +1,6 @@
 """Cyclomatic complexity scanner implementation with Pydantic models."""
 
+import time
 from pathlib import Path
 
 from astroid import nodes
@@ -41,6 +42,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
 
     def scan(self, path: Path) -> ComplexityOutput:
         """Scan for high complexity functions."""
+        start_time = time.perf_counter()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -59,7 +61,8 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 results.sort(key=lambda r: r.line)
                 modules[rel_path] = results
 
-        summary = self._calculate_summary(modules)
+        scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
+        summary = self._calculate_summary(modules, scan_duration_ms)
         return ComplexityOutput(summary=summary, results=modules, metadata={"scanner_name": "complexity-patterns"})
 
     def _scan_module(self, module: nodes.Module) -> list[ComplexityResult]:
@@ -157,7 +160,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
         else:
             return "critical"
 
-    def _calculate_summary(self, modules: dict[str, list[ComplexityResult]]) -> ComplexitySummary:
+    def _calculate_summary(self, modules: dict[str, list[ComplexityResult]], scan_duration_ms: int) -> ComplexitySummary:
         """Calculate summary statistics."""
         all_results = [r for results in modules.values() for r in results]
         by_severity: dict[str, int] = {}
@@ -169,5 +172,5 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             files_scanned=len(modules),
             high_complexity_count=len(all_results),
             by_severity=by_severity,
-            scan_duration_ms=0,  # TODO: Add timing
+            scan_duration_ms=scan_duration_ms,
         )

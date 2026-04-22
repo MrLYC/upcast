@@ -1,7 +1,8 @@
 """Tests for different metric types."""
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 from upcast.scanners.metrics import MetricsScanner
 
@@ -195,3 +196,27 @@ requests = Counter(
         assert output.summary.total_metrics == 1
         metric = output.results["http_requests_total"]
         assert metric.type == "Counter"
+
+    def test_does_not_match_non_prometheus_counter_like_names(self, scanner):
+        """Test non-Prometheus classes with metric-like names are ignored."""
+        fixture_path = Path(__file__).resolve().parents[1] / "fixtures" / "metrics_false_positive.py"
+
+        output = scanner.scan(fixture_path)
+
+        assert output.summary.total_metrics == 0
+        assert output.results == {}
+
+    def test_does_not_match_prometheus_submodule_aliases(self, tmp_path, scanner):
+        """Test submodule aliases do not count as top-level prometheus_client metrics."""
+        code = """
+import prometheus_client.core as prom
+
+requests_total = prom.Counter('http_requests_total', 'Total HTTP requests')
+"""
+        file_path = tmp_path / "metrics.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        assert output.summary.total_metrics == 0
+        assert output.results == {}

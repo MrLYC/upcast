@@ -1,5 +1,6 @@
 """Prometheus metrics scanner implementation with Pydantic models."""
 
+import time
 from pathlib import Path
 from typing import ClassVar
 
@@ -24,6 +25,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
 
     def scan(self, path: Path) -> PrometheusMetricOutput:
         """Scan for Prometheus metrics."""
+        start_time = time.perf_counter()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -43,7 +45,8 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
                 if metric:
                     metrics[metric.name] = metric
 
-        summary = self._calculate_summary(metrics)
+        scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
+        summary = self._calculate_summary(metrics, scan_duration_ms)
         return PrometheusMetricOutput(summary=summary, results=metrics, metadata={"scanner_name": "metrics"})
 
     def _parse_metric_definition(
@@ -101,13 +104,17 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
     def _get_metric_type(self, func_node: nodes.NodeNG, imports: dict[str, str]) -> str | None:
         """Get metric type from function call."""
         if isinstance(func_node, nodes.Attribute):
-            if func_node.attrname in self.METRIC_TYPES:
-                return func_node.attrname
+            if func_node.attrname in self.METRIC_TYPES and isinstance(func_node.expr, nodes.Name):
+                qualified = imports.get(func_node.expr.name) or func_node.expr.name
+                if qualified == "prometheus_client":
+                    return func_node.attrname
         elif isinstance(func_node, nodes.Name):
-            name = func_node.name
-            qualified = imports.get(name, name)
+            qualified = imports.get(func_node.name)
+            if not qualified:
+                return None
+
             for metric_type in self.METRIC_TYPES:
-                if metric_type in qualified or name == metric_type:
+                if qualified == f"prometheus_client.{metric_type}":
                     return metric_type
         return None
 
@@ -155,7 +162,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         parts.append(name)
         return "_".join(parts)
 
-    def _calculate_summary(self, metrics: dict[str, MetricInfo]) -> PrometheusMetricSummary:
+    def _calculate_summary(self, metrics: dict[str, MetricInfo], scan_duration_ms: int) -> PrometheusMetricSummary:
         """Calculate summary statistics."""
         by_type: dict[str, int] = {}
         for metric in metrics.values():
@@ -168,5 +175,5 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             files_scanned=len({d.file for m in metrics.values() for d in m.definitions}),
             total_metrics=len(metrics),
             by_type=by_type,
-            scan_duration_ms=0,
+            scan_duration_ms=scan_duration_ms,
         )

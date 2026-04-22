@@ -1,5 +1,8 @@
 """Tests for PrometheusMetricScanner."""
 
+from pathlib import Path
+from unittest.mock import patch
+
 from upcast.scanners.metrics import (
     MetricInfo,
     MetricsScanner,
@@ -52,3 +55,13 @@ requests_total = Counter('http_requests_total', 'Total requests')
         output = scanner.scan(test_file)
 
         assert output.summary.total_count == 0
+
+    def test_scanner_records_scan_duration(self):
+        """Test scanner records elapsed scan duration in summary."""
+        fixture_path = Path(__file__).resolve().parents[1] / "fixtures" / "metrics_duration_sample.py"
+        scanner = MetricsScanner()
+
+        with patch("time.perf_counter", side_effect=[10.0, 10.25]):
+            output = scanner.scan(fixture_path)
+
+        assert output.summary.scan_duration_ms == 250
