@@ -45,6 +45,35 @@ class TestBasicFunctions:
         assert "a" in symbols.functions["add"].signature
         assert "b" in symbols.functions["add"].signature
 
+    def test_function_arguments_are_extracted(self, tmp_path):
+        """Function args should be exposed as structured metadata."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            def build_payload(user_id: int, verbose=False, *extras, limit: int = 10, **options):
+                return {
+                    "user_id": user_id,
+                    "verbose": verbose,
+                    "extras": extras,
+                    "limit": limit,
+                    "options": options,
+                }
+        """)
+        )
+
+        scanner = ModuleSymbolScanner()
+        output = scanner.scan(test_file)
+
+        symbols = list(output.results.values())[0]
+        assert "build_payload" in symbols.functions
+        assert symbols.functions["build_payload"].args == [
+            "user_id: int",
+            "verbose=False",
+            "*extras",
+            "limit: int = 10",
+            "**options",
+        ]
+
     def test_function_with_type_hints(self, tmp_path):
         """Function with type hints should be detected."""
         test_file = tmp_path / "test.py"

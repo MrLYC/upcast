@@ -107,6 +107,27 @@ class TestModuleSymbolScanner:
         assert "Parent1" in bases
         assert "Parent2" in bases
 
+    def test_rich_fixture_exposes_function_args_and_method_metadata(self, scanner, fixtures_dir):
+        """Task 7 fixture should expose structured function args and class methods."""
+        rich_symbols_file = fixtures_dir / "rich_symbols.py"
+        result = scanner.scan(rich_symbols_file)
+
+        file_result = next(iter(result.results.values()))
+
+        assert file_result.functions["build_payload"].args == [
+            "user_id: int",
+            "verbose=False",
+            "*extras",
+            "limit: int = 10",
+            "**options",
+        ]
+
+        service_methods = file_result.classes["Service"].methods
+        assert service_methods["from_config"].lineno == 19
+        assert service_methods["from_config"].args == ["cls", "config", "retries: int = 3"]
+        assert service_methods["run"].decorators[0].name == "decorator"
+        assert service_methods["run"].decorators[0].args == ["audit"]
+
     def test_attribute_access(self, scanner, fixtures_dir):
         """Test tracking attribute access."""
         attributes_file = fixtures_dir / "attributes.py"

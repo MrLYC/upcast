@@ -46,7 +46,36 @@ class TestBasicClasses:
         symbols = list(output.results.values())[0]
         assert "Calculator" in symbols.classes
         assert "add" in symbols.classes["Calculator"].methods
+        assert symbols.classes["Calculator"].methods["add"].lineno == 3
+        assert symbols.classes["Calculator"].methods["add"].args == ["self", "a", "b"]
         assert "subtract" in symbols.classes["Calculator"].methods
+
+    def test_class_methods_include_decorators_and_args(self, tmp_path):
+        """Class methods should expose structured metadata instead of plain names."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            class Service:
+                @classmethod
+                def from_config(cls, config, retries: int = 3):
+                    return cls()
+
+                @decorator("audit")
+                def run(self, payload, timeout: float = 1.5):
+                    return payload
+        """)
+        )
+
+        scanner = ModuleSymbolScanner()
+        output = scanner.scan(test_file)
+
+        symbols = list(output.results.values())[0]
+        methods = symbols.classes["Service"].methods
+        assert methods["from_config"].args == ["cls", "config", "retries: int = 3"]
+        assert methods["from_config"].decorators[0].name == "classmethod"
+        assert methods["run"].args == ["self", "payload", "timeout: float = 1.5"]
+        assert methods["run"].decorators[0].name == "decorator"
+        assert methods["run"].decorators[0].args == ["audit"]
 
     def test_class_with_attributes(self, tmp_path):
         """Class with attributes should be detected."""
