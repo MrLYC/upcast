@@ -263,9 +263,21 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             if isinstance(node.value, nodes.Call):
                 logger_name, lib_type = self._get_logger_name_from_call(node.value, module_path, imports)
                 if logger_name and lib_type:
+                    assignment_context = self._get_logger_context_key(node)
                     for target_name in self._get_assignment_target_names(node):
+                        if assignment_context:
+                            target_name = f"{assignment_context}:{target_name}"
                         loggers[target_name] = logger_name
                         logger_types[target_name] = lib_type
+
+    def _get_logger_context_key(self, node: nodes.NodeNG) -> str | None:
+        """Return a class-aware context key for logger assignments and calls."""
+        current = node.parent
+        while current:
+            if isinstance(current, nodes.ClassDef):
+                return current.name
+            current = current.parent
+        return None
 
     def _get_assignment_target_names(self, node: nodes.Assign) -> list[str]:
         """Collect assignment target names for logger tracking."""
@@ -405,8 +417,16 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             # Handle self.logger, cls.logger patterns
             expr_name = safe_as_string(node.func.expr)
             if expr_name:
-                logger_name = loggers.get(expr_name)
-                lib_type = logger_types.get(expr_name, "logging")
+                context_key = self._get_logger_context_key(node)
+                scoped_expr_name = f"{context_key}:{expr_name}" if context_key else None
+
+                if scoped_expr_name:
+                    logger_name = loggers.get(scoped_expr_name)
+                    lib_type = logger_types.get(scoped_expr_name, "logging")
+
+                if not logger_name:
+                    logger_name = loggers.get(expr_name)
+                    lib_type = logger_types.get(expr_name, "logging")
 
             if not logger_name and node.func.expr.attrname in {"logger", "log", "_logger"}:
                 logger_name = module_path

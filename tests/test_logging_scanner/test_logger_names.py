@@ -184,3 +184,16 @@ class TestMultipleLoggers:
 
         assert len(service_calls) == 2
         assert all(call.logger_name == "svc.audit" for call in service_calls)
+
+    def test_self_logger_names_do_not_leak_between_classes(self):
+        """Different class-scoped self.logger assignments should retain their own names."""
+        fixture_path = Path(__file__).parent / "fixtures" / "self_logger_scope.py"
+
+        scanner = LoggingScanner()
+        output = scanner.scan(fixture_path)
+        file_info = list(output.results.values())[0]
+
+        logger_by_message = {call.message: call.logger_name for call in file_info.logging}
+
+        assert logger_by_message["alpha message"] == "svc.alpha"
+        assert logger_by_message["beta message"] == "svc.beta"
