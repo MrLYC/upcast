@@ -5,6 +5,7 @@ import time
 from collections import defaultdict
 from pathlib import Path
 from typing import ClassVar
+from urllib.parse import urlparse
 
 from astroid import nodes
 
@@ -264,19 +265,23 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         self, node: nodes.Assign, rel_path: str, usage_type: RedisUsageType, var_name: str
     ) -> RedisUsage | None:
         """Extract simple string configuration like CELERY_BROKER_URL."""
-        value_str = safe_as_string(node.value)
+        value_str = infer_value(node.value).get_if_type(str)
+        if value_str is None:
+            value_str = safe_as_string(node.value)
 
         if not value_str or "redis" not in value_str.lower():
             return None
 
         config = RedisConfig(location=value_str)
 
-        # Try to parse redis:// URL
-        match = re.match(r"redis://([^:]+):(\d+)/(\d+)", value_str)
-        if match:
-            config.host = match.group(1)
-            config.port = int(match.group(2))
-            config.db = int(match.group(3))
+        parsed = urlparse(value_str)
+        if parsed.scheme.startswith("redis"):
+            config.host = parsed.hostname
+            config.port = parsed.port
+            if parsed.path and parsed.path != "/":
+                db_str = parsed.path.lstrip("/")
+                if db_str.isdigit():
+                    config.db = int(db_str)
 
         return RedisUsage(
             type=usage_type,
@@ -416,7 +421,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         # Determine operation type
         if method == "lock":
             return self._parse_lock_call(node, rel_path)
-        elif method in ("get", "set", "delete", "incr", "decr", "get_or_set"):
+        elif method in ("get", "set", "add", "touch", "delete", "delete_many", "clear", "incr", "decr", "get_or_set"):
             return self._parse_basic_cache_call(node, rel_path, method)
 
         return None
@@ -458,22 +463,36 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         if node.args:
             key = self._clean_key_pattern(self._infer_key_pattern(node.args[0]))
 
-        if method == "set":
+        if method in {"set", "add"}:
             if len(node.args) >= 3:
+                has_ttl = True
                 timeout_val = infer_value(node.args[2]).get_if_type((int, float))
                 if timeout_val is not None:
                     timeout = int(timeout_val)
-                    has_ttl = True
 
             for keyword in node.keywords:
                 if keyword.arg in ("timeout", "ttl"):
+                    has_ttl = True
                     timeout_val = infer_value(keyword.value).get_if_type((int, float))
                     if timeout_val is not None:
                         timeout = int(timeout_val)
-                        has_ttl = True
 
-            if not has_ttl:
+            if method == "set" and not has_ttl:
                 warning = "No TTL specified for cache.set"
+
+        elif method == "touch":
+            if len(node.args) >= 2:
+                has_ttl = True
+                timeout_val = infer_value(node.args[1]).get_if_type((int, float))
+                if timeout_val is not None:
+                    timeout = int(timeout_val)
+
+            for keyword in node.keywords:
+                if keyword.arg in ("timeout", "ttl"):
+                    has_ttl = True
+                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
+                    if timeout_val is not None:
+                        timeout = int(timeout_val)
 
         return RedisUsage(
             type=RedisUsageType.DIRECT_CLIENT,
@@ -483,7 +502,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             operation=method,
             key=key,
             statement=safe_as_string(node),
-            has_ttl=has_ttl if method == "set" else None,
+            has_ttl=has_ttl if method in {"set", "add", "touch"} else None,
             timeout=timeout,
             warning=warning,
         )
@@ -529,7 +548,15 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             func = node.func
 
             # Find Redis() instantiation
-            if isinstance(func, nodes.Name) and func.name in ("Redis", "StrictRedis"):
+            is_direct_constructor = isinstance(func, nodes.Name) and func.name in ("Redis", "StrictRedis")
+            is_module_constructor = (
+                isinstance(func, nodes.Attribute)
+                and isinstance(func.expr, nodes.Name)
+                and func.expr.name == "redis"
+                and func.attrname in ("Redis", "StrictRedis")
+            )
+
+            if is_direct_constructor or is_module_constructor:
                 parent = node.parent
                 if isinstance(parent, nodes.Assign):
                     for target in parent.targets:

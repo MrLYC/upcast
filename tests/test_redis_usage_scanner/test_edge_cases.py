@@ -215,3 +215,41 @@ class TestLineNumberTracking:
             usages = [u for result_list in output.results.values() for u in result_list]
             line_numbers = [u.line for u in usages]
             assert all(line > 0 for line in line_numbers)
+
+
+class TestDynamicTtlHandling:
+    """Test TTL handling when timeout values are dynamic."""
+
+    def test_dynamic_ttl_is_not_reported_as_missing(self):
+        """Dynamic TTL arguments should count as TTL-present, not as missing TTL."""
+        fixture_path = Path(__file__).parent / "fixtures" / "ttl_patterns.py"
+
+        scanner = RedisUsageScanner()
+        output = scanner.scan(fixture_path)
+
+        direct_usages = output.results.get("direct_client", [])
+        usage_by_operation = {usage.operation: usage for usage in direct_usages if usage.operation}
+
+        for operation in ("set", "add", "touch"):
+            usage = usage_by_operation[operation]
+            assert usage.has_ttl is True
+            assert usage.timeout is None
+            assert usage.warning is None
+
+        redis_set = next(
+            usage
+            for usage in direct_usages
+            if usage.library == "redis" and usage.operation == "set" and usage.key == "redis:key"
+        )
+        redis_setex = next(
+            usage
+            for usage in direct_usages
+            if usage.library == "redis" and usage.operation == "setex" and usage.key == "redis:setex"
+        )
+
+        assert redis_set.has_ttl is True
+        assert redis_set.timeout is None
+        assert redis_set.warning is None
+        assert redis_setex.has_ttl is True
+        assert redis_setex.timeout is None
+        assert redis_setex.warning is None

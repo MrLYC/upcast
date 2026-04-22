@@ -66,6 +66,18 @@ class TestCacheOperations:
 
         assert output.summary.total_usages >= 1
 
+    def test_extended_cache_operations_are_detected(self):
+        """Additional cache operation families should be reported."""
+        fixture_path = Path(__file__).parent / "fixtures" / "ttl_patterns.py"
+
+        scanner = RedisUsageScanner()
+        output = scanner.scan(fixture_path)
+
+        direct_usages = output.results.get("direct_client", [])
+        operations = {usage.operation for usage in direct_usages}
+
+        assert {"add", "touch", "delete_many", "clear", "incr", "decr"}.issubset(operations)
+
 
 class TestDirectRedisOperations:
     """Test direct Redis client operations."""
