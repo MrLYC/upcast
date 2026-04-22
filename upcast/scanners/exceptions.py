@@ -151,7 +151,11 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
                     if method_name in log_methods:
                         if isinstance(subnode.func.expr, nodes.Name):
                             var_name = subnode.func.expr.name
-                            if var_name.lower() in {"logger", "log", "_logger"} or var_name in {"LOG", "LOGGER"}:
+                            if (
+                                var_name == "logging"
+                                or var_name.lower() in {"logger", "log", "_logger"}
+                                or var_name in {"LOG", "LOGGER"}
+                            ):
                                 counts[f"log_{method_name}_count"] += 1
                         elif isinstance(subnode.func.expr, nodes.Attribute):
                             if subnode.func.expr.attrname in {"logger", "log"}:

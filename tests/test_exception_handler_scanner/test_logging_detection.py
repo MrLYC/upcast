@@ -189,6 +189,4 @@ except ValueError:
 
         handler = output.results[0]
         clause = handler.exception_blocks[0]
-        # Direct logging.error() might not be detected depending on implementation
-        # This documents the current behavior
-        assert clause.log_error_count >= 0
+        assert clause.log_error_count == 1
