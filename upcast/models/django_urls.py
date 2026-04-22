@@ -68,7 +68,7 @@ class DjangoUrlSummary(ScannerSummary):
     total_patterns: int = Field(ge=0, description="Total URL patterns")
 
 
-class DjangoUrlOutput(ScannerOutput[dict[str, UrlModule]]):
+class DjangoUrlOutput(ScannerOutput[DjangoUrlSummary, dict[str, UrlModule]]):
     """Complete output from Django URL scanner.
 
     Attributes:

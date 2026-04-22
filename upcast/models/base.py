@@ -8,6 +8,7 @@ from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
+S = TypeVar("S", bound="ScannerSummary")
 T = TypeVar("T")
 
 
@@ -30,7 +31,7 @@ class ScannerSummary(BaseModel):
     scan_duration_ms: int | None = Field(None, ge=0, description="Scan duration in milliseconds")
 
 
-class ScannerOutput(BaseModel, Generic[T]):
+class ScannerOutput(BaseModel, Generic[S, T]):
     """Base output model for all scanners.
 
     All scanner outputs must follow this structure with summary, results,
@@ -47,7 +48,7 @@ class ScannerOutput(BaseModel, Generic[T]):
 
     model_config = ConfigDict(extra="allow")  # Allow scanner-specific metadata
 
-    summary: ScannerSummary
+    summary: S
     results: T
     metadata: dict[str, Any] = Field(default_factory=dict)
 

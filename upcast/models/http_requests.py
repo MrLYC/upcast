@@ -65,7 +65,7 @@ class HttpRequestSummary(ScannerSummary):
     by_library: dict[str, int] = Field(description="Count by library")
 
 
-class HttpRequestOutput(ScannerOutput[dict[str, HttpRequestInfo]]):
+class HttpRequestOutput(ScannerOutput[HttpRequestSummary, dict[str, HttpRequestInfo]]):
     """Complete output from HTTP request scanner.
 
     Attributes:

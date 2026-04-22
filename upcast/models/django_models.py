@@ -83,7 +83,7 @@ class DjangoModelSummary(ScannerSummary):
     total_relationships: int = Field(ge=0, description="Total relationships")
 
 
-class DjangoModelOutput(ScannerOutput[dict[str, DjangoModel]]):
+class DjangoModelOutput(ScannerOutput[DjangoModelSummary, dict[str, DjangoModel]]):
     """Complete output from Django model scanner.
 
     Attributes:

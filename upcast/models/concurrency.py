@@ -48,7 +48,7 @@ class ConcurrencyPatternSummary(ScannerSummary):
     )
 
 
-class ConcurrencyPatternOutput(ScannerOutput[dict[str, dict[str, list[ConcurrencyUsage]]]]):
+class ConcurrencyPatternOutput(ScannerOutput[ConcurrencyPatternSummary, dict[str, dict[str, list[ConcurrencyUsage]]]]):
     """Complete output from concurrency pattern scanner.
 
     Attributes:

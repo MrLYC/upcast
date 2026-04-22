@@ -57,7 +57,7 @@ class EnvVarSummary(ScannerSummary):
     optional_count: int = Field(ge=0, description="Optional variables")
 
 
-class EnvVarOutput(ScannerOutput[dict[str, EnvVarInfo]]):
+class EnvVarOutput(ScannerOutput[EnvVarSummary, dict[str, EnvVarInfo]]):
     """Complete output from environment variable scanner.
 
     Attributes:

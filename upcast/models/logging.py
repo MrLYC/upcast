@@ -65,7 +65,7 @@ class LoggingSummary(ScannerSummary):
     sensitive_calls: int = Field(ge=0, description="Calls with sensitive data")
 
 
-class LoggingOutput(ScannerOutput[dict[str, FileLoggingInfo]]):
+class LoggingOutput(ScannerOutput[LoggingSummary, dict[str, FileLoggingInfo]]):
     """Complete output from logging scanner.
 
     Attributes:

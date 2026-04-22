@@ -68,7 +68,7 @@ class SignalSummary(ScannerSummary):
     unused_custom_signals: int = Field(ge=0, description="Unused custom signals")
 
 
-class SignalOutput(ScannerOutput[list[SignalInfo]]):
+class SignalOutput(ScannerOutput[SignalSummary, list[SignalInfo]]):
     """Complete output from signal scanner.
 
     Attributes:

@@ -51,7 +51,7 @@ class UnitTestSummary(ScannerSummary):
     total_assertions: int = Field(ge=0, description="Total assertions")
 
 
-class UnitTestOutput(ScannerOutput[dict[str, list[UnitTestInfo]]]):
+class UnitTestOutput(ScannerOutput[UnitTestSummary, dict[str, list[UnitTestInfo]]]):
     """Complete output from unit test scanner.
 
     Attributes:

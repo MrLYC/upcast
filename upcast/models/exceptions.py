@@ -79,7 +79,7 @@ class ExceptionHandlerSummary(ScannerSummary):
     total_except_clauses: int = Field(ge=0, description="Total except clauses")
 
 
-class ExceptionHandlerOutput(ScannerOutput[list[ExceptionHandler]]):
+class ExceptionHandlerOutput(ScannerOutput[ExceptionHandlerSummary, list[ExceptionHandler]]):
     """Complete output from exception handler scanner.
 
     Attributes:

@@ -79,7 +79,7 @@ class PrometheusMetricSummary(ScannerSummary):
     by_type: dict[str, int] = Field(description="Count by type")
 
 
-class PrometheusMetricOutput(ScannerOutput[dict[str, MetricInfo]]):
+class PrometheusMetricOutput(ScannerOutput[PrometheusMetricSummary, dict[str, MetricInfo]]):
     """Complete output from Prometheus metrics scanner.
 
     Attributes:

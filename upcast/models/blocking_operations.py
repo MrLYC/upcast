@@ -46,7 +46,7 @@ class BlockingOperationsSummary(ScannerSummary):
     )
 
 
-class BlockingOperationsOutput(ScannerOutput[dict[str, list[BlockingOperation]]]):
+class BlockingOperationsOutput(ScannerOutput[BlockingOperationsSummary, dict[str, list[BlockingOperation]]]):
     """Complete output from blocking operations scanner.
 
     Attributes:

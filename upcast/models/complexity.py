@@ -47,7 +47,7 @@ class ComplexitySummary(ScannerSummary):
     by_severity: dict[str, int] = Field(description="Count by severity level")
 
 
-class ComplexityOutput(ScannerOutput[dict[str, list[ComplexityResult]]]):
+class ComplexityOutput(ScannerOutput[ComplexitySummary, dict[str, list[ComplexityResult]]]):
     """Complete output from complexity scanner.
 
     Attributes:

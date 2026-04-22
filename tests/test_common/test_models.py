@@ -85,10 +85,25 @@ class TestScannerSummary:
 class TestScannerOutput:
     """Test ScannerOutput generic model."""
 
+    def test_output_supports_explicit_summary_generic(self):
+        """ScannerOutput should allow explicit summary and results generic parameters."""
+
+        class DetailedSummary(ScannerSummary):
+            total_special: int
+
+        summary = DetailedSummary(total_count=2, files_scanned=1, total_special=1)
+        output = ScannerOutput[DetailedSummary, dict[str, str]](
+            summary=summary,
+            results={"key1": "value1", "key2": "value2"},
+        )
+
+        assert output.summary.total_special == 1
+        assert output.results == {"key1": "value1", "key2": "value2"}
+
     def test_valid_output_with_dict_results(self):
         """Test creating output with dict results."""
         summary = ScannerSummary(total_count=2, files_scanned=1)
-        output = ScannerOutput[dict[str, str]](
+        output = ScannerOutput[ScannerSummary, dict[str, str]](
             summary=summary,
             results={"key1": "value1", "key2": "value2"},
         )
@@ -99,7 +114,7 @@ class TestScannerOutput:
     def test_valid_output_with_list_results(self):
         """Test creating output with list results."""
         summary = ScannerSummary(total_count=3, files_scanned=1)
-        output = ScannerOutput[list[str]](
+        output = ScannerOutput[ScannerSummary, list[str]](
             summary=summary,
             results=["item1", "item2", "item3"],
         )
@@ -114,7 +129,7 @@ class TestScannerOutput:
             "scanner_version": "1.0.0",
             "scan_timestamp": "2025-12-21T10:00:00Z",
         }
-        output = ScannerOutput[dict[str, str]](
+        output = ScannerOutput[ScannerSummary, dict[str, str]](
             summary=summary,
             results={"key": "value"},
             metadata=metadata,
@@ -124,7 +139,7 @@ class TestScannerOutput:
     def test_missing_summary_rejected(self):
         """Test that output without summary is rejected."""
         with pytest.raises(ValidationError) as exc_info:
-            ScannerOutput[dict[str, str]](  # type: ignore[call-arg]
+            ScannerOutput[ScannerSummary, dict[str, str]](  # type: ignore[call-arg]
                 results={"key": "value"},
             )
         errors = exc_info.value.errors()
@@ -134,7 +149,7 @@ class TestScannerOutput:
         """Test that output without results is rejected."""
         summary = ScannerSummary(total_count=0, files_scanned=0)
         with pytest.raises(ValidationError) as exc_info:
-            ScannerOutput[dict[str, str]](  # type: ignore[call-arg]
+            ScannerOutput[ScannerSummary, dict[str, str]](  # type: ignore[call-arg]
                 summary=summary,
             )
         errors = exc_info.value.errors()
@@ -143,7 +158,7 @@ class TestScannerOutput:
     def test_to_dict_conversion(self):
         """Test converting output to dictionary."""
         summary = ScannerSummary(total_count=1, files_scanned=1)
-        output = ScannerOutput[dict[str, str]](
+        output = ScannerOutput[ScannerSummary, dict[str, str]](
             summary=summary,
             results={"key": "value"},
             metadata={"scanner": "test"},
@@ -160,7 +175,7 @@ class TestScannerOutput:
     def test_to_json_conversion(self):
         """Test converting output to JSON."""
         summary = ScannerSummary(total_count=1, files_scanned=1, scan_duration_ms=100)
-        output = ScannerOutput[dict[str, str]](
+        output = ScannerOutput[ScannerSummary, dict[str, str]](
             summary=summary,
             results={"key": "value"},
         )
@@ -174,7 +189,7 @@ class TestScannerOutput:
     def test_json_round_trip(self):
         """Test serializing to JSON and deserializing back."""
         summary = ScannerSummary(total_count=5, files_scanned=2)
-        original = ScannerOutput[dict[str, int]](
+        original = ScannerOutput[ScannerSummary, dict[str, int]](
             summary=summary,
             results={"count1": 10, "count2": 20},
             metadata={"version": "1.0"},
@@ -184,7 +199,7 @@ class TestScannerOutput:
         json_str = original.to_json()
 
         # Deserialize back
-        restored = ScannerOutput[dict[str, int]].model_validate_json(json_str)
+        restored = ScannerOutput[ScannerSummary, dict[str, int]].model_validate_json(json_str)
 
         assert restored.summary.total_count == original.summary.total_count
         assert restored.results == original.results
@@ -194,7 +209,7 @@ class TestScannerOutput:
         """Test that extra fields in metadata are allowed."""
         summary = ScannerSummary(total_count=1, files_scanned=1)
         # Extra fields at top level should be allowed due to extra="allow"
-        output = ScannerOutput[dict[str, str]](
+        output = ScannerOutput[ScannerSummary, dict[str, str]](
             summary=summary,
             results={"key": "value"},
             metadata={"custom_field": "custom_value", "another": 123},

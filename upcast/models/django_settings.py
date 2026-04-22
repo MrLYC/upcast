@@ -71,7 +71,7 @@ class DjangoSettingsSummary(ScannerSummary):
     total_usages: int = Field(ge=0, description="Total usage count")
 
 
-class DjangoSettingsOutput(ScannerOutput[dict[str, SettingInfo]]):
+class DjangoSettingsOutput(ScannerOutput[DjangoSettingsSummary, dict[str, SettingInfo]]):
     """Output for Django settings scan.
 
     Attributes:

@@ -63,7 +63,7 @@ class RedisUsageSummary(ScannerSummary):
     warnings: list[str] = Field(default_factory=list, description="List of warnings about anti-patterns")
 
 
-class RedisUsageOutput(ScannerOutput[dict[str, list[RedisUsage]]]):
+class RedisUsageOutput(ScannerOutput[RedisUsageSummary, dict[str, list[RedisUsage]]]):
     """Complete Redis usage scanner output."""
 
     summary: RedisUsageSummary = Field(description="Summary statistics")

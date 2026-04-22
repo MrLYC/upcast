@@ -122,7 +122,7 @@ class ModuleSymbolSummary(ScannerSummary):
     total_symbols: int = Field(ge=0, description="Total number of symbols (variables + functions + classes)")
 
 
-class ModuleSymbolOutput(ScannerOutput[dict[str, ModuleSymbols]]):
+class ModuleSymbolOutput(ScannerOutput[ModuleSymbolSummary, dict[str, ModuleSymbols]]):
     """Output model for module symbol scanner.
 
     Attributes:

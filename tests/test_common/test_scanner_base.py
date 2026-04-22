@@ -9,10 +9,10 @@ from upcast.common.scanner_base import BaseScanner
 from upcast.models.base import ScannerOutput, ScannerSummary
 
 
-class ConcreteTestScanner(BaseScanner[ScannerOutput[list[str]]]):
+class ConcreteTestScanner(BaseScanner[ScannerOutput[ScannerSummary, list[str]]]):
     """Concrete implementation of BaseScanner for testing."""
 
-    def scan(self, path: Path) -> ScannerOutput[list[str]]:
+    def scan(self, path: Path) -> ScannerOutput[ScannerSummary, list[str]]:
         """Scan implementation that returns file paths."""
         files = self.get_files_to_scan(path)
         results = [str(f) for f in files]
@@ -22,7 +22,7 @@ class ConcreteTestScanner(BaseScanner[ScannerOutput[list[str]]]):
             files_scanned=len(files),
         )
 
-        return ScannerOutput[list[str]](
+        return ScannerOutput[ScannerSummary, list[str]](
             summary=summary,
             results=results,
         )
