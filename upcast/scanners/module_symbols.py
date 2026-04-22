@@ -11,6 +11,7 @@ from pathlib import Path
 from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
+from upcast.common.code_utils import extract_function_signature
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
@@ -412,19 +413,21 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         if not self.include_private and func_name.startswith("_"):
             return
 
-        # Extract signature - get the definition line only
-        full_source = safe_as_string(node) or ""
-        if full_source:
-            # Split by newlines and take the first non-empty line (the def line)
-            lines = [line for line in full_source.split("\n") if line.strip()]
-            if lines:
-                signature = lines[0].rstrip()
-                if not signature.endswith(":"):
-                    signature += ":"
-            else:
-                signature = f"def {func_name}(...):"
-        else:
-            signature = f"def {func_name}(...):"
+        symbols.functions[func_name] = self._build_function_model(node, block_stack)
+
+    def _build_function_model(self, node: nodes.FunctionDef, block_stack: list[str]) -> Function:
+        """Build function metadata model for a function or method node.
+
+        Args:
+            node: Function definition node
+            block_stack: Current block context stack
+
+        Returns:
+            Function metadata model
+        """
+        func_name = node.name
+
+        signature = self._extract_function_signature(node) or f"def {func_name}(...):"
 
         # Extract docstring
         docstring = node.doc_node.value if node.doc_node else None
@@ -436,16 +439,94 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         # Extract decorators
         decorators = self._extract_decorators(node.decorators)
 
-        symbols.functions[func_name] = Function(
-            lineno=node.lineno or 0,
+        return Function(
+            lineno=getattr(node, "fromlineno", None) or node.lineno or 0,
             is_async=isinstance(node, nodes.AsyncFunctionDef),
             signature=signature,
             docstring=docstring,
             body_md5=body_md5,
+            args=self._extract_function_args(node),
             attributes=[],
             decorators=decorators,
             blocks=block_stack.copy(),
         )
+
+    def _extract_function_signature(self, node: nodes.FunctionDef) -> str | None:
+        """Extract function signature while preserving existing compact formatting."""
+        signature = extract_function_signature(node)
+        if not signature:
+            return None
+
+        signature = signature.replace(" (", "(")
+        signature = signature.replace("( ", "(")
+        signature = signature.replace(" )", ")")
+        signature = signature.replace(") :", "):")
+        signature = signature.replace(" :", ":")
+
+        return signature
+
+    def _extract_function_args(self, node: nodes.FunctionDef) -> list[str]:
+        """Extract ordered function arguments as compact strings.
+
+        Args:
+            node: Function definition node
+
+        Returns:
+            Ordered argument strings
+        """
+        if not node.args:
+            return []
+
+        params: list[str] = []
+
+        def _format_arg(arg_node: nodes.AssignName, annotation_node: nodes.NodeNG | None, default_node: nodes.NodeNG | None) -> str:
+            param_str = arg_node.name
+            if annotation_node:
+                param_str += f": {annotation_node.as_string()}"
+            if default_node:
+                separator = " = " if annotation_node else "="
+                param_str += f"{separator}{default_node.as_string()}"
+            return param_str
+
+        positional_only_args = list(getattr(node.args, "posonlyargs", []) or [])
+        positional_args = [*positional_only_args, *(node.args.args or [])]
+        positional_annotations = [
+            *(getattr(node.args, "posonlyargs_annotations", []) or []),
+            *(node.args.annotations or []),
+        ]
+        positional_defaults = node.args.defaults or []
+        num_without_defaults = len(positional_args) - len(positional_defaults)
+
+        for index, arg in enumerate(positional_args):
+            annotation = positional_annotations[index] if index < len(positional_annotations) else None
+            default = None
+            if index >= num_without_defaults:
+                default_index = index - num_without_defaults
+                if default_index < len(positional_defaults):
+                    default = positional_defaults[default_index]
+            params.append(_format_arg(arg, annotation, default))
+
+        if node.args.vararg:
+            vararg_str = f"*{node.args.vararg}"
+            if node.args.varargannotation:
+                vararg_str += f": {node.args.varargannotation.as_string()}"
+            params.append(vararg_str)
+
+        kwonlyargs = node.args.kwonlyargs or []
+        kwonly_annotations = getattr(node.args, "kwonlyargs_annotations", []) or []
+        kw_defaults = node.args.kw_defaults or []
+        for index, arg in enumerate(kwonlyargs):
+            annotation = kwonly_annotations[index] if index < len(kwonly_annotations) else None
+            default = kw_defaults[index] if index < len(kw_defaults) else None
+            params.append(_format_arg(arg, annotation, default))
+
+        if node.args.kwarg:
+            kwarg_str = f"**{node.args.kwarg}"
+            if node.args.kwargannotation:
+                kwarg_str += f": {node.args.kwargannotation.as_string()}"
+            params.append(kwarg_str)
+
+        return params
 
     def _extract_class(self, node: nodes.ClassDef, symbols: ModuleSymbols, block_stack: list[str]) -> None:
         """Extract class definition.
@@ -481,7 +562,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
 
         # Extract class attributes and methods
         class_attrs: list[str] = []
-        methods: list[str] = []
+        methods: dict[str, Function] = {}
 
         for child in node.body:
             if isinstance(child, nodes.Assign):
@@ -489,7 +570,9 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                     if isinstance(target, nodes.AssignName):
                         class_attrs.append(target.name)
             elif isinstance(child, nodes.FunctionDef):
-                methods.append(child.name)
+                if not self.include_private and child.name.startswith("_"):
+                    continue
+                methods[child.name] = self._build_function_model(child, [*block_stack, "class"])
 
         # Extract decorators
         decorators = self._extract_decorators(node.decorators)
@@ -599,6 +682,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                     signature=func.signature,
                     docstring=func.docstring,
                     body_md5=func.body_md5,
+                    args=func.args,
                     attributes=self.symbol_usage[name],
                     decorators=func.decorators,
                     blocks=func.blocks,

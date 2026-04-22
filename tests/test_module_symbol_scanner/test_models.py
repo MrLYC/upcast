@@ -120,6 +120,7 @@ class TestFunction:
             signature="def test() -> None",
             docstring="Test function",
             body_md5="abc123",
+            args=["value", "enabled=False"],
             attributes=[],
             decorators=[],
             blocks=["module"],
@@ -127,6 +128,7 @@ class TestFunction:
         assert func.signature == "def test() -> None"
         assert func.docstring == "Test function"
         assert func.body_md5 == "abc123"
+        assert func.args == ["value", "enabled=False"]
 
     def test_function_with_decorator(self):
         """Test function with decorators."""
@@ -136,6 +138,7 @@ class TestFunction:
             signature="def test() -> None",
             docstring=None,
             body_md5="abc123",
+            args=[],
             attributes=[],
             decorators=[Decorator(name="staticmethod", lineno=1, args=[], kwargs={})],
             blocks=["module"],
@@ -149,12 +152,23 @@ class TestClass:
 
     def test_basic_class(self):
         """Test basic class."""
+        method = Function(
+            lineno=5,
+            is_async=False,
+            signature="def method1(self, value):",
+            docstring=None,
+            body_md5="abc123",
+            args=["self", "value"],
+            attributes=[],
+            decorators=[],
+            blocks=["module", "class"],
+        )
         cls = Class(
             lineno=1,
             docstring="Test class",
             body_md5="def456",
             attributes=["attr1"],
-            methods=["method1"],
+            methods={"method1": method},
             bases=[],
             decorators=[],
             blocks=["module"],
@@ -163,6 +177,8 @@ class TestClass:
         assert cls.body_md5 == "def456"
         assert "attr1" in cls.attributes
         assert "method1" in cls.methods
+        assert cls.methods["method1"].lineno == 5
+        assert cls.methods["method1"].args == ["self", "value"]
 
     def test_class_with_bases(self):
         """Test class with base classes."""
@@ -171,7 +187,7 @@ class TestClass:
             docstring=None,
             body_md5="def456",
             attributes=[],
-            methods=[],
+            methods={},
             bases=["Base1", "Base2"],
             decorators=[],
             blocks=["module"],
