@@ -220,3 +220,58 @@ def test_user():
         # Should only include myapp targets
         target_modules = [t.module_path for t in test.targets]
         assert all("myapp" in m for m in target_modules)
+
+    def test_scan_test_class_captures_class_name_and_fixtures(self, tmp_path, scanner):
+        """Task 8 should expose class_name and fixture parameters for pytest methods."""
+        code = """
+import pytest
+
+class TestMath:
+    def test_with_fixture(self, tmp_path, db):
+        assert tmp_path is not None
+        assert db is not None
+"""
+        file_path = tmp_path / "test_class_fixtures.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        test = list(output.results.values())[0][0]
+        assert test.class_name == "TestMath"
+        assert test.fixtures == ["tmp_path", "db"]
+
+    def test_scan_pytest_markers(self, tmp_path, scanner):
+        """Task 8 should expose pytest marker names."""
+        code = """
+import pytest
+
+@pytest.mark.slow
+def test_slow_case():
+    assert True
+"""
+        file_path = tmp_path / "test_marks.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        test = list(output.results.values())[0][0]
+        assert test.markers == ["slow"]
+
+    def test_scan_parametrize_expanded_count_single_decorator(self, tmp_path, scanner):
+        """Task 8 should expand summary counts for simple pytest parametrize cases."""
+        code = """
+import pytest
+
+@pytest.mark.parametrize("value", [1, 2, 3])
+def test_parametrized(value):
+    assert value > 0
+"""
+        file_path = tmp_path / "test_parametrize.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        test = list(output.results.values())[0][0]
+        assert output.summary.total_tests == 3
+        assert test.parametrize == [{"argnames": "value", "case_count": 3}]
+        assert test.expanded_count == 3

@@ -195,6 +195,13 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         # Resolve target modules
         targets = self._resolve_targets(func_node, module_imports)
 
+        class_name = self._extract_class_name(func_node)
+        parametrize = self._extract_parametrize_metadata(func_node)
+        parametrized_names = self._extract_parametrized_arg_names(parametrize)
+        fixtures = self._extract_fixtures(func_node, parametrized_names)
+        markers = self._extract_markers(func_node)
+        expanded_count = self._calculate_expanded_count(parametrize)
+
         return UnitTestInfo(
             name=name,
             file=rel_path,
@@ -202,7 +209,131 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             body_md5=body_md5,
             assert_count=assert_count,
             targets=targets,
+            class_name=class_name,
+            fixtures=fixtures,
+            markers=markers,
+            parametrize=parametrize,
+            expanded_count=expanded_count,
         )
+
+    def _extract_class_name(self, func_node: nodes.FunctionDef) -> str | None:
+        """Extract parent test class name if the test is class-based."""
+        parent = func_node.parent
+        if isinstance(parent, nodes.ClassDef) and (parent.name.startswith("Test") or self._is_unittest_testcase(parent)):
+            return parent.name
+        return None
+
+    def _extract_fixtures(self, func_node: nodes.FunctionDef, parametrized_names: set[str]) -> list[str]:
+        """Extract fixture-like function parameters excluding self/cls and parametrized arguments."""
+        if not func_node.args:
+            return []
+
+        fixture_names: list[str] = []
+        arg_nodes = [*(getattr(func_node.args, "posonlyargs", []) or []), *(func_node.args.args or [])]
+        arg_nodes.extend(func_node.args.kwonlyargs or [])
+
+        for arg_node in arg_nodes:
+            arg_name = arg_node.name
+            if arg_name in {"self", "cls"} or arg_name in parametrized_names:
+                continue
+            fixture_names.append(arg_name)
+
+        return fixture_names
+
+    def _extract_markers(self, func_node: nodes.FunctionDef) -> list[str]:
+        """Extract pytest marker names excluding parametrize."""
+        if not func_node.decorators:
+            return []
+
+        markers: list[str] = []
+        for decorator in func_node.decorators.nodes:
+            decorator_name = self._get_decorator_name(decorator)
+            if not decorator_name.startswith("pytest.mark."):
+                continue
+            marker_name = decorator_name.removeprefix("pytest.mark.")
+            if marker_name != "parametrize":
+                markers.append(marker_name)
+
+        return markers
+
+    def _extract_parametrize_metadata(self, func_node: nodes.FunctionDef) -> list[dict[str, str | int]]:
+        """Extract compact pytest parametrize metadata."""
+        if not func_node.decorators:
+            return []
+
+        parametrize: list[dict[str, str | int]] = []
+        for decorator in func_node.decorators.nodes:
+            if not isinstance(decorator, nodes.Call):
+                continue
+            if self._get_decorator_name(decorator) != "pytest.mark.parametrize":
+                continue
+
+            if len(decorator.args) < 2:
+                continue
+
+            argnames = self._format_parametrize_argnames(decorator.args[0])
+            case_count = self._count_parametrize_cases(decorator.args[1])
+            parametrize.append({"argnames": argnames, "case_count": case_count})
+
+        return parametrize
+
+    def _extract_parametrized_arg_names(self, parametrize: list[dict[str, str | int]]) -> set[str]:
+        """Expand compact argname metadata to a set of parameter names."""
+        arg_names: set[str] = set()
+        for entry in parametrize:
+            argnames = entry.get("argnames")
+            if not isinstance(argnames, str):
+                continue
+            for name in argnames.split(","):
+                normalized = name.strip()
+                if normalized:
+                    arg_names.add(normalized)
+        return arg_names
+
+    def _calculate_expanded_count(self, parametrize: list[dict[str, str | int]]) -> int:
+        """Calculate expanded pytest case count from parametrize metadata."""
+        expanded_count = 1
+        for entry in parametrize:
+            case_count = entry.get("case_count")
+            if isinstance(case_count, int) and case_count > 0:
+                expanded_count *= case_count
+        return expanded_count
+
+    def _get_decorator_name(self, decorator: nodes.NodeNG) -> str:
+        """Return a dotted decorator name when it can be resolved syntactically."""
+        node = decorator.func if isinstance(decorator, nodes.Call) else decorator
+        if isinstance(node, nodes.Attribute):
+            parts: list[str] = [node.attrname]
+            expr = node.expr
+            while isinstance(expr, nodes.Attribute):
+                parts.append(expr.attrname)
+                expr = expr.expr
+            if isinstance(expr, nodes.Name):
+                parts.append(expr.name)
+            return ".".join(reversed(parts))
+        if isinstance(node, nodes.Name):
+            return node.name
+        return ""
+
+    def _format_parametrize_argnames(self, argnames_node: nodes.NodeNG) -> str:
+        """Format pytest parametrize argnames to a compact canonical string."""
+        if isinstance(argnames_node, nodes.Const) and isinstance(argnames_node.value, str):
+            return argnames_node.value
+
+        if isinstance(argnames_node, (nodes.Tuple, nodes.List)):
+            names: list[str] = []
+            for elt in argnames_node.elts:
+                if isinstance(elt, nodes.Const) and isinstance(elt.value, str):
+                    names.append(elt.value)
+            return ", ".join(names)
+
+        return argnames_node.as_string()
+
+    def _count_parametrize_cases(self, cases_node: nodes.NodeNG) -> int:
+        """Count simple pytest parametrize cases conservatively."""
+        if isinstance(cases_node, (nodes.List, nodes.Tuple, nodes.Set)):
+            return max(len(cases_node.elts), 1)
+        return 1
 
     def _calculate_body_md5(self, func_node: nodes.FunctionDef) -> str:
         """Calculate MD5 hash of normalized function body.
@@ -361,7 +492,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         Returns:
             Summary statistics
         """
-        total_tests = sum(len(tests) for tests in tests_by_file.values())
+        total_tests = sum(test.expanded_count for tests in tests_by_file.values() for test in tests)
         total_files = len(tests_by_file)
         total_assertions = sum(test.assert_count for tests in tests_by_file.values() for test in tests)
 
