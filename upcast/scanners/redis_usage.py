@@ -531,6 +531,24 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             return None
         return int(timeout_val)
 
+    def _extract_direct_set_ttl(self, node: nodes.Call) -> tuple[bool, int | None]:
+        """Extract TTL for direct redis set operations."""
+        has_ttl = False
+        timeout = None
+
+        if len(node.args) >= 3:
+            has_ttl = True
+            timeout = self._infer_timeout_value(node.args[2])
+
+        for keyword in node.keywords:
+            if keyword.arg in ("ex", "px", "exat", "pxat"):
+                has_ttl = True
+                keyword_timeout = self._infer_timeout_value(keyword.value)
+                if keyword_timeout is not None:
+                    timeout = keyword_timeout
+
+        return has_ttl, timeout
+
     def _get_basic_cache_warning(self, method: str, has_ttl: bool) -> str | None:
         """Return warning message for cache calls that require TTLs."""
         if method == "set" and not has_ttl:
@@ -663,12 +681,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
                     timeout = int(timeout_val)
 
         elif operation == "set":
-            for keyword in node.keywords:
-                if keyword.arg in ("ex", "px", "exat", "pxat"):
-                    has_ttl = True
-                    timeout_val = infer_value(keyword.value).get_if_type((int, float))
-                    if timeout_val is not None:
-                        timeout = int(timeout_val)
+            has_ttl, timeout = self._extract_direct_set_ttl(node)
 
             if not has_ttl and not is_pipeline:
                 warning = "No TTL specified for Redis set operation"

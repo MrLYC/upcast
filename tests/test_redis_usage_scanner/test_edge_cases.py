@@ -220,6 +220,28 @@ class TestLineNumberTracking:
 class TestDynamicTtlHandling:
     """Test TTL handling when timeout values are dynamic."""
 
+    def test_positional_redis_set_ttl_is_not_reported_as_missing(self, tmp_path):
+        """redis-py set third positional argument should count as TTL."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            import redis
+
+            client = redis.Redis()
+            client.set("broker_test_key", "Test Redis Broker", 10)
+        """)
+        )
+
+        scanner = RedisUsageScanner()
+        output = scanner.scan(test_file)
+
+        direct_usages = output.results.get("direct_client", [])
+        redis_set = next(usage for usage in direct_usages if usage.library == "redis" and usage.operation == "set")
+
+        assert redis_set.has_ttl is True
+        assert redis_set.timeout == 10
+        assert redis_set.warning is None
+
     def test_dynamic_ttl_is_not_reported_as_missing(self):
         """Dynamic TTL arguments should count as TTL-present, not as missing TTL."""
         fixture_path = Path(__file__).parent / "fixtures" / "ttl_patterns.py"
