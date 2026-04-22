@@ -556,6 +556,8 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             return None
         if node.func.expr.name not in celery_task_names:
             return None
+        if self._is_shadowed_in_scope(node, node.func.expr.name):
+            return None
         function, class_name = self._extract_context(node)
         return ConcurrencyUsage(
             file=file_path,
@@ -569,6 +571,52 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             details={"task": node.func.expr.name},
             api_call=node.func.attrname,
         )
+
+    def _is_shadowed_in_scope(self, node: nodes.NodeNG, name: str) -> bool:
+        """Return True when a local scope shadows a module-level Celery task name."""
+        scope = node.scope()
+        if not isinstance(scope, (nodes.FunctionDef, nodes.AsyncFunctionDef)):
+            return False
+
+        if any(arg.name == name for arg in scope.args.arguments):
+            return True
+        if scope.args.vararg and scope.args.vararg == name:
+            return True
+        if scope.args.kwarg and scope.args.kwarg == name:
+            return True
+        if any(arg.name == name for arg in getattr(scope.args, "posonlyargs", [])):
+            return True
+        if any(arg.name == name for arg in scope.args.kwonlyargs):
+            return True
+
+        for child in scope.body:
+            if child.fromlineno >= node.lineno:
+                break
+            for assign in child.nodes_of_class(
+                (nodes.AssignName, nodes.AnnAssign, nodes.ExceptHandler, nodes.With, nodes.For, nodes.AsyncFor)
+            ):
+                if isinstance(assign, nodes.AssignName) and assign.name == name:
+                    return True
+                if (
+                    isinstance(assign, nodes.AnnAssign)
+                    and isinstance(assign.target, nodes.AssignName)
+                    and assign.target.name == name
+                ):
+                    return True
+                if isinstance(assign, nodes.ExceptHandler) and assign.name == name:
+                    return True
+                if (
+                    isinstance(assign, (nodes.For, nodes.AsyncFor))
+                    and isinstance(assign.target, nodes.AssignName)
+                    and assign.target.name == name
+                ):
+                    return True
+                if isinstance(assign, nodes.With):
+                    for _ctx, alias in assign.items:
+                        if isinstance(alias, nodes.AssignName) and alias.name == name:
+                            return True
+
+        return False
 
     def _get_block_name(self, node: nodes.NodeNG) -> str | None:
         """Get immediate containing block name (if, for, while, etc.)."""
