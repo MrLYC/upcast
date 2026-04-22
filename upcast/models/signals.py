@@ -26,6 +26,14 @@ class SignalUsage(BaseModel):
     statement: str | None = Field(None, description="Source code snippet")
 
 
+class SignalDefinition(BaseModel):
+    """Metadata for a custom signal definition."""
+
+    file: str = Field(description="Relative path from project root")
+    lineno: int = Field(ge=1, description="Line number (1-based)")
+    providing_args: list[str] = Field(default_factory=list, description="Declared providing_args values")
+
+
 class SignalInfo(BaseModel):
     """Information about a single signal and its usage.
 
@@ -43,6 +51,7 @@ class SignalInfo(BaseModel):
     category: str = Field(description="Signal category")
     receivers: list[SignalUsage] = Field(description="Signal receivers/handlers")
     senders: list[SignalUsage] = Field(description="Signal sends")
+    definition: SignalDefinition | None = Field(None, description="Custom signal definition metadata")
     status: str | None = Field(None, description="Signal status (e.g., 'unused')")
 
 

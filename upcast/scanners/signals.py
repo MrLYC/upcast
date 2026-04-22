@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from upcast.common.scanner_base import BaseScanner
-from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, SignalUsage
+from upcast.models.signals import SignalDefinition, SignalInfo, SignalOutput, SignalSummary, SignalUsage
 
 # ============================================================================
 # Scanner Implementation
@@ -143,21 +143,6 @@ class SignalScanner(BaseScanner[SignalOutput]):
         signals: list[SignalInfo] = []
 
         for category, category_data in framework_data.items():
-            # Handle unused_custom_signals (list format)
-            if category == "unused_custom_signals" and isinstance(category_data, list):
-                for signal_def in category_data:
-                    signals.append(
-                        SignalInfo(
-                            signal=signal_def.get("name", "unknown"),
-                            type=framework,
-                            category=category,
-                            status="unused",
-                            receivers=[],
-                            senders=[],
-                        )
-                    )
-                continue
-
             # Handle regular signals (dict format)
             if not isinstance(category_data, dict):
                 continue
@@ -171,6 +156,10 @@ class SignalScanner(BaseScanner[SignalOutput]):
 
                 # Extract senders
                 senders = [SignalUsage(**self._normalize_usage(s)) for s in signal_data.get("senders", [])]
+                definition = self._normalize_definition(signal_data.get("definition"))
+                status = None
+                if category == "custom_signals" and not receivers and not senders:
+                    status = "unused"
 
                 signals.append(
                     SignalInfo(
@@ -179,7 +168,8 @@ class SignalScanner(BaseScanner[SignalOutput]):
                         category=category,
                         receivers=receivers,
                         senders=senders,
-                        status="",
+                        definition=definition,
+                        status=status,
                     )
                 )
 
@@ -201,6 +191,17 @@ class SignalScanner(BaseScanner[SignalOutput]):
             "sender": usage_dict.get("sender"),
             "statement": usage_dict.get("statement", usage_dict.get("code")),
         }
+
+    def _normalize_definition(self, definition_dict: dict[str, Any] | None) -> SignalDefinition | None:
+        """Normalize raw definition metadata to SignalDefinition model."""
+        if not definition_dict:
+            return None
+
+        return SignalDefinition(
+            file=definition_dict.get("file", ""),
+            lineno=definition_dict.get("lineno", definition_dict.get("line", 1)),
+            providing_args=definition_dict.get("providing_args", []),
+        )
 
     def _calculate_summary(
         self,

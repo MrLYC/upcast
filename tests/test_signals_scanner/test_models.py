@@ -2,7 +2,29 @@
 
 import pytest
 
-from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, SignalUsage
+from upcast.models.signals import (
+    SignalDefinition,
+    SignalInfo,
+    SignalOutput,
+    SignalSummary,
+    SignalUsage,
+)
+
+
+class TestSignalDefinition:
+    """Test SignalDefinition model."""
+
+    def test_definition_with_providing_args(self) -> None:
+        """Test creating custom signal definition metadata."""
+        definition = SignalDefinition(
+            file="signals.py",
+            lineno=3,
+            providing_args=["user"],
+        )
+
+        assert definition.file == "signals.py"
+        assert definition.lineno == 3
+        assert definition.providing_args == ["user"]
 
 
 class TestSignalUsage:
@@ -43,6 +65,26 @@ class TestSignalInfo:
         )
         assert info.signal == "post_save"
         assert info.type == "django"
+
+    def test_info_with_definition(self) -> None:
+        """Test signal info with custom definition metadata."""
+        definition = SignalDefinition(
+            file="signals.py",
+            lineno=8,
+            providing_args=["user"],
+        )
+        info = SignalInfo(
+            signal="my_custom_signal",
+            type="django",
+            category="custom_signals",
+            receivers=[],
+            senders=[],
+            definition=definition,
+            status="unused",
+        )
+
+        assert info.definition is not None
+        assert info.definition.file == "signals.py"
 
     def test_info_with_receivers(self) -> None:
         """Test signal info with receivers."""

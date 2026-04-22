@@ -2,13 +2,17 @@
 
 from pathlib import Path
 
-import pytest
-
+from upcast.models.signals import SignalInfo, SignalOutput
 from upcast.scanners.signals import SignalScanner
 
 
 class TestSignalScanner:
     """Test SignalScanner integration."""
+
+    @staticmethod
+    def _get_signal(result: SignalOutput, signal_name: str) -> SignalInfo:
+        """Get a signal entry by name from scanner output."""
+        return next(signal for signal in result.results if signal.signal == signal_name)
 
     def test_scan_receiver_decorator(self, tmp_path: Path, scanner: SignalScanner) -> None:
         """Test scanning @receiver decorator."""
@@ -54,6 +58,25 @@ post_save.send(sender=MyModel, instance=obj)
         result = scanner.scan(tmp_path)
 
         assert result.summary.django_senders >= 1
+        signal = self._get_signal(result, "post_save")
+        assert len(signal.senders) == 1
+        assert signal.senders[0].sender == "MyModel"
+
+    def test_scan_signal_send_robust_includes_sender(self, tmp_path: Path, scanner: SignalScanner) -> None:
+        """Test scanning signal.send_robust() with sender."""
+        code_file = tmp_path / "models.py"
+        code_file.write_text("""
+from django.db.models.signals import post_save
+
+post_save.send_robust(sender=MyModel, instance=obj)
+""")
+
+        result = scanner.scan(tmp_path)
+
+        assert result.summary.django_senders >= 1
+        signal = self._get_signal(result, "post_save")
+        assert len(signal.senders) == 1
+        assert signal.senders[0].sender == "MyModel"
 
     def test_scan_custom_signal(self, tmp_path: Path, scanner: SignalScanner) -> None:
         """Test scanning custom signal definition."""
@@ -61,14 +84,37 @@ post_save.send(sender=MyModel, instance=obj)
         code_file.write_text("""
 from django.dispatch import Signal
 
-my_custom_signal = Signal()
+my_custom_signal = Signal(providing_args=["user"])
 """)
 
         result = scanner.scan(tmp_path)
 
-        # Custom signal detection may vary based on scanner implementation
-        assert result is not None
-        assert result.summary.custom_signals_defined >= 0
+        assert result.summary.custom_signals_defined == 1
+        signal = self._get_signal(result, "my_custom_signal")
+        assert signal.category == "custom_signals"
+        assert signal.definition is not None
+        assert signal.definition.file == "signals.py"
+        assert signal.definition.lineno >= 1
+        assert signal.definition.providing_args == ["user"]
+
+    def test_scan_non_signal_send_is_ignored(self, tmp_path: Path, scanner: SignalScanner) -> None:
+        """Test arbitrary .send() calls are not treated as signal sends."""
+        code_file = tmp_path / "mailer.py"
+        code_file.write_text("""
+class Mailer:
+    def send(self, sender, instance):
+        pass
+
+
+mail = Mailer()
+mail.send(sender=User, instance=obj)
+""")
+
+        result = scanner.scan(tmp_path)
+
+        assert result.summary.django_senders == 0
+        assert result.summary.celery_senders == 0
+        assert all(signal.signal != "mail" for signal in result.results)
 
     def test_scan_celery_signal(self, tmp_path: Path, scanner: SignalScanner) -> None:
         """Test scanning Celery signal."""

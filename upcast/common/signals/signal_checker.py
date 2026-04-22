@@ -30,8 +30,8 @@ class SignalChecker:
         self.verbose = verbose
 
         # Signal collections grouped by framework and type
-        # New structure: {receivers: [], senders: [], usages: []}
-        self.signals: dict[str, dict[str, dict[str, dict[str, list]]]] = {
+        # Entry structure: {receivers: [], senders: [], usages: [], definition: dict | None}
+        self.signals: dict[str, dict[str, dict[str, dict[str, Any]]]] = {
             "django": {},
             "celery": {},
         }
@@ -96,6 +96,8 @@ class SignalChecker:
             if signal_def:
                 signal_name = signal_def["name"]
                 self.custom_signals[signal_name] = signal_def
+                signal_entry = self._ensure_signal_entry("django", "custom_signals", signal_name)
+                signal_entry["definition"] = signal_def
 
     def _collect_signal_handlers(self, module: nodes.Module) -> None:
         """Collect signal handler registrations.
@@ -199,24 +201,14 @@ class SignalChecker:
         else:  # celery
             category = categorize_celery_signal(signal_name)
 
-        # Initialize category if needed
-        if category not in self.signals[framework]:
-            self.signals[framework][category] = {}
-
-        # Initialize signal structure if needed
-        if signal_name not in self.signals[framework][category]:
-            self.signals[framework][category][signal_name] = {
-                "receivers": [],
-                "senders": [],
-                "usages": [],
-            }
+        signal_entry = self._ensure_signal_entry(framework, category, signal_name)
 
         # Add to receivers
-        self.signals[framework][category][signal_name]["receivers"].append(handler)
+        signal_entry["receivers"].append(handler)
 
         # Create usage from handler
         usage = self._handler_to_usage(handler)
-        self.signals[framework][category][signal_name]["usages"].append(usage)
+        signal_entry["usages"].append(usage)
 
     def _register_send(self, framework: str, signal_name: str, usage: SignalUsage) -> None:
         """Register a signal send call.
@@ -235,17 +227,7 @@ class SignalChecker:
         else:  # celery
             category = categorize_celery_signal(signal_name)
 
-        # Initialize category if needed
-        if category not in self.signals[framework]:
-            self.signals[framework][category] = {}
-
-        # Initialize signal structure if needed
-        if signal_name not in self.signals[framework][category]:
-            self.signals[framework][category][signal_name] = {
-                "receivers": [],
-                "senders": [],
-                "usages": [],
-            }
+        signal_entry = self._ensure_signal_entry(framework, category, signal_name)
 
         # Convert usage to sender dict for backward compatibility
         sender_dict = {
@@ -257,8 +239,23 @@ class SignalChecker:
             sender_dict["sender"] = usage.sender
 
         # Add to senders and usages
-        self.signals[framework][category][signal_name]["senders"].append(sender_dict)
-        self.signals[framework][category][signal_name]["usages"].append(usage)
+        signal_entry["senders"].append(sender_dict)
+        signal_entry["usages"].append(usage)
+
+    def _ensure_signal_entry(self, framework: str, category: str, signal_name: str) -> dict[str, Any]:
+        """Ensure signal entry exists and return it."""
+        if category not in self.signals[framework]:
+            self.signals[framework][category] = {}
+
+        if signal_name not in self.signals[framework][category]:
+            self.signals[framework][category][signal_name] = {
+                "receivers": [],
+                "senders": [],
+                "usages": [],
+                "definition": None,
+            }
+
+        return self.signals[framework][category][signal_name]
 
     def _handler_to_usage(self, handler: dict[str, Any]) -> SignalUsage:
         """Convert handler dict to SignalUsage object.
@@ -300,36 +297,14 @@ class SignalChecker:
             Dictionary with django and celery signal groups
         """
         results: dict[str, Any] = {}
-
-        # Add Django signals
-        if self.signals["django"]:
-            results["django"] = self.signals["django"]
+        django_results: dict[str, Any] = dict(self.signals["django"])
 
         # Add Celery signals
         if self.signals["celery"]:
             results["celery"] = self.signals["celery"]
 
-        # Add custom signal definitions if any are unused
-        if self.custom_signals:
-            unused = []
-            for signal_name, signal_def in self.custom_signals.items():
-                # Check if signal has handlers
-                has_handlers = False
-                if (
-                    "custom_signals" in self.signals["django"]
-                    and signal_name in self.signals["django"]["custom_signals"]
-                ):
-                    sig_data = self.signals["django"]["custom_signals"][signal_name]
-                    # Check if it has receivers or senders
-                    has_handlers = bool(sig_data.get("receivers") or sig_data.get("senders"))
-
-                if not has_handlers:
-                    unused.append(signal_def)
-
-            if unused and self.verbose:
-                if "django" not in results:
-                    results["django"] = {}
-                results["django"]["unused_custom_signals"] = unused
+        if django_results:
+            results["django"] = django_results
 
         return results
 
