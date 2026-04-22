@@ -107,6 +107,19 @@ class TestListSettings:
 
         assert "CUSTOM_LIST" in result.results
 
+    def test_allowed_hosts_list_drops_unextractable_entries(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
+        """Dynamic list elements should be dropped instead of preserved as None."""
+        settings_file = tmp_path / "settings.py"
+        settings_file.write_text("""
+import os
+ALLOWED_HOSTS = ["localhost", os.environ.get("EXTERNAL_HOST")]
+""")
+
+        result = scanner.scan(tmp_path)
+
+        info = result.results["ALLOWED_HOSTS"]
+        assert info.definitions[0].value == ["localhost"]
+
 
 class TestDictSettings:
     """Test dict setting detection."""
@@ -157,6 +170,19 @@ class TestTupleSettings:
         assert "ADMINS" in result.results
         info = result.results["ADMINS"]
         assert "tuple" in info.definition_types
+
+    def test_allowed_hosts_tuple_drops_unextractable_entries(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
+        """Dynamic tuple elements should be dropped instead of preserved as None."""
+        settings_file = tmp_path / "settings.py"
+        settings_file.write_text("""
+import os
+ALLOWED_HOSTS = ("localhost", os.environ.get("EXTERNAL_HOST"))
+""")
+
+        result = scanner.scan(tmp_path)
+
+        info = result.results["ALLOWED_HOSTS"]
+        assert info.definitions[0].value == ("localhost",)
 
 
 class TestDynamicSettings:

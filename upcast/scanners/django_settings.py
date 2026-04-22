@@ -205,11 +205,13 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
 
             # Handle lists
             if isinstance(node, nodes.List):
-                return [self._extract_value(elt) for elt in node.elts]
+                values = [self._extract_value(elt) for elt in node.elts]
+                return [value for value in values if value is not None]
 
             # Handle tuples
             if isinstance(node, nodes.Tuple):
-                return tuple(self._extract_value(elt) for elt in node.elts)
+                values = [self._extract_value(elt) for elt in node.elts]
+                return tuple(value for value in values if value is not None)
 
             # Handle dicts
             if isinstance(node, nodes.Dict):
@@ -217,13 +219,14 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                 for key_node, value_node in node.items:
                     key = self._extract_value(key_node)
                     value = self._extract_value(value_node)
-                    if key is not None:
+                    if key is not None and value is not None:
                         result[key] = value
                 return result
 
             # Handle sets
             if isinstance(node, nodes.Set):
-                return {self._extract_value(elt) for elt in node.elts}
+                values = [self._extract_value(elt) for elt in node.elts]
+                return {value for value in values if value is not None}
 
         except Exception:  # noqa: S110
             pass
