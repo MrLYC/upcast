@@ -83,7 +83,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
 
         # Calculate summary
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(results, scan_duration_ms, warnings)
+        summary = self._calculate_summary(results, len(files), scan_duration_ms, warnings)
 
         return RedisUsageOutput(summary=summary, results=results, metadata={"scanner_name": "redis-usage"})
 
@@ -692,7 +692,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         return has_ttl, timeout, warning
 
     def _calculate_summary(
-        self, results: dict[str, list[RedisUsage]], scan_duration_ms: int, warnings: list[str]
+        self, results: dict[str, list[RedisUsage]], files_scanned: int, scan_duration_ms: int, warnings: list[str]
     ) -> RedisUsageSummary:
         """Calculate summary statistics."""
         categories = {}
@@ -701,8 +701,6 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         for usage_type, usages in results.items():
             categories[usage_type] = len(usages)
             total_usages += len(usages)
-
-        files_scanned = len({usage.file for usages in results.values() for usage in usages})
 
         return RedisUsageSummary(
             total_count=total_usages,

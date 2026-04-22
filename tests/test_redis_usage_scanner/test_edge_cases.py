@@ -70,9 +70,17 @@ class TestDirectoryScanning:
         """)
         )
 
+        (tmp_path / "file3.py").write_text(
+            dedent("""
+            def helper():
+                return "no redis"
+        """)
+        )
+
         scanner = RedisUsageScanner()
         output = scanner.scan(tmp_path)
 
+        assert output.summary.files_scanned == 3
         assert output.summary.total_usages >= 2
 
     def test_scan_nested_directories(self, tmp_path):
