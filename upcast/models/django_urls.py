@@ -41,6 +41,9 @@ class UrlPattern(BaseModel):
     is_conditional: bool = Field(description="Pattern is conditional")
     description: str | None = Field(None, description="Pattern description")
     note: str | None = Field(None, description="Note for dynamic patterns")
+    file: str | None = Field(None, description="Source file where the pattern is defined")
+    line: int | None = Field(None, description="Source line where the pattern is defined")
+    full_path: str | None = Field(None, description="Reconstructed full path including parent include prefixes")
 
 
 class UrlModule(BaseModel):

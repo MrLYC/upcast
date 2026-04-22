@@ -84,6 +84,10 @@ def some_function():
         assert pattern.pattern == "articles/"
         assert pattern.name == "article-list"
         assert pattern.view_name == "article_list"
+        assert getattr(pattern, "file", None) is not None
+        assert str(pattern.file).endswith("urls.py")
+        assert getattr(pattern, "line", None) is not None
+        assert pattern.line > 0
 
     def test_scan_path_with_converters(self, tmp_path, scanner, path_fixtures):
         """Test scanning a file with path converters."""

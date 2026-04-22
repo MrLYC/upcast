@@ -56,11 +56,12 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         """
         start_time = time.perf_counter()
         files = self.get_files_to_scan(path)
+        scan_root = path if path.is_dir() else path.parent
 
         url_modules: dict[str, UrlModule] = {}
 
         for file_path in files:
-            patterns = self._scan_file(file_path)
+            patterns = self._scan_file(file_path, scan_root)
             if patterns:
                 module_path = self._get_module_path(file_path, path)
                 url_modules[module_path] = UrlModule(urlpatterns=patterns)
@@ -70,7 +71,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         return DjangoUrlOutput(summary=summary, results=url_modules, metadata={"scanner_name": "django-urls"})
 
-    def _scan_file(self, file_path: Path) -> list[UrlPattern]:
+    def _scan_file(self, file_path: Path, scan_root: Path) -> list[UrlPattern]:
         """Scan a single URLs file.
 
         Args:
@@ -88,7 +89,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         # Find urlpatterns assignments
         for node in module.nodes_of_class(nodes.Assign):
             if self._is_urlpatterns_assignment(node):
-                url_patterns = self._extract_url_patterns(node.value, module)
+                url_patterns = self._extract_url_patterns(node.value, module, file_path, scan_root)
                 patterns.extend(url_patterns)
 
         if self.verbose and patterns:
@@ -107,7 +108,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         """
         return any(isinstance(target, nodes.AssignName) and target.name == "urlpatterns" for target in node.targets)
 
-    def _extract_url_patterns(self, value_node: nodes.NodeNG, module: nodes.Module) -> list[UrlPattern]:
+    def _extract_url_patterns(
+        self, value_node: nodes.NodeNG, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern]:
         """Extract URL patterns from a value node.
 
         Args:
@@ -138,6 +141,8 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                     is_conditional=False,
                     description=None,
                     note="URL patterns generated dynamically",
+                    file=self._get_source_file(file_path, scan_root),
+                    line=getattr(value_node, "lineno", None),
                 )
             )
             return patterns
@@ -145,7 +150,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         if isinstance(value_node, (nodes.List, nodes.Tuple)):
             # Static list/tuple of patterns
             for element in value_node.elts:
-                pattern_list = self._parse_route_element(element, module)  # type: ignore[arg-type]
+                pattern_list = self._parse_route_element(element, module, file_path, scan_root)  # type: ignore[arg-type]
                 patterns.extend(pattern_list)
 
         return patterns
@@ -163,7 +168,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             return True
         return isinstance(node, nodes.Call)
 
-    def _parse_route_element(self, element: nodes.NodeNG, module: nodes.Module) -> list[UrlPattern]:
+    def _parse_route_element(
+        self, element: nodes.NodeNG, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern]:
         """Parse a single route element (path(), re_path(), include(), etc.).
 
         Args:
@@ -182,10 +189,14 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         # Handle path() and re_path()
         if func_name in ("path", "re_path", "url"):
-            pattern = self._parse_path_call(element, module, func_name)
+            inline_patterns = self._expand_inline_include(element, module, file_path, scan_root)
+            if inline_patterns is not None:
+                return inline_patterns
+
+            pattern = self._parse_path_call(element, module, func_name, file_path, scan_root)
             # Check if this is a router include that should be expanded
             if self._should_expand_router(pattern):
-                return self._expand_router_include(pattern, module)
+                return self._expand_router_include(pattern, module, file_path, scan_root)
             return [pattern]
 
         return []
@@ -205,7 +216,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             return func_node.attrname
         return None
 
-    def _parse_path_call(self, call_node: nodes.Call, module: nodes.Module, func_name: str) -> UrlPattern:  # noqa: C901
+    def _parse_path_call(
+        self, call_node: nodes.Call, module: nodes.Module, func_name: str, file_path: Path, scan_root: Path
+    ) -> UrlPattern:  # noqa: C901
         """Parse a path() or re_path() call.
 
         Args:
@@ -228,6 +241,8 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         is_conditional = False
         include_module: str | None = None
         namespace: str | None = None
+        source_file = self._get_source_file(file_path, scan_root)
+        line = getattr(call_node, "lineno", None)
 
         # Extract pattern string (first argument)
         if call_node.args and len(call_node.args) >= 1:
@@ -277,6 +292,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                         is_conditional=False,
                         description=None,
                         note=None,
+                        file=source_file,
+                        line=line,
+                        full_path=pattern_str,
                     )
 
             # Normal view resolution
@@ -308,6 +326,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             is_conditional=is_conditional,
             description=description,
             note=None,
+            file=source_file,
+            line=line,
+            full_path=pattern_str,
         )
 
     def _parse_include_call(self, call_node: nodes.Call, module: nodes.Module) -> dict[str, str | None]:
@@ -368,7 +389,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         include_module = pattern.include_module or ""
         return include_module.startswith("<router:")
 
-    def _expand_router_include(self, pattern: UrlPattern, module: nodes.Module) -> list[UrlPattern]:
+    def _expand_router_include(
+        self, pattern: UrlPattern, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern]:
         """Expand a router include into individual ViewSet registrations.
 
         Args:
@@ -415,10 +438,78 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                     is_conditional=False,
                     description=None,
                     note=None,
+                    file=self._get_source_file(file_path, scan_root),
+                    line=None,
+                    full_path=full_pattern or "<root>",
                 )
             )
 
         return expanded
+
+    def _expand_inline_include(
+        self, call_node: nodes.Call, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern] | None:
+        """Expand inline include([...]) patterns into concrete child paths."""
+        if len(call_node.args) < 2:
+            return None
+
+        view_node = call_node.args[1]
+        if not isinstance(view_node, nodes.Call):
+            return None
+
+        if self._get_function_name(view_node.func) != "include":
+            return None
+
+        if not view_node.args:
+            return None
+
+        first_arg = view_node.args[0]
+        if not isinstance(first_arg, (nodes.List, nodes.Tuple)):
+            return None
+
+        # Preserve existing tuple(module, namespace) include handling.
+        if (
+            isinstance(first_arg, nodes.Tuple)
+            and first_arg.elts
+            and isinstance(first_arg.elts[0], nodes.Const)
+            and isinstance(first_arg.elts[0].value, str)
+        ):
+            return None
+
+        parent_prefix = ""
+        if isinstance(call_node.args[0], nodes.Const):
+            parent_prefix = str(call_node.args[0].value)
+
+        expanded: list[UrlPattern] = []
+        for element in first_arg.elts:
+            expanded.extend(self._parse_route_element(element, module, file_path, scan_root))
+
+        for pattern in expanded:
+            child_path = pattern.full_path or pattern.pattern or ""
+            pattern.full_path = self._join_full_path(parent_prefix, child_path)
+
+        return expanded
+
+    def _join_full_path(self, prefix: str | None, child: str | None) -> str | None:
+        """Join parent and child URL path fragments."""
+        if prefix is None and child is None:
+            return None
+        if not prefix:
+            return child
+        if not child:
+            return prefix
+
+        joined = f"{prefix.rstrip('/')}/{child.lstrip('/')}"
+        if child.endswith("/") and not joined.endswith("/"):
+            joined = f"{joined}/"
+        return joined
+
+    def _get_source_file(self, file_path: Path, scan_root: Path) -> str:
+        """Get a stable source file path for pattern metadata."""
+        try:
+            return str(file_path.relative_to(scan_root))
+        except ValueError:
+            return str(file_path)
 
     def _get_module_path(self, file_path: Path, base_path: Path) -> str:
         """Get module path from file path.

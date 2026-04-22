@@ -48,6 +48,23 @@ urlpatterns = [
         # Should detect the outer include
         assert output.summary.total_patterns >= 1
 
+    def test_nested_inline_includes_reconstruct_full_path(self, tmp_path, fixtures_dir, scanner):
+        """Test nested inline include() paths are expanded into full paths."""
+        source_path = fixtures_dir / "nested_urls.py"
+        file_path = tmp_path / "urls.py"
+        file_path.write_text(source_path.read_text())
+
+        output = scanner.scan(file_path)
+
+        module_name = list(output.results.keys())[0]
+        patterns = output.results[module_name].urlpatterns
+
+        nested_pattern = next((p for p in patterns if getattr(p, "full_path", None) == "api/v1/users/"), None)
+
+        assert nested_pattern is not None
+        assert nested_pattern.type == "path"
+        assert nested_pattern.view_name == "user_list"
+
     def test_conditional_urlpatterns(self, tmp_path, scanner):
         """Test conditional URL patterns."""
         code = """
