@@ -22,6 +22,8 @@ api_key = os.getenv('API_KEY')
         assert "API_KEY" in result.results
         assert result.results["API_KEY"].required is True
         assert result.results["API_KEY"].default_value is None
+        assert result.results["API_KEY"].types == ["str"]
+        assert result.results["API_KEY"].locations[0].type == "str"
         assert len(result.results["API_KEY"].locations) == 1
         assert "os.getenv" in result.results["API_KEY"].locations[0].pattern
 
@@ -83,8 +85,10 @@ timeout = os.environ.get('TIMEOUT')
         result = scanner.scan(tmp_path)
 
         assert "TIMEOUT" in result.results
-        assert result.results["TIMEOUT"].required is True
+        assert result.results["TIMEOUT"].required is False
         assert result.results["TIMEOUT"].default_value is None
+        assert result.results["TIMEOUT"].types == ["str"]
+        assert result.results["TIMEOUT"].locations[0].type == "str"
 
     def test_os_environ_get_with_default(self, scanner: EnvVarScanner, tmp_path):
         """Test os.environ.get() with default value."""
@@ -100,6 +104,21 @@ debug = os.environ.get('DEBUG', 'False')
         assert "DEBUG" in result.results
         assert result.results["DEBUG"].required is False
         assert result.results["DEBUG"].default_value == "False"
+
+    def test_explicit_conversion_beats_environ_get_string_fallback(self, scanner: EnvVarScanner, tmp_path):
+        """Test explicit conversion takes precedence over os.environ.get string fallback."""
+        code = """
+import os
+port = int(os.environ.get('PORT', '8080'))
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "PORT" in result.results
+        assert result.results["PORT"].types == ["int"]
+        assert result.results["PORT"].locations[0].type == "int"
 
     def test_from_os_import_getenv(self, scanner: EnvVarScanner, tmp_path):
         """Test 'from os import getenv' pattern."""
@@ -212,6 +231,7 @@ key3 = os.environ['API_KEY']
         assert result.results["API_KEY"].required is True
         # Should have default value from the second access
         assert result.results["API_KEY"].default_value == "default"
+        assert result.results["API_KEY"].types == ["str"]
         # Should have all 3 locations
         assert len(result.results["API_KEY"].locations) == 3
 
@@ -246,6 +266,8 @@ url = f"http://{os.getenv('HOST')}"
         assert "PORT" in result.results
         assert "HOST" in result.results
         assert result.results["PORT"].required is False
+        assert result.results["PORT"].types == ["int"]
+        assert result.results["PORT"].locations[0].type == "int"
         assert result.results["HOST"].required is True
 
     def test_os_environ_in_function_def(self, scanner: EnvVarScanner, tmp_path):

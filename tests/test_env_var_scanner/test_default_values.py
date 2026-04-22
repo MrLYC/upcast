@@ -94,6 +94,57 @@ config_path = os.getenv('CONFIG', get_default_path())
         assert result.results["CONFIG"].default_value == "<dynamic>"
         assert result.results["CONFIG"].required is False
 
+    def test_fstring_default_infers_string_type(self, scanner: EnvVarScanner, tmp_path):
+        """Test f-string defaults infer a string type even when value stays dynamic."""
+        code = """
+import os
+iam_host = os.environ.get('BKAPP_IAM_V3_SAAS_HOST', f'{BK_PAAS_HOST}/o/{BK_IAM_APP_CODE}/')
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.results["BKAPP_IAM_V3_SAAS_HOST"].default_value == "<dynamic>"
+        assert result.results["BKAPP_IAM_V3_SAAS_HOST"].required is False
+        assert result.results["BKAPP_IAM_V3_SAAS_HOST"].types == ["str"]
+        assert result.results["BKAPP_IAM_V3_SAAS_HOST"].locations[0].type == "str"
+
+    def test_concatenated_default_infers_string_type(self, scanner: EnvVarScanner, tmp_path):
+        """Test concatenated defaults with string fragments infer a string type."""
+        code = """
+import os
+license_domain = os.environ.get(
+    'BKAPP_BK_LICENSE_DOMAIN',
+    os.environ.get('BK_PAAS_HOST', '').strip('/') + '/cw_license',
+)
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.results["BKAPP_BK_LICENSE_DOMAIN"].default_value == "<dynamic>"
+        assert result.results["BKAPP_BK_LICENSE_DOMAIN"].required is False
+        assert result.results["BKAPP_BK_LICENSE_DOMAIN"].types == ["str"]
+        assert result.results["BKAPP_BK_LICENSE_DOMAIN"].locations[0].type == "str"
+
+    def test_nested_getenv_default_infers_string_type(self, scanner: EnvVarScanner, tmp_path):
+        """Test nested supported env getter defaults infer a string type."""
+        code = """
+import os
+iam_host = os.getenv('BKAPP_IAM_HOST', os.getenv('BK_IAM_V3_INNER_HOST', 'http://iam.service.consul'))
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert result.results["BKAPP_IAM_HOST"].default_value == "<dynamic>"
+        assert result.results["BKAPP_IAM_HOST"].required is False
+        assert result.results["BKAPP_IAM_HOST"].types == ["str"]
+        assert result.results["BKAPP_IAM_HOST"].locations[0].type == "str"
+
     def test_variable_as_default(self, scanner: EnvVarScanner, tmp_path):
         """Test variable as default value."""
         code = """
@@ -192,6 +243,8 @@ timeout = os.environ.get('TIMEOUT', '30')
 
         assert result.results["TIMEOUT"].default_value == "30"
         assert result.results["TIMEOUT"].required is False
+        assert result.results["TIMEOUT"].types == ["str"]
+        assert result.results["TIMEOUT"].locations[0].type == "str"
 
     def test_subscript_no_default(self, scanner: EnvVarScanner, tmp_path):
         """Test os.environ[] subscript has no default."""

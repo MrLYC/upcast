@@ -7,7 +7,7 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
-from upcast.common.inference import infer_value
+from upcast.common.inference import infer_string_pattern, infer_type, infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
 
@@ -87,20 +87,8 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             var_name = "..."
 
         # Extract default value
-        default_value = None
-        required = True
-
-        if len(node.args) >= 2:
-            default_result = infer_value(node.args[1])
-            default_value = default_result.get_exact("<dynamic>")
-            required = False
-        elif node.keywords:
-            for kw in node.keywords:
-                if kw.arg == "default":
-                    default_result = infer_value(kw.value)
-                    default_value = default_result.get_exact("<dynamic>")
-                    required = False
-                    break
+        is_environ_get = self._is_supported_environ_get(node.func, imports)
+        default_value, required, inferred_type = self._extract_default_details(node, is_environ_get, imports)
 
         # Create location and add to results
         location = EnvVarLocation(
@@ -110,7 +98,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             statement=safe_as_string(node),
             pattern=safe_as_string(node),
             code=safe_as_string(node),
-            type="unknown",
+            type=inferred_type,
         )
         self._add_env_var(
             name=var_name,
@@ -145,7 +133,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             statement=safe_as_string(node),
             pattern=safe_as_string(node),
             code=safe_as_string(node),
-            type="unknown",
+            type=self._infer_env_var_type(node),
         )
         self._add_env_var(
             name=node.slice.value,
@@ -177,7 +165,13 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             existing_info.locations.append(location)
 
         # Aggregate types from locations
-        if location.type and location.type not in existing_info.types:
+        if location.type == "unknown" and any(existing_type != "unknown" for existing_type in existing_info.types):
+            pass
+        elif location.type and location.type not in existing_info.types:
+            if location.type != "unknown":
+                existing_info.types = [
+                    existing_type for existing_type in existing_info.types if existing_type != "unknown"
+                ]
             existing_info.types.append(location.type)
 
         # Update required status (if ANY usage is required, mark as required)
@@ -201,6 +195,69 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             ):
                 return True
         return False
+
+    def _infer_env_var_type(self, node: nodes.NodeNG) -> str:
+        """Infer environment variable type from explicit conversion or exact default value."""
+        parent = node.parent
+        if isinstance(parent, nodes.Call) and node in parent.args:
+            conversion_type = self._infer_conversion_type(parent.func)
+            if conversion_type != "unknown":
+                return conversion_type
+
+        return "unknown"
+
+    def _extract_default_details(
+        self,
+        node: nodes.Call,
+        is_environ_get: bool = False,
+        imports: dict[str, str] | None = None,
+    ) -> tuple[object | None, bool, str]:
+        """Extract default value metadata and inferred type for getenv-like calls."""
+        inferred_type = self._infer_env_var_type(node)
+        default_node = self._get_default_node(node)
+        if default_node is None:
+            if inferred_type == "unknown":
+                inferred_type = "str"
+            return None, not is_environ_get, inferred_type
+
+        default_value = infer_value(default_node).get_exact("<dynamic>")
+        if inferred_type == "unknown":
+            inferred_type = self._infer_type_from_default(default_node, imports or {})
+
+        return default_value, False, inferred_type
+
+    def _get_default_node(self, node: nodes.Call) -> nodes.NodeNG | None:
+        """Return the default-value node for getenv-like calls, if present."""
+        if len(node.args) >= 2:
+            return node.args[1]
+
+        for kw in node.keywords:
+            if kw.arg == "default":
+                return kw.value
+
+        return None
+
+    def _infer_conversion_type(self, func: nodes.NodeNG) -> str:
+        """Infer explicit conversion type from a call target."""
+        conversion_name = safe_as_string(func)
+        if conversion_name in {"str", "int", "bool", "float", "list", "dict", "tuple"}:
+            return conversion_name
+        return "unknown"
+
+    def _infer_type_from_default(self, default_node: nodes.NodeNG, imports: dict[str, str]) -> str:
+        """Infer environment variable type from an exact default value."""
+        inferred_type, confidence = infer_type(default_node)
+        if confidence == "exact" and inferred_type != "None":
+            return inferred_type
+
+        if isinstance(default_node, nodes.Call) and self._is_supported_getenv_call(default_node.func, imports):
+            return "str"
+
+        string_pattern = infer_string_pattern(default_node)
+        if string_pattern.parts and string_pattern.parts != [...]:
+            return "str"
+
+        return "unknown"
 
     def _is_supported_getenv_call(
         self,
