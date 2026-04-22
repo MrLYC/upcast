@@ -54,6 +54,7 @@ class Article(models.Model):
         result = scanner.scan(models_file)
 
         assert result.summary.total_models == 2
+        assert result.summary.files_scanned == 1
         assert result.summary.total_relationships >= 1
 
         # Find Article model

@@ -90,7 +90,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
                 models[qname] = django_model
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
-        summary = self._calculate_summary(models, scan_duration_ms)
+        summary = self._calculate_summary(models, len(files), scan_duration_ms)
 
         return DjangoModelOutput(summary=summary, results=models, metadata={"scanner_name": "django-models"})
 
@@ -207,6 +207,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
     def _calculate_summary(
         self,
         models: dict[str, DjangoModel],
+        files_scanned: int,
         scan_duration_ms: int,
     ) -> DjangoModelSummary:
         """Calculate summary statistics.
@@ -224,7 +225,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
 
         return DjangoModelSummary(
             total_count=total_models,
-            files_scanned=total_models,  # Approximation
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             total_models=total_models,
             total_fields=total_fields,
