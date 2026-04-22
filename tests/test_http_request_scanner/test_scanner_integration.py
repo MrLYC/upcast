@@ -20,6 +20,12 @@ class TestHttpRequestsScanner:
         assert "https://real.example.com/httpx-async" in result.results
         assert "https://real.example.com/aiohttp-session" in result.results
 
+        assert result.results["https://real.example.com/httpx-sync"].library == "httpx"
+        assert result.results["https://real.example.com/httpx-async"].library == "httpx"
+        assert result.results["https://real.example.com/aiohttp-session"].library == "aiohttp"
+        assert result.summary.by_library["httpx"] == 2
+        assert result.summary.by_library["aiohttp"] == 1
+
     def test_scan_requests_get(self, scanner: HttpRequestsScanner, tmp_path):
         """Test scanning requests.get() call."""
         code = """

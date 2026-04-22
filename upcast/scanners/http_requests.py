@@ -49,7 +49,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
-        requests_by_url: dict[str, list[HttpRequestUsage]] = {}
+        requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]] = {}
 
         for file_path in files:
             module = self.parse_file(file_path)
@@ -60,17 +60,18 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             rel_path = get_relative_path_str(file_path, base_path)
 
             for node in module.nodes_of_class(nodes.Call):
-                usage = self._check_request_call(node, rel_path, imports)
-                if usage:
+                request_entry = self._check_request_call(node, rel_path, imports)
+                if request_entry:
+                    library, usage = request_entry
                     url = self._extract_url_with_imports(node, imports) or "..."
                     if url not in requests_by_url:
                         requests_by_url[url] = []
-                    requests_by_url[url].append(usage)
+                    requests_by_url[url].append((library, usage))
 
         # Aggregate by URL
         requests_info = self._aggregate_requests(requests_by_url)
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(requests_info, scan_duration_ms)
+        summary = self._calculate_summary(requests_by_url, requests_info, scan_duration_ms)
 
         return HttpRequestOutput(summary=summary, results=requests_info, metadata={"scanner_name": "http-requests"})
 
@@ -108,7 +109,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         node: nodes.Call,
         file_path: str,
         imports: dict[str, str],
-    ) -> HttpRequestUsage | None:
+    ) -> tuple[str, HttpRequestUsage] | None:
         """Check if call is an HTTP request."""
         func = node.func
         library, method, session_based, is_async = self._identify_request(func, imports)
@@ -126,7 +127,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             if not actual_method:
                 actual_method = method
 
-        return HttpRequestUsage(
+        return library, HttpRequestUsage(
             file=file_path,
             line=node.lineno if hasattr(node, "lineno") else None,
             statement=safe_as_string(node),
@@ -718,22 +719,21 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 return infer_value(keyword.value).get_if_type((int, float))
         return None
 
-    def _aggregate_requests(self, requests_by_url: dict[str, list[HttpRequestUsage]]) -> dict[str, HttpRequestInfo]:
+    def _aggregate_requests(self, requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]]) -> dict[str, HttpRequestInfo]:
         """Aggregate requests by URL."""
         result: dict[str, HttpRequestInfo] = {}
 
-        for url, usages in requests_by_url.items():
-            if not usages:
+        for url, entries in requests_by_url.items():
+            if not entries:
                 continue
+
+            usages = [usage for _, usage in entries]
 
             # Determine primary method and library
             methods = [u.method for u in usages]
             primary_method = max(set(methods), key=methods.count)
-
-            # Determine library from first usage
-            library = "requests"  # default
-            if usages[0].is_async:
-                library = "aiohttp"
+            libraries = [library for library, _ in entries]
+            library = max(set(libraries), key=libraries.count)
 
             result[url] = HttpRequestInfo(
                 method=primary_method,
@@ -743,13 +743,19 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return result
 
-    def _calculate_summary(self, requests: dict[str, HttpRequestInfo], scan_duration_ms: int) -> HttpRequestSummary:
+    def _calculate_summary(
+        self,
+        requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]],
+        requests: dict[str, HttpRequestInfo],
+        scan_duration_ms: int,
+    ) -> HttpRequestSummary:
         """Calculate summary statistics."""
-        all_usages = [usage for info in requests.values() for usage in info.usages]
+        all_entries = [entry for entries in requests_by_url.values() for entry in entries]
+        all_usages = [usage for _, usage in all_entries]
         by_library: dict[str, int] = {}
 
-        for info in requests.values():
-            by_library[info.library] = by_library.get(info.library, 0) + len(info.usages)
+        for library, _ in all_entries:
+            by_library[library] = by_library.get(library, 0) + 1
 
         return HttpRequestSummary(
             total_count=len(all_usages),
