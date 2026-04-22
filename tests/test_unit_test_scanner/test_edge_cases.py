@@ -276,3 +276,20 @@ class TestLineRanges:
         assert line_start > 0
         assert line_end > line_start
         assert line_end - line_start >= 4  # At least 5 lines
+
+
+class TestStructuredPatterns:
+    """Test Task 8 structure-specific edge cases."""
+
+    def test_pytest_fixture_named_like_test_is_not_detected(self):
+        """Fixture functions named like tests should not be reported as tests."""
+        fixture_file = Path(__file__).parent / "fixtures" / "test_structure_patterns.py"
+
+        scanner = UnitTestScanner(root_modules=["myapp"])
+        result = scanner.scan(fixture_file)
+
+        tests = list(result.results.values())[0]
+        test_names = {test.name for test in tests}
+
+        assert result.summary.total_tests == 3
+        assert test_names == {"test_marked_values", "test_targeted"}

@@ -126,6 +126,10 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         if not node.name.startswith("test_"):
             return None
 
+        # Pytest fixtures are helpers, not tests, even if they use test_* names.
+        if self._is_pytest_fixture(node):
+            return None
+
         # Check if it's a top-level function or in a test class
         parent = node.parent
         if isinstance(parent, nodes.Module):
@@ -141,6 +145,18 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
 
         # Parse the test function
         return self._parse_test_function(node, rel_path, module_imports)
+
+    def _is_pytest_fixture(self, func_node: nodes.FunctionDef) -> bool:
+        """Check whether a function is declared as a pytest fixture."""
+        if not func_node.decorators:
+            return False
+
+        for decorator in func_node.decorators.nodes:
+            decorator_name = self._get_decorator_name(decorator)
+            if decorator_name in {"pytest.fixture", "fixture"}:
+                return True
+
+        return False
 
     def _is_unittest_testcase(self, class_node: nodes.ClassDef) -> bool:
         """Check if a class inherits from unittest.TestCase.

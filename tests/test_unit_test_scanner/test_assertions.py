@@ -202,3 +202,17 @@ class TestMixedAssertions:
 
         assert result.summary.total_assertions == 3
         assert result.summary.total_tests == 2
+
+
+class TestStructuredAssertionPreservation:
+    """Test assertion preservation for richer Task 8 structures."""
+
+    def test_fixture_helpers_do_not_inflate_assertion_totals(self):
+        """Fixture helpers named like tests should not contribute assertion counts."""
+        fixture_file = Path(__file__).parent / "fixtures" / "test_structure_patterns.py"
+
+        scanner = UnitTestScanner(root_modules=["myapp"])
+        result = scanner.scan(fixture_file)
+
+        assert result.summary.total_assertions == 3
+        assert result.summary.total_tests == 3

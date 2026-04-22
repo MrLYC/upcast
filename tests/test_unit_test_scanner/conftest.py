@@ -6,6 +6,9 @@ from pathlib import Path
 from upcast.scanners.unit_tests import UnitTestScanner
 
 
+collect_ignore = ["fixtures/test_structure_patterns.py"]
+
+
 @pytest.fixture
 def scanner():
     """Create a UnitTestScanner instance."""

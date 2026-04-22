@@ -172,3 +172,21 @@ class TestTargetSymbols:
         tests = list(result.results.values())[0]
         symbols = tests[0].targets[0].symbols
         assert symbols == sorted(symbols)
+
+
+class TestStructuredTargetResolution:
+    """Test target preservation for richer Task 8 structures."""
+
+    def test_fixture_helpers_do_not_create_extra_test_targets(self):
+        """Fixture helpers named like tests should not appear as extra target-bearing tests."""
+        fixture_file = Path(__file__).parent / "fixtures" / "test_structure_patterns.py"
+
+        scanner = UnitTestScanner(root_modules=["myapp"])
+        result = scanner.scan(fixture_file)
+
+        tests = list(result.results.values())[0]
+        test_names = {test.name for test in tests}
+        target_modules = [target.module_path for test in tests for target in test.targets]
+
+        assert test_names == {"test_marked_values", "test_targeted"}
+        assert target_modules == ["myapp.service", "myapp.service"]
