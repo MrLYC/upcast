@@ -191,6 +191,7 @@ def hello():
         result = scanner.scan(tmp_path)
 
         assert result.summary.total_requests == 0
+        assert result.summary.files_scanned == 1
         assert len(result.results) == 0
 
     def test_scan_multiple_files(self, scanner: HttpRequestsScanner, tmp_path):

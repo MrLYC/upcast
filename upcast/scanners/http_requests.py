@@ -71,7 +71,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         # Aggregate by URL
         requests_info = self._aggregate_requests(requests_by_url)
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(requests_by_url, requests_info, scan_duration_ms)
+        summary = self._calculate_summary(requests_by_url, requests_info, len(files), scan_duration_ms)
 
         return HttpRequestOutput(summary=summary, results=requests_info, metadata={"scanner_name": "http-requests"})
 
@@ -847,6 +847,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         self,
         requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]],
         requests: dict[str, HttpRequestInfo],
+        files_scanned: int,
         scan_duration_ms: int,
     ) -> HttpRequestSummary:
         """Calculate summary statistics."""
@@ -859,7 +860,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return HttpRequestSummary(
             total_count=len(all_usages),
-            files_scanned=len({u.file for u in all_usages}),
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             total_requests=len(all_usages),
             unique_urls=len(requests),
