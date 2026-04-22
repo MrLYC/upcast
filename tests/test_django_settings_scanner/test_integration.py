@@ -10,6 +10,20 @@ from upcast.scanners.django_settings import DjangoSettingsScanner
 class TestDjangoSettingsScanner:
     """Test DjangoSettingsScanner integration."""
 
+    def test_scan_targeted_standard_settings(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
+        """Task 9 should capture the bounded standard Django settings set."""
+        fixture = Path(__file__).parent / "fixtures" / "standard_settings.py"
+        (tmp_path / "settings.py").write_text(fixture.read_text())
+
+        result = scanner.scan(tmp_path)
+
+        assert "ROOT_URLCONF" in result.results
+        assert "TEMPLATES" in result.results
+        assert "WSGI_APPLICATION" in result.results
+        assert "ALLOWED_HOSTS" in result.results
+        assert "STATIC_URL" in result.results
+        assert "MEDIA_URL" in result.results
+
     def test_scan_simple_settings(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Test scanning simple settings."""
         settings_file = tmp_path / "settings.py"
