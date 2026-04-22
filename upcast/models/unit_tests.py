@@ -27,6 +27,11 @@ class UnitTestInfo(BaseModel):
         body_md5: MD5 hash of test body
         assert_count: Number of assertions in test
         targets: List of imported modules/symbols
+        class_name: Parent test class name if any
+        fixtures: Fixture-like parameters used by the test
+        markers: Pytest marker names applied to the test
+        parametrize: Compact pytest parametrize metadata
+        expanded_count: Expanded case count for parametrized tests
     """
 
     name: str = Field(description="Test function name")
@@ -35,6 +40,13 @@ class UnitTestInfo(BaseModel):
     body_md5: str = Field(description="MD5 hash of test body")
     assert_count: int = Field(ge=0, description="Number of assertions")
     targets: list[TargetModule] = Field(description="Imported modules")
+    class_name: str | None = Field(default=None, description="Parent test class name if any")
+    fixtures: list[str] = Field(default_factory=list, description="Fixture-like parameters excluding self/cls")
+    markers: list[str] = Field(default_factory=list, description="Pytest marker names excluding parametrize")
+    parametrize: list[dict[str, str | int]] = Field(
+        default_factory=list, description="Compact pytest parametrize metadata"
+    )
+    expanded_count: int = Field(default=1, ge=1, description="Expanded case count for parametrized tests")
 
 
 class UnitTestSummary(ScannerSummary):

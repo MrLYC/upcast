@@ -49,6 +49,27 @@ class TestUnitTestInfoModel:
         )
         assert len(test.targets) == 1
 
+    def test_unit_test_info_with_class_fixtures_markers_and_parametrize_metadata(self):
+        """Task 8 metadata fields should be available on UnitTestInfo."""
+        test = UnitTestInfo(
+            name="test_parametrized",
+            file="test_api.py",
+            line_range=(10, 20),
+            body_md5="abc123",
+            assert_count=2,
+            targets=[],
+            class_name="TestApi",
+            fixtures=["tmp_path", "db"],
+            markers=["slow"],
+            parametrize=[{"argnames": "value", "case_count": 3}],
+            expanded_count=3,
+        )
+
+        assert test.class_name == "TestApi"
+        assert test.fixtures == ["tmp_path", "db"]
+        assert test.markers == ["slow"]
+        assert test.parametrize == [{"argnames": "value", "case_count": 3}]
+        assert test.expanded_count == 3
 
 class TestUnitTestSummaryModel:
     """Test UnitTestSummary model."""
