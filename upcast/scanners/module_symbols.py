@@ -11,7 +11,6 @@ from pathlib import Path
 from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
-from upcast.common.code_utils import extract_function_signature
 from upcast.common.file_utils import get_relative_path_str
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
@@ -452,17 +451,13 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         )
 
     def _extract_function_signature(self, node: nodes.FunctionDef) -> str | None:
-        """Extract function signature while preserving existing compact formatting."""
-        signature = extract_function_signature(node)
-        if not signature:
-            return None
-
-        signature = signature.replace(" (", "(")
-        signature = signature.replace("( ", "(")
-        signature = signature.replace(" )", ")")
-        signature = signature.replace(") :", "):")
-        signature = signature.replace(" :", ":")
-
+        """Extract a compact function signature from local metadata pieces."""
+        args = self._extract_function_args(node)
+        prefix = "async def" if isinstance(node, nodes.AsyncFunctionDef) else "def"
+        signature = f"{prefix} {node.name}({', '.join(args)})"
+        if node.returns:
+            signature += f" -> {node.returns.as_string()}"
+        signature += ":"
         return signature
 
     def _extract_function_args(self, node: nodes.FunctionDef) -> list[str]:
@@ -505,6 +500,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 if default_index < len(positional_defaults):
                     default = positional_defaults[default_index]
             params.append(_format_arg(arg, annotation, default))
+            if positional_only_args and index == len(positional_only_args) - 1:
+                params.append("/")
 
         if node.args.vararg:
             vararg_str = f"*{node.args.vararg}"
@@ -515,6 +512,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         kwonlyargs = node.args.kwonlyargs or []
         kwonly_annotations = getattr(node.args, "kwonlyargs_annotations", []) or []
         kw_defaults = node.args.kw_defaults or []
+        if kwonlyargs and not node.args.vararg:
+            params.append("*")
         for index, arg in enumerate(kwonlyargs):
             annotation = kwonly_annotations[index] if index < len(kwonly_annotations) else None
             default = kw_defaults[index] if index < len(kw_defaults) else None

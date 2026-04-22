@@ -74,6 +74,68 @@ class TestBasicFunctions:
             "**options",
         ]
 
+    def test_function_argument_kind_markers_are_preserved(self, tmp_path):
+        """Positional-only and keyword-only separators should stay explicit."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            def configure(host, /, port=80, *, secure=True):
+                return host, port, secure
+        """)
+        )
+
+        scanner = ModuleSymbolScanner()
+        output = scanner.scan(test_file)
+
+        symbols = list(output.results.values())[0]
+        assert "configure" in symbols.functions
+        assert symbols.functions["configure"].args == [
+            "host",
+            "/",
+            "port=80",
+            "*",
+            "secure=True",
+        ]
+        assert symbols.functions["configure"].signature == "def configure(host, /, port=80, *, secure=True):"
+
+    def test_function_signature_preserves_literal_whitespace(self, tmp_path):
+        """Signature normalization should not rewrite string literal contents."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent('''
+            def render(sep="  "):
+                return sep
+        ''')
+        )
+
+        scanner = ModuleSymbolScanner()
+        output = scanner.scan(test_file)
+
+        symbols = list(output.results.values())[0]
+        assert "render" in symbols.functions
+        signature = symbols.functions["render"].signature
+        assert "def render(" in signature
+        assert "sep='  '" in signature or 'sep="  "' in signature or "sep = '  '" in signature or 'sep = "  "' in signature
+
+    def test_function_signature_preserves_literal_punctuation_spacing(self, tmp_path):
+        """Signature extraction should not rewrite punctuation inside string literals."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent('''
+            def render(template="a : b", wrapper="( x )"):
+                return template, wrapper
+        ''')
+        )
+
+        scanner = ModuleSymbolScanner()
+        output = scanner.scan(test_file)
+
+        symbols = list(output.results.values())[0]
+        assert "render" in symbols.functions
+        signature = symbols.functions["render"].signature
+        assert "template='a : b'" in signature or 'template="a : b"' in signature
+        assert "wrapper='( x )'" in signature or 'wrapper="( x )"' in signature
+
     def test_function_with_type_hints(self, tmp_path):
         """Function with type hints should be detected."""
         test_file = tmp_path / "test.py"
