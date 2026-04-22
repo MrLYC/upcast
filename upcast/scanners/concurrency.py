@@ -455,7 +455,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
     def _detect_create_task(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> ConcurrencyUsage | None:
         """Detect asyncio.create_task() calls."""
         func_name = self._get_qualified_name(node.func, imports)
-        if not func_name or "create_task" not in func_name:
+        if func_name not in {"asyncio.create_task", "create_task"}:
             return None
 
         # Try to resolve coroutine

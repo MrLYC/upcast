@@ -259,6 +259,27 @@ async def create_task_unknown(coro):
         asyncio_patterns = output.results["asyncio"]
         assert len(asyncio_patterns) >= 1
 
+    def test_custom_create_task_name_is_not_detected_as_asyncio(self, tmp_path, create_scanner):
+        """Test substring matches do not masquerade as asyncio.create_task."""
+        code = """
+async def worker():
+    return "done"
+
+def my_create_task(coro):
+    return coro
+
+async def run():
+    task = my_create_task(worker())
+    await task
+"""
+        file_path = create_test_file(tmp_path, code, "custom_create_task.py")
+        scanner = create_scanner(ConcurrencyScanner)
+
+        output = scanner.scan(file_path)
+
+        asyncio_patterns = output.results["asyncio"]
+        assert "create_task" not in asyncio_patterns
+
 
 class TestLocationInformation:
     """Test that line/column information is correctly captured."""
