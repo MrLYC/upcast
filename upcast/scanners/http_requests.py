@@ -183,6 +183,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             method = func_node.attrname
             if isinstance(func_node.expr, nodes.Name):
                 module = imports.get(func_node.expr.name, func_node.expr.name)
+                if f"{module}.{method}" == "requests.Request":
+                    return "requests", "request", False, False
+
                 for lib, methods in self.HTTP_LIBRARIES.items():
                     if module == lib and method in methods:
                         return lib, method, False, lib == "aiohttp"
@@ -199,6 +202,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             # Check if this matches an excluded pattern
             if self._is_excluded(func_name):
                 return None, None, False, False
+
+            if qualified == "requests.Request":
+                return "requests", "request", False, False
 
             for lib, methods in self.HTTP_LIBRARIES.items():
                 for method in methods:
@@ -312,6 +318,12 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             qualified = imports.get(func_node.name, func_node.name)
             # Check for requests.Request or urllib.request.Request
             return qualified in {"requests.Request", "urllib.request.Request"}
+
+        if isinstance(func_node, nodes.Attribute) and isinstance(func_node.expr, nodes.Name):
+            module = imports.get(func_node.expr.name, func_node.expr.name)
+            qualified = f"{module}.{func_node.attrname}"
+            return qualified in {"requests.Request", "urllib.request.Request"}
+
         return False
 
     def _extract_url_from_node(self, url_node: nodes.NodeNG, context_node: nodes.Call) -> str | None:

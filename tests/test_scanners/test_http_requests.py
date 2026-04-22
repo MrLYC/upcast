@@ -283,6 +283,26 @@ def make_request(item_id):
         result = output.results["https://api.example.com/items/..."]
         assert result.method == "GET"
 
+    def test_scanner_handles_request_constructor_attribute_form(self, tmp_path):
+        """Test scanner handles requests.Request(method, url) attribute form."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+import requests
+
+req = requests.Request('PUT', 'https://api.example.com/attr')
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count >= 1
+        assert "https://api.example.com/attr" in output.results
+        result = output.results["https://api.example.com/attr"]
+        assert result.method == "PUT"
+        assert "PUT" not in output.results or output.results["PUT"].method != "REQUEST"
+
     def test_scanner_excludes_request_exception(self, tmp_path):
         """Test scanner does not identify RequestException as a request."""
         test_file = tmp_path / "test.py"
