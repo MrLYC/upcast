@@ -65,6 +65,34 @@ urlpatterns = [
         assert nested_pattern.type == "path"
         assert nested_pattern.view_name == "user_list"
 
+    def test_nested_inline_include_preserves_router_root_full_path_and_line(self, tmp_path, scanner):
+        """Test inline include([...]) preserves router root full path and line metadata."""
+        code = """
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from .views import RootViewSet
+
+router = DefaultRouter()
+router.register('', RootViewSet, basename='root')
+
+urlpatterns = [
+    path('api/', include([
+        path('', include(router.urls)),
+    ])),
+]
+"""
+        file_path = tmp_path / "urls.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        module_name = list(output.results.keys())[0]
+        patterns = output.results[module_name].urlpatterns
+        router_pattern = next(p for p in patterns if p.type == "router_registration")
+
+        assert router_pattern.full_path == "api/"
+        assert router_pattern.line is not None
+
     def test_conditional_urlpatterns(self, tmp_path, scanner):
         """Test conditional URL patterns."""
         code = """

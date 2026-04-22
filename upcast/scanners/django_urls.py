@@ -439,7 +439,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                     description=None,
                     note=None,
                     file=self._get_source_file(file_path, scan_root),
-                    line=None,
+                    line=reg.get("line"),
                     full_path=full_pattern or "<root>",
                 )
             )
@@ -492,6 +492,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
     def _join_full_path(self, prefix: str | None, child: str | None) -> str | None:
         """Join parent and child URL path fragments."""
+        if child == "<root>":
+            child = ""
+
         if prefix is None and child is None:
             return None
         if not prefix:

@@ -103,6 +103,7 @@ def _parse_register_call(call_node: nodes.Call, module: nodes.Module) -> dict[st
         "viewset_module": None,
         "viewset_name": None,
         "basename": None,
+        "line": getattr(call_node, "lineno", None),
     }
 
     # First argument: pattern prefix
