@@ -272,7 +272,8 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         if not value_str or "redis" not in value_str.lower():
             return None
 
-        config = RedisConfig(location=value_str)
+        redacted_value = self._redact_redis_url(value_str)
+        config = RedisConfig(location=redacted_value)
 
         parsed = urlparse(value_str)
         if parsed.scheme.startswith("redis"):
@@ -289,8 +290,23 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
             line=node.lineno,
             library="redis",
             config=config,
-            statement=f"{var_name} = {value_str!r}",
+            statement=f"{var_name} = {redacted_value!r}",
         )
+
+    def _redact_redis_url(self, value: str) -> str:
+        """Redact password material from Redis URLs while preserving host/port/db."""
+        parsed = urlparse(value)
+        if not parsed.scheme.startswith("redis") or parsed.password is None:
+            return value
+
+        if parsed.username:
+            credentials = f"{parsed.username}:{parsed.password}@"
+            replacement = f"{parsed.username}:***@"
+        else:
+            credentials = f":{parsed.password}@"
+            replacement = ":***@"
+
+        return value.replace(credentials, replacement, 1)
 
     def _extract_channel_layers_config(self, node: nodes.Assign, rel_path: str) -> list[RedisUsage]:
         """Extract CHANNEL_LAYERS configuration."""

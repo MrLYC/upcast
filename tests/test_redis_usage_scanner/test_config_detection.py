@@ -112,6 +112,24 @@ class TestCeleryBrokerDetection:
         assert output.summary.total_usages >= 1
         assert "celery_result" in output.results
 
+    def test_passworded_redis_url_is_parsed_into_config(self, tmp_path):
+        """Redis URLs with auth info should populate config without leaking secrets."""
+        settings_file = tmp_path / "settings.py"
+        settings_file.write_text(
+            dedent("""
+            CELERY_BROKER_URL = 'redis://:secret@redis.internal:6380/2'
+        """)
+        )
+
+        scanner = RedisUsageScanner()
+        output = scanner.scan(settings_file)
+
+        broker_usage = output.results["celery_broker"][0]
+        assert broker_usage.config.host == "redis.internal"
+        assert broker_usage.config.port == 6380
+        assert broker_usage.config.db == 2
+        assert "secret" not in (broker_usage.config.location or "")
+        assert "secret" not in (broker_usage.statement or "")
 
 class TestChannelsDetection:
     """Test Django Channels configuration detection."""
