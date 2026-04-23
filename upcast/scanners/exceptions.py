@@ -2,11 +2,13 @@
 
 import time
 from pathlib import Path
+from typing import ClassVar
 
 from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.exceptions import (
     ExceptionBlock,
@@ -21,6 +23,13 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
 
     _CONTROL_FLOW_NODES = (nodes.Pass, nodes.Return, nodes.Break, nodes.Continue, nodes.Raise)
     _NESTED_SCOPE_NODES = (nodes.FunctionDef, nodes.AsyncFunctionDef, nodes.ClassDef, nodes.Lambda)
+    _DYNAMIC_LOG_LEVELS: ClassVar[dict[int, str]] = {
+        10: "debug",
+        20: "info",
+        30: "warning",
+        40: "error",
+        50: "critical",
+    }
 
     def __init__(
         self,
@@ -145,26 +154,57 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
             "log_critical_count": 0,
         }
 
-        log_methods = {"debug", "info", "warning", "error", "exception", "critical"}
-
         for node in body:
             for subnode in node.nodes_of_class(nodes.Call):
                 if isinstance(subnode.func, nodes.Attribute):
-                    method_name = subnode.func.attrname
-                    if method_name in log_methods:
-                        if isinstance(subnode.func.expr, nodes.Name):
-                            var_name = subnode.func.expr.name
-                            if (
-                                var_name == "logging"
-                                or var_name.lower() in {"logger", "log", "_logger"}
-                                or var_name in {"LOG", "LOGGER"}
-                            ):
-                                counts[f"log_{method_name}_count"] += 1
-                        elif isinstance(subnode.func.expr, nodes.Attribute):
-                            if subnode.func.expr.attrname in {"logger", "log"}:
-                                counts[f"log_{method_name}_count"] += 1
+                    method_name = self._resolve_log_method_name(subnode)
+                    if not method_name:
+                        continue
+
+                    if isinstance(subnode.func.expr, nodes.Name):
+                        var_name = subnode.func.expr.name
+                        if (
+                            var_name == "logging"
+                            or var_name.lower() in {"logger", "log", "_logger"}
+                            or var_name in {"LOG", "LOGGER"}
+                        ):
+                            counts[f"log_{method_name}_count"] += 1
+                    elif isinstance(subnode.func.expr, nodes.Attribute):
+                        if subnode.func.expr.attrname in {"logger", "log"}:
+                            counts[f"log_{method_name}_count"] += 1
 
         return counts
+
+    def _resolve_log_method_name(self, call: nodes.Call) -> str | None:
+        """Resolve a canonical log method name for counting."""
+        if not isinstance(call.func, nodes.Attribute):
+            return None
+
+        method_name = call.func.attrname
+        if method_name in {"debug", "info", "warning", "error", "exception", "critical"}:
+            return method_name
+
+        if method_name != "log" or len(call.args) < 2:
+            return None
+
+        level_node = call.args[0]
+        inferred_level = infer_value(level_node).get_if_type(int)
+
+        if isinstance(inferred_level, int):
+            return self._DYNAMIC_LOG_LEVELS.get(inferred_level)
+
+        level_name = safe_as_string(level_node)
+        if not level_name:
+            return None
+
+        normalized = level_name.split(".")[-1].lower()
+        if normalized == "warn":
+            normalized = "warning"
+        if normalized == "fatal":
+            normalized = "critical"
+        if normalized in {"debug", "info", "warning", "error", "exception", "critical"}:
+            return normalized
+        return None
 
     def _count_control_flow(self, body: list[nodes.NodeNG]) -> dict[str, int]:
         """Count control flow statements."""

@@ -190,3 +190,22 @@ except ValueError:
         handler = output.results[0]
         clause = handler.exception_blocks[0]
         assert clause.log_error_count == 1
+
+    def test_dynamic_module_logger(self, tmp_path, scanner):
+        """Test detection of logging.log() direct calls with dynamic levels."""
+        code = """
+import logging
+
+try:
+    operation()
+except ValueError:
+    logging.log(logging.WARNING, "Dynamic warning")
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        output = scanner.scan(file_path)
+
+        handler = output.results[0]
+        clause = handler.exception_blocks[0]
+        assert clause.log_warning_count == 1
