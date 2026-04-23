@@ -73,6 +73,23 @@ secret = os.environ['SECRET_KEY']
         assert result.results["SECRET_KEY"].default_value is None
         assert "os.environ['SECRET_KEY']" in result.results["SECRET_KEY"].locations[0].pattern
 
+    def test_os_environ_subscript_infers_string_type(self, scanner: EnvVarScanner, tmp_path):
+        """Test os.environ['KEY'] subscript infers string type."""
+        code = """
+import os
+gateway = os.environ['AIDEV_GATEWAY_NAME']
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        result = scanner.scan(tmp_path)
+
+        assert "AIDEV_GATEWAY_NAME" in result.results
+        assert result.results["AIDEV_GATEWAY_NAME"].required is True
+        assert result.results["AIDEV_GATEWAY_NAME"].default_value is None
+        assert result.results["AIDEV_GATEWAY_NAME"].types == ["str"]
+        assert result.results["AIDEV_GATEWAY_NAME"].locations[0].type == "str"
+
     def test_os_environ_get_method(self, scanner: EnvVarScanner, tmp_path):
         """Test os.environ.get() method."""
         code = """

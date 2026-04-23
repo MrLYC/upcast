@@ -204,7 +204,7 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
             if conversion_type != "unknown":
                 return conversion_type
 
-        return "unknown"
+        return "str"
 
     def _extract_default_details(
         self,
