@@ -44,7 +44,25 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
     }
 
     # Log level methods
-    LOG_LEVELS: ClassVar[set[str]] = {"debug", "info", "warning", "warn", "error", "critical", "fatal", "exception"}
+    LOG_LEVELS: ClassVar[set[str]] = {
+        "debug",
+        "info",
+        "warning",
+        "warn",
+        "error",
+        "critical",
+        "fatal",
+        "exception",
+        "log",
+    }
+    LEVEL_ALIASES: ClassVar[dict[str, str]] = {"warn": "warning", "fatal": "critical"}
+    DYNAMIC_LEVELS: ClassVar[dict[int, str]] = {
+        10: "debug",
+        20: "info",
+        30: "warning",
+        40: "error",
+        50: "critical",
+    }
 
     def __init__(
         self,
@@ -365,6 +383,10 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             if method_name not in self.LOG_LEVELS:
                 continue
 
+            level_name = self._resolve_level_name(node, method_name)
+            if not level_name:
+                continue
+
             # Determine logger variable, name, and library type
             logger_name, lib_type = self._resolve_logger_info(node, loggers, logger_types, module_path, imports)
 
@@ -372,7 +394,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
                 continue
 
             # Extract message and arguments
-            log_call = self._extract_log_call(node, logger_name, method_name)
+            log_call = self._extract_log_call(node, logger_name, level_name)
             if not log_call:
                 continue
 
@@ -485,6 +507,29 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         else:  # logging (default)
             logging_calls.append(log_call)
 
+    def _resolve_level_name(self, call: nodes.Call, method_name: str) -> str | None:
+        """Resolve a canonical log level name for a call."""
+        if method_name != "log":
+            return self.LEVEL_ALIASES.get(method_name, method_name)
+
+        if len(call.args) < 2:
+            return None
+
+        level_node = call.args[0]
+        inferred_level = infer_value(level_node).get_if_type(int)
+        if inferred_level is not None:
+            return self.DYNAMIC_LEVELS.get(inferred_level)
+
+        level_str = safe_as_string(level_node)
+        if not level_str:
+            return None
+
+        normalized = level_str.split(".")[-1].lower()
+        normalized = self.LEVEL_ALIASES.get(normalized, normalized)
+        if normalized in {"debug", "info", "warning", "error", "critical", "exception"}:
+            return normalized
+        return None
+
     def _extract_log_call(self, call: nodes.Call, logger_name: str, level: str) -> LogCall | None:
         """Extract log call information from AST node.
 
@@ -496,11 +541,11 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         Returns:
             LogCall object or None if extraction fails
         """
-        if not call.args:
+        message_node = self._get_message_node(call)
+        if message_node is None:
             return None
 
-        # Extract message (first argument)
-        message_node = call.args[0]
+        # Extract message
         message = self._extract_message(message_node)
         if not message:
             return None
@@ -639,9 +684,10 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             List of argument strings
         """
         args = []
+        start_index = 2 if isinstance(call.func, nodes.Attribute) and call.func.attrname == "log" else 1
 
         # Get positional arguments after message
-        for arg in call.args[1:]:
+        for arg in call.args[start_index:]:
             arg_str = safe_as_string(arg)
             if arg_str:
                 args.append(arg_str)
@@ -655,6 +701,18 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
                         args.append(var_str)
 
         return args
+
+    def _get_message_node(self, call: nodes.Call) -> nodes.NodeNG | None:
+        """Return the AST node representing the log message."""
+        if not call.args:
+            return None
+
+        if isinstance(call.func, nodes.Attribute) and call.func.attrname == "log":
+            if len(call.args) < 2:
+                return None
+            return call.args[1]
+
+        return call.args[0]
 
     def _detect_block_type(self, node: nodes.Call) -> str:
         """Detect the type of code block containing the log call.

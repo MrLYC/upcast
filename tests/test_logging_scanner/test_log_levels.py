@@ -121,6 +121,28 @@ class TestStandardLogLevels:
         assert len(file_info.logging) == 1
         assert file_info.logging[0].level == "exception"
 
+    def test_dynamic_log_level(self, tmp_path):
+        """logging.log() should resolve standard dynamic levels."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            import logging
+            logger = logging.getLogger(__name__)
+
+            logging.log(logging.INFO, "Module info %s", "ctx")
+            logger.log(logging.ERROR, "Logger error %s", "boom")
+        """)
+        )
+
+        scanner = LoggingScanner()
+        output = scanner.scan(test_file)
+        file_info = list(output.results.values())[0]
+
+        assert len(file_info.logging) == 2
+        assert [call.level for call in file_info.logging] == ["info", "error"]
+        assert [call.message for call in file_info.logging] == ["Module info %s", "Logger error %s"]
+        assert [call.args for call in file_info.logging] == [["'ctx'"], ["'boom'"]]
+
 
 class TestMultipleLevels:
     """Test files with multiple log levels."""
