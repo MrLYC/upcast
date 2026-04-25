@@ -9,7 +9,13 @@ from upcast.common.file_utils import collect_python_files, find_package_root, va
 from upcast.common.inference import InferenceResult, StringPattern, infer_string_pattern, infer_type, infer_value
 from upcast.common.patterns import DEFAULT_EXCLUDES, match_patterns, should_exclude
 
+# CSTASTMapper depends on the optional extra 'ast-grep-py'.
+# The class is always importable; an ImportError is raised only at instantiation
+# time when the dependency is missing (see cst_ast_mapper module for details).
+from upcast.common.cst_ast_mapper import CSTASTMapper
+
 __all__ = [
+    "CSTASTMapper",
     "DEFAULT_EXCLUDES",
     "InferenceResult",
     "StringPattern",

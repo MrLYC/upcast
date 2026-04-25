@@ -27,6 +27,9 @@ dev = [
     "ipdb>=0.13.13",
     "ruff>=0.7.3",
 ]
+cst = [
+    "ast-grep-py>=0.37.0",
+]
 
 [project.scripts]
 upcast = "upcast.main:main"
@@ -71,6 +74,7 @@ dev = [
     "pytest-cov>=7.0.0",
     "prometheus-client>=0.20.0",
     "types-PyYAML>=6.0.0",
+    "ast-grep-py>=0.37.0",
 ]
 
 [tool.mypy]
