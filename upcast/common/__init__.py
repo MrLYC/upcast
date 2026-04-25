@@ -4,11 +4,15 @@ from upcast.common.ast_utils import (
     get_qualified_name,
     safe_as_string,
 )
-from upcast.common.cst_ast_mapper import CSTASTMapper
 from upcast.common.export import export_to_json, export_to_yaml, sort_dict_recursive
 from upcast.common.file_utils import collect_python_files, find_package_root, validate_path
 from upcast.common.inference import InferenceResult, StringPattern, infer_string_pattern, infer_type, infer_value
 from upcast.common.patterns import DEFAULT_EXCLUDES, match_patterns, should_exclude
+
+# CSTASTMapper depends on the optional extra 'ast-grep-py'.
+# The class is always importable; an ImportError is raised only at instantiation
+# time when the dependency is missing (see cst_ast_mapper module for details).
+from upcast.common.cst_ast_mapper import CSTASTMapper
 
 __all__ = [
     "CSTASTMapper",
