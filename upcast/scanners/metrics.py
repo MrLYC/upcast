@@ -8,6 +8,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.metrics import (
@@ -40,7 +47,7 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
             rel_path = get_relative_path_str(file_path, base_path)
 
             # Find metric definitions (assignments)
-            for node in module.nodes_of_class(nodes.Assign):
+            for node in self._iter_candidate_metric_assignments(module, file_path):
                 metric = self._parse_metric_definition(node, rel_path, imports)
                 if metric:
                     metrics[metric.name] = metric
@@ -48,6 +55,61 @@ class MetricsScanner(BaseScanner[PrometheusMetricOutput]):
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(metrics, len(files), scan_duration_ms)
         return PrometheusMetricOutput(summary=summary, results=metrics, metadata={"scanner_name": "metrics"})
+
+    def _iter_candidate_metric_assignments(self, module: nodes.Module, file_path: Path) -> list[nodes.Assign]:
+        """Discover candidate metric assignments via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Assign))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-metrics",
+                    locate=LocateStage(pattern="$METRIC($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="metric_definition"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Assign] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            call_node = candidate.captures.get("self")
+            if not isinstance(call_node, nodes.Call):
+                continue
+
+            assign_node = call_node.parent
+            while assign_node is not None and not isinstance(assign_node, nodes.Assign):
+                assign_node = assign_node.parent
+
+            if not isinstance(assign_node, nodes.Assign):
+                continue
+
+            node_id = id(assign_node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(assign_node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _parse_metric_definition(
         self, node: nodes.Assign, file_path: str, imports: dict[str, str]
