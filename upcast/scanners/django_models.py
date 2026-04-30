@@ -14,6 +14,13 @@ from astroid import nodes
 from upcast.common.code_utils import extract_description
 from upcast.common.django.model_parser import merge_abstract_fields, parse_model
 from upcast.common.django.model_utils import is_django_model
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.django_models import (
     DjangoField,
@@ -110,7 +117,7 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
         models: dict[str, dict[str, Any]] = {}
 
         # Visit all class definitions
-        for class_node in module.nodes_of_class(nodes.ClassDef):
+        for class_node in self._iter_candidate_model_classes(module, file_path):
             if not is_django_model(class_node):
                 continue
 
@@ -132,6 +139,54 @@ class DjangoModelScanner(BaseScanner[DjangoModelOutput]):
             logger.info(f"Found {len(models)} models in {file_path}")
 
         return models
+
+    def _iter_candidate_model_classes(self, module: nodes.Module, file_path: Path) -> list[nodes.ClassDef]:
+        """Discover model class candidates via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.ClassDef))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-django-models",
+                    locate=LocateStage(pattern="class $NAME($$$BASES): $$$BODY"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="django_model_candidate"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.ClassDef] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.ClassDef):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _convert_to_pydantic(self, model_data: dict[str, Any]) -> DjangoModel | None:
         """Convert raw model data to Pydantic model.

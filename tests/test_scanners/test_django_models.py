@@ -1,5 +1,8 @@
 """Tests for DjangoModelScanner."""
 
+import astroid
+
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.django_models import (
     DjangoField,
     DjangoModelScanner,
@@ -40,6 +43,57 @@ class TestDjangoModelModels:
 
 class TestDjangoModelScannerIntegration:
     """Integration tests for DjangoModelScanner."""
+
+    def test_scanner_uses_hybrid_pipeline_for_model_class_candidates(self, tmp_path, monkeypatch):
+        """Scanner should use the hybrid pipeline to discover Django model class candidates."""
+        test_file = tmp_path / "models.py"
+        test_file.write_text(
+            """
+from django.db import models
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+
+
+class Helper:
+    pass
+"""
+        )
+
+        scanner = DjangoModelScanner()
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            article_node = next(
+                node for node in module.body if isinstance(node, astroid.nodes.ClassDef) and node.name == "Article"
+            )
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [article_node.lineno, article_node.col_offset],
+                            "end": [article_node.end_lineno, article_node.end_col_offset],
+                        },
+                        captures={"self": article_node, "NAME": article_node.name},
+                        snippet=article_node.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.django_models.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-django-models", str(test_file))]
+        assert output.summary.total_count == 1
+        model_names = {model.name for model in output.results.values()}
+        assert model_names == {"Article"}
 
     def test_scanner_detects_models(self, tmp_path):
         """Test scanner detects Django models."""
