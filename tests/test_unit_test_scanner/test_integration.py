@@ -1,10 +1,12 @@
 """Integration tests for unit test scanner."""
 
+import astroid
 import pytest
 from pathlib import Path
 
-from upcast.scanners.unit_tests import UnitTestScanner
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.models.unit_tests import UnitTestOutput
+from upcast.scanners.unit_tests import UnitTestScanner
 
 
 class TestScannerInstantiation:
@@ -25,6 +27,49 @@ class TestScannerInstantiation:
 
 class TestBasicScanning:
     """Test basic scanning functionality."""
+
+    def test_scan_unit_tests_uses_hybrid_pipeline_for_candidate_discovery(self, tmp_path, scanner):
+        """The scanner should use the hybrid pipeline to discover test function candidates."""
+        test_file = tmp_path / "test_example.py"
+        test_file.write_text(
+            """
+def test_top_level():
+    assert True
+"""
+        )
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            func_node = next(node for node in module.body if isinstance(node, astroid.nodes.FunctionDef))
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [func_node.lineno, func_node.col_offset],
+                            "end": [func_node.end_lineno, func_node.end_col_offset],
+                        },
+                        captures={"self": func_node, "NAME": func_node.name},
+                        snippet=func_node.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch = pytest.MonkeyPatch()
+        monkeypatch.setattr("upcast.scanners.unit_tests.run_pipeline", fake_run_pipeline, raising=False)
+
+        try:
+            output = scanner.scan(test_file)
+        finally:
+            monkeypatch.undo()
+
+        assert calls == [("scan-unit-tests", str(test_file))]
+        assert output.summary.total_tests == 1
+        assert list(output.results.values())[0][0].name == "test_top_level"
 
     def test_scan_empty_file(self, tmp_path, scanner):
         """Test scanning empty file."""

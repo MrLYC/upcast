@@ -12,6 +12,13 @@ from pathlib import Path
 
 from astroid import nodes
 
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.unit_tests import TargetModule, UnitTestInfo, UnitTestOutput, UnitTestSummary
 
@@ -96,7 +103,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
         module_imports = self._extract_imports(module)
 
         # Visit all function definitions
-        for func_node in module.nodes_of_class(nodes.FunctionDef):
+        for func_node in self._iter_candidate_functions(module, file_path):
             test_info = self._check_function(func_node, rel_path, module_imports)
             if test_info:
                 tests.append(test_info)
@@ -105,6 +112,54 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
             logger.info(f"Found {len(tests)} tests in {file_path}")
 
         return tests
+
+    def _iter_candidate_functions(self, module: nodes.Module, file_path: Path) -> list[nodes.FunctionDef]:
+        """Discover candidate test functions via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.FunctionDef))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-unit-tests",
+                    locate=LocateStage(pattern="def $NAME($$$ARGS): $$$BODY"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="unit_test_function"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.FunctionDef] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.FunctionDef):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _check_function(
         self,
