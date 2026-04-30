@@ -12,6 +12,7 @@ from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import LocateStage, MapStage, PipelineSpec, ProjectStage, run_pipeline
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.module_symbols import (
@@ -131,6 +132,8 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         # Initialize results structure
         symbols = ModuleSymbols()
 
+        selected_symbol_names = self._discover_top_level_symbol_names(module, file_path)
+
         # Track block context
         block_stack: list[str] = ["module"]
 
@@ -141,7 +144,7 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
         self._analyze_attribute_access(module)
 
         # Phase 3: Extract symbols (variables, functions, classes)
-        self._extract_symbols(module, symbols, module_path, block_stack)
+        self._extract_symbols(module, symbols, module_path, block_stack, selected_symbol_names)
 
         # Phase 4: Apply attribute access data
         self._apply_attribute_access(symbols)
@@ -312,7 +315,12 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 self.symbol_usage[base_name].append(attr)
 
     def _extract_symbols(
-        self, module: nodes.Module, symbols: ModuleSymbols, module_path: str, block_stack: list[str]
+        self,
+        module: nodes.Module,
+        symbols: ModuleSymbols,
+        module_path: str,
+        block_stack: list[str],
+        selected_symbol_names: set[str] | None = None,
     ) -> None:
         """Extract module-level variables, functions, and classes.
 
@@ -323,10 +331,15 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             block_stack: Current block context stack
         """
         for node in module.body:
-            self._extract_node_symbols(node, symbols, module_path, block_stack)
+            self._extract_node_symbols(node, symbols, module_path, block_stack, selected_symbol_names)
 
     def _extract_node_symbols(  # noqa: C901
-        self, node: nodes.NodeNG, symbols: ModuleSymbols, module_path: str, block_stack: list[str]
+        self,
+        node: nodes.NodeNG,
+        symbols: ModuleSymbols,
+        module_path: str,
+        block_stack: list[str],
+        selected_symbol_names: set[str] | None = None,
     ) -> None:
         """Extract symbols from a node recursively.
 
@@ -337,13 +350,13 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             block_stack: Current block context stack
         """
         if isinstance(node, nodes.Assign):
-            self._extract_variables(node, symbols, module_path, block_stack)
+            self._extract_variables(node, symbols, module_path, block_stack, selected_symbol_names)
 
         elif isinstance(node, nodes.FunctionDef):
-            self._extract_function(node, symbols, block_stack)
+            self._extract_function(node, symbols, block_stack, selected_symbol_names)
 
         elif isinstance(node, nodes.ClassDef):
-            self._extract_class(node, symbols, block_stack)
+            self._extract_class(node, symbols, block_stack, selected_symbol_names)
 
         elif isinstance(node, (nodes.If, nodes.Try, nodes.ExceptHandler)):
             # Handle nested blocks
@@ -353,20 +366,25 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             # Process child nodes
             if isinstance(node, nodes.If):
                 for child in node.body:
-                    self._extract_node_symbols(child, symbols, module_path, new_stack)
+                    self._extract_node_symbols(child, symbols, module_path, new_stack, selected_symbol_names)
                 for child in node.orelse:
-                    self._extract_node_symbols(child, symbols, module_path, new_stack)
+                    self._extract_node_symbols(child, symbols, module_path, new_stack, selected_symbol_names)
             elif isinstance(node, nodes.Try):
                 for child in node.body:
-                    self._extract_node_symbols(child, symbols, module_path, new_stack)
+                    self._extract_node_symbols(child, symbols, module_path, new_stack, selected_symbol_names)
                 for handler in node.handlers:
-                    self._extract_node_symbols(handler, symbols, module_path, new_stack)
+                    self._extract_node_symbols(handler, symbols, module_path, new_stack, selected_symbol_names)
             elif isinstance(node, nodes.ExceptHandler):
                 for child in node.body:
-                    self._extract_node_symbols(child, symbols, module_path, new_stack)
+                    self._extract_node_symbols(child, symbols, module_path, new_stack, selected_symbol_names)
 
     def _extract_variables(
-        self, node: nodes.Assign, symbols: ModuleSymbols, module_path: str, block_stack: list[str]
+        self,
+        node: nodes.Assign,
+        symbols: ModuleSymbols,
+        module_path: str,
+        block_stack: list[str],
+        selected_symbol_names: set[str] | None = None,
     ) -> None:
         """Extract variable assignments.
 
@@ -384,6 +402,9 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                 if not self.include_private and var_name.startswith("_"):
                     continue
 
+                if selected_symbol_names is not None and var_name not in selected_symbol_names:
+                    continue
+
                 # Extract value
                 value_obj = infer_value(node.value).get_exact()
                 value_str = str(value_obj) if value_obj is not None else None
@@ -398,7 +419,13 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
                     blocks=block_stack.copy(),
                 )
 
-    def _extract_function(self, node: nodes.FunctionDef, symbols: ModuleSymbols, block_stack: list[str]) -> None:
+    def _extract_function(
+        self,
+        node: nodes.FunctionDef,
+        symbols: ModuleSymbols,
+        block_stack: list[str],
+        selected_symbol_names: set[str] | None = None,
+    ) -> None:
         """Extract function definition.
 
         Args:
@@ -410,6 +437,9 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
 
         # Skip private functions unless explicitly included
         if not self.include_private and func_name.startswith("_"):
+            return
+
+        if selected_symbol_names is not None and func_name not in selected_symbol_names:
             return
 
         symbols.functions[func_name] = self._build_function_model(node, block_stack)
@@ -567,7 +597,13 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             kwarg_str += f": {args.kwargannotation.as_string()}"
         return kwarg_str
 
-    def _extract_class(self, node: nodes.ClassDef, symbols: ModuleSymbols, block_stack: list[str]) -> None:
+    def _extract_class(
+        self,
+        node: nodes.ClassDef,
+        symbols: ModuleSymbols,
+        block_stack: list[str],
+        selected_symbol_names: set[str] | None = None,
+    ) -> None:
         """Extract class definition.
 
         Args:
@@ -579,6 +615,9 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
 
         # Skip private classes unless explicitly included
         if not self.include_private and class_name.startswith("_"):
+            return
+
+        if selected_symbol_names is not None and class_name not in selected_symbol_names:
             return
 
         # Extract docstring
@@ -626,6 +665,60 @@ class ModuleSymbolScanner(BaseScanner[ModuleSymbolOutput]):
             decorators=decorators,
             blocks=block_stack.copy(),
         )
+
+    def _discover_top_level_symbol_names(self, module: nodes.Module, file_path: Path) -> set[str] | None:
+        fallback_names = self._fallback_top_level_symbol_names(module)
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_names
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-module-symbols",
+                    locate=LocateStage(pattern="$SYMBOL"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="module_symbol"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:  # pragma: no cover - fallback behavior
+            return fallback_names
+
+        selected_names: set[str] = set()
+        for candidate, decision in zip(pipeline_result.candidates, pipeline_result.decisions, strict=True):
+            if decision.status != "confirmed":
+                continue
+            node = candidate.captures.get("self")
+            symbol_name = self._extract_top_level_symbol_name(node)
+            if symbol_name:
+                selected_names.add(symbol_name)
+
+        return selected_names or fallback_names
+
+    def _fallback_top_level_symbol_names(self, module: nodes.Module) -> set[str]:
+        symbol_names: set[str] = set()
+        for node in module.body:
+            if isinstance(node, nodes.Assign):
+                for target in node.targets:
+                    if isinstance(target, nodes.AssignName):
+                        symbol_names.add(target.name)
+            elif isinstance(node, (nodes.FunctionDef, nodes.ClassDef)):
+                symbol_names.add(node.name)
+        return symbol_names
+
+    def _extract_top_level_symbol_name(self, node: nodes.NodeNG | None) -> str | None:
+        if isinstance(node, nodes.Assign):
+            for target in node.targets:
+                if isinstance(target, nodes.AssignName):
+                    return target.name
+            return None
+        if isinstance(node, (nodes.FunctionDef, nodes.ClassDef)):
+            return node.name
+        return None
 
     def _extract_decorators(self, decorator_nodes: nodes.Decorators | None) -> list[Decorator]:
         """Extract decorator information.

@@ -1,11 +1,14 @@
 """Functional tests for the scan-module-symbols command."""
 
 import json
+import astroid
 
 import yaml
 from click.testing import CliRunner
 
 from upcast.main import main
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
+from upcast.scanners.module_symbols import ModuleSymbolScanner
 
 
 def _create_module_symbols_project(tmp_project):
@@ -90,3 +93,52 @@ def test_scan_module_symbols_includes_private_symbols(tmp_project):
     assert "_PRIVATE_VALUE" in file_info["variables"]
     assert "_private_function" in file_info["functions"]
     assert "_PrivateClass" in file_info["classes"]
+
+
+def test_scan_module_symbols_uses_hybrid_pipeline_for_top_level_symbols(tmp_project, monkeypatch):
+    """The scanner should use the hybrid pipeline to discover top-level symbol candidates."""
+    project_dir = _create_module_symbols_project(tmp_project)
+    scanner = ModuleSymbolScanner()
+    calls: list[tuple[str, str]] = []
+
+    def fake_run_pipeline(*, spec, source, file_path):
+        module = astroid.parse(source, path=file_path)
+        public_value = next(node for node in module.body if isinstance(node, astroid.nodes.Assign))
+        public_function = next(node for node in module.body if isinstance(node, astroid.nodes.FunctionDef))
+        public_class = next(node for node in module.body if isinstance(node, astroid.nodes.ClassDef))
+        calls.append((spec.name, file_path))
+        return PipelineRunResult(
+            candidates=[
+                StructuralCandidate(
+                    file_path=file_path,
+                    structural_span={"start": [1, 0], "end": [1, 12]},
+                    captures={"self": public_value, "NAME": public_value.targets[0]},
+                ),
+                StructuralCandidate(
+                    file_path=file_path,
+                    structural_span={"start": [1, 0], "end": [1, 12]},
+                    captures={"self": public_function, "NAME": public_function},
+                ),
+                StructuralCandidate(
+                    file_path=file_path,
+                    structural_span={"start": [1, 0], "end": [1, 12]},
+                    captures={"self": public_class, "NAME": public_class},
+                ),
+            ],
+            decisions=[
+                SemanticDecision(status="confirmed"),
+                SemanticDecision(status="confirmed"),
+                SemanticDecision(status="confirmed"),
+            ],
+            findings=[],
+        )
+
+    monkeypatch.setattr("upcast.scanners.module_symbols.run_pipeline", fake_run_pipeline, raising=False)
+
+    output = scanner.scan(project_dir)
+
+    assert calls == [("scan-module-symbols", str(project_dir / "app.py"))]
+    assert output.summary.total_symbols == 3
+    assert "PUBLIC_VALUE" in output.results["app.py"].variables
+    assert "public_function" in output.results["app.py"].functions
+    assert "PublicClass" in output.results["app.py"].classes
