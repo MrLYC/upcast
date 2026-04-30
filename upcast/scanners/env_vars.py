@@ -7,6 +7,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_string_pattern, infer_type, infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
@@ -65,11 +72,90 @@ class EnvVarScanner(BaseScanner[EnvVarOutput]):
         relative_path = get_relative_path_str(file_path, self.base_path or Path.cwd())
 
         # Visit all Call and Subscript nodes
-        for node in module.nodes_of_class((nodes.Call, nodes.Subscript)):
+        for node in self._iter_candidate_nodes(module, file_path):
             if isinstance(node, nodes.Call):
                 self._check_getenv_call(node, relative_path, imports)
             elif isinstance(node, nodes.Subscript):
                 self._check_environ_subscript(node, relative_path, imports)
+
+    def _iter_candidate_nodes(self, module: nodes.Module, file_path: Path) -> list[nodes.Call | nodes.Subscript]:
+        """Discover env-var candidates via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class((nodes.Call, nodes.Subscript)))
+        pipeline_result = self._run_candidate_pipeline(file_path)
+        if pipeline_result is None:
+            return fallback_nodes
+
+        selected_nodes, seen_node_ids = self._select_confirmed_call_nodes(pipeline_result)
+        if not selected_nodes:
+            return fallback_nodes
+
+        self._append_remaining_subscript_nodes(fallback_nodes, selected_nodes, seen_node_ids)
+        return selected_nodes
+
+    def _run_candidate_pipeline(self, file_path: Path):
+        """Run the hybrid pipeline for env-var candidates."""
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return None
+
+        try:
+            return run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-env-vars",
+                    locate=LocateStage(pattern="$TARGET($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="env_var_candidate"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return None
+
+    def _select_confirmed_call_nodes(self, pipeline_result) -> tuple[list[nodes.Call | nodes.Subscript], set[int]]:
+        """Collect confirmed call nodes from pipeline results."""
+        selected_nodes: list[nodes.Call | nodes.Subscript] = []
+        seen_node_ids: set[int] = set()
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes, seen_node_ids
+
+    def _append_remaining_subscript_nodes(
+        self,
+        fallback_nodes: list[nodes.Call | nodes.Subscript],
+        selected_nodes: list[nodes.Call | nodes.Subscript],
+        seen_node_ids: set[int],
+    ) -> None:
+        """Preserve subscript candidates discovered by AST fallback."""
+        for node in fallback_nodes:
+            if not isinstance(node, nodes.Subscript):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
 
     def _check_getenv_call(self, node: nodes.Call, file_path: str, imports: dict[str, str]) -> None:
         """Check if Call node is os.getenv() or similar."""

@@ -1,8 +1,10 @@
 """Tests for EnvVarScanner models and implementation."""
 
+import astroid
 import pytest
 from pydantic import ValidationError
 
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.env_vars import (
     EnvVarInfo,
     EnvVarLocation,
@@ -373,3 +375,48 @@ optional2 = os.getenv('OPTIONAL2', 'default2')
         assert output.summary.optional_count == 2
         assert output.summary.files_scanned == 1
         assert output.summary.scan_duration_ms >= 0
+
+    def test_scanner_uses_hybrid_pipeline_for_env_var_candidates(self, tmp_path, monkeypatch):
+        """Scanner should use hybrid pipeline for getenv candidates and preserve environ fallback."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+import os
+
+api_key = os.getenv('API_KEY')
+secret_key = os.environ['SECRET_KEY']
+"""
+        )
+
+        scanner = EnvVarScanner()
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            getenv_call = next(module.nodes_of_class(astroid.nodes.Call))
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [getenv_call.lineno, getenv_call.col_offset],
+                            "end": [getenv_call.end_lineno, getenv_call.end_col_offset],
+                        },
+                        captures={"self": getenv_call, "TARGET": getenv_call.func, "ARGS": getenv_call.args},
+                        snippet=getenv_call.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.env_vars.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-env-vars", str(test_file))]
+        assert output.summary.total_env_vars == 2
+        assert "API_KEY" in output.results
+        assert "SECRET_KEY" in output.results
+        assert output.results["SECRET_KEY"].required is True
