@@ -1,5 +1,8 @@
 """Tests for HttpRequestScanner."""
 
+import astroid
+
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.http_requests import (
     HttpRequestsScanner,
     HttpRequestUsage,
@@ -29,6 +32,53 @@ class TestHttpRequestModels:
 
 class TestHttpRequestScannerIntegration:
     """Integration tests for HttpRequestScanner."""
+
+    def test_scanner_uses_hybrid_pipeline_for_http_request_candidates(self, tmp_path, monkeypatch):
+        """Scanner should use the hybrid pipeline to discover HTTP request candidates."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+import requests
+
+response = requests.get('https://api.example.com/users')
+"""
+        )
+
+        scanner = HttpRequestsScanner()
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            request_call = next(module.nodes_of_class(astroid.nodes.Call))
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [request_call.lineno, request_call.col_offset],
+                            "end": [request_call.end_lineno, request_call.end_col_offset],
+                        },
+                        captures={
+                            "self": request_call,
+                            "REQUEST": request_call.func,
+                            "ARGS": request_call.args,
+                        },
+                        snippet=request_call.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.http_requests.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-http-requests", str(test_file))]
+        assert output.summary.total_count == 1
+        assert "https://api.example.com/users" in output.results
+        assert output.results["https://api.example.com/users"].method == "GET"
 
     def test_scanner_detects_requests_get(self, tmp_path):
         """Test scanner detects requests.get."""

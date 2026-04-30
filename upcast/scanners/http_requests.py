@@ -8,6 +8,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.http_requests import HttpRequestInfo, HttpRequestOutput, HttpRequestSummary, HttpRequestUsage
@@ -59,7 +66,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             imports = get_import_info(module)
             rel_path = get_relative_path_str(file_path, base_path)
 
-            for node in module.nodes_of_class(nodes.Call):
+            for node in self._iter_candidate_calls(module, file_path):
                 request_entry = self._check_request_call(node, rel_path, imports)
                 if request_entry:
                     library, usage = request_entry
@@ -74,6 +81,54 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         summary = self._calculate_summary(requests_by_url, requests_info, len(files), scan_duration_ms)
 
         return HttpRequestOutput(summary=summary, results=requests_info, metadata={"scanner_name": "http-requests"})
+
+    def _iter_candidate_calls(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
+        """Discover candidate HTTP request calls via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-http-requests",
+                    locate=LocateStage(pattern="$REQUEST($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="http_request_candidate"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Call] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _extract_url_with_imports(self, node: nodes.Call, imports: dict[str, str]) -> str | None:
         """Extract URL from request call with import context.
