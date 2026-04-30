@@ -13,6 +13,13 @@ from astroid import nodes
 from upcast.common.django.router_parser import parse_router_registrations
 from upcast.common.django.url_parser import parse_url_pattern
 from upcast.common.django.view_resolver import resolve_view
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.django_urls import DjangoUrlOutput, DjangoUrlSummary, UrlModule, UrlPattern
 
@@ -87,15 +94,64 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         patterns: list[UrlPattern] = []
 
         # Find urlpatterns assignments
-        for node in module.nodes_of_class(nodes.Assign):
-            if self._is_urlpatterns_assignment(node):
-                url_patterns = self._extract_url_patterns(node.value, module, file_path, scan_root)
-                patterns.extend(url_patterns)
+        for node in self._iter_candidate_urlpattern_assignments(module, file_path):
+            url_patterns = self._extract_url_patterns(node.value, module, file_path, scan_root)
+            patterns.extend(url_patterns)
 
         if self.verbose and patterns:
             logger.info(f"Found {len(patterns)} URL patterns in {file_path}")
 
         return patterns
+
+    def _iter_candidate_urlpattern_assignments(self, module: nodes.Module, file_path: Path) -> list[nodes.Assign]:
+        """Discover urlpatterns assignments via hybrid pipeline with AST fallback."""
+        fallback_nodes = [node for node in module.nodes_of_class(nodes.Assign) if self._is_urlpatterns_assignment(node)]
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-django-urls",
+                    locate=LocateStage(pattern="urlpatterns = $VALUE"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="django_urlpatterns_assignment"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Assign] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Assign):
+                continue
+            if not self._is_urlpatterns_assignment(node):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _is_urlpatterns_assignment(self, node: nodes.Assign) -> bool:
         """Check if an assignment is to 'urlpatterns'.
