@@ -8,6 +8,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.exceptions import (
@@ -71,10 +78,58 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
         relative_path = get_relative_path_str(file_path, self.base_path or Path.cwd())
 
         # Visit all try blocks
-        for node in module.nodes_of_class(nodes.Try):
+        for node in self._iter_candidate_try_blocks(module, file_path):
             handler = self._parse_try_block(node, relative_path)
             if handler:
                 self.handlers.append(handler)
+
+    def _iter_candidate_try_blocks(self, module: nodes.Module, file_path: Path) -> list[nodes.Try]:
+        """Discover candidate try blocks via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Try))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-exception-handlers",
+                    locate=LocateStage(pattern="try: $$$BODY"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="exception_handler"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Try] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Try):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _parse_try_block(self, node: nodes.Try, file_path: str) -> ExceptionHandler | None:
         """Parse a try block into an ExceptionHandler."""
