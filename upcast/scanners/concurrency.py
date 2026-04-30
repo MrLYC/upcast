@@ -8,6 +8,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.concurrency import ConcurrencyPatternOutput, ConcurrencyPatternSummary, ConcurrencyUsage
@@ -67,7 +74,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         self._collect_decorator_patterns(module, rel_path, imports, celery_app_names, patterns)
         self._collect_async_patterns(module, rel_path, imports, celery_app_names, patterns)
         self._collect_await_patterns(module, rel_path, patterns)
-        self._collect_call_patterns(module, rel_path, imports, executor_mapping, celery_task_names, patterns)
+        self._collect_call_patterns(module, file_path, rel_path, imports, executor_mapping, celery_task_names, patterns)
 
     def _collect_decorator_patterns(
         self,
@@ -127,6 +134,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
     def _collect_call_patterns(
         self,
         module: nodes.Module,
+        file_path: Path,
         rel_path: str,
         imports: dict[str, str],
         executor_mapping: dict[str, str],
@@ -134,12 +142,60 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
     ) -> None:
         """Collect call-driven concurrency patterns."""
-        for node in module.nodes_of_class(nodes.Call):
+        for node in self._iter_candidate_call_nodes(module, file_path):
             usage = self._detect_call_pattern(node, rel_path, imports, executor_mapping, celery_task_names)
             if usage:
                 category = self._get_category_from_pattern(usage.pattern)
                 pattern_type = usage.api_call or usage.pattern
                 self._add_pattern(patterns, category, pattern_type, usage)
+
+    def _iter_candidate_call_nodes(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
+        """Discover concurrency call candidates via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-concurrency-patterns",
+                    locate=LocateStage(pattern="$TARGET($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="concurrency_call_candidate"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Call] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _detect_call_pattern(
         self,
