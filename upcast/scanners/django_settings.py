@@ -19,6 +19,13 @@ from upcast.common.django.settings_utils import (
     is_settings_hasattr_call,
 )
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.django_settings import (
     DjangoSettingsOutput,
@@ -80,7 +87,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
 
                 # Extract definitions if this is a settings file
                 if is_settings_file:
-                    for node in module.nodes_of_class(nodes.Assign):
+                    for node in self._iter_candidate_assignments(module, file_path):
                         for target in node.targets:
                             if isinstance(target, nodes.AssignName) and target.name.isupper():
                                 setting_name = target.name
@@ -101,7 +108,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                                 )
 
                 # Scan for usages in all files
-                for node in module.nodes_of_class(nodes.Attribute):
+                for node in self._iter_candidate_attributes(module, file_path):
                     if is_settings_attribute_access(node):
                         setting_name = node.attrname
                         if setting_name and setting_name.isupper() and node.lineno:
@@ -119,7 +126,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
                                 pass
 
                 # Check for getattr/hasattr calls
-                for node in module.nodes_of_class(nodes.Call):
+                for node in self._iter_candidate_calls(module, file_path):
                     if (is_settings_getattr_call(node) or is_settings_hasattr_call(node)) and node.lineno:
                         setting_name = extract_setting_name(node)
                         if setting_name:
@@ -188,6 +195,97 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         """
         path_str = str(file_path).lower()
         return "settings" in path_str or "config" in path_str
+
+    def _iter_candidate_assignments(self, module: nodes.Module, file_path: Path) -> list[nodes.Assign]:
+        """Discover candidate setting assignments via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Assign))
+        return self._iter_pipeline_candidates(
+            module=module,
+            file_path=file_path,
+            pattern="$NAME = $VALUE",
+            node_type=nodes.Assign,
+            fallback_nodes=fallback_nodes,
+            project_kind="django_settings_assignment_candidate",
+        )
+
+    def _iter_candidate_attributes(self, module: nodes.Module, file_path: Path) -> list[nodes.Attribute]:
+        """Discover candidate setting attribute accesses via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Attribute))
+        return self._iter_pipeline_candidates(
+            module=module,
+            file_path=file_path,
+            pattern="$OBJECT.$ATTR",
+            node_type=nodes.Attribute,
+            fallback_nodes=fallback_nodes,
+            project_kind="django_settings_attribute_candidate",
+        )
+
+    def _iter_candidate_calls(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
+        """Discover candidate setting calls via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+        return self._iter_pipeline_candidates(
+            module=module,
+            file_path=file_path,
+            pattern="$FUNC($$$ARGS)",
+            node_type=nodes.Call,
+            fallback_nodes=fallback_nodes,
+            project_kind="django_settings_call_candidate",
+        )
+
+    def _iter_pipeline_candidates(
+        self,
+        *,
+        module: nodes.Module,
+        file_path: Path,
+        pattern: str,
+        node_type: type[nodes.NodeNG],
+        fallback_nodes: list[nodes.NodeNG],
+        project_kind: str,
+    ) -> list[nodes.NodeNG]:
+        """Discover candidates via hybrid pipeline and fall back to AST traversal."""
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-django-settings",
+                    locate=LocateStage(pattern=pattern),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind=project_kind),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_node_ids: set[int] = set()
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(pipeline_result.candidates, pipeline_result.decisions, strict=True):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, node_type):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_node_ids.add(node_id)
+            seen_node_ids.add(node_id)
+
+        fallback_node_ids = {id(node) for node in fallback_nodes}
+        if selected_node_ids != fallback_node_ids:
+            return fallback_nodes
+
+        return [node for node in fallback_nodes if id(node) in selected_node_ids]
 
     def _extract_value(self, node: nodes.NodeNG) -> Any:
         """Extract value from an AST node recursively.

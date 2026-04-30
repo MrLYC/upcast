@@ -4,11 +4,74 @@ from pathlib import Path
 
 import pytest
 
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.django_settings import DjangoSettingsScanner
 
 
 class TestDjangoSettingsScanner:
     """Test DjangoSettingsScanner integration."""
+
+    def test_iter_candidate_assignments_falls_back_to_ast_when_pipeline_fails(
+        self,
+        tmp_path: Path,
+        scanner: DjangoSettingsScanner,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """The candidate helper should fall back to raw AST traversal on pipeline failure."""
+        settings_file = tmp_path / "settings.py"
+        settings_file.write_text("DEBUG = True\n")
+
+        module = scanner.parse_file(settings_file)
+        assert module is not None
+
+        def boom(*args: object, **kwargs: object) -> object:
+            raise RuntimeError("pipeline unavailable")
+
+        monkeypatch.setattr("upcast.scanners.django_settings.run_pipeline", boom)
+
+        candidates = scanner._iter_candidate_assignments(module, settings_file)
+
+        assert len(candidates) == 1
+        assert candidates[0].targets[0].name == "DEBUG"
+
+    def test_iter_candidate_assignments_falls_back_to_ast_when_pipeline_is_partial(
+        self,
+        tmp_path: Path,
+        scanner: DjangoSettingsScanner,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """The candidate helper should fall back when pipeline coverage is incomplete."""
+        settings_file = tmp_path / "settings.py"
+        settings_file.write_text("DEBUG = True\nSECRET_KEY = 'test-secret'\n")
+
+        module = scanner.parse_file(settings_file)
+        assert module is not None
+
+        assignments = list(module.nodes_of_class(type(module.body[0])))
+        assert len(assignments) == 2
+
+        partial_result = PipelineRunResult(
+            candidates=[
+                StructuralCandidate(
+                    file_path=str(settings_file),
+                    structural_span={"start": [1, 0], "end": [1, 12]},
+                    captures={"self": assignments[0]},
+                    missing_captures=[],
+                    snippet="DEBUG = True",
+                )
+            ],
+            decisions=[SemanticDecision(status="confirmed")],
+            findings=[],
+        )
+
+        monkeypatch.setattr(
+            "upcast.scanners.django_settings.run_pipeline",
+            lambda *args, **kwargs: partial_result,
+        )
+
+        candidates = scanner._iter_candidate_assignments(module, settings_file)
+
+        assert [candidate.targets[0].name for candidate in candidates] == ["DEBUG", "SECRET_KEY"]
 
     def test_scan_targeted_standard_settings(self, tmp_path: Path, scanner: DjangoSettingsScanner) -> None:
         """Task 9 should capture the bounded standard Django settings set."""
