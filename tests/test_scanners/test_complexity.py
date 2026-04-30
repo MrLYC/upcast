@@ -1,5 +1,6 @@
 """Tests for ComplexityScanner models and implementation."""
 
+import astroid
 from pathlib import Path
 from unittest.mock import patch
 
@@ -12,6 +13,7 @@ from upcast.scanners.complexity import (
     ComplexityScanner,
     ComplexitySummary,
 )
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 
 
 class TestComplexityResultModel:
@@ -354,3 +356,51 @@ def function_with_comments(x):
             output = scanner.scan(fixture_path)
 
         assert output.summary.scan_duration_ms == 500
+
+    def test_scanner_uses_hybrid_pipeline_for_function_candidates(self, tmp_path, monkeypatch):
+        """Test scanner uses hybrid pipeline to select candidate functions before analysis."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+def simple():
+    return 1
+
+def complex_function(x):
+    if x > 0:
+        if x > 10:
+            return 'high'
+        return 'low'
+    return 'zero'
+"""
+        )
+
+        scanner = ComplexityScanner(threshold=3)
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source: str, file_path: str):
+            calls.append((spec.name, file_path))
+            parsed = astroid.parse(source)
+            complex_node = parsed.body[1]
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [complex_node.lineno, complex_node.col_offset],
+                            "end": [complex_node.end_lineno, complex_node.end_col_offset],
+                        },
+                        captures={"self": complex_node, "NAME": complex_node},
+                        snippet=complex_node.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed", facts={"class_name": complex_node.name})],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.complexity.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-complexity-patterns", str(test_file))]
+        assert output.summary.total_count == 1
+        assert output.results["test.py"][0].name == "complex_function"

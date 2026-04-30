@@ -12,6 +12,7 @@ from upcast.common.code_utils import (
     extract_function_signature,
     get_code_lines,
 )
+from upcast.common.hybrid_scan_pipeline import LocateStage, MapStage, PipelineSpec, ProjectStage, run_pipeline
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.complexity import ComplexityOutput, ComplexityResult, ComplexitySummary
 
@@ -53,7 +54,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             if not module:
                 continue
 
-            results = self._scan_module(module)
+            results = self._scan_module(module, file_path)
             if results:
                 from upcast.common.file_utils import get_relative_path_str
 
@@ -65,11 +66,11 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
         summary = self._calculate_summary(modules, scan_duration_ms)
         return ComplexityOutput(summary=summary, results=modules, metadata={"scanner_name": "complexity-patterns"})
 
-    def _scan_module(self, module: nodes.Module) -> list[ComplexityResult]:
+    def _scan_module(self, module: nodes.Module, file_path: Path) -> list[ComplexityResult]:
         """Scan a module for high complexity functions."""
         results: list[ComplexityResult] = []
 
-        for node in module.nodes_of_class((nodes.FunctionDef, nodes.AsyncFunctionDef)):
+        for node in self._iter_candidate_functions(module, file_path):
             parent_class = None
             if node.parent and isinstance(node.parent, nodes.ClassDef):
                 parent_class = node.parent.name
@@ -79,6 +80,58 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 results.append(result)
 
         return results
+
+    def _iter_candidate_functions(
+        self, module: nodes.Module, file_path: Path
+    ) -> list[nodes.FunctionDef | nodes.AsyncFunctionDef]:
+        """Return candidate functions, preferring hybrid pipeline selection when available."""
+        fallback_nodes = list(module.nodes_of_class((nodes.FunctionDef, nodes.AsyncFunctionDef)))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-complexity-patterns",
+                    locate=LocateStage(pattern="def $NAME($$$ARGS): $$$BODY"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="complexity_function"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.FunctionDef | nodes.AsyncFunctionDef] = []
+        seen_node_ids: set[int] = set()
+        for candidate, decision in zip(pipeline_result.candidates, pipeline_result.decisions, strict=True):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, (nodes.FunctionDef, nodes.AsyncFunctionDef)):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        if not selected_nodes:
+            return fallback_nodes
+
+        for node in fallback_nodes:
+            if isinstance(node, nodes.AsyncFunctionDef) and id(node) not in seen_node_ids:
+                selected_nodes.append(node)
+
+        return selected_nodes
 
     def _analyze_function(self, node: nodes.FunctionDef, parent_class: str | None) -> ComplexityResult | None:
         """Analyze a function for complexity."""
