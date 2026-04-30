@@ -11,6 +11,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.redis_usage import (
@@ -67,7 +74,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
                     usages_by_type[usage.type].append(usage)
 
             # Scan for Django cache API usage
-            cache_usages, cache_warnings = self._scan_cache_api(module, rel_path, imports)
+            cache_usages, cache_warnings = self._scan_cache_api(module, file_path, rel_path, imports)
             for usage in cache_usages:
                 usages_by_type[usage.type].append(usage)
             warnings.extend(cache_warnings)
@@ -404,7 +411,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         return None
 
     def _scan_cache_api(
-        self, module: nodes.Module, rel_path: str, imports: dict[str, str]
+        self, module: nodes.Module, file_path: Path, rel_path: str, imports: dict[str, str]
     ) -> tuple[list[RedisUsage], list[str]]:
         """Scan for Django cache API usage."""
         usages: list[RedisUsage] = []
@@ -416,7 +423,7 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
         if not cache_imported:
             return usages, warnings
 
-        for node in module.nodes_of_class(nodes.Call):
+        for node in self._iter_candidate_cache_calls(module, file_path):
             func = node.func
             if not isinstance(func, nodes.Attribute):
                 continue
@@ -431,6 +438,54 @@ class RedisUsageScanner(BaseScanner[RedisUsageOutput]):
                         warnings.append(f"{usage.warning} in {rel_path}:{node.lineno}")
 
         return usages, warnings
+
+    def _iter_candidate_cache_calls(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
+        """Discover cache-call candidates via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-redis-usage",
+                    locate=LocateStage(pattern="$TARGET($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="redis_cache_call"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Call] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _parse_cache_call(self, node: nodes.Call, rel_path: str, method: str) -> RedisUsage | None:
         """Parse a cache API call."""

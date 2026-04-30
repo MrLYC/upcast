@@ -1,15 +1,67 @@
 """Tests for Redis operations detection."""
 
+import astroid
 import pytest
 from pathlib import Path
 from textwrap import dedent
 
-from upcast.scanners.redis_usage import RedisUsageScanner
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.models.redis_usage import RedisUsageType
+from upcast.scanners.redis_usage import RedisUsageScanner
 
 
 class TestCacheOperations:
     """Test Django cache operations detection."""
+
+    def test_scanner_uses_hybrid_pipeline_for_cache_call_candidates(self, tmp_path, monkeypatch):
+        """Cache API candidate discovery should go through the hybrid pipeline."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            dedent("""
+            from django.core.cache import cache
+
+            def use_cache():
+                return cache.get("user:123")
+        """)
+        )
+
+        scanner = RedisUsageScanner()
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            cache_call = next(module.nodes_of_class(astroid.nodes.Call))
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={
+                            "start": [cache_call.lineno, cache_call.col_offset],
+                            "end": [cache_call.end_lineno, cache_call.end_col_offset],
+                        },
+                        captures={
+                            "self": cache_call,
+                            "TARGET": cache_call.func,
+                            "ARGS": cache_call.args,
+                        },
+                        snippet=cache_call.as_string(),
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.redis_usage.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-redis-usage", str(test_file))]
+        assert output.summary.total_usages == 1
+        assert "direct_client" in output.results
+        assert len(output.results["direct_client"]) == 1
+        assert output.results["direct_client"][0].operation == "get"
+        assert output.results["direct_client"][0].key == "user:123"
 
     def test_cache_get(self, tmp_path):
         """Cache.get should be detected."""
