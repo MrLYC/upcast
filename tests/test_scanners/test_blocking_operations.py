@@ -1,9 +1,12 @@
 """Tests for BlockingOperationsScanner."""
 
+import astroid
+
 from upcast.scanners.blocking_operations import (
     BlockingOperation,
     BlockingOperationsScanner,
 )
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 
 
 class TestBlockingOperationModel:
@@ -195,3 +198,42 @@ def foo():
         assert output.summary.total_count == 1
         operation = output.results["time_based"][0]
         assert operation.duration == 300
+
+    def test_scanner_uses_hybrid_pipeline_for_blocking_candidates(self, tmp_path, monkeypatch):
+        """Scanner should use the hybrid pipeline to discover blocking-operation candidates."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            """
+import time
+
+def wait_for_data():
+    time.sleep(1)
+"""
+        )
+
+        scanner = BlockingOperationsScanner()
+        calls: list[tuple[str, str]] = []
+
+        def fake_run_pipeline(*, spec, source, file_path):
+            module = astroid.parse(source, path=file_path)
+            sleep_call = next(node for node in module.nodes_of_class(astroid.nodes.Call))
+            calls.append((spec.name, file_path))
+            return PipelineRunResult(
+                candidates=[
+                    StructuralCandidate(
+                        file_path=file_path,
+                        structural_span={"start": [4, 4], "end": [4, 17]},
+                        captures={"self": sleep_call, "OP": sleep_call},
+                    )
+                ],
+                decisions=[SemanticDecision(status="confirmed")],
+                findings=[],
+            )
+
+        monkeypatch.setattr("upcast.scanners.blocking_operations.run_pipeline", fake_run_pipeline, raising=False)
+
+        output = scanner.scan(test_file)
+
+        assert calls == [("scan-blocking-operations", str(test_file))]
+        assert output.summary.total_count == 1
+        assert output.results["time_based"][0].operation == "time.sleep"

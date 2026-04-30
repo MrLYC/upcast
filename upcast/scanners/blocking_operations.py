@@ -8,6 +8,7 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import LocateStage, MapStage, PipelineSpec, ProjectStage, run_pipeline
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.blocking_operations import (
@@ -60,7 +61,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
             imports = get_import_info(module)
             rel_path = get_relative_path_str(file_path, base_path)
 
-            for node in module.nodes_of_class((nodes.Call, nodes.With)):
+            for node in self._iter_candidate_nodes(module, file_path):
                 operation = self._check_node(node, rel_path, imports)
                 if operation:
                     operations_by_category[operation.category].append(operation)
@@ -70,6 +71,57 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
         return BlockingOperationsOutput(
             summary=summary, results=operations_by_category, metadata={"scanner_name": "blocking-operations"}
         )
+
+    def _iter_candidate_nodes(self, module: nodes.Module, file_path: Path) -> list[nodes.Call | nodes.With]:
+        """Return candidate call/with nodes, preferring hybrid pipeline selection for calls."""
+        fallback_nodes = list(module.nodes_of_class((nodes.Call, nodes.With)))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-blocking-operations",
+                    locate=LocateStage(pattern="$OP($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="blocking_operation"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Call | nodes.With] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(pipeline_result.candidates, pipeline_result.decisions, strict=True):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        if not selected_nodes:
+            return fallback_nodes
+
+        for node in fallback_nodes:
+            if isinstance(node, nodes.With) and id(node) not in seen_node_ids:
+                selected_nodes.append(node)
+
+        return selected_nodes
 
     def _check_node(self, node: nodes.NodeNG, file_path: str, imports: dict[str, str]) -> BlockingOperation | None:
         """Check a node for blocking operations."""
