@@ -12,6 +12,13 @@ from astroid import nodes
 
 from upcast.common.ast_utils import safe_as_string
 from upcast.common.file_utils import get_relative_path_str
+from upcast.common.hybrid_scan_pipeline import (
+    LocateStage,
+    MapStage,
+    PipelineSpec,
+    ProjectStage,
+    run_pipeline,
+)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.logging import FileLoggingInfo, LogCall, LoggingOutput, LoggingSummary
@@ -163,6 +170,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
         # Phase 2: Detect log method calls
         self._detect_log_calls(
             module,
+            file_path,
             loggers,
             logger_types,
             module_path,
@@ -353,6 +361,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
     def _detect_log_calls(
         self,
         module: nodes.Module,
+        file_path: Path,
         loggers: dict[str, str],
         logger_types: dict[str, str],
         module_path: str,
@@ -375,7 +384,7 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
             structlog_calls: List to populate with structlog calls
             django_calls: List to populate with Django calls
         """
-        for node in module.nodes_of_class(nodes.Call):
+        for node in self._iter_candidate_log_call_nodes(module, file_path):
             if not isinstance(node.func, nodes.Attribute):
                 continue
 
@@ -400,6 +409,54 @@ class LoggingScanner(BaseScanner[LoggingOutput]):
 
             # Categorize by library
             self._categorize_log_call(log_call, lib_type, logging_calls, loguru_calls, structlog_calls, django_calls)
+
+    def _iter_candidate_log_call_nodes(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
+        """Discover log-call candidates via hybrid pipeline with AST fallback."""
+        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+
+        try:
+            source = file_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            return fallback_nodes
+
+        try:
+            pipeline_result = run_pipeline(
+                spec=PipelineSpec(
+                    name="scan-logging",
+                    locate=LocateStage(pattern="$TARGET($$$ARGS)"),
+                    map=MapStage(),
+                    semantic_filters=[],
+                    project=ProjectStage(kind="logging_call_candidate"),
+                ),
+                source=source,
+                file_path=str(file_path),
+            )
+        except Exception:
+            return fallback_nodes
+
+        selected_nodes: list[nodes.Call] = []
+        seen_node_ids: set[int] = set()
+
+        for candidate, decision in zip(
+            pipeline_result.candidates,
+            pipeline_result.decisions,
+            strict=True,
+        ):
+            if decision.status != "confirmed":
+                continue
+
+            node = candidate.captures.get("self")
+            if not isinstance(node, nodes.Call):
+                continue
+
+            node_id = id(node)
+            if node_id in seen_node_ids:
+                continue
+
+            selected_nodes.append(node)
+            seen_node_ids.add(node_id)
+
+        return selected_nodes or fallback_nodes
 
     def _resolve_logger_info(
         self,
