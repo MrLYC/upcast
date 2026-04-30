@@ -161,6 +161,72 @@ print(result.is_static)
 
 ### 2. 兼容性 API（现有接口）
 
+#### `match(node, pattern, rule=None) -> MatchResult | None`
+
+**用途**：对单个 astroid 节点执行最小化的 ast-grep 风格匹配，并结合推导感知谓词过滤结果。
+
+**v1 范围**：
+
+- `pattern` 目前仅支持单个 capture 形式，如 `$VALUE`
+- `rule` 支持 `self`、`captures`、`not`、`has`
+- predicate 支持 `builtin_type`、`inferable`、`qname`
+
+**示例**：
+
+```python
+from upcast.common import match
+
+result = match(
+    node,
+    "$VALUE",
+    rule={"captures": {"VALUE": {"builtin_type": "str"}}},
+)
+
+if result is not None:
+    matched = result.node
+    captured = result.captures["VALUE"]
+```
+
+---
+
+#### `find_matches(root, pattern, rule=None) -> list[MatchResult]`
+
+**用途**：以稳定 DFS 顺序遍历指定 AST 子树，返回所有满足 matcher 规则的节点。
+
+**行为说明**：
+
+- 返回结果按遍历顺序稳定输出
+- 同一个节点只返回一次（按节点 identity 去重）
+- `has` 会在当前节点的所有后代节点中递归寻找子模式
+
+**示例**：
+
+```python
+from upcast.common import find_matches
+
+results = find_matches(
+    module,
+    "$VALUE",
+    rule={"captures": {"VALUE": {"inferable": True}}},
+)
+
+for result in results:
+    print(result.node.as_string())
+```
+
+---
+
+#### `MatchResult`
+
+**用途**：表示一次成功的 matcher 命中。
+
+**字段**：
+
+- `node` / `matched_node`：实际命中的 astroid 节点
+- `captures`：capture 名到 astroid 节点的映射
+
+---
+
 #### `infer_value_with_fallback(node) -> tuple[Any, bool]`
 
 **用途**：推导节点的字面量值，失败时返回反引号包裹的表达式。
@@ -804,6 +870,20 @@ logger.warning("Failed login for %s", username)
 
 ### 当前限制
 
+6. **Astroid matcher 仍是收窄版 v1**：
+
+   ```python
+   match(node, "$VALUE", rule={...})
+   ```
+
+   当前仅支持单 capture pattern，以及 `builtin_type` / `inferable` / `qname` / `not` / `has`。
+   以下能力仍未纳入 v1：
+
+   - 完整 ast-grep 文本模式兼容（如复杂 statement / expression pattern）
+   - `$$$NAME` 的通用序列捕获
+   - pattern 内联语义谓词
+   - CST-backed matching 与 CST/AST 联合执行
+
 1. **跨模块推导**：无法跟踪导入的函数返回值
 
    ```python
@@ -811,14 +891,14 @@ logger.warning("Failed login for %s", username)
    config = get_config()  # ❌ 值: <dynamic>
    ```
 
-2. **循环变量**：无法推导循环迭代中的值
+1. **循环变量**：无法推导循环迭代中的值
 
    ```python
    for i in range(10):
        x = i * 2  # ✅ 类型: int, ❌ 值: <dynamic>
    ```
 
-3. **递归调用**：可能导致推导失败
+1. **递归调用**：可能导致推导失败
 
    ```python
    def factorial(n):
@@ -827,13 +907,13 @@ logger.warning("Failed login for %s", username)
        return n * factorial(n - 1)  # ⚠️ 值: <dynamic>
    ```
 
-4. **复杂容器**：嵌套深度过大时性能下降
+1. **复杂容器**：嵌套深度过大时性能下降
 
    ```python
    data = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]  # 推导慢
    ```
 
-5. **混合推导**：函数返回值参与运算时推导受限
+1. **混合推导**：函数返回值参与运算时推导受限
    ```python
    def get_base():
        return "https://api.example.com"
