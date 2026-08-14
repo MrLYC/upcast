@@ -1,5 +1,10 @@
 """Tests for HTTP request URL patterns and extraction."""
 
+import os
+from pathlib import Path
+import subprocess
+import sys
+
 import pytest
 
 from upcast.scanners.http_requests import HttpRequestsScanner
@@ -159,6 +164,43 @@ requests.post('https://api.example.com/users', json={})
         assert result.summary.total_requests == 3
         assert "https://api.example.com/users" in result.results
         assert len(result.results["https://api.example.com/users"].usages) == 3
+
+    def test_same_url_tie_uses_first_method_deterministically(self, tmp_path):
+        """Use the first-seen method when equally common methods are tied."""
+        code = """
+import requests
+requests.get('https://api.example.com/users')
+requests.post('https://api.example.com/users', json={})
+"""
+        file_path = tmp_path / "test.py"
+        file_path.write_text(code)
+
+        script = """
+from pathlib import Path
+import sys
+
+from upcast.scanners.http_requests import HttpRequestsScanner
+
+result = HttpRequestsScanner(verbose=False).scan(Path(sys.argv[1]))
+print(result.results["https://api.example.com/users"].method)
+"""
+        project_root = str(Path(__file__).resolve().parents[2])
+        env = os.environ.copy()
+        env["PYTHONPATH"] = os.pathsep.join(filter(None, [project_root, env.get("PYTHONPATH")]))
+
+        methods = []
+        for hash_seed in ("2", "3"):
+            env["PYTHONHASHSEED"] = hash_seed
+            completed = subprocess.run(
+                [sys.executable, "-c", script, str(tmp_path)],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            methods.append(completed.stdout.strip())
+
+        assert methods == ["GET", "GET"]
 
     def test_different_urls_same_domain(self, scanner: HttpRequestsScanner, tmp_path):
         """Test different URLs on same domain."""

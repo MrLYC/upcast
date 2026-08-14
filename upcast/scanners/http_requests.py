@@ -1,6 +1,7 @@
 """HTTP requests scanner implementation with Pydantic models."""
 
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -886,9 +887,10 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
             # Determine primary method and library
             methods = [u.method for u in usages]
-            primary_method = max(set(methods), key=methods.count)
+            # Counter preserves first-seen order for ties, keeping output stable across processes.
+            primary_method = Counter(methods).most_common(1)[0][0]
             libraries = [library for library, _ in entries]
-            library = max(set(libraries), key=libraries.count)
+            library = Counter(libraries).most_common(1)[0][0]
 
             result[url] = HttpRequestInfo(
                 method=primary_method,

@@ -648,7 +648,7 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys/...':
     library: requests
-    method: PUT
+    method: DELETE
     usages:
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
