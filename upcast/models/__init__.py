@@ -20,6 +20,7 @@ The models are organized by scanner type:
 - Django Models: DjangoField, DjangoModel, DjangoModelSummary, DjangoModelOutput
 - Django Settings: SettingsUsage, SettingDefinition, DjangoSettingsSummary, DjangoSettings*Output
 - Django URLs: UrlPattern, DjangoUrlSummary, DjangoUrlOutput
+- Django Views: DjangoView, DjangoViewAction, DjangoViewSummary, DjangoViewOutput
 - Environment Variables: EnvVarInfo, EnvVarSummary, EnvVarOutput
 - Exception Handlers: ExceptionHandler, ExceptionHandlerSummary, ExceptionHandlerOutput
 - HTTP Requests: HttpRequestInfo, HttpRequestSummary, HttpRequestOutput
@@ -84,6 +85,21 @@ __all__ = [
 
 # Django URLs
 from upcast.models.django_urls import DjangoUrlOutput, DjangoUrlSummary, UrlModule, UrlPattern
+from upcast.models.django_views import (
+    DjangoView,
+    DjangoViewAction,
+    DjangoViewOutput,
+    DjangoViewSummary,
+    ModelUsage,
+    PermissionDefinition,
+    PermissionExpression,
+    Recognition,
+    ResolutionStatus,
+    RouteReference,
+    SecurityControl,
+    SourceEvidence,
+    ViewSecurity,
+)
 
 # Environment variables
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
@@ -123,19 +139,15 @@ from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, Signa
 from upcast.models.unit_tests import TargetModule, UnitTestInfo, UnitTestOutput, UnitTestSummary
 
 __all__ = [
-    # Blocking operations
     "BlockingOperation",
     "BlockingOperationsOutput",
     "BlockingOperationsSummary",
     "ComplexityOutput",
-    # Complexity
     "ComplexityResult",
     "ComplexitySummary",
     "ConcurrencyPatternOutput",
     "ConcurrencyPatternSummary",
-    # Concurrency
     "ConcurrencyUsage",
-    # Django models
     "DjangoField",
     "DjangoModel",
     "DjangoModelOutput",
@@ -145,12 +157,14 @@ __all__ = [
     "DjangoSettingsSummary",
     "DjangoUrlOutput",
     "DjangoUrlSummary",
+    "DjangoView",
+    "DjangoViewAction",
+    "DjangoViewOutput",
+    "DjangoViewSummary",
     "EnvVarInfo",
-    # Environment variables
     "EnvVarLocation",
     "EnvVarOutput",
     "EnvVarSummary",
-    # Exception handlers
     "ExceptionBlock",
     "ExceptionHandler",
     "ExceptionHandlerOutput",
@@ -159,37 +173,39 @@ __all__ = [
     "HttpRequestInfo",
     "HttpRequestOutput",
     "HttpRequestSummary",
-    # HTTP requests
     "HttpRequestUsage",
     "MetricInfo",
-    # Metrics
     "MetricUsage",
+    "ModelUsage",
+    "PermissionDefinition",
+    "PermissionExpression",
     "PrometheusMetricOutput",
     "PrometheusMetricSummary",
+    "Recognition",
     "RedisConfig",
     "RedisUsage",
     "RedisUsageOutput",
     "RedisUsageSummary",
     "RedisUsageType",
+    "ResolutionStatus",
+    "RouteReference",
     "ScannerOutput",
-    # Base models
     "ScannerSummary",
+    "SecurityControl",
     "SettingDefinition",
-    # Django settings
     "SettingsLocation",
     "SettingsModule",
     "SettingsUsage",
     "SignalInfo",
     "SignalOutput",
     "SignalSummary",
-    # Signals
     "SignalUsage",
-    # Unit tests
+    "SourceEvidence",
     "TargetModule",
     "UnitTestInfo",
     "UnitTestOutput",
     "UnitTestSummary",
     "UrlModule",
-    # Django URLs
     "UrlPattern",
+    "ViewSecurity",
 ]
