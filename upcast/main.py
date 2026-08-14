@@ -11,6 +11,7 @@ from upcast.scanners import (
     DjangoModelScanner,
     DjangoSettingsScanner,
     DjangoUrlScanner,
+    DjangoViewScanner,
     EnvVarScanner,
     ExceptionHandlerScanner,
     HttpRequestsScanner,
@@ -705,6 +706,80 @@ def scan_django_urls_cmd(
             markdown_language=markdown_language,
         )
 
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-django-views")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
+    default="yaml",
+    help="Output format (default: yaml)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option("--markdown-title", type=str, help="Title for markdown output")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
+@click.option("--include", multiple=True, help="File patterns to include (e.g., '**/views.py')")
+@click.option("--exclude", multiple=True, help="File patterns to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".")
+def scan_django_views_cmd(
+    path: str,
+    output: str | None,
+    output_format: str,
+    markdown_language: str,
+    markdown_title: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Django/DRF views by semantic and route evidence, not filename conventions.
+
+    PATH: Directory or file to scan (defaults to current directory)
+
+    Examples:
+
+        \b
+        # Scan all eligible Python files for Django/DRF views
+        upcast scan-django-views ./myproject
+
+        \b
+        # Narrow the semantic scan to a selected source pattern
+        upcast scan-django-views ./myproject --include '**/api/*.py'
+
+        \b
+        # Save a JSON report
+        upcast scan-django-views ./myproject --format json --output views.json
+    """
+    try:
+        scanner = DjangoViewScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=output_format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
     except Exception as e:
         from upcast.common.cli import handle_scan_error
 

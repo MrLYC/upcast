@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 15 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 16 specialized scanners to analyze code without execution, extracting insights about Django models and views, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -29,6 +29,9 @@ upcast scan-logging /path/to/project
 
 # Analyze Django models
 upcast scan-django-models /path/to/django/project
+
+# Analyze Django/DRF views, routes, and bounded security evidence
+upcast scan-django-views /path/to/django/project
 
 # Scan Redis usage patterns
 upcast scan-redis-usage /path/to/django/project
@@ -74,7 +77,7 @@ By default, file discovery also respects the scanned target directory's `.gitign
 
 ## Scanners
 
-Upcast provides 15 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 16 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
 >
@@ -301,6 +304,16 @@ apiserver.paasng.paas_wl.apis.admin.urls:
 - `view_name`: Function or class name, including ViewSets (e.g., `UserDetailView`, `UserViewSet`)
 - Both fields are set to `null` when resolution fails (e.g., for include() patterns or dynamic views)
 - Resolution success rate typically exceeds 80% on real-world codebases
+
+#### scan-django-views
+
+Analyze Django/DRF views by framework semantics and URL/Router evidence rather than filename conventions. The report includes route references, ViewSet actions, direct model evidence, and separate authentication, authorization, CSRF, and raw custom-control signals.
+
+```bash
+upcast scan-django-views /path/to/django/project
+```
+
+> See the field reference and static-analysis boundaries in [docs/scanners/django-views.md](docs/scanners/django-views.md).
 
 #### scan-signals
 
@@ -1306,7 +1319,7 @@ Benefits:
 ## Key Features
 
 - **Static Analysis**: No code execution - safe for any codebase
-- **14 Specialized Scanners**: Comprehensive project analysis
+- **16 Specialized Scanners**: Comprehensive project analysis
 - **Advanced Type Inference**: Smart detection of types and patterns
 - **Powerful File Filtering**: Glob-based include/exclude patterns
 - **Multiple Output Formats**: YAML, JSON, and Markdown with multi-language support
@@ -1337,7 +1350,7 @@ upcast scan-http-requests . --format markdown
 ### Features
 
 - **Multi-Language Support**: Templates available in English (`en`) and Chinese (`zh`)
-- **Integrated with All Scanners**: Works with all 13 scanner commands
+- **Integrated with All Scanners**: Works with all 16 scanner commands
 - **Structured Output**: Consistent format with metadata, summary, and detailed results
 - **Readable Tables**: Field details presented in organized markdown tables
 - **Customizable**: Override output filename, language, and document title

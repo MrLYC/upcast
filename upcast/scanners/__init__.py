@@ -6,6 +6,7 @@ from upcast.scanners.concurrency import ConcurrencyScanner
 from upcast.scanners.django_models import DjangoModelScanner
 from upcast.scanners.django_settings import DjangoSettingsScanner
 from upcast.scanners.django_urls import DjangoUrlScanner
+from upcast.scanners.django_views import DjangoViewScanner
 from upcast.scanners.env_vars import EnvVarScanner
 from upcast.scanners.exceptions import ExceptionHandlerScanner
 from upcast.scanners.http_requests import HttpRequestsScanner
@@ -23,6 +24,7 @@ __all__ = [
     "DjangoModelScanner",
     "DjangoSettingsScanner",
     "DjangoUrlScanner",
+    "DjangoViewScanner",
     "EnvVarScanner",
     "ExceptionHandlerScanner",
     "HttpRequestsScanner",

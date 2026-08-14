@@ -23,6 +23,7 @@ from upcast.models.concurrency import ConcurrencyPatternOutput
 from upcast.models.django_models import DjangoModelOutput
 from upcast.models.django_settings import DjangoSettingsOutput
 from upcast.models.django_urls import DjangoUrlOutput
+from upcast.models.django_views import DjangoViewOutput
 from upcast.models.env_vars import EnvVarOutput
 from upcast.models.exceptions import ExceptionHandlerOutput
 from upcast.models.http_requests import HttpRequestOutput
@@ -47,6 +48,7 @@ MODEL_TEMPLATE_MAP = {
     ConcurrencyPatternOutput: "base.md.jinja2",
     DjangoSettingsOutput: "django_settings.md.jinja2",
     DjangoUrlOutput: "django_urls.md.jinja2",
+    DjangoViewOutput: "django_views.md.jinja2",
     ExceptionHandlerOutput: "exception_handlers.md.jinja2",
     PrometheusMetricOutput: "metrics.md.jinja2",
     RedisUsageOutput: "redis_usage.md.jinja2",
@@ -145,6 +147,7 @@ def render_to_markdown(
         "summary": output.summary,
         "results": output.results,
         "metadata": output.metadata,
+        "unresolved_route_references": getattr(output, "unresolved_route_references", []),
         **extra_context,
     }
 

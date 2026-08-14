@@ -212,6 +212,10 @@ def _get_markdown_title(scanner: BaseScanner, markdown_title: str | None) -> str
     if markdown_title is not None:
         return markdown_title
 
+    scanner_title = getattr(scanner, "markdown_title", None)
+    if isinstance(scanner_title, str) and scanner_title:
+        return scanner_title
+
     scanner_name = scanner.__class__.__name__.replace("Scanner", "")
     return f"{scanner_name} Analysis"
 

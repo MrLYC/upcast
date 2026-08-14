@@ -23,6 +23,7 @@ def test_main_help_lists_all_public_commands():
         "scan-exception-handlers",
         "scan-unit-tests",
         "scan-django-urls",
+        "scan-django-views",
         "scan-django-models",
         "scan-signals",
         "scan-django-settings",
