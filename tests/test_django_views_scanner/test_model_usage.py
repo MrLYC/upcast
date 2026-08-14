@@ -5,21 +5,21 @@ import astroid
 from upcast.common.django.view_model_usage import ModelModule, extract_class_model_usages
 
 
-MODELS_SOURCE = '''
+MODELS_SOURCE = """
 class Order:
     pass
-'''
+"""
 
-SERIALIZERS_SOURCE = '''
+SERIALIZERS_SOURCE = """
 from .models import Order
 
 
 class OrderSerializer:
     class Meta:
         model = Order
-'''
+"""
 
-VIEWS_SOURCE = '''
+VIEWS_SOURCE = """
 from .models import Order
 from .serializers import OrderSerializer
 
@@ -50,7 +50,7 @@ class DynamicOrdersView:
 
     def schema_call(self):
         return cls.input_class.schema()
-'''
+"""
 
 
 def test_model_usage_reports_only_direct_declarations_serializer_metadata_and_known_orm_operations():

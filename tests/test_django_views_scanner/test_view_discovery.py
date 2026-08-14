@@ -6,7 +6,7 @@ from upcast.common.django.view_discovery import discover_views
 from upcast.models.django_views import ResolutionStatus
 
 
-SOURCE = '''
+SOURCE = """
 from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -36,7 +36,7 @@ class MaybeViewSet(ViewSet):
 
 def helper():
     return None
-'''
+"""
 
 
 def test_discover_views_uses_framework_imports_and_preserves_partial_candidates():
@@ -61,23 +61,23 @@ def test_discover_views_uses_framework_imports_and_preserves_partial_candidates(
 def test_discover_views_follows_a_resolved_project_view_ancestor():
     """A project class inheriting a known framework view remains a confirmed view."""
     base_module = astroid.parse(
-        '''
+        """
 from django.views import View
 
 
 class ProjectBaseView(View):
     pass
-''',
+""",
         module_name="pkg.base_views",
     )
     child_module = astroid.parse(
-        '''
+        """
 from .base_views import ProjectBaseView
 
 
 class ReportsView(ProjectBaseView):
     pass
-''',
+""",
         module_name="pkg.views",
     )
     base_view = discover_views(base_module, file="pkg/base_views.py", module_name="pkg.base_views")[0]

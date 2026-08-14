@@ -9,33 +9,31 @@ from upcast.main import main
 
 
 def _create_django_views_project(tmp_project):
-    return tmp_project(
-        {
-            "app/views.py": '''
+    return tmp_project({
+        "app/views.py": """
 from rest_framework.decorators import api_view
 
 
 @api_view(["GET"])
 def health(request):
     return None
-''',
-            "app/other.py": '''
+""",
+        "app/other.py": """
 from rest_framework.decorators import api_view
 
 
 @api_view(["GET"])
 def ignored_by_include(request):
     return None
-''',
-            "app/urls.py": '''
+""",
+        "app/urls.py": """
 from django.urls import path
 from .views import health
 
 urlpatterns = [path("health/", health)]
 urlpatterns.append(path("dynamic/", build_callback()))
-''',
-        }
-    )
+""",
+    })
 
 
 def test_scan_django_views_outputs_yaml(tmp_project):

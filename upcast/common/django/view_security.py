@@ -163,7 +163,9 @@ def _framework_actions(
     evidence = _evidence(
         file=file,
         node=base_node,
-        kind="framework_action_contract" if _viewset_action_contract(class_node, bindings) else "inherited_action_contract",
+        kind="framework_action_contract"
+        if _viewset_action_contract(class_node, bindings)
+        else "inherited_action_contract",
         status=ResolutionStatus.CONFIRMED,
         qualified_name=_resolve_expression_name(base_node, bindings),
     )
@@ -198,10 +200,7 @@ def _viewset_action_contract(
     class_node: nodes.ClassDef,
     bindings: dict[str, str],
 ) -> list[tuple[str, list[str], bool]] | None:
-    base_names = {
-        _resolve_expression_name(base_node, bindings)
-        for base_node in class_node.bases
-    }
+    base_names = {_resolve_expression_name(base_node, bindings) for base_node in class_node.bases}
     if "rest_framework.viewsets.ModelViewSet" in base_names:
         return _MODEL_VIEWSET_ACTIONS
     if "rest_framework.viewsets.ReadOnlyModelViewSet" in base_names:
@@ -480,7 +479,11 @@ def _resolve_decorator_name(node: nodes.NodeNG, bindings: dict[str, str]) -> str
 
 
 def _decorator_status(node: nodes.Call, bindings: dict[str, str], expected_name: str) -> ResolutionStatus:
-    return ResolutionStatus.CONFIRMED if _resolve_decorator_name(node, bindings) == expected_name else ResolutionStatus.PARTIAL
+    return (
+        ResolutionStatus.CONFIRMED
+        if _resolve_decorator_name(node, bindings) == expected_name
+        else ResolutionStatus.PARTIAL
+    )
 
 
 def _collect_import_bindings(module: nodes.Module, module_name: str) -> dict[str, str]:

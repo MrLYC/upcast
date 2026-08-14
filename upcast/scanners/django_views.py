@@ -292,10 +292,14 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
             module_name=symbol.context.module_name,
             modules=model_modules,
         )
-        view.model_usages = _merge_model_usages(inherited_view.model_usages if inherited_view else [], local_model_usages)
+        view.model_usages = _merge_model_usages(
+            inherited_view.model_usages if inherited_view else [], local_model_usages
+        )
         methods = {method.name: method for method in class_node.body if isinstance(method, nodes.FunctionDef)}
         for action in actions:
-            action.security = resolve_permission_definitions(apply_drf_defaults(action.security, defaults), permission_modules)
+            action.security = resolve_permission_definitions(
+                apply_drf_defaults(action.security, defaults), permission_modules
+            )
             action_node = methods.get(action.name)
             if action.origin == "decorator" and action_node is not None:
                 action.model_usages = extract_function_model_usages(

@@ -122,7 +122,9 @@ def _declared_router_types(
 ) -> dict[str, str]:
     router_types: dict[str, str] = {}
     for context in contexts:
-        for local_name, router_type in _direct_router_types(context.module, bindings_by_module[context.module_name]).items():
+        for local_name, router_type in _direct_router_types(
+            context.module, bindings_by_module[context.module_name]
+        ).items():
             router_types[f"{context.module_name}.{local_name}"] = router_type
     return router_types
 
@@ -216,7 +218,9 @@ def _find_router_mounts(
             )
 
     for assign_node in context.module.nodes_of_class(nodes.Assign):
-        if not any(isinstance(target, nodes.AssignName) and target.name == "urlpatterns" for target in assign_node.targets):
+        if not any(
+            isinstance(target, nodes.AssignName) and target.name == "urlpatterns" for target in assign_node.targets
+        ):
             continue
         router_name = _router_name_from_urls_attribute(assign_node.value)
         router = routers.get(router_name) if router_name else None
@@ -309,11 +313,7 @@ def _is_router_register_call(call_node: nodes.Call) -> bool:
 
 
 def _router_name_from_urls_attribute(node: nodes.NodeNG) -> str | None:
-    if (
-        isinstance(node, nodes.Attribute)
-        and node.attrname == "urls"
-        and isinstance(node.expr, nodes.Name)
-    ):
+    if isinstance(node, nodes.Attribute) and node.attrname == "urls" and isinstance(node.expr, nodes.Name):
         return node.expr.name
     return None
 

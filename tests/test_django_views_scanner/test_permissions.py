@@ -12,12 +12,12 @@ from upcast.common.django.view_security import analyze_view_security
 from upcast.models.django_views import ResolutionStatus
 
 
-SETTINGS_SOURCE = '''
+SETTINGS_SOURCE = """
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
-'''
+"""
 
 PERMISSIONS_SOURCE = '''
 from rest_framework.permissions import BasePermission
@@ -33,7 +33,7 @@ class OwnerPermission(BasePermission):
         return obj.owner == request.user
 '''
 
-VIEWS_SOURCE = '''
+VIEWS_SOURCE = """
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from .permissions import OwnerPermission
@@ -49,7 +49,7 @@ class DefaultedViewSet(ModelViewSet):
 
 class RestrictedViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated & OwnerPermission]
-'''
+"""
 
 
 def test_permission_resolution_keeps_expression_shape_and_follows_custom_permission_once():
@@ -113,7 +113,13 @@ def test_permission_resolution_keeps_expression_shape_and_follows_custom_permiss
         "def has_object_permission(self, request, view, obj):\n    return obj.owner == request.user",
     ]
     assert resolved_defaulted.authorization.state == "default"
-    assert resolved_defaulted.authorization.effective_evidence[0].qualified_name == "rest_framework.permissions.IsAuthenticated"
+    assert (
+        resolved_defaulted.authorization.effective_evidence[0].qualified_name
+        == "rest_framework.permissions.IsAuthenticated"
+    )
     assert resolved_defaulted.authentication.state == "default"
-    assert resolved_defaulted.authentication.effective_evidence[0].qualified_name == "rest_framework.authentication.TokenAuthentication"
+    assert (
+        resolved_defaulted.authentication.effective_evidence[0].qualified_name
+        == "rest_framework.authentication.TokenAuthentication"
+    )
     assert resolved_restricted.authorization.permission_expressions[0].operator == "&"

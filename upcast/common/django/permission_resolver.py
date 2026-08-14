@@ -236,7 +236,9 @@ def _permission_definition(
     return PermissionDefinition(
         qualified_name=qualified_name,
         status=ResolutionStatus.CONFIRMED,
-        definition=_evidence(context.file, class_node, "permission_definition", ResolutionStatus.CONFIRMED, qualified_name),
+        definition=_evidence(
+            context.file, class_node, "permission_definition", ResolutionStatus.CONFIRMED, qualified_name
+        ),
         bases=bases,
         check_methods=check_methods,
         docstring=_docstring(class_node),

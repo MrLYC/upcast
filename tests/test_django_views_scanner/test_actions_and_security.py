@@ -6,7 +6,7 @@ from upcast.common.django.view_security import analyze_function_security, analyz
 from upcast.models.django_views import ResolutionStatus
 
 
-SOURCE = '''
+SOURCE = """
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_not_required
 from django.views.decorators.csrf import csrf_exempt
@@ -42,7 +42,7 @@ def dashboard(request):
 @login_not_required
 def public_status(request):
     return None
-'''
+"""
 
 
 def test_viewset_actions_keep_overrides_and_unknown_decorators_as_evidence():

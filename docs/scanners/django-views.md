@@ -63,9 +63,9 @@ results:
         basename: order
         router_type: DefaultRouter
     security:
-      authentication: {state: unknown}
-      authorization: {state: configured}
-      csrf: {state: unknown}
+      authentication: { state: unknown }
+      authorization: { state: configured }
+      csrf: { state: unknown }
       raw_signals: []
     model_usages:
       - model: myapp.models.Order
@@ -80,17 +80,17 @@ results:
 
 ### 核心字段
 
-| 字段 | 含义 |
-| --- | --- |
-| `recognition` | 视图识别依据及其解析状态。 |
-| `route_refs` | 直接 URL 或 DRF Router 的反向引用；保留注册和挂载位置。 |
+| 字段                          | 含义                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `recognition`                 | 视图识别依据及其解析状态。                                               |
+| `route_refs`                  | 直接 URL 或 DRF Router 的反向引用；保留注册和挂载位置。                  |
 | `unresolved_route_references` | 无法解析为规范化视图 ID 的直接路由目标；保留原始表达式但不伪造视图记录。 |
-| `security.authentication` | 认证类、`login_required` 或默认认证的静态证据。 |
-| `security.authorization` | 权限类、布尔权限表达式和一跳权限定义的静态证据。 |
-| `security.csrf` | `csrf_exempt`/`csrf_protect` 等 CSRF 信号。 |
-| `security.raw_signals` | 无法按通用框架规则分类的装饰器或控制表达式。 |
-| `model_usages` | `queryset`、`model`、serializer `Meta.model` 和已知直接 ORM 调用。 |
-| `actions` | 显式 `@action` 与安全派生的标准 ViewSet CRUD action。 |
+| `security.authentication`     | 认证类、`login_required` 或默认认证的静态证据。                          |
+| `security.authorization`      | 权限类、布尔权限表达式和一跳权限定义的静态证据。                         |
+| `security.csrf`               | `csrf_exempt`/`csrf_protect` 等 CSRF 信号。                              |
+| `security.raw_signals`        | 无法按通用框架规则分类的装饰器或控制表达式。                             |
+| `model_usages`                | `queryset`、`model`、serializer `Meta.model` 和已知直接 ORM 调用。       |
+| `actions`                     | 显式 `@action` 与安全派生的标准 ViewSet CRUD action。                    |
 
 ## 证据状态与边界
 

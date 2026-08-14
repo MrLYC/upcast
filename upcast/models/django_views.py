@@ -65,7 +65,9 @@ class PermissionDefinition(BaseModel):
     status: ResolutionStatus = Field(description="Whether the definition was found in scanned source")
     definition: SourceEvidence = Field(description="Permission class or function definition evidence")
     bases: list[SourceEvidence] = Field(default_factory=list, description="Direct inheritance evidence")
-    check_methods: list[SourceEvidence] = Field(default_factory=list, description="Direct permission-check method evidence")
+    check_methods: list[SourceEvidence] = Field(
+        default_factory=list, description="Direct permission-check method evidence"
+    )
     docstring: str | None = Field(None, description="Direct permission definition docstring")
 
 

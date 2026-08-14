@@ -245,8 +245,7 @@ class CSTASTMapper:
         """
         if not _AST_GREP_AVAILABLE:
             raise ImportError(
-                "CSTASTMapper requires the optional dependency 'ast-grep-py'. "
-                "Install it with: pip install ast-grep-py"
+                "CSTASTMapper requires the optional dependency 'ast-grep-py'. Install it with: pip install ast-grep-py"
             )
 
         self.sg_root = sg_root
@@ -321,9 +320,12 @@ class CSTASTMapper:
                 # 快速剪枝：结束行不够大，直接跳过
                 if (ast_rng[2], ast_rng[3]) < inner_end:
                     continue
-                if (ast_rng[0], ast_rng[1]) <= inner_start and (ast_rng[2], ast_rng[3]) >= inner_end:
-                    if best is None or _range_size(ast_rng) < _range_size(best[0]):
-                        best = (ast_rng, ast_node)
+                if (
+                    (ast_rng[0], ast_rng[1]) <= inner_start
+                    and (ast_rng[2], ast_rng[3]) >= inner_end
+                    and (best is None or _range_size(ast_rng) < _range_size(best[0]))
+                ):
+                    best = (ast_rng, ast_node)
         return best[1] if best else None
 
     def _find_min_containing_ts(self, ast_rng: _Range) -> SgNode | None:
@@ -344,9 +346,12 @@ class CSTASTMapper:
             for ts_rng, ts_node in entries:
                 if (ts_rng[2], ts_rng[3]) < inner_end:
                     continue
-                if (ts_rng[0], ts_rng[1]) <= inner_start and (ts_rng[2], ts_rng[3]) >= inner_end:
-                    if best is None or _range_size(ts_rng) < _range_size(best[0]):
-                        best = (ts_rng, ts_node)
+                if (
+                    (ts_rng[0], ts_rng[1]) <= inner_start
+                    and (ts_rng[2], ts_rng[3]) >= inner_end
+                    and (best is None or _range_size(ts_rng) < _range_size(best[0]))
+                ):
+                    best = (ts_rng, ts_node)
         return best[1] if best else None
 
     # ============================================================
@@ -499,9 +504,7 @@ class CSTASTMapper:
                 result[var] = self.cst_to_ast(captured)
         return result
 
-    def cst_to_ast_by_multiple_matches(
-        self, sg_node: SgNode, *var_names: str
-    ) -> dict[str, list[nodes.NodeNG]]:
+    def cst_to_ast_by_multiple_matches(self, sg_node: SgNode, *var_names: str) -> dict[str, list[nodes.NodeNG]]:
         """从 ast-grep 匹配节点中提取多捕获组（``$$$VAR``）并映射为 astroid 节点列表。
 
         适用于 ast-grep 模式中使用 ``$$$BASES``、``$$$PARAMS`` 等多节点捕获变量的场景。

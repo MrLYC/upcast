@@ -8,11 +8,11 @@ Upcast 提供 16 个专业的静态代码分析扫描器，用于分析 Python �
 
 ### Django 框架扫描器
 
-| 扫描器          | 命令                   | 说明                                     | 文档                                              |
-| --------------- | ---------------------- | ---------------------------------------- | ------------------------------------------------- |
-| Django Models   | `scan-django-models`   | 分析 Django 模型定义、字段、关系和元数据 | [django-models.md](scanners/django-models.md)     |
-| Django Settings | `scan-django-settings` | 扫描 Django 配置定义和使用               | [django-settings.md](scanners/django-settings.md) |
-| Django URLs     | `scan-django-urls`     | 分析 Django URL 配置和路由               | [django-urls.md](scanners/django-urls.md)         |
+| 扫描器          | 命令                   | 说明                                         | 文档                                              |
+| --------------- | ---------------------- | -------------------------------------------- | ------------------------------------------------- |
+| Django Models   | `scan-django-models`   | 分析 Django 模型定义、字段、关系和元数据     | [django-models.md](scanners/django-models.md)     |
+| Django Settings | `scan-django-settings` | 扫描 Django 配置定义和使用                   | [django-settings.md](scanners/django-settings.md) |
+| Django URLs     | `scan-django-urls`     | 分析 Django URL 配置和路由                   | [django-urls.md](scanners/django-urls.md)         |
 | Django Views    | `scan-django-views`    | 分析 Django/DRF 视图、action、路由与安全证据 | [django-views.md](scanners/django-views.md)       |
 
 ### 通用代码分析扫描器

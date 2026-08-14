@@ -108,7 +108,9 @@ def _discover_class_view(
         if status is ResolutionStatus.UNKNOWN:
             continue
 
-        resolved_kind = kind or (inherited_view.kind if inherited_view else _kind_from_simple_base(_simple_name(base_node)))
+        resolved_kind = kind or (
+            inherited_view.kind if inherited_view else _kind_from_simple_base(_simple_name(base_node))
+        )
         evidence = _evidence(
             file=file,
             node=base_node,
