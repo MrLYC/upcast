@@ -2,7 +2,251 @@ metadata:
   scanner_name: concurrency-patterns
 results:
   asyncio: {}
-  celery: {}
+  celery:
+    celery_shared_task:
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/accessories/log/tasks.py
+      function: setup_module_log_model
+      line: 24
+      pattern: celery_shared_task
+      statement: def setup_module_log_model
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/bk_plugins/bk_plugins/tasks.py
+      function: archive_prod_env
+      line: 32
+      pattern: celery_shared_task
+      statement: def archive_prod_env
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/bk_plugins/pluginscenter/tasks.py
+      function: poll_stage_status
+      line: 45
+      pattern: celery_shared_task
+      statement: def poll_stage_status
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/infras/iam/tasks.py
+      function: add_monitoring_space_permission
+      line: 24
+      pattern: celery_shared_task
+      statement: def add_monitoring_space_permission
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/tasks.py
+      function: create_rules
+      line: 28
+      pattern: celery_shared_task
+      statement: def create_rules
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/tasks.py
+      function: update_notice_group
+      line: 40
+      pattern: celery_shared_task
+      statement: def update_notice_group
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/applications/tasks.py
+      function: sync_developers_to_sentry
+      line: 33
+      pattern: celery_shared_task
+      statement: def sync_developers_to_sentry
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/applications/tasks.py
+      function: cal_app_resource_quotas
+      line: 60
+      pattern: celery_shared_task
+      statement: def cal_app_resource_quotas
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/archive/tasks.py
+      function: archive_related_resources
+      line: 27
+      pattern: celery_shared_task
+      statement: def archive_related_resources
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/bg_build/bg_build.py
+      function: start_bg_build_process
+      line: 45
+      pattern: celery_shared_task
+      statement: def start_bg_build_process
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+      function: execute_bg_command
+      line: 57
+      pattern: celery_shared_task
+      statement: def execute_bg_command
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+      function: exec_bkapp_hook
+      line: 81
+      pattern: celery_shared_task
+      statement: def exec_bkapp_hook
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/building.py
+      function: start_build
+      line: 84
+      pattern: celery_shared_task
+      statement: def start_build
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/building.py
+      function: start_build_error_callback
+      line: 100
+      pattern: celery_shared_task
+      statement: def start_build_error_callback
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/engine/deploy/image_release.py
+      function: release_without_build
+      line: 51
+      pattern: celery_shared_task
+      statement: def release_without_build
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/evaluation/tasks.py
+      function: collect_and_update_app_operation_reports
+      line: 127
+      pattern: celery_shared_task
+      statement: def collect_and_update_app_operation_reports
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/evaluation/tasks.py
+      function: send_idle_email_to_app_developers
+      line: 168
+      pattern: celery_shared_task
+      statement: def send_idle_email_to_app_developers
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: migrate_with_rollback_on_failure
+      line: 40
+      pattern: celery_shared_task
+      statement: def migrate_with_rollback_on_failure
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: rollback_migration_process
+      line: 61
+      pattern: celery_shared_task
+      statement: def rollback_migration_process
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: confirm_with_rollback_on_failure
+      line: 77
+      pattern: celery_shared_task
+      statement: def confirm_with_rollback_on_failure
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: migrate_default_to_cnative
+      line: 100
+      pattern: celery_shared_task
+      statement: def migrate_default_to_cnative
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: rollback_cnative_to_default
+      line: 117
+      pattern: celery_shared_task
+      statement: def rollback_cnative_to_default
+    - api_call: null
+      block: null
+      class_name: null
+      column: 0
+      details: null
+      file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+      function: confirm_migration
+      line: 134
+      pattern: celery_shared_task
+      statement: def confirm_migration
+    delay:
+    - api_call: delay
+      block: null
+      class_name: null
+      column: 4
+      details:
+        task: execute_bg_command
+      file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+      function: exec_command
+      line: 53
+      pattern: celery_delay
+      statement: execute_bg_command.delay(cmd_obj.uuid, stream_channel_id=stream_channel_id,
+        extra_envs=extra_envs or {})
   multiprocessing:
     process_creation:
     - api_call: null
@@ -54,8 +298,9 @@ results:
       statement: ThreadPoolExecutor()
 summary:
   by_category:
+    celery: 24
     multiprocessing: 1
     threading: 3
-  files_scanned: 4
-  scan_duration_ms: 21512
-  total_count: 4
+  files_scanned: 17
+  scan_duration_ms: 33538
+  total_count: 28

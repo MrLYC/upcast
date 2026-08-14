@@ -45,7 +45,9 @@ results:
       json_body: null
       line: 128
       method: GET
-      params: null
+      params:
+        end_time: null
+        start_time: null
       session_based: false
       statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
         ''end_time'': end_time.isoformat()}, auth=self.auth)'
@@ -57,7 +59,13 @@ results:
       json_body: null
       line: 160
       method: GET
-      params: null
+      params:
+        end_time: null
+        interval: null
+        limit: null
+        offset: null
+        ordering: null
+        start_time: null
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
@@ -68,7 +76,11 @@ results:
       json_body: null
       line: 185
       method: GET
-      params: null
+      params:
+        end_time: null
+        fill_missing_data: 1
+        interval: null
+        start_time: null
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
@@ -90,7 +102,9 @@ results:
       json_body: null
       line: 212
       method: GET
-      params: null
+      params:
+        end_time: null
+        start_time: null
       session_based: false
       statement: 'requests.get(self.base_url + url, params={''start_time'': start_time.isoformat(),
         ''end_time'': end_time.isoformat()}, auth=self.auth)'
@@ -102,7 +116,13 @@ results:
       json_body: null
       line: 240
       method: GET
-      params: null
+      params:
+        end_time: null
+        interval: null
+        limit: null
+        offset: null
+        ordering: null
+        start_time: null
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
@@ -113,7 +133,13 @@ results:
       json_body: null
       line: 271
       method: GET
-      params: null
+      params:
+        end_time: null
+        interval: null
+        limit: null
+        offset: null
+        ordering: null
+        start_time: null
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
@@ -124,7 +150,11 @@ results:
       json_body: null
       line: 296
       method: GET
-      params: null
+      params:
+        end_time: null
+        fill_missing_data: 1
+        interval: null
+        start_time: null
       session_based: false
       statement: requests.get(self.base_url + url, params=params, auth=self.auth)
       timeout: null
@@ -405,7 +435,11 @@ results:
       json_body: null
       line: 261
       method: POST
-      params: null
+      params:
+        app_code: null
+        env_name: null
+        grant_type: refresh_token
+        refresh_token: null
       session_based: false
       statement: requests.post(url=self.refresh_url, params=dict(app_code=self.app_code,
         env_name=self.env_name, grant_type='refresh_token', refresh_token=refresh_token),
@@ -614,7 +648,7 @@ results:
       timeout: null
   '.../api/v1/apps/.../access-keys/...':
     library: requests
-    method: DELETE
+    method: PUT
     usages:
     - file: apiserver/paasng/paasng/infras/oauth2/api.py
       form: null
@@ -744,8 +778,8 @@ results:
 summary:
   by_library:
     requests: 56
-  files_scanned: 14
-  scan_duration_ms: 20494
+  files_scanned: 2368
+  scan_duration_ms: 61246
   total_count: 56
   total_requests: 56
   unique_urls: 8
