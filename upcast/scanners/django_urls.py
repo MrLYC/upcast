@@ -70,7 +70,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         for file_path in files:
             patterns = self._scan_file(file_path, scan_root)
             if patterns:
-                module_path = self._get_module_path(file_path, path)
+                module_path = self._get_module_path(file_path, scan_root)
                 url_modules[module_path] = UrlModule(urlpatterns=patterns)
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -98,14 +98,89 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             url_patterns = self._extract_url_patterns(node.value, module, file_path, scan_root)
             patterns.extend(url_patterns)
 
+        patterns.extend(self._extract_augmented_url_patterns(module, file_path, scan_root))
+        patterns.extend(self._extract_mutated_url_patterns(module, file_path, scan_root))
+
         if self.verbose and patterns:
             logger.info(f"Found {len(patterns)} URL patterns in {file_path}")
 
         return patterns
 
+    def _extract_mutated_url_patterns(
+        self, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern]:
+        """Extract routes added through ``urlpatterns.append/extend``.
+
+        Only modules with a real assignment or augmented assignment to
+        ``urlpatterns`` are considered.  This avoids treating local helper
+        variables with the same name as Django URLconfs.
+        """
+        has_urlpatterns_assignment = any(
+            self._is_urlpatterns_assignment(node, module)
+            for node in module.nodes_of_class((nodes.Assign, nodes.AugAssign))
+        )
+        if not has_urlpatterns_assignment:
+            return []
+
+        patterns: list[UrlPattern] = []
+        for call in module.nodes_of_class(nodes.Call):
+            if call.frame() is not module:
+                continue
+            if not isinstance(call.func, nodes.Attribute):
+                continue
+            if not isinstance(call.func.expr, nodes.Name) or call.func.expr.name != "urlpatterns":
+                continue
+            if not call.args or call.func.attrname not in {"append", "extend"}:
+                continue
+            elements = call.args if call.func.attrname == "append" else self._sequence_elements(call.args[0])
+            for element in elements:
+                patterns.extend(self._parse_route_element(element, module, file_path, scan_root))
+        return patterns
+
+    def _sequence_elements(self, node: nodes.NodeNG) -> list[nodes.NodeNG]:
+        if isinstance(node, (nodes.List, nodes.Tuple, nodes.Set)):
+            return list(node.elts)
+        return [node]
+
+    def _extract_augmented_url_patterns(
+        self, module: nodes.Module, file_path: Path, scan_root: Path
+    ) -> list[UrlPattern]:
+        """Extract concrete routes appended to ``urlpatterns``.
+
+        Django projects commonly initialize ``urlpatterns`` with an empty
+        list and then append ``router.urls``.  The original list-only parser
+        otherwise discarded those router registrations entirely.
+        """
+        patterns: list[UrlPattern] = []
+        for node in module.nodes_of_class(nodes.AugAssign):
+            if not self._is_urlpatterns_assignment(node, module):
+                continue
+            if node.op != "+=":
+                continue
+            if isinstance(node.value, (nodes.List, nodes.Tuple)):
+                for element in node.value.elts:
+                    patterns.extend(self._parse_route_element(element, module, file_path, scan_root))
+                continue
+            router_name = self._router_name(node.value)
+            if router_name is not None:
+                patterns.extend(
+                    self._build_router_registration_patterns(
+                        parse_router_registrations(
+                            module, router_name, self._get_module_path(file_path, scan_root)
+                        ),
+                        base_pattern=None,
+                        name=None,
+                        file_path=file_path,
+                        scan_root=scan_root,
+                    )
+                )
+        return patterns
+
     def _iter_candidate_urlpattern_assignments(self, module: nodes.Module, file_path: Path) -> list[nodes.Assign]:
         """Discover urlpatterns assignments via hybrid pipeline with AST fallback."""
-        fallback_nodes = [node for node in module.nodes_of_class(nodes.Assign) if self._is_urlpatterns_assignment(node)]
+        fallback_nodes = [
+            node for node in module.nodes_of_class(nodes.Assign) if self._is_urlpatterns_assignment(node, module)
+        ]
 
         try:
             source = file_path.read_text(encoding="utf-8")
@@ -141,7 +216,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             node = candidate.captures.get("self")
             if not isinstance(node, nodes.Assign):
                 continue
-            if not self._is_urlpatterns_assignment(node):
+            if not self._is_urlpatterns_assignment(node, module):
                 continue
 
             node_id = id(node)
@@ -153,7 +228,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         return selected_nodes or fallback_nodes
 
-    def _is_urlpatterns_assignment(self, node: nodes.Assign) -> bool:
+    def _is_urlpatterns_assignment(
+        self, node: nodes.Assign | nodes.AugAssign, module: nodes.Module | None = None
+    ) -> bool:
         """Check if an assignment is to 'urlpatterns'.
 
         Args:
@@ -162,7 +239,10 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         Returns:
             True if this assigns to 'urlpatterns'
         """
-        return any(isinstance(target, nodes.AssignName) and target.name == "urlpatterns" for target in node.targets)
+        if module is not None and node.frame() is not module:
+            return False
+        target = node.targets[0] if isinstance(node, nodes.Assign) and node.targets else node.target
+        return isinstance(target, nodes.AssignName) and target.name == "urlpatterns"
 
     def _extract_url_patterns(
         self, value_node: nodes.NodeNG, module: nodes.Module, file_path: Path, scan_root: Path
@@ -203,13 +283,33 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             )
             return patterns
 
+        if isinstance(value_node, nodes.BinOp) and value_node.op == "+":
+            return self._extract_url_patterns(value_node.left, module, file_path, scan_root) + self._extract_url_patterns(
+                value_node.right, module, file_path, scan_root
+            )
+
         if isinstance(value_node, (nodes.List, nodes.Tuple)):
             # Static list/tuple of patterns
             for element in value_node.elts:
                 pattern_list = self._parse_route_element(element, module, file_path, scan_root)  # type: ignore[arg-type]
                 patterns.extend(pattern_list)
 
+        router_name = self._router_name(value_node)
+        if router_name is not None:
+            return self._build_router_registration_patterns(
+                parse_router_registrations(module, router_name, self._get_module_path(file_path, scan_root)),
+                base_pattern=None,
+                name=None,
+                file_path=file_path,
+                scan_root=scan_root,
+            )
+
         return patterns
+
+    def _router_name(self, node: nodes.NodeNG) -> str | None:
+        if isinstance(node, nodes.Attribute) and node.attrname == "urls" and isinstance(node.expr, nodes.Name):
+            return node.expr.name
+        return None
 
     def _is_dynamic_urlpatterns(self, node: nodes.NodeNG) -> bool:
         """Check if urlpatterns is dynamically generated.
@@ -484,16 +584,35 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         include_module = pattern.include_module or ""
         router_name = include_module[8:-1]  # Remove "<router:" and ">"
 
-        registrations = parse_router_registrations(module, router_name)
-
+        registrations = parse_router_registrations(
+            module, router_name, self._get_module_path(file_path, scan_root)
+        )
         if not registrations:
+            pattern.include_module = f"{router_name}.urls"
             return [pattern]
+        return self._build_router_registration_patterns(
+            registrations,
+            base_pattern=pattern.pattern,
+            name=pattern.name,
+            file_path=file_path,
+            scan_root=scan_root,
+        )
 
-        base_pattern = pattern.pattern or ""
+    def _build_router_registration_patterns(
+        self,
+        registrations: list[dict[str, object]],
+        *,
+        base_pattern: str | None,
+        name: str | None,
+        file_path: Path,
+        scan_root: Path,
+    ) -> list[UrlPattern]:
+        if not registrations:
+            return []
+
         expanded: list[UrlPattern] = []
-
-        for reg in registrations:
-            reg_pattern = reg.get("pattern", "")
+        for registration in registrations:
+            reg_pattern = str(registration.get("pattern") or "")
             if base_pattern and base_pattern != "<root>":
                 base = base_pattern.rstrip("/")
                 reg_part = reg_pattern.lstrip("/") if reg_pattern else ""
@@ -505,25 +624,24 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                 UrlPattern(
                     type="router_registration",
                     pattern=full_pattern or "<root>",
-                    view_module=reg.get("viewset_module"),
-                    view_name=reg.get("viewset_name"),
+                    view_module=registration.get("viewset_module"),
+                    view_name=registration.get("viewset_name"),
                     include_module=None,
                     namespace=None,
-                    name=pattern.name,
+                    name=name,
                     converters=[],
                     named_groups=[],
-                    basename=reg.get("basename"),
-                    router_type=reg.get("router_type"),
+                    basename=registration.get("basename"),
+                    router_type=registration.get("router_type"),
                     is_partial=False,
                     is_conditional=False,
                     description=None,
                     note=None,
                     file=self._get_source_file(file_path, scan_root),
-                    line=reg.get("line"),
+                    line=registration.get("line"),
                     full_path=full_pattern or "<root>",
                 )
             )
-
         return expanded
 
     def _expand_inline_include(
@@ -550,9 +668,8 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         # Preserve existing tuple(module, namespace) include handling.
         if (
             isinstance(first_arg, nodes.Tuple)
-            and first_arg.elts
-            and isinstance(first_arg.elts[0], nodes.Const)
-            and isinstance(first_arg.elts[0].value, str)
+            and len(first_arg.elts) >= 2
+            and isinstance(first_arg.elts[0], (nodes.Const, nodes.JoinedStr))
         ):
             return None
 

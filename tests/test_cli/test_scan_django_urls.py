@@ -71,7 +71,7 @@ def test_scan_django_urls_writes_json_file(tmp_project, tmp_path):
 
 
 def test_scan_django_urls_honors_include_pattern(tmp_project):
-    """The include option currently expands matching URL file patterns without narrowing defaults."""
+    """The include option narrows URL files to the requested pattern."""
     project_dir = _create_django_urls_project(tmp_project)
     runner = CliRunner()
 
@@ -80,10 +80,39 @@ def test_scan_django_urls_honors_include_pattern(tmp_project):
     assert result.exit_code == 0
 
     output = yaml.safe_load(result.output)
-    assert output["summary"]["total_modules"] == 2
-    assert output["summary"]["total_patterns"] == 2
+    assert output["summary"]["total_modules"] == 1
+    assert output["summary"]["total_patterns"] == 1
     assert "ignored_urls" in output["results"]
-    assert "myapp.urls" in output["results"]
+    assert "myapp.urls" not in output["results"]
+
+
+def test_scan_django_urls_forwards_file_filters_to_common_cli(tmp_project, monkeypatch):
+    project_dir = _create_django_urls_project(tmp_project)
+    captured = {}
+
+    def fake_run_scanner_cli(**kwargs):
+        captured.update(kwargs)
+
+    monkeypatch.setattr("upcast.main.run_scanner_cli", fake_run_scanner_cli)
+    runner = CliRunner()
+
+    result = runner.invoke(
+        main,
+        [
+            "scan-django-urls",
+            str(project_dir),
+            "--include",
+            "**/*_urls.py",
+            "--exclude",
+            "ignored/**",
+            "--no-default-excludes",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert captured["include"] == ("**/*_urls.py",)
+    assert captured["exclude"] == ("ignored/**",)
+    assert captured["no_default_excludes"] is True
 
 
 def test_scan_django_urls_rejects_empty_project(tmp_path):

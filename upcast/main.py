@@ -1,9 +1,11 @@
 import sys
+from pathlib import Path
 from typing import Optional
 
 import click
 
 from upcast.common.cli import run_scanner_cli
+from upcast.reporting.django_report import build_django_report
 from upcast.scanners import (
     BlockingOperationsScanner,
     ComplexityScanner,
@@ -11,6 +13,7 @@ from upcast.scanners import (
     DjangoModelScanner,
     DjangoSettingsScanner,
     DjangoUrlScanner,
+    DjangoViewScanner,
     EnvVarScanner,
     ExceptionHandlerScanner,
     HttpRequestsScanner,
@@ -620,6 +623,9 @@ def scan_unit_tests_cmd(
             path=path,
             output=output,
             format=output_format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
             verbose=verbose,
             markdown_title=markdown_title,
             markdown_language=markdown_language,
@@ -700,6 +706,9 @@ def scan_django_urls_cmd(
             path=path,
             output=output,
             format=output_format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
             verbose=verbose,
             markdown_title=markdown_title,
             markdown_language=markdown_language,
@@ -709,6 +718,103 @@ def scan_django_urls_cmd(
         from upcast.common.cli import handle_scan_error
 
         handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="scan-django-views")
+@click.option("-o", "--output", type=click.Path(), help="Output file path (YAML or JSON)")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
+    default="yaml",
+    help="Output format (default: yaml)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option("--markdown-title", type=str, help="Title for markdown output")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
+@click.option("--include", multiple=True, help="File patterns to include")
+@click.option("--exclude", multiple=True, help="File patterns to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".")
+def scan_django_views_cmd(
+    path: str,
+    output: str | None,
+    output_format: str,
+    markdown_language: str,
+    markdown_title: Optional[str],
+    verbose: bool,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Python source for Django and Django REST Framework views."""
+    try:
+        scanner = DjangoViewScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=output_format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
+
+
+@main.command(name="merge-django-report")
+@click.option("--urls", "urls_file", required=True, type=click.Path(exists=True, dir_okay=False), help="scan-django-urls YAML")
+@click.option("--views", "views_file", required=True, type=click.Path(exists=True, dir_okay=False), help="scan-django-views YAML")
+@click.option("-o", "--output", required=True, type=click.Path(), help="Combined CSV output")
+@click.option(
+    "--verification-output",
+    type=click.Path(),
+    help="Source verification YAML (defaults to <output>.verification.yaml)",
+)
+@click.argument("root", type=click.Path(exists=True, file_okay=False))
+def merge_django_report_cmd(
+    urls_file: str,
+    views_file: str,
+    output: str,
+    verification_output: str | None,
+    root: str,
+) -> None:
+    """Merge Django URL/view YAML and verify every report row against source."""
+    csv_path = Path(output)
+    verification_path = (
+        Path(verification_output)
+        if verification_output
+        else csv_path.with_suffix(csv_path.suffix + ".verification.yaml")
+    )
+    summary = build_django_report(
+        Path(root),
+        Path(urls_file),
+        Path(views_file),
+        csv_path,
+        verification_path,
+    )
+    click.echo(f"CSV written to: {csv_path}")
+    click.echo(f"Verification written to: {verification_path}")
+    click.echo(
+        "Summary: "
+        f"{summary['rows']} rows, {summary['mismatches']} mismatches, "
+        f"{summary['unresolved']} unresolved"
+    )
 
 
 @main.command(name="scan-django-models")

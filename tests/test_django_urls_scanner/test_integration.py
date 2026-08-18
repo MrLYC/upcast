@@ -73,6 +73,7 @@ def some_function():
         assert output.summary.total_patterns == 1
         assert output.summary.total_modules == 1
         assert len(output.results) == 1
+        assert next(iter(output.results)) == "urls"
 
         # Get the first module
         module_name = list(output.results.keys())[0]

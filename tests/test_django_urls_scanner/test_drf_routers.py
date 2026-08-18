@@ -145,10 +145,11 @@ urlpatterns = router.urls
 
         output = scanner.scan(file_path)
 
-        # When urlpatterns = router.urls, it's an attribute access
-        # The scanner doesn't detect this as it's not a list/tuple
-        # This is expected behavior - patterns are not statically defined
-        assert output.summary.total_patterns == 0
+        assert output.summary.total_patterns == 1
+        pattern = next(iter(output.results.values())).urlpatterns[0]
+        assert pattern.type == "router_registration"
+        assert pattern.pattern == "articles"
+        assert pattern.basename == "article"
 
     def test_router_with_prefix(self, tmp_path, scanner):
         """Test router include with URL prefix."""

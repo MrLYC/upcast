@@ -191,3 +191,176 @@ urlpatterns = [
         assert pattern.pattern == "users/"
         assert pattern.full_path == "api/users/"
         assert pattern.name == "user-list"
+
+    def test_scanner_expands_router_urls_added_to_urlpatterns(self, tmp_path):
+        """Router registrations remain visible when urlpatterns uses += router.urls."""
+        test_file = tmp_path / "urls.py"
+        (tmp_path / "views.py").write_text("class UserViewSet:\n    pass\n")
+        test_file.write_text(
+            """
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet
+
+router = DefaultRouter(trailing_slash=False)
+router.register("users", UserViewSet, basename="user")
+
+urlpatterns = []
+urlpatterns += router.urls
+"""
+        )
+
+        scanner = DjangoUrlScanner()
+        output = scanner.scan(test_file)
+
+        module = next(iter(output.results.values()))
+        assert len(module.urlpatterns) == 1
+        pattern = module.urlpatterns[0]
+        assert pattern.type == "router_registration"
+        assert pattern.pattern == "users"
+        assert pattern.view_module == "views"
+        assert pattern.view_name == "UserViewSet"
+        assert pattern.basename == "user"
+        assert pattern.router_type == "DefaultRouter"
+
+    def test_scanner_extracts_literal_routes_added_to_urlpatterns(self, tmp_path):
+        """Literal routes appended with += remain visible even in a branch."""
+        test_file = tmp_path / "urls.py"
+        test_file.write_text(
+            """
+from django.urls import path
+
+def health(request):
+    return None
+
+urlpatterns = []
+if True:
+    urlpatterns += [path("health/", health)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(test_file)
+
+        module = next(iter(output.results.values()))
+        assert len(module.urlpatterns) == 1
+        pattern = module.urlpatterns[0]
+        assert pattern.type == "path"
+        assert pattern.pattern == "health/"
+        assert pattern.view_name == "health"
+
+    def test_scanner_extracts_router_and_literal_routes_from_concatenation(self, tmp_path):
+        """Router and literal routes remain visible in ``router.urls + [...]``."""
+        test_file = tmp_path / "urls.py"
+        test_file.write_text(
+            """
+from django.urls import path
+from rest_framework.routers import SimpleRouter
+
+class ExampleViewSet:
+    pass
+
+def health(request):
+    return None
+
+router = SimpleRouter()
+router.register("example", ExampleViewSet, basename="example")
+urlpatterns = router.urls + [path("health/", health)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(test_file)
+
+        module = next(iter(output.results.values()))
+        assert len(module.urlpatterns) == 2
+        assert [pattern.type for pattern in module.urlpatterns] == ["router_registration", "path"]
+        assert module.urlpatterns[0].pattern == "example"
+        assert module.urlpatterns[1].pattern == "health/"
+
+    def test_scanner_extracts_routes_appended_to_urlpatterns(self, tmp_path):
+        """Routes appended after initialization remain visible."""
+        test_file = tmp_path / "urls.py"
+        test_file.write_text(
+            """
+from django.urls import path
+
+def health(request):
+    return None
+
+urlpatterns = []
+urlpatterns.append(path("health/", health, name="health"))
+"""
+        )
+
+        output = DjangoUrlScanner().scan(test_file)
+
+        module = next(iter(output.results.values()))
+        assert len(module.urlpatterns) == 1
+        pattern = module.urlpatterns[0]
+        assert pattern.type == "path"
+        assert pattern.pattern == "health/"
+        assert pattern.name == "health"
+
+    def test_scanner_keeps_dynamic_include_appended_to_urlpatterns(self, tmp_path):
+        """Dynamic application includes are retained as unresolved metadata."""
+        test_file = tmp_path / "urls.py"
+        test_file.write_text(
+            """
+from django.urls import include, path
+
+urlpatterns = []
+for app in ["billing"]:
+    urlpatterns.append(
+        path(f"{app}/", include((f"{app}.urls", app), namespace=app))
+    )
+"""
+        )
+
+        output = DjangoUrlScanner().scan(test_file)
+
+        module = next(iter(output.results.values()))
+        assert len(module.urlpatterns) == 1
+        pattern = module.urlpatterns[0]
+        assert pattern.type == "include"
+        assert pattern.pattern is None
+
+    def test_scanner_ignores_local_annotated_pattern_helpers(self, tmp_path):
+        """A helper-local ``urlpatterns`` variable is not a URLconf mutation."""
+        test_file = tmp_path / "helpers.py"
+        test_file.write_text(
+            """
+from django.urls import path
+
+def root(request):
+    return None
+
+urlpatterns = [path("root/", root)]
+
+def build_patterns():
+    urlpatterns: list = []
+    urlpatterns.append(path("health/", object()))
+    return urlpatterns
+"""
+        )
+
+        output = DjangoUrlScanner(include_patterns=["**/*.py"]).scan(test_file)
+
+        patterns = next(iter(output.results.values())).urlpatterns
+        assert len(patterns) == 1
+        assert patterns[0].pattern == "root/"
+
+    def test_scanner_preserves_module_urls_when_no_router_registration_exists(self, tmp_path):
+        """A generic ``module.urls`` include is not mislabeled as a router."""
+        test_file = tmp_path / "urls.py"
+        test_file.write_text(
+            """
+from django.urls import include, path
+import debug_toolbar
+
+urlpatterns = [path("__debug__/", include(debug_toolbar.urls))]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(test_file)
+
+        pattern = next(iter(output.results.values())).urlpatterns[0]
+        assert pattern.type == "include"
+        assert pattern.include_module == "debug_toolbar.urls"

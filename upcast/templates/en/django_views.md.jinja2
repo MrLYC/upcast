@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Modules**: {{ summary.total_modules }}
+- **Total Views**: {{ summary.total_views }}
+{% endblock %}
+
+{% block results %}
+{% for module_path, views in results.items() %}
+### View Module: {{ module_path }}
+
+| Kind | Name | Status | Identified By | HTTP Methods | Routes |
+|------|------|--------|---------------|--------------|--------|
+{% for view in views %}
+| {{ view.kind }} | {{ view.name }} | {{ view.status }} | {{ view.identified_by | join(', ') }} | {{ view.http_methods | join(', ') }} | {{ view.route_linkage | length }} |
+{% endfor %}
+
+{% endfor %}
+{% endblock %}

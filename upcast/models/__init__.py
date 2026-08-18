@@ -85,6 +85,9 @@ __all__ = [
 # Django URLs
 from upcast.models.django_urls import DjangoUrlOutput, DjangoUrlSummary, UrlModule, UrlPattern
 
+# Django Views
+from upcast.models.django_views import DjangoView, DjangoViewOutput, DjangoViewSummary, ViewAction, ViewRouteLink
+
 # Environment variables
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
 
@@ -145,6 +148,9 @@ __all__ = [
     "DjangoSettingsSummary",
     "DjangoUrlOutput",
     "DjangoUrlSummary",
+    "DjangoView",
+    "DjangoViewOutput",
+    "DjangoViewSummary",
     "EnvVarInfo",
     # Environment variables
     "EnvVarLocation",
@@ -192,4 +198,6 @@ __all__ = [
     "UrlModule",
     # Django URLs
     "UrlPattern",
+    "ViewAction",
+    "ViewRouteLink",
 ]

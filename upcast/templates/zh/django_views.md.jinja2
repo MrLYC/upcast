@@ -1,0 +1,20 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **视图模块数**: {{ summary.total_modules }}
+- **视图总数**: {{ summary.total_views }}
+{% endblock %}
+
+{% block results %}
+{% for module_path, views in results.items() %}
+### 视图模块: {{ module_path }}
+
+| 类型 | 名称 | 状态 | 识别依据 | HTTP 方法 | 路由数 |
+|------|------|--------|---------------|--------------|--------|
+{% for view in views %}
+| {{ view.kind }} | {{ view.name }} | {{ view.status }} | {{ view.identified_by | join('、') }} | {{ view.http_methods | join('、') }} | {{ view.route_linkage | length }} |
+{% endfor %}
+
+{% endfor %}
+{% endblock %}

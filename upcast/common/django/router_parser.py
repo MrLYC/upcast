@@ -9,7 +9,9 @@ from typing import Any
 from astroid import InferenceError, Uninferable, nodes
 
 
-def parse_router_registrations(module: nodes.Module, router_name: str) -> list[dict[str, Any]]:
+def parse_router_registrations(
+    module: nodes.Module, router_name: str, module_path: str | None = None
+) -> list[dict[str, Any]]:
     """Parse router.register() calls to extract ViewSet registrations.
 
     Args:
@@ -27,7 +29,7 @@ def parse_router_registrations(module: nodes.Module, router_name: str) -> list[d
     # Find all router.register() calls
     for call_node in module.nodes_of_class(nodes.Call):
         if _is_router_register_call(call_node, router_name):
-            registration = _parse_register_call(call_node, module)
+            registration = _parse_register_call(call_node, module, module_path)
             if registration:
                 registration["router_type"] = router_type
                 registrations.append(registration)
@@ -84,7 +86,9 @@ def _is_router_register_call(call_node: nodes.Call, router_name: str) -> bool:
     return call_node.func.expr.name == router_name
 
 
-def _parse_register_call(call_node: nodes.Call, module: nodes.Module) -> dict[str, Any] | None:
+def _parse_register_call(
+    call_node: nodes.Call, module: nodes.Module, module_path: str | None
+) -> dict[str, Any] | None:
     """Parse a router.register() call.
 
     Args:
@@ -113,7 +117,7 @@ def _parse_register_call(call_node: nodes.Call, module: nodes.Module) -> dict[st
 
     # Second argument: ViewSet class
     viewset_node = call_node.args[1]
-    viewset_info = _resolve_viewset(viewset_node, module)
+    viewset_info = _resolve_viewset(viewset_node, module, module_path)
     result.update(viewset_info)
 
     # Third argument or basename keyword: basename
@@ -130,7 +134,7 @@ def _parse_register_call(call_node: nodes.Call, module: nodes.Module) -> dict[st
     return result
 
 
-def _resolve_viewset(viewset_node: nodes.NodeNG, module: nodes.Module) -> dict[str, Any]:
+def _resolve_viewset(viewset_node: nodes.NodeNG, module: nodes.Module, module_path: str | None) -> dict[str, Any]:
     """Resolve a ViewSet reference to its module and name.
 
     Args:
@@ -152,6 +156,8 @@ def _resolve_viewset(viewset_node: nodes.NodeNG, module: nodes.Module) -> dict[s
             if inferred is not Uninferable and isinstance(inferred, nodes.ClassDef):
                 result["viewset_module"] = inferred.root().qname()
                 result["viewset_name"] = inferred.name
+            else:
+                result.update(_resolve_viewset_syntax(viewset_node, module, module_path))
         elif isinstance(viewset_node, nodes.Attribute):
             # Handle imported ViewSet: from app.views import UserViewSet
             inferred = next(viewset_node.infer(), Uninferable)
@@ -159,13 +165,62 @@ def _resolve_viewset(viewset_node: nodes.NodeNG, module: nodes.Module) -> dict[s
                 result["viewset_module"] = inferred.root().qname()
                 result["viewset_name"] = inferred.name
             else:
-                # Fall back to node structure
-                result["viewset_name"] = viewset_node.attrname
+                result.update(_resolve_viewset_syntax(viewset_node, module, module_path))
     except (InferenceError, StopIteration):
-        # Fall back to extracting from node structure
-        if isinstance(viewset_node, nodes.Name):
-            result["viewset_name"] = viewset_node.name
-        elif isinstance(viewset_node, nodes.Attribute):
-            result["viewset_name"] = viewset_node.attrname
+        result.update(_resolve_viewset_syntax(viewset_node, module, module_path))
 
     return result
+
+
+def _resolve_viewset_syntax(
+    viewset_node: nodes.Name | nodes.Attribute, module: nodes.Module, module_path: str | None
+) -> dict[str, str | None]:
+    """Resolve common import syntax when astroid inference has no context."""
+    if isinstance(viewset_node, nodes.Name):
+        imported = _find_import(module, viewset_node.name, module_path)
+        if imported is not None:
+            imported_module, imported_name = imported
+            return {"viewset_module": imported_module, "viewset_name": imported_name or viewset_node.name}
+        return {"viewset_module": module_path, "viewset_name": viewset_node.name}
+
+    if isinstance(viewset_node.expr, nodes.Name):
+        imported = _find_import(module, viewset_node.expr.name, module_path)
+        if imported is not None:
+            imported_module, imported_name = imported
+            if imported_name is None:
+                return {"viewset_module": imported_module, "viewset_name": viewset_node.attrname}
+    return {"viewset_module": None, "viewset_name": viewset_node.attrname}
+
+
+def _find_import(
+    module: nodes.Module, local_name: str, module_path: str | None
+) -> tuple[str, str | None] | None:
+    for node in module.body:
+        if isinstance(node, nodes.ImportFrom):
+            base = _relative_module(module_path, node.modname, node.level)
+            for imported_name, alias in node.names:
+                if (alias or imported_name) != local_name:
+                    continue
+                if imported_name == "*":
+                    return base, None
+                if node.modname:
+                    return base, imported_name
+                return f"{base}.{imported_name}" if base else imported_name, None
+        elif isinstance(node, nodes.Import):
+            for imported_name, alias in node.names:
+                if (alias or imported_name.split(".")[0]) != local_name:
+                    continue
+                return (imported_name if alias else imported_name.split(".")[0]), None
+    return None
+
+
+def _relative_module(module_path: str | None, modname: str | None, level: int) -> str:
+    if not level:
+        return modname or ""
+    if not module_path:
+        return modname or ""
+    parts = module_path.split(".")
+    package = parts[: max(0, len(parts) - level)]
+    if modname:
+        package.extend(modname.split("."))
+    return ".".join(package)
