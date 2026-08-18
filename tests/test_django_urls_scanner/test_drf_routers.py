@@ -180,3 +180,26 @@ urlpatterns = [
         # Check that the pattern includes the prefix
         router_pattern = router_patterns[0]
         assert router_pattern.pattern.startswith("api/v1/")
+
+    def test_router_regex_root_include_does_not_add_slash_after_anchor(self, tmp_path, scanner):
+        """A regex-root router include should produce one leading ``^``."""
+        file_path = tmp_path / "urls.py"
+        file_path.write_text(
+            """
+from django.conf.urls import include, url
+from rest_framework.routers import DefaultRouter
+
+class LogViewSet:
+    pass
+
+router = DefaultRouter()
+router.register("logs", LogViewSet, basename="log")
+
+urlpatterns = [url(r"^", include(router.urls))]
+"""
+        )
+
+        output = scanner.scan(file_path)
+
+        router_pattern = next(iter(output.results.values())).urlpatterns[0]
+        assert router_pattern.full_path == "^logs"

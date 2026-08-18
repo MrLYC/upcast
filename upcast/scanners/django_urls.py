@@ -6,6 +6,7 @@ including path(), re_path(), include(), and DRF router registrations.
 
 import logging
 import time
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 from astroid import nodes
@@ -34,6 +35,8 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         include_patterns: list[str] | None = None,
         exclude_patterns: list[str] | None = None,
         verbose: bool = False,
+        source_root_names: list[str] | None = None,
+        max_mount_contexts: int = 1024,
     ):
         """Initialize Django URL scanner.
 
@@ -41,10 +44,18 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             include_patterns: File patterns to include (default: urls.py files)
             exclude_patterns: File patterns to exclude
             verbose: Enable verbose logging
+            source_root_names: Directory names that may be omitted from imported
+                module paths (default: ``["src"]``)
+            max_mount_contexts: Maximum distinct mount prefixes per URL module
         """
+        if max_mount_contexts <= 0:
+            raise ValueError("max_mount_contexts must be greater than zero")
+
         # Default to scanning urls.py files
         default_includes = ["**/urls.py", "urls.py"]
         include_patterns = include_patterns or default_includes
+        self.source_root_names = frozenset(source_root_names or ["src"])
+        self.max_mount_contexts = max_mount_contexts
 
         super().__init__(
             include_patterns=include_patterns,
@@ -73,10 +84,155 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                 module_path = self._get_module_path(file_path, scan_root)
                 url_modules[module_path] = UrlModule(urlpatterns=patterns)
 
+        url_modules = self._propagate_include_prefixes(url_modules)
+
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
         summary = self._calculate_summary(url_modules, scan_duration_ms)
 
         return DjangoUrlOutput(summary=summary, results=url_modules, metadata={"scanner_name": "django-urls"})
+
+    def _propagate_include_prefixes(self, url_modules: dict[str, UrlModule]) -> dict[str, UrlModule]:  # noqa: C901
+        """Reconstruct full paths across scanned URLconf module includes.
+
+        Files are parsed independently so the local ``pattern`` remains the
+        source-faithful fragment.  Once all modules are available, resolved
+        named includes form a graph through which parent prefixes can be
+        propagated.  A module mounted at multiple prefixes is emitted once
+        per distinct mount context; unresolved or external includes retain
+        their local paths.
+        """
+        if not url_modules:
+            return url_modules
+
+        module_aliases = self._build_module_alias_targets(url_modules)
+        edges: dict[str, list[tuple[str, str]]] = defaultdict(list)
+        incoming: set[str] = set()
+
+        for parent_module, url_module in url_modules.items():
+            for pattern in url_module.urlpatterns:
+                target_module = self._resolve_include_target(
+                    parent_module,
+                    pattern.include_module,
+                    module_aliases,
+                )
+                if target_module is None:
+                    continue
+
+                edge_prefix = pattern.full_path if pattern.full_path is not None else pattern.pattern
+                edges[parent_module].append((target_module, edge_prefix or ""))
+                incoming.add(target_module)
+
+        roots = [module for module in url_modules if module not in incoming]
+        if not roots:
+            roots = list(url_modules)
+
+        pending: deque[tuple[str, str, tuple[str, ...]]] = deque()
+        visited_contexts: set[tuple[str, str]] = set()
+        scheduled_contexts: set[tuple[str, str]] = set()
+        context_counts: Counter[str] = Counter()
+        expanded_patterns: dict[str, list[UrlPattern]] = defaultdict(list)
+
+        def enqueue(module: str, prefix: str, ancestors: tuple[str, ...]) -> None:
+            context_key = (module, prefix)
+            if context_key in visited_contexts or context_key in scheduled_contexts:
+                return
+            if context_counts[module] >= self.max_mount_contexts:
+                raise ValueError(
+                    "max_mount_contexts="
+                    f"{self.max_mount_contexts} exceeded for URL module {module!r}"
+                )
+            context_counts[module] += 1
+            scheduled_contexts.add(context_key)
+            pending.append((module, prefix, ancestors))
+
+        for root in roots:
+            enqueue(root, "", (root,))
+
+        while True:
+            while pending:
+                module, prefix, ancestors = pending.popleft()
+                context_key = (module, prefix)
+                scheduled_contexts.discard(context_key)
+                if context_key in visited_contexts:
+                    continue
+                visited_contexts.add(context_key)
+                expanded_patterns.setdefault(module, [])
+
+                for pattern in url_modules[module].urlpatterns:
+                    local_path = pattern.full_path if pattern.full_path is not None else pattern.pattern
+                    full_path = self._join_full_path(prefix, local_path)
+                    expanded_patterns[module].append(pattern.model_copy(update={"full_path": full_path}))
+
+                for target_module, edge_prefix in edges.get(module, []):
+                    if target_module in ancestors:
+                        continue
+                    child_prefix = self._join_full_path(prefix, edge_prefix) or ""
+                    enqueue(target_module, child_prefix, (*ancestors, target_module))
+
+            unvisited_modules = [module for module in url_modules if module not in expanded_patterns]
+            if not unvisited_modules:
+                break
+
+            # Covers isolated modules and include cycles without inventing an
+            # unbounded sequence of prefixes.
+            module = unvisited_modules[0]
+            enqueue(module, "", (module,))
+
+        return {
+            module: UrlModule(urlpatterns=expanded_patterns[module])
+            for module in url_modules
+        }
+
+    def _build_module_alias_targets(self, url_modules: dict[str, UrlModule]) -> dict[str, set[str]]:
+        """Map generic module aliases to the scanned module paths they identify."""
+        aliases: dict[str, set[str]] = defaultdict(set)
+        for module_path in url_modules:
+            for alias in self._module_aliases(module_path):
+                aliases[alias].add(module_path)
+        return aliases
+
+    def _module_aliases(self, module_path: str) -> set[str]:
+        parts = module_path.split(".")
+        aliases = {module_path}
+        if parts and parts[0] in self.source_root_names:
+            suffix = parts[1:]
+            if suffix and all(part.isidentifier() for part in suffix):
+                aliases.add(".".join(suffix))
+        return aliases
+
+    def _resolve_include_target(
+        self,
+        parent_module: str,
+        include_module: str | None,
+        module_aliases: dict[str, set[str]],
+    ) -> str | None:
+        """Resolve an include module only when its scanned target is unambiguous."""
+        if not include_module or include_module.startswith("<"):
+            return None
+
+        candidate_names = {include_module}
+        if include_module.startswith("."):
+            level = len(include_module) - len(include_module.lstrip("."))
+            relative_name = include_module[level:]
+            parent_parts = parent_module.split(".")
+            if level <= len(parent_parts) - 1:
+                base_parts = parent_parts[:-level]
+                candidate_names.add(".".join([*base_parts, *relative_name.split(".")]))
+
+        exact_targets = {
+            candidate_name
+            for candidate_name in candidate_names
+            if candidate_name in module_aliases.get(candidate_name, set())
+        }
+        if len(exact_targets) == 1:
+            return next(iter(exact_targets))
+        if len(exact_targets) > 1:
+            return None
+
+        targets: set[str] = set()
+        for candidate_name in candidate_names:
+            targets.update(module_aliases.get(candidate_name, set()))
+        return next(iter(targets)) if len(targets) == 1 else None
 
     def _scan_file(self, file_path: Path, scan_root: Path) -> list[UrlPattern]:
         """Scan a single URLs file.
@@ -527,26 +683,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         }
 
         if call_node.args:
-            first_arg = call_node.args[0]
-
-            # Handle include("module.urls") or include(("module.urls", "namespace"))
-            if isinstance(first_arg, nodes.Const):
-                result["include_module"] = str(first_arg.value)
-            elif isinstance(first_arg, (nodes.Tuple, nodes.List)):
-                # include((module, namespace))
-                if first_arg.elts:
-                    if isinstance(first_arg.elts[0], nodes.Const):
-                        result["include_module"] = str(first_arg.elts[0].value)
-                    if len(first_arg.elts) > 1 and isinstance(first_arg.elts[1], nodes.Const):
-                        result["namespace"] = str(first_arg.elts[1].value)
-            elif (
-                isinstance(first_arg, nodes.Attribute)
-                and first_arg.attrname == "urls"
-                and isinstance(first_arg.expr, nodes.Name)
-            ):
-                # include(router.urls) - mark as router for expansion
-                router_name = first_arg.expr.name
-                result["include_module"] = f"<router:{router_name}>"
+            result["include_module"], result["namespace"] = self._parse_include_argument(
+                call_node.args[0], module
+            )
 
         # Check for namespace keyword argument
         for keyword in call_node.keywords:
@@ -554,6 +693,49 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
                 result["namespace"] = str(keyword.value.value)
 
         return result
+
+    def _parse_include_argument(
+        self, first_arg: nodes.NodeNG, module: nodes.Module
+    ) -> tuple[str | None, str | None]:
+        """Parse the positional include target and optional namespace tuple."""
+        if isinstance(first_arg, nodes.Const):
+            return str(first_arg.value), None
+        if isinstance(first_arg, (nodes.Tuple, nodes.List)):
+            include_module = None
+            namespace = None
+            if first_arg.elts and isinstance(first_arg.elts[0], nodes.Const):
+                include_module = str(first_arg.elts[0].value)
+            if len(first_arg.elts) > 1 and isinstance(first_arg.elts[1], nodes.Const):
+                namespace = str(first_arg.elts[1].value)
+            return include_module, namespace
+        if (
+            isinstance(first_arg, nodes.Attribute)
+            and first_arg.attrname == "urls"
+            and isinstance(first_arg.expr, nodes.Name)
+        ):
+            router_name = first_arg.expr.name
+            if self._is_router_name(module, router_name):
+                # include(router.urls) - mark a known DRF router for expansion
+                return f"<router:{router_name}>", None
+            # Generic packages such as debug_toolbar also expose ``urls``.
+            return f"{router_name}.urls", None
+        return None, None
+
+    def _is_router_name(self, module: nodes.Module, router_name: str) -> bool:
+        """Return whether a local name is assigned from a DRF-style Router."""
+        for assignment in module.nodes_of_class(nodes.Assign):
+            if not any(
+                isinstance(target, nodes.AssignName) and target.name == router_name
+                for target in assignment.targets
+            ):
+                continue
+            value = assignment.value
+            if not isinstance(value, nodes.Call):
+                continue
+            constructor_name = self._get_function_name(value.func)
+            if constructor_name and constructor_name.endswith("Router"):
+                return True
+        return False
 
     def _should_expand_router(self, pattern: UrlPattern) -> bool:
         """Check if a pattern represents a router include.
@@ -588,8 +770,11 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             module, router_name, self._get_module_path(file_path, scan_root)
         )
         if not registrations:
-            pattern.include_module = f"{router_name}.urls"
-            return [pattern]
+            return [
+                pattern.model_copy(
+                    update={"note": f"Router {router_name!r} registrations unresolved"}
+                )
+            ]
         return self._build_router_registration_patterns(
             registrations,
             base_pattern=pattern.pattern,
@@ -614,9 +799,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         for registration in registrations:
             reg_pattern = str(registration.get("pattern") or "")
             if base_pattern and base_pattern != "<root>":
-                base = base_pattern.rstrip("/")
-                reg_part = reg_pattern.lstrip("/") if reg_pattern else ""
-                full_pattern = f"{base}/{reg_part}" if reg_part else base
+                full_pattern = self._join_full_path(base_pattern, reg_pattern) or ""
             else:
                 full_pattern = reg_pattern
 
@@ -699,7 +882,14 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         if not child:
             return prefix
 
-        joined = f"{prefix.rstrip('/')}/{child.lstrip('/')}"
+        if child.startswith("^"):
+            child = child[1:]
+
+        normalized_prefix = prefix.rstrip("/")
+        if normalized_prefix == "^":
+            return f"^{child.lstrip('/')}"
+
+        joined = f"{normalized_prefix}/{child.lstrip('/')}"
         if child.endswith("/") and not joined.endswith("/"):
             joined = f"{joined}/"
         return joined

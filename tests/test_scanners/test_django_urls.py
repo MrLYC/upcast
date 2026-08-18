@@ -1,6 +1,7 @@
 """Tests for DjangoUrlScanner."""
 
 import astroid
+import pytest
 
 from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.django_urls import (
@@ -191,6 +192,231 @@ urlpatterns = [
         assert pattern.pattern == "users/"
         assert pattern.full_path == "api/users/"
         assert pattern.name == "user-list"
+
+    def test_scanner_propagates_named_include_prefix_to_child_routes(self, tmp_path):
+        """Named module includes should contribute their parent prefix to child routes."""
+        parent_dir = tmp_path / "root"
+        child_dir = tmp_path / "child"
+        parent_dir.mkdir()
+        child_dir.mkdir()
+        (parent_dir / "urls.py").write_text(
+            """
+from django.conf.urls import include, url
+
+urlpatterns = [
+    url(r"^api/", include("child.urls")),
+]
+"""
+        )
+        (child_dir / "urls.py").write_text(
+            """
+from django.conf.urls import url
+
+def users(request):
+    return None
+
+urlpatterns = [url(r"^users/$", users)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        child_pattern = output.results["child.urls"].urlpatterns[0]
+        assert child_pattern.pattern == "^users/$"
+        assert child_pattern.full_path == "^api/users/$"
+
+    def test_scanner_preserves_multiple_mounts_and_regex_anchor(self, tmp_path):
+        """A child URLconf may be mounted more than once, including at regex root."""
+        parent_dir = tmp_path / "root"
+        child_dir = tmp_path / "child"
+        parent_dir.mkdir()
+        child_dir.mkdir()
+        (parent_dir / "urls.py").write_text(
+            """
+from django.conf.urls import include, url
+
+urlpatterns = [
+    url(r"^v1/", include("child.urls")),
+    url(r"^v2/", include("child.urls")),
+    url(r"^", include("child.urls")),
+]
+"""
+        )
+        (child_dir / "urls.py").write_text(
+            """
+from django.conf.urls import url
+
+def users(request):
+    return None
+
+urlpatterns = [url(r"^users/$", users)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        child_patterns = output.results["child.urls"].urlpatterns
+        assert {pattern.full_path for pattern in child_patterns} == {
+            "^v1/users/$",
+            "^v2/users/$",
+            "^users/$",
+        }
+
+    def test_scanner_resolves_include_through_source_root_alias(self, tmp_path):
+        """A source-root module prefix should not prevent include resolution."""
+        parent_dir = tmp_path / "src" / "app"
+        child_dir = parent_dir / "child"
+        child_dir.mkdir(parents=True)
+        (parent_dir / "urls.py").write_text(
+            """
+from django.conf.urls import include, url
+
+urlpatterns = [url(r"^api/", include("app.child.urls"))]
+"""
+        )
+        (child_dir / "urls.py").write_text(
+            """
+from django.conf.urls import url
+
+def users(request):
+    return None
+
+urlpatterns = [url(r"^users/$", users)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        child_pattern = output.results["src.app.child.urls"].urlpatterns[0]
+        assert child_pattern.full_path == "^api/users/$"
+
+    def test_scanner_prefers_exact_module_over_source_root_alias(self, tmp_path):
+        """An exact imported module wins over a colliding source-root alias."""
+        (tmp_path / "urls.py").write_text(
+            """
+from django.urls import include, path
+
+urlpatterns = [path("api/", include("app.urls"))]
+"""
+        )
+        exact_dir = tmp_path / "app"
+        exact_dir.mkdir()
+        (exact_dir / "urls.py").write_text(
+            """
+from django.urls import path
+
+def exact(request):
+    return None
+
+urlpatterns = [path("exact/", exact)]
+"""
+        )
+        source_root_dir = tmp_path / "src" / "app"
+        source_root_dir.mkdir(parents=True)
+        (source_root_dir / "urls.py").write_text(
+            """
+from django.urls import path
+
+def shadow(request):
+    return None
+
+urlpatterns = [path("shadow/", shadow)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        exact_pattern = output.results["app.urls"].urlpatterns[0]
+        shadow_pattern = output.results["src.app.urls"].urlpatterns[0]
+        assert exact_pattern.full_path == "api/exact/"
+        assert shadow_pattern.full_path == "shadow/"
+
+    def test_scanner_does_not_expand_unresolved_router_as_module_include(self, tmp_path):
+        """An unresolved router must not bind to an unrelated same-named URLconf."""
+        (tmp_path / "urls.py").write_text(
+            """
+from django.conf.urls import include, path
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+urlpatterns = [path("api/", include(router.urls))]
+"""
+        )
+        shadow_dir = tmp_path / "router"
+        shadow_dir.mkdir()
+        (shadow_dir / "urls.py").write_text(
+            """
+from django.urls import path
+
+def shadow(request):
+    return None
+
+urlpatterns = [path("shadow/", shadow)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        include_pattern = output.results["urls"].urlpatterns[0]
+        assert include_pattern.include_module == "<router:router>"
+        shadow_pattern = output.results["router.urls"].urlpatterns[0]
+        assert shadow_pattern.full_path == "shadow/"
+
+    def test_scanner_does_not_use_arbitrary_suffix_alias_for_external_include(self, tmp_path):
+        """A vendor package suffix must not be guessed as the imported module."""
+        (tmp_path / "urls.py").write_text(
+            """
+from django.conf.urls import include, path
+
+urlpatterns = [path("api/", include("api.urls"))]
+"""
+        )
+        vendor_dir = tmp_path / "vendor" / "api"
+        vendor_dir.mkdir(parents=True)
+        (vendor_dir / "urls.py").write_text(
+            """
+from django.urls import path
+
+def shadow(request):
+    return None
+
+urlpatterns = [path("shadow/", shadow)]
+"""
+        )
+
+        output = DjangoUrlScanner().scan(tmp_path)
+
+        shadow_pattern = output.results["vendor.api.urls"].urlpatterns[0]
+        assert shadow_pattern.full_path == "shadow/"
+
+    def test_scanner_rejects_excessive_mount_contexts(self, tmp_path):
+        """Include expansion must fail explicitly before context explosion."""
+        (tmp_path / "urls.py").write_text(
+            """
+from django.conf.urls import include, path
+
+urlpatterns = [
+    path("v1/", include("child.urls")),
+    path("v2/", include("child.urls")),
+    path("v3/", include("child.urls")),
+]
+"""
+        )
+        child_dir = tmp_path / "child"
+        child_dir.mkdir()
+        (child_dir / "urls.py").write_text(
+            """
+from django.urls import path
+
+def users(request):
+    return None
+
+urlpatterns = [path("users/", users)]
+"""
+        )
+
+        with pytest.raises(ValueError, match="max_mount_contexts"):
+            DjangoUrlScanner(max_mount_contexts=2).scan(tmp_path)
 
     def test_scanner_expands_router_urls_added_to_urlpatterns(self, tmp_path):
         """Router registrations remain visible when urlpatterns uses += router.urls."""
