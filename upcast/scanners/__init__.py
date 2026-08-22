@@ -13,6 +13,7 @@ from upcast.scanners.http_requests import HttpRequestsScanner
 from upcast.scanners.logging_scanner import LoggingScanner
 from upcast.scanners.metrics import MetricsScanner
 from upcast.scanners.module_symbols import ModuleSymbolScanner
+from upcast.scanners.queue_usage import QueueUsageScanner
 from upcast.scanners.redis_usage import RedisUsageScanner
 from upcast.scanners.signals import SignalScanner
 from upcast.scanners.unit_tests import UnitTestScanner
@@ -31,6 +32,7 @@ __all__ = [
     "LoggingScanner",
     "MetricsScanner",
     "ModuleSymbolScanner",
+    "QueueUsageScanner",
     "RedisUsageScanner",
     "SignalScanner",
     "UnitTestScanner",

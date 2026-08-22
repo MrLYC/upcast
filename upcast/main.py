@@ -20,6 +20,7 @@ from upcast.scanners import (
     LoggingScanner,
     MetricsScanner,
     ModuleSymbolScanner,
+    QueueUsageScanner,
     RedisUsageScanner,
     UnitTestScanner,
 )
@@ -1095,6 +1096,71 @@ def scan_django_settings_cmd(
 
             traceback.print_exc()
         sys.exit(1)
+
+
+@main.command(name="scan-queue-usage")
+@click.option("-o", "--output", default=None, type=click.Path(), help="Output file path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.option(
+    "--format",
+    type=click.Choice(["yaml", "json", "markdown"], case_sensitive=False),
+    default="yaml",
+    help="Output format (yaml, json, or markdown)",
+)
+@click.option(
+    "--markdown-language",
+    type=click.Choice(["en", "zh"], case_sensitive=False),
+    default="en",
+    help="Language for markdown output (default: en)",
+)
+@click.option("--markdown-title", type=str, help="Title for markdown output")
+@click.option("--include", multiple=True, help="Glob patterns for files to include")
+@click.option("--exclude", multiple=True, help="Glob patterns for files to exclude")
+@click.option("--no-default-excludes", is_flag=True, help="Disable default exclude patterns")
+@click.argument("path", type=click.Path(exists=True), default=".", required=False)
+def scan_queue_usage_cmd(
+    output: Optional[str],
+    verbose: bool,
+    format: str,  # noqa: A002
+    markdown_language: str,
+    markdown_title: Optional[str],
+    path: str,
+    include: tuple[str, ...],
+    exclude: tuple[str, ...],
+    no_default_excludes: bool,
+) -> None:
+    """Scan Python code for in-process, task, Redis, Kafka, and RabbitMQ queues.
+
+    The report contains queue parameters and a parameter-level hardcoded status.
+    It is static source analysis and does not query runtime queue metrics.
+
+    \b
+    Examples:
+        upcast scan-queue-usage ./src
+        upcast scan-queue-usage ./src --format json --output queue-usage.json
+    """
+    try:
+        scanner = QueueUsageScanner(
+            include_patterns=list(include) if include else None,
+            exclude_patterns=list(exclude) if exclude else None,
+            verbose=verbose,
+        )
+        run_scanner_cli(
+            scanner=scanner,
+            path=path,
+            output=output,
+            format=format,
+            include=include,
+            exclude=exclude,
+            no_default_excludes=no_default_excludes,
+            verbose=verbose,
+            markdown_title=markdown_title,
+            markdown_language=markdown_language,
+        )
+    except Exception as e:
+        from upcast.common.cli import handle_scan_error
+
+        handle_scan_error(e, verbose=verbose)
 
 
 @main.command(name="scan-redis-usage")

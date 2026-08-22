@@ -73,6 +73,7 @@ test-integration: ## Run integration tests on example project
 		"signals:" \
 		"unit-tests:" \
 		"redis-usage:" \
+		"queue-usage:" \
 		"module-symbols:" \
 		"logging:"; do \
 		name=$${scanner%%:*}; \

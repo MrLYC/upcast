@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 15 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 16 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, queue usage, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -32,6 +32,9 @@ upcast scan-django-models /path/to/django/project
 
 # Scan Redis usage patterns
 upcast scan-redis-usage /path/to/django/project
+
+# Scan queue usage and hardcoded parameters
+upcast scan-queue-usage /path/to/project
 
 # Find blocking operations
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
@@ -74,7 +77,7 @@ By default, file discovery also respects the scanned target directory's `.gitign
 
 ## Scanners
 
-Upcast provides 15 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
+Upcast provides 16 specialized scanners for comprehensive static code analysis. Each scanner extracts specific insights without executing code, making analysis safe and fast.
 
 > 💡 **See example outputs:** All scanner results are available in [`example/scan-results/`](example/scan-results/) based on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas).
 >
@@ -363,6 +366,20 @@ results:
 - Supports decorator-based connections (`@receiver`)
 - Detects unused custom signals
 - Provides comprehensive statistics in summary
+
+#### scan-queue-usage
+
+Inventory in-process, task, Redis, Kafka, and RabbitMQ queue usage. The report includes queue parameters and whether each parameter is hardcoded, configured, or unresolved.
+
+```bash
+# Basic usage
+upcast scan-queue-usage /path/to/project
+
+# Save JSON output
+upcast scan-queue-usage /path/to/project --format json -o queue-usage.json
+```
+
+See the [queue usage scanner documentation](docs/scanners/queue-usage.md) for supported APIs and output fields.
 
 #### scan-redis-usage
 
