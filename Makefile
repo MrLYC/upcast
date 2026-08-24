@@ -74,6 +74,7 @@ test-integration: ## Run integration tests on example project
 		"unit-tests:" \
 		"redis-usage:" \
 		"queue-usage:" \
+		"offset-usage:" \
 		"module-symbols:" \
 		"logging:"; do \
 		name=$${scanner%%:*}; \

@@ -8,7 +8,7 @@
 
 [English](https://github.com/MrLYC/upcast/blob/main/README.md) | [中文](https://www.zdoc.app/zh/MrLYC/upcast)
 
-A comprehensive static analysis toolkit for Python projects. Upcast provides 16 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, queue usage, Redis usage, and more.
+A comprehensive static analysis toolkit for Python projects. Upcast provides 17 specialized scanners to analyze code without execution, extracting insights about Django models, environment variables, HTTP requests, logging patterns, concurrency patterns, code complexity, queue usage, offset usage, Redis usage, and more.
 
 - **Github repository**: <https://github.com/mrlyc/upcast/>
 - **Documentation**: <https://mrlyc.github.io/upcast/>
@@ -35,6 +35,9 @@ upcast scan-redis-usage /path/to/django/project
 
 # Scan queue usage and hardcoded parameters
 upcast scan-queue-usage /path/to/project
+
+# Find Django ORM and pagination patterns that can generate SQL OFFSET
+upcast scan-offset-usage /path/to/django/project
 
 # Find blocking operations
 upcast scan-blocking-operations /path/to/project -o blocking.yaml
@@ -380,6 +383,23 @@ upcast scan-queue-usage /path/to/project --format json -o queue-usage.json
 ```
 
 See the [queue usage scanner documentation](docs/scanners/queue-usage.md) for supported APIs and output fields.
+
+#### scan-offset-usage
+
+Find Django ORM, Django REST Framework, and raw SQL statements that can generate offset pagination and become slow on deep pages.
+
+```bash
+# Basic usage
+upcast scan-offset-usage /path/to/django/project
+
+# Save JSON output
+upcast scan-offset-usage /path/to/django/project --format json -o offset-usage.json
+
+# Scan only application code
+upcast scan-offset-usage /path/to/django/project --include "app/**" --exclude "tests/**"
+```
+
+See the [offset usage scanner documentation](docs/scanners/offset-usage.md) for supported patterns, parameter evidence, and static-analysis limits.
 
 #### scan-redis-usage
 
@@ -1457,7 +1477,7 @@ git add example/scan-results/
 git commit -m "Update scan results: [describe changes]"
 ```
 
-**Note:** All 13 scanners are tested on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas), with results available in [`example/scan-results/`](example/scan-results/).
+**Note:** All 17 scanners are tested on the [blueking-paas project](https://github.com/TencentBlueKing/blueking-paas), with results available in [`example/scan-results/`](example/scan-results/).
 
 ## Contributing
 

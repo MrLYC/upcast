@@ -4,7 +4,7 @@
 
 ## 扫描器列表
 
-Upcast 提供 16 个专业的静态代码分析扫描器，用于分析 Python 项目的各个方面：
+Upcast 提供 17 个专业的静态代码分析扫描器，用于分析 Python 项目的各个方面：
 
 ### Django 框架扫描器
 
@@ -33,14 +33,15 @@ Upcast 提供 16 个专业的静态代码分析扫描器，用于分析 Python �
 
 ### 专项分析扫描器
 
-| 扫描器                | 命令                       | 说明                             | 文档                                                      |
-| --------------------- | -------------------------- | -------------------------------- | --------------------------------------------------------- |
-| Cyclomatic Complexity | `scan-complexity-patterns` | 计算函数圈复杂度                 | [complexity-patterns.md](scanners/complexity-patterns.md) |
-| Prometheus Metrics    | `scan-metrics`             | 检测 Prometheus 指标定义         | [metrics.md](scanners/metrics.md)                         |
-| Redis Usage           | `scan-redis-usage`         | 分析 Redis 使用模式              | [redis-usage.md](scanners/redis-usage.md)                 |
-| Queue Usage           | `scan-queue-usage`         | 分析各类队列使用、参数和写死状态 | [queue-usage.md](scanners/queue-usage.md)                 |
-| Signals               | `scan-signals`             | 分析 Django 和 Celery 信号       | [signals.md](scanners/signals.md)                         |
-| Unit Tests            | `scan-unit-tests`          | 检测单元测试（pytest, unittest） | [unit-tests.md](scanners/unit-tests.md)                   |
+| 扫描器                | 命令                       | 说明                               | 文档                                                      |
+| --------------------- | -------------------------- | ---------------------------------- | --------------------------------------------------------- |
+| Cyclomatic Complexity | `scan-complexity-patterns` | 计算函数圈复杂度                   | [complexity-patterns.md](scanners/complexity-patterns.md) |
+| Prometheus Metrics    | `scan-metrics`             | 检测 Prometheus 指标定义           | [metrics.md](scanners/metrics.md)                         |
+| Redis Usage           | `scan-redis-usage`         | 分析 Redis 使用模式                | [redis-usage.md](scanners/redis-usage.md)                 |
+| Queue Usage           | `scan-queue-usage`         | 分析各类队列使用、参数和写死状态   | [queue-usage.md](scanners/queue-usage.md)                 |
+| Offset Usage          | `scan-offset-usage`        | 扫描可能产生 SQL OFFSET 的分页用法 | [offset-usage.md](scanners/offset-usage.md)               |
+| Signals               | `scan-signals`             | 分析 Django 和 Celery 信号         | [signals.md](scanners/signals.md)                         |
+| Unit Tests            | `scan-unit-tests`          | 检测单元测试（pytest, unittest）   | [unit-tests.md](scanners/unit-tests.md)                   |
 
 ## 通用选项
 
@@ -192,6 +193,7 @@ upcast scan-blocking-operations . \
 - [`module-symbols.yaml`](../example/scan-results/module-symbols.yaml)
 - [`redis-usage.yaml`](../example/scan-results/redis-usage.yaml)
 - Queue usage 暂无外部项目示例；请参考 [`queue-usage.md`](scanners/queue-usage.md) 中的合成示例。
+- Offset usage 暂无外部项目示例；请参考 [`offset-usage.md`](scanners/offset-usage.md) 中的合成示例。
 - [`signals.yaml`](../example/scan-results/signals.yaml)
 - [`unit-tests.yaml`](../example/scan-results/unit-tests.yaml)
 

@@ -24,6 +24,7 @@ The models are organized by scanner type:
 - Exception Handlers: ExceptionHandler, ExceptionHandlerSummary, ExceptionHandlerOutput
 - HTTP Requests: HttpRequestInfo, HttpRequestSummary, HttpRequestOutput
 - Metrics: MetricInfo, PrometheusMetricSummary, PrometheusMetricOutput
+- Offset Usage: OffsetParameter, OffsetUsage, OffsetUsageSummary, OffsetUsageOutput
 - Queue Usage: QueueParameter, QueueUsage, QueueUsageSummary, QueueUsageOutput
 - Signals: SignalInfo, SignalSummary, SignalOutput
 - Unit Tests: UnitTestInfo, UnitTestSummary, UnitTestOutput
@@ -111,6 +112,9 @@ from upcast.models.http_requests import (
 # Prometheus metrics
 from upcast.models.metrics import MetricInfo, MetricUsage, PrometheusMetricOutput, PrometheusMetricSummary
 
+# Offset usage
+from upcast.models.offset_usage import OffsetParameter, OffsetUsage, OffsetUsageOutput, OffsetUsageSummary
+
 # Queue usage
 from upcast.models.queue_usage import QueueParameter, QueueUsage, QueueUsageOutput, QueueUsageSummary
 
@@ -174,6 +178,11 @@ __all__ = [
     "MetricInfo",
     # Metrics
     "MetricUsage",
+    # Offset usage
+    "OffsetParameter",
+    "OffsetUsage",
+    "OffsetUsageOutput",
+    "OffsetUsageSummary",
     "PrometheusMetricOutput",
     "PrometheusMetricSummary",
     "QueueParameter",
