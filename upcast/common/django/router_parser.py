@@ -86,9 +86,7 @@ def _is_router_register_call(call_node: nodes.Call, router_name: str) -> bool:
     return call_node.func.expr.name == router_name
 
 
-def _parse_register_call(
-    call_node: nodes.Call, module: nodes.Module, module_path: str | None
-) -> dict[str, Any] | None:
+def _parse_register_call(call_node: nodes.Call, module: nodes.Module, module_path: str | None) -> dict[str, Any] | None:
     """Parse a router.register() call.
 
     Args:
@@ -192,9 +190,7 @@ def _resolve_viewset_syntax(
     return {"viewset_module": None, "viewset_name": viewset_node.attrname}
 
 
-def _find_import(
-    module: nodes.Module, local_name: str, module_path: str | None
-) -> tuple[str, str | None] | None:
+def _find_import(module: nodes.Module, local_name: str, module_path: str | None) -> tuple[str, str | None] | None:
     for node in module.body:
         if isinstance(node, nodes.ImportFrom):
             base = _relative_module(module_path, node.modname, node.level)

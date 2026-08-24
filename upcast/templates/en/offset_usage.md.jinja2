@@ -1,0 +1,41 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Direct Offset Findings**: {{ summary.direct_offset_count }}
+- **Indirect Pagination Findings**: {{ summary.indirect_pagination_count }}
+- **Dynamic Parameter Findings**: {{ summary.dynamic_count }}
+
+### By Pattern
+{% for pattern, count in summary.by_pattern.items() %}
+- **{{ pattern }}**: {{ count }}
+{% endfor %}
+
+### By Framework
+{% for framework, count in summary.by_framework.items() %}
+- **{{ framework }}**: {{ count }}
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for pattern, usages in results.items() %}
+
+### {{ pattern }}
+
+| Framework | Operation | File | Line | Function | Class | Hardcoding Status | Warning | Statement |
+| --- | --- | --- | ---: | --- | --- | --- | --- | --- |
+{% for usage in usages %}
+| {{ usage.framework }} | {{ usage.operation }} | {{ usage.file }} | {{ usage.line }} | {{ usage.function or 'N/A' }} | {{ usage.class_name or 'N/A' }} | {{ usage.hardcoding_status }} | {{ usage.warning or 'N/A' }} | `{{ usage.statement or 'N/A' }}` |
+{% endfor %}
+
+{% for usage in usages if usage.parameters %}
+#### Parameters ({{ usage.file }}:{{ usage.line }})
+
+| Name | Expression | Value | Source Kind | Hardcoded |
+| --- | --- | --- | --- | --- |
+{% for parameter in usage.parameters %}
+| {{ parameter.name }} | `{{ parameter.expression or 'N/A' }}` | {{ parameter.value if parameter.value is not none else 'N/A' }} | {{ parameter.source_kind }} | {% if parameter.hardcoded is true %}Yes{% elif parameter.hardcoded is false %}No{% else %}Unknown{% endif %} |
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endblock %}

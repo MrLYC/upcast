@@ -433,49 +433,6 @@ results:
       type: string
     loguru: []
     structlog: []
-  apiserver/paasng/paas_wl/bk_app/deploy/management/commands/delete_slug.py:
-    django: []
-    logging:
-    - args:
-      - build
-      block: function
-      level: info
-      lineno: 110
-      logger_name: apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug
-      message: 正在删除构建产物 %s
-      sensitive_patterns: []
-      type: string
-    - args:
-      - key
-      - pattern
-      block: if
-      level: info
-      lineno: 125
-      logger_name: apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug
-      message: 文件 %s 不符合删除规则 %s, 跳过删除.
-      sensitive_patterns: []
-      type: string
-    - args:
-      - key
-      - file_size
-      block: try
-      level: info
-      lineno: 130
-      logger_name: apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug
-      message: 删除文件 %s, 将释放 %s bytes 空间
-      sensitive_patterns: []
-      type: string
-    - args:
-      - key
-      block: except
-      level: exception
-      lineno: 136
-      logger_name: apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug
-      message: 删除资源 %s 失败
-      sensitive_patterns: []
-      type: string
-    loguru: []
-    structlog: []
   apiserver/paasng/paas_wl/bk_app/deploy/processes.py:
     django: []
     logging:
@@ -2059,14 +2016,6 @@ results:
       message: failed to get logs
       sensitive_patterns: []
       type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 269
-      logger_name: apiserver.paasng.paasng.accessories.log.views.logs
-      message: scroll_id 失效, 日志查询失败
-      sensitive_patterns: []
-      type: string
     - args:
       - e
       block: except
@@ -2213,26 +2162,6 @@ results:
     django: []
     logging:
     - args:
-      - self.product.code
-      - count
-      - data
-      block: function
-      level: info
-      lineno: 77
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.engine
-      message: 成功更新应用%s的数据, 影响记录%s条，更新数据:%s
-      sensitive_patterns: []
-      type: string
-    - args:
-      - self.product.tag.name
-      block: except
-      level: warning
-      lineno: 308
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.engine
-      message: '`{self.product.tag.name}` 未关联桌面标签'
-      sensitive_patterns: []
-      type: fstring
-    - args:
       - self.application.code
       - env_name
       block: except
@@ -2276,79 +2205,12 @@ results:
       message: product:%s state changed to %s
       sensitive_patterns: []
       type: string
-    - args:
-      - product.code
-      block: except
-      level: exception
-      lineno: 138
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: '同步修改 Product 属性到桌面失败！product: %s'
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 162
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: 同步开发者信息到桌面失败！
-      sensitive_patterns: []
-      type: string
     - args: []
       block: except
       level: info
       lineno: 171
       logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
       message: op role is not defined, skip synchronization
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 173
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: 同步运营人员信息到桌面失败！
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 258
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: 同步应用开发者信息至桌面失败!
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: if
-      level: warning
-      lineno: 320
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: 未创建 product, 不同步信息至市场
-      sensitive_patterns: []
-      type: string
-    - args:
-      - product.code
-      block: except
-      level: exception
-      lineno: 355
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: '同步修改 Product 属性到桌面失败！product: %s'
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: if
-      level: warning
-      lineno: 368
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: 未创建 product, 不同步信息至市场
-      sensitive_patterns: []
-      type: string
-    - args:
-      - product.code
-      block: except
-      level: exception
-      lineno: 378
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.handlers
-      message: '同步修改 Product 属性到桌面失败！product: %s'
       sensitive_patterns: []
       type: string
     - args:
@@ -2404,17 +2266,6 @@ results:
       lineno: 35
       logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.utils
       message: BK_CONSOLE_DB_CONF not provided, skip running %s
-      sensitive_patterns: []
-      type: string
-    - args:
-      - code
-      - is_migrated
-      - count
-      block: with
-      level: info
-      lineno: 48
-      logger_name: apiserver.paasng.paasng.accessories.publish.sync_market.utils
-      message: '成功更新应用%s的迁移状态为: %s, 影响记录%s条'
       sensitive_patterns: []
       type: string
     loguru: []
@@ -3091,23 +2942,6 @@ results:
   apiserver/paasng/paasng/bk_plugins/bk_plugins/tasks.py:
     django: []
     logging:
-    - args:
-      - str(application)
-      block: except
-      level: warning
-      lineno: 49
-      logger_name: apiserver.paasng.paasng.bk_plugins.bk_plugins.tasks
-      message: 该插件<%s>未曾部署，跳过该环境的下架操作
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 51
-      logger_name: apiserver.paasng.paasng.bk_plugins.bk_plugins.tasks
-      message: _('存在正在进行的下架任务，请勿重复操作')
-      sensitive_patterns: []
-      type: string
     - args: []
       block: except
       level: exception
@@ -3238,8 +3072,7 @@ results:
       level: exception
       lineno: 136
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''get grade manager members error, grade_manager_id: {}, message:{}''.format(grade_manager_id,
-        resp[''message''])'
+      message: 'get grade manager members error, grade_manager_id: {}, message:{}'
       sensitive_patterns: []
       type: format
     - args: []
@@ -3247,8 +3080,7 @@ results:
       level: exception
       lineno: 160
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''add grade manager (id: {}) members error, message:{} \n data: {}''.format(grade_manager_id,
-        resp[''message''], data)'
+      message: "add grade manager (id: {}) members error, message:{} \n data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3256,8 +3088,8 @@ results:
       level: exception
       lineno: 181
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''delete grade manager members error, message:{} \n id: {}, params:
-        {}''.format(resp[''message''], grade_manager_id, params)'
+      message: "delete grade manager members error, message:{} \n id: {}, params:\
+        \ {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3265,8 +3097,8 @@ results:
       level: exception
       lineno: 216
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''create user groups error, message:{} \n grade_manager_id: {}, data:
-        {}''.format(resp[''message''], grade_manager_id, data)'
+      message: "create user groups error, message:{} \n grade_manager_id: {}, data:\
+        \ {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3274,8 +3106,7 @@ results:
       level: exception
       lineno: 239
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''delete user group error, group_id: {}, message:{}''.format(group_id,
-        resp[''message''])'
+      message: 'delete user group error, group_id: {}, message:{}'
       sensitive_patterns: []
       type: format
     - args: []
@@ -3283,8 +3114,7 @@ results:
       level: exception
       lineno: 258
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''get user group members error, message:{} \n id: {}, params: {}''.format(resp[''message''],
-        user_group_id, params)'
+      message: "get user group members error, message:{} \n id: {}, params: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3292,8 +3122,7 @@ results:
       level: exception
       lineno: 287
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''add user group members error, message:{} \n id: {}, data: {}''.format(resp[''message''],
-        user_group_id, data)'
+      message: "add user group members error, message:{} \n id: {}, data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3301,8 +3130,7 @@ results:
       level: exception
       lineno: 310
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''delete user group members error, message:{} \n id: {}, params: {}''.format(resp[''message''],
-        user_group_id, params)'
+      message: "delete user group members error, message:{} \n id: {}, params: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -3310,8 +3138,8 @@ results:
       level: exception
       lineno: 356
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client
-      message: '''grant user groups policies error, message:{} \n user_group_id: {},
-        data: {}''.format(resp[''message''], group.id, data)'
+      message: "grant user groups policies error, message:{} \n user_group_id: {},\
+        \ data: {}"
       sensitive_patterns: []
       type: format
     loguru: []
@@ -3571,54 +3399,12 @@ results:
       message: 即将删除插件<%s/%s>的源码仓库<%s>
       sensitive_patterns: []
       type: string
-    - args:
-      - plugin.repository
-      block: except
-      level: exception
-      lineno: 78
-      logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
-      message: 删除插件仓库<%s>失败!
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 105
-      logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
-      message: 同步插件信息至第三方系统失败, 请联系相应的平台管理员排查
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 108
-      logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
-      message: 同步插件信息至第三方系统失败, 请联系相应的平台管理员排查
-      sensitive_patterns: []
-      type: string
     - args: []
       block: if
       level: exception
       lineno: 135
       logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
       message: The callback to the third API fails when updating the visible range
-      sensitive_patterns: []
-      type: string
-    - args:
-      - e.message
-      block: except
-      level: exception
-      lineno: 146
-      logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
-      message: '创建仓库返回异常, 异常信息: %s'
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 152
-      logger_name: apiserver.paasng.paasng.bk_plugins.pluginscenter.shim
-      message: 执行 git 指令异常, 请联系管理员排查
       sensitive_patterns: []
       type: string
     loguru: []
@@ -3992,19 +3778,6 @@ results:
       type: string
     loguru: []
     structlog: []
-  apiserver/paasng/paasng/core/core/storages/dbrouter.py:
-    django: []
-    logging:
-    - args: []
-      block: if
-      level: info
-      lineno: 64
-      logger_name: apiserver.paasng.paasng.core.core.storages.dbrouter
-      message: _('检测到重命名前的 migration 记录 {}, 跳过执行当前 migration').format(str(sentinel))
-      sensitive_patterns: []
-      type: format
-    loguru: []
-    structlog: []
   apiserver/paasng/paasng/core/core/storages/utils.py:
     django: []
     logging:
@@ -4141,6 +3914,7 @@ results:
       message: Invalid token header. No private token provided.
       sensitive_patterns:
       - token
+      - header
       - token
       type: string
     - args: []
@@ -4151,6 +3925,7 @@ results:
       message: Invalid token header. Token string should not contain spaces.
       sensitive_patterns:
       - token
+      - header
       - Token
       type: string
     - args:
@@ -4172,7 +3947,9 @@ results:
       lineno: 251
       logger_name: apiserver.paasng.paasng.infras.accounts.middlewares
       message: 'Invalid auth header: {user_data}'
-      sensitive_patterns: []
+      sensitive_patterns:
+      - auth
+      - header
       type: fstring
     loguru: []
     structlog: []
@@ -4337,8 +4114,7 @@ results:
       level: exception
       lineno: 122
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''delete grade manager error, message:{} grade_manager_id: {}''.format(resp[''message''],
-        grade_manager_id)'
+      message: 'delete grade manager error, message:{} grade_manager_id: {}'
       sensitive_patterns: []
       type: format
     - args:
@@ -4355,8 +4131,7 @@ results:
       level: exception
       lineno: 172
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''get grade manager members error, grade_manager_id: {}, message:{}''.format(grade_manager_id,
-        resp[''message''])'
+      message: 'get grade manager members error, grade_manager_id: {}, message:{}'
       sensitive_patterns: []
       type: format
     - args: []
@@ -4364,8 +4139,7 @@ results:
       level: exception
       lineno: 204
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''add grade manager (id: {}) members error, message:{} \n data: {}''.format(grade_manager_id,
-        resp[''message''], data)'
+      message: "add grade manager (id: {}) members error, message:{} \n data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4373,8 +4147,8 @@ results:
       level: exception
       lineno: 229
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''delete grade manager members error, message:{} \n id: {}, params:
-        {}''.format(resp[''message''], grade_manager_id, params)'
+      message: "delete grade manager members error, message:{} \n id: {}, params:\
+        \ {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4382,8 +4156,8 @@ results:
       level: exception
       lineno: 272
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''create user groups error, message:{} \n grade_manager_id: {}, data:
-        {}''.format(resp[''message''], grade_manager_id, data)'
+      message: "create user groups error, message:{} \n grade_manager_id: {}, data:\
+        \ {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4391,8 +4165,7 @@ results:
       level: exception
       lineno: 304
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''delete user group error, group_id: {}, message:{}''.format(group_id,
-        resp[''message''])'
+      message: 'delete user group error, group_id: {}, message:{}'
       sensitive_patterns: []
       type: format
     - args: []
@@ -4400,8 +4173,7 @@ results:
       level: exception
       lineno: 323
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''get user group members error, message:{} \n id: {}, params: {}''.format(resp[''message''],
-        user_group_id, params)'
+      message: "get user group members error, message:{} \n id: {}, params: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4409,8 +4181,7 @@ results:
       level: exception
       lineno: 360
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''add user group members error, message:{} \n id: {}, data: {}''.format(resp[''message''],
-        user_group_id, data)'
+      message: "add user group members error, message:{} \n id: {}, data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4418,8 +4189,7 @@ results:
       level: exception
       lineno: 386
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''delete user group members error, message:{} \n id: {}, params: {}''.format(resp[''message''],
-        user_group_id, params)'
+      message: "delete user group members error, message:{} \n id: {}, params: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4427,8 +4197,8 @@ results:
       level: exception
       lineno: 414
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''grant user groups policies error, message:{} \n user_group_id: {},
-        data: {}''.format(resp[''message''], group[''id''], data)'
+      message: "grant user groups policies error, message:{} \n user_group_id: {},\
+        \ data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4436,8 +4206,8 @@ results:
       level: exception
       lineno: 440
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''revoke user groups policies error, message:{} \n user_group_id:
-        {}, data: {}''.format(resp[''message''], user_group_id, data)'
+      message: "revoke user groups policies error, message:{} \n user_group_id: {},\
+        \ data: {}"
       sensitive_patterns: []
       type: format
     - args:
@@ -4456,8 +4226,8 @@ results:
       level: exception
       lineno: 518
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''grant user groups policies in bk monitor error, msg:{} \n user_group_id:
-        {}, data: {}''.format(resp[''message''], group[''id''], scope)'
+      message: "grant user groups policies in bk monitor error, msg:{} \n user_group_id:\
+        \ {}, data: {}"
       sensitive_patterns: []
       type: format
     - args: []
@@ -4465,8 +4235,8 @@ results:
       level: exception
       lineno: 548
       logger_name: apiserver.paasng.paasng.infras.iam.client
-      message: '''grant user groups policies in bk log error, message:{} \n user_group_id:
-        {}, data: {}''.format(resp[''message''], group[''id''], scope)'
+      message: "grant user groups policies in bk log error, message:{} \n user_group_id:\
+        \ {}, data: {}"
       sensitive_patterns: []
       type: format
     loguru: []
@@ -5086,23 +4856,6 @@ results:
     django: []
     logging:
     - args:
-      - e.code
-      block: except
-      level: debug
-      lineno: 74
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '错误码: {e.code}'
-      sensitive_patterns: []
-      type: fstring
-    - args: []
-      block: if
-      level: warning
-      lineno: 78
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '[deprecated] 捕获到可能是旧版本的蓝鲸制品库(bkrepo)的错误码, 忽略.'
-      sensitive_patterns: []
-      type: string
-    - args:
       - init_enabled
       block: if
       level: info
@@ -5117,93 +4870,6 @@ results:
       lineno: 123
       logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
       message: super_username or super_password is empty, skip init bkrepo
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 126
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: 开始初始化 bkrepo
-      sensitive_patterns: []
-      type: string
-    - args:
-      - self.bkpaas_project
-      block: function
-      level: info
-      lineno: 130
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 项目: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - addons_project
-      block: function
-      level: info
-      lineno: 135
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 项目: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - bkpaas3_username
-      block: function
-      level: info
-      lineno: 141
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 用户: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - addons_username
-      block: function
-      level: info
-      lineno: 146
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 用户: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - repo
-      block: for
-      level: info
-      lineno: 156
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 的仓库: %s'
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 163
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: '即将创建 bkrepo 用户: bklesscode'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - key
-      block: if
-      level: info
-      lineno: 175
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: 即将上传开发框架模板至 %s
-      sensitive_patterns: []
-      type: string
-    - args:
-      - filepath
-      block: else
-      level: warning
-      lineno: 178
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: 源码模板不存在! 请检查 %s
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 180
-      logger_name: apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo
-      message: 初始化 bkrepo 成功
       sensitive_patterns: []
       type: string
     loguru: []
@@ -5507,31 +5173,6 @@ results:
       type: fstring
     loguru: []
     structlog: []
-  apiserver/paasng/paasng/platform/applications/management/commands/force_del_app.py:
-    django: []
-    logging:
-    - args:
-      - filter_key
-      - filter_value
-      block: except
-      level: exception
-      lineno: 85
-      logger_name: apiserver.paasng.paasng.platform.applications.management.commands.force_del_app
-      message: '{filter_key} 为 {filter_value} 从 PaaS2.0 中删除失败.'
-      sensitive_patterns: []
-      type: fstring
-    - args:
-      - filter_key
-      - filter_value
-      block: function
-      level: info
-      lineno: 96
-      logger_name: apiserver.paasng.paasng.platform.applications.management.commands.force_del_app
-      message: '{filter_key} 为 {filter_value} 的应用鉴权信息已经从 Application 表中删除'
-      sensitive_patterns: []
-      type: fstring
-    loguru: []
-    structlog: []
   apiserver/paasng/paasng/platform/applications/models.py:
     django: []
     logging:
@@ -5606,15 +5247,6 @@ results:
       message: Failed to update app space on BK Monitor
       sensitive_patterns: []
       type: string
-    - args:
-      - region
-      block: except
-      level: warning
-      lineno: 819
-      logger_name: apiserver.paasng.paasng.platform.applications.views
-      message: _('集群未配置默认的根域名, 请检查 region=%s 下的集群配置是否合理.')
-      sensitive_patterns: []
-      type: string
     - args: []
       block: except
       level: exception
@@ -5661,14 +5293,6 @@ results:
     - args: []
       block: except
       level: exception
-      lineno: 1290
-      logger_name: apiserver.paasng.paasng.platform.applications.views
-      message: 同步开发者信息到桌面失败！
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
       lineno: 1313
       logger_name: apiserver.paasng.paasng.platform.applications.views
       message: save app base info fail.
@@ -5680,14 +5304,6 @@ results:
       lineno: 1347
       logger_name: apiserver.paasng.paasng.platform.applications.views
       message: save app base info fail.
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 1356
-      logger_name: apiserver.paasng.paasng.platform.applications.views
-      message: 同步开发者信息到桌面失败！
       sensitive_patterns: []
       type: string
     - args: []
@@ -5763,25 +5379,6 @@ results:
   apiserver/paasng/paasng/platform/bkapp_model/manifest.py:
     django: []
     logging:
-    - args:
-      - module
-      block: if
-      level: warning
-      lineno: 174
-      logger_name: apiserver.paasng.paasng.platform.bkapp_model.manifest
-      message: 模块<%s> 未定义任何进程
-      sensitive_patterns: []
-      type: string
-    - args:
-      - module
-      - process_spec.name
-      block: except
-      level: warning
-      lineno: 182
-      logger_name: apiserver.paasng.paasng.platform.bkapp_model.manifest
-      message: 模块<%s>的 %s 进程 未定义启动命令, 将使用镜像默认命令运行
-      sensitive_patterns: []
-      type: string
     - args:
       - spec_plan_name
       block: except
@@ -5891,33 +5488,6 @@ results:
       lineno: 317
       logger_name: apiserver.paasng.paasng.platform.declarative.application.controller
       message: Bind service "%s" to Module "%s".
-      sensitive_patterns: []
-      type: string
-    loguru: []
-    structlog: []
-  apiserver/paasng/paasng/platform/declarative/application/fields.py:
-    django: []
-    logging:
-    - args:
-      - app_code
-      - self.application.name
-      - desc.name_zh_cn
-      block: if
-      level: warning
-      lineno: 45
-      logger_name: apiserver.paasng.paasng.platform.declarative.application.fields
-      message: 应用<%s> 的中文名将从 '%s' 修改成 '%s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - app_code
-      - self.application.name_en
-      - desc.name_en
-      block: if
-      level: warning
-      lineno: 52
-      logger_name: apiserver.paasng.paasng.platform.declarative.application.fields
-      message: 应用<%s> 的英文名将从 '%s' 修改成 '%s'
       sensitive_patterns: []
       type: string
     loguru: []
@@ -6066,16 +5636,6 @@ results:
       sensitive_patterns: []
       type: string
     - args:
-      - self.wl_app.name
-      - e
-      block: except
-      level: warning
-      lineno: 237
-      logger_name: apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors
-      message: '清理应用 %s 的 slug builder 失败, 原因: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
       - self.bp
       block: except
       level: exception
@@ -6205,15 +5765,6 @@ results:
       lineno: 232
       logger_name: apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp
       message: 'Update AppModelDeploy status with data: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - '''检测部署结果'''
-      block: except
-      level: debug
-      lineno: 247
-      logger_name: apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp
-      message: 'Step not found or duplicated, name: %s'
       sensitive_patterns: []
       type: string
     loguru: []
@@ -6389,41 +5940,9 @@ results:
       type: string
     loguru: []
     structlog: []
-  apiserver/paasng/paasng/platform/engine/deploy/release/legacy.py:
-    django: []
-    logging:
-    - args:
-      - '''检测部署结果'''
-      block: except
-      level: debug
-      lineno: 81
-      logger_name: apiserver.paasng.paasng.platform.engine.deploy.release.legacy
-      message: 'Step not found or duplicated, name: %s'
-      sensitive_patterns: []
-      type: string
-    - args:
-      - '''检测部署结果'''
-      block: except
-      level: debug
-      lineno: 98
-      logger_name: apiserver.paasng.paasng.platform.engine.deploy.release.legacy
-      message: 'Step not found or duplicated, name: %s'
-      sensitive_patterns: []
-      type: string
-    loguru: []
-    structlog: []
   apiserver/paasng/paasng/platform/engine/deploy/release/operator.py:
     django: []
     logging:
-    - args:
-      - '''检测部署结果'''
-      block: except
-      level: debug
-      lineno: 81
-      logger_name: apiserver.paasng.paasng.platform.engine.deploy.release.operator
-      message: 'Step not found or duplicated, name: %s'
-      sensitive_patterns: []
-      type: string
     - args:
       - default_name
       block: except
@@ -6692,7 +6211,7 @@ results:
       level: info
       lineno: 46
       logger_name: apiserver.paasng.paasng.platform.engine.monitoring
-      message: '''Start counting frozen deployments since {}''.format(edge_date.format())'
+      message: Start counting frozen deployments since {}
       sensitive_patterns: []
       type: format
     - args: []
@@ -6700,7 +6219,7 @@ results:
       level: info
       lineno: 52
       logger_name: apiserver.paasng.paasng.platform.engine.monitoring
-      message: '''Frozen deployments count: {}''.format(frozen_deployments_cnt)'
+      message: 'Frozen deployments count: {}'
       sensitive_patterns: []
       type: format
     loguru: []
@@ -7115,14 +6634,6 @@ results:
       message: service rollback delete service_attachment delete fail
       sensitive_patterns: []
       type: string
-    - args: []
-      block: if
-      level: warning
-      lineno: 283
-      logger_name: apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.service
-      message: 无法绑定至合适的 plan
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/sourcectl.py:
@@ -7159,35 +6670,6 @@ results:
       message: migration_process(id={self.migration_process.id}) rollback failed
       sensitive_patterns: []
       type: fstring
-    loguru: []
-    structlog: []
-  apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py:
-    django: []
-    logging:
-    - args: []
-      block: except
-      level: exception
-      lineno: 151
-      logger_name: apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy
-      message: 从旧版本Paas获取应用Logo失败.
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 153
-      logger_name: apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy
-      message: 尝试返回默认logo
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 160
-      logger_name: apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy
-      message: 从旧版本Paas获取应用默认Logo失败.
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   apiserver/paasng/paasng/platform/mgrlegacy/migrate.py:
@@ -7444,39 +6926,11 @@ results:
         deleted. '
       sensitive_patterns: []
       type: fstring
-    - args:
-      - self.application.code
-      - service_name
-      block: except
-      level: exception
-      lineno: 528
-      logger_name: apiserver.paasng.paasng.platform.modules.manager
-      message: 应用<%s>获取预设增强服务<%s>失败
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   apiserver/paasng/paasng/platform/modules/models/runtime.py:
     django: []
     logging:
-    - args:
-      - module
-      block: except
-      level: debug
-      lineno: 49
-      logger_name: apiserver.paasng.paasng.platform.modules.models.runtime
-      message: module %s 未初始化 BuildConfig
-      sensitive_patterns: []
-      type: string
-    - args:
-      - module
-      block: except
-      level: debug
-      lineno: 122
-      logger_name: apiserver.paasng.paasng.platform.modules.models.runtime
-      message: module %s 未初始化 BuildConfig
-      sensitive_patterns: []
-      type: string
     - args:
       - region
       - image
@@ -7514,19 +6968,6 @@ results:
         -> {module.name}...
       sensitive_patterns: []
       type: fstring
-    loguru: []
-    structlog: []
-  apiserver/paasng/paasng/platform/scene_app/initializer.py:
-    django: []
-    logging:
-    - args: []
-      block: except
-      level: exception
-      lineno: 76
-      logger_name: apiserver.paasng.paasng.platform.scene_app.initializer
-      message: _('加载应用描述文件失败')
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   apiserver/paasng/paasng/platform/scheduler/jobs.py:
@@ -7587,14 +7028,6 @@ results:
       lineno: 111
       logger_name: apiserver.paasng.paasng.platform.smart_app.services.detector
       message: 'Invalid relative path detected: %s'
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 121
-      logger_name: apiserver.paasng.paasng.platform.smart_app.services.detector
-      message: _('应用描述文件内容不是有效 YAML 格式')
       sensitive_patterns: []
       type: string
     - args:
@@ -7740,28 +7173,12 @@ results:
       sensitive_patterns: []
       type: string
     - args: []
-      block: except
-      level: exception
-      lineno: 289
-      logger_name: apiserver.paasng.paasng.platform.smart_app.views
-      message: S-Mart package does not exist！
-      sensitive_patterns: []
-      type: string
-    - args: []
       block: if
       level: error
       lineno: 294
       logger_name: apiserver.paasng.paasng.platform.smart_app.views
       message: the provided digital signature is inconsistent with the digital signature
         of the actually saved source code package.
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: except
-      level: exception
-      lineno: 307
-      logger_name: apiserver.paasng.paasng.platform.smart_app.views
-      message: Failed to update app info！
       sensitive_patterns: []
       type: string
     - args: []
@@ -7873,7 +7290,8 @@ results:
       lineno: 260
       logger_name: apiserver.paasng.paasng.platform.sourcectl.connector
       message: Creating basic auth of repo<%s>
-      sensitive_patterns: []
+      sensitive_patterns:
+      - auth
       type: string
     - args:
       - self.key
@@ -7905,7 +7323,8 @@ results:
       lineno: 64
       logger_name: apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git
       message: repo<%s> has no basic auth, maybe missing
-      sensitive_patterns: []
+      sensitive_patterns:
+      - auth
       type: string
     - args: []
       block: except
@@ -7945,7 +7364,8 @@ results:
       lineno: 47
       logger_name: apiserver.paasng.paasng.platform.sourcectl.controllers.bare_svn
       message: repo<%s> has no basic auth, maybe missing
-      sensitive_patterns: []
+      sensitive_patterns:
+      - auth
       type: string
     loguru: []
     structlog: []
@@ -8093,35 +7513,6 @@ results:
       logger_name: apiserver.paasng.paasng.platform.sourcectl.management.commands.clean_source_package
       message: '[dry-run] %s bytes will be reclaimed after cleaning the source package
         %s.'
-      sensitive_patterns: []
-      type: string
-    loguru: []
-    structlog: []
-  apiserver/paasng/paasng/platform/sourcectl/migrations/0007_init_source_type_specs.py:
-    django: []
-    logging:
-    - args: []
-      block: function
-      level: info
-      lineno: 29
-      logger_name: apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs
-      message: 初始化 BareGit 代码库配置
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 35
-      logger_name: apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs
-      message: 初始化 BareSVN 代码库配置
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 40
-      logger_name: apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs
-      message: 初始化代码库配置完成
       sensitive_patterns: []
       type: string
     loguru: []
@@ -8289,8 +7680,7 @@ results:
       level: debug
       lineno: 331
       logger_name: apiserver.paasng.paasng.platform.sourcectl.svn.admin
-      message: '''SvnAuthClient4Developer: mock call {func_name} with: ({args}, {kwargs})''.format(func_name=inspect.stack()[1][3],
-        args=args, kwargs=kwargs)'
+      message: 'SvnAuthClient4Developer: mock call {func_name} with: ({args}, {kwargs})'
       sensitive_patterns: []
       type: format
     loguru: []
@@ -8639,9 +8029,7 @@ results:
       level: warning
       lineno: 67
       logger_name: apiserver.paasng.paasng.utils.notification_plugins
-      message: '''send {method} to {receiver} failed: {code}/{reason}''.format(method=method,
-        receiver=params.get(''receiver__username'', ''[unknown]''), code=result.get(''code'',
-        ''no exact code''), reason=result.get(''message'', ''no exact reason''))'
+      message: 'send {method} to {receiver} failed: {code}/{reason}'
       sensitive_patterns: []
       type: format
     - args: []
@@ -8695,30 +8083,9 @@ results:
       level: exception
       lineno: 89
       logger_name: apiserver.paasng.paasng.utils.notifier
-      message: '''sending sentry<{dsn}> failed''.format(dsn=dsn)'
+      message: sending sentry<{dsn}> failed
       sensitive_patterns: []
       type: format
-    loguru: []
-    structlog: []
-  apiserver/paasng/paasng/utils/termcolors.py:
-    django: []
-    logging:
-    - args: []
-      block: if
-      level: warning
-      lineno: 107
-      logger_name: apiserver.paasng.paasng.utils.termcolors
-      message: 输入不合法, 转换成黑色.
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: else
-      level: warning
-      lineno: 124
-      logger_name: apiserver.paasng.paasng.utils.termcolors
-      message: 输入不合法, 转换成黑色.
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   apiserver/paasng/paasng/utils/views.py:
@@ -8928,71 +8295,11 @@ results:
       message: 'Equivalent curl command: %s'
       sensitive_patterns: []
       type: string
-    - args:
-      - response.content
-      block: except
-      level: exception
-      lineno: 43
-      logger_name: svc-bkrepo.svc_bk_repo.vendor.helper
-      message: 未知错误, %s
-      sensitive_patterns: []
-      type: string
-    loguru: []
-    structlog: []
-  svc-bkrepo/svc_bk_repo/vendor/views.py:
-    django: []
-    logging:
-    - args:
-      - bucket
-      block: except
-      level: info
-      lineno: 113
-      logger_name: svc-bkrepo.svc_bk_repo.vendor.views
-      message: '仓库: %s 未配置容量配额, 无需扩容.'
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   svc-mysql/svc_mysql/vendor/helper.py:
     django: []
     logging:
-    - args:
-      - sql
-      block: with
-      level: info
-      lineno: 80
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: Mysql 正在执行 {sql}...
-      sensitive_patterns: []
-      type: fstring
-    - args:
-      - sql
-      block: except
-      level: exception
-      lineno: 87
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: MySQL 执行 % 失败
-      sensitive_patterns: []
-      type: string
-    - args:
-      - (self.user, self.password, self.name)
-      block: if
-      level: exception
-      lineno: 102
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: 'MySQL创建连接失败: {(self.user, self.password, self.name)}'
-      sensitive_patterns:
-      - password
-      - (self.user, self.password, self.name)
-      type: fstring
-    - args: []
-      block: except
-      level: exception
-      lineno: 104
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: '未知数据库异常: %s'
-      sensitive_patterns: []
-      type: string
     - args:
       - user
       block: function
@@ -9000,34 +8307,6 @@ results:
       lineno: 131
       logger_name: svc-mysql.svc_mysql.vendor.helper
       message: Grant privileges to user<%s>
-      sensitive_patterns: []
-      type: string
-    - args:
-      - create_user_sql.replace(password, '******')
-      block: for
-      level: info
-      lineno: 145
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: Mysql 正在执行 `{create_user_sql.replace(password, '******')}`...
-      sensitive_patterns:
-      - password
-      - create_user_sql.replace(password, '******')
-      type: fstring
-    - args:
-      - grant_sql
-      block: for
-      level: info
-      lineno: 154
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: Mysql 正在执行 `{grant_sql}`...
-      sensitive_patterns: []
-      type: fstring
-    - args: []
-      block: with
-      level: info
-      lineno: 156
-      logger_name: svc-mysql.svc_mysql.vendor.helper
-      message: Mysql 正在执行 `flush privileges;`
       sensitive_patterns: []
       type: string
     loguru: []
@@ -9078,27 +8357,6 @@ results:
         \ space_uid:{bk_monitor_space_id}"
       sensitive_patterns: []
       type: fstring
-    loguru: []
-    structlog: []
-  svc-otel/svc_otel/vendor/provider.py:
-    django: []
-    logging:
-    - args: []
-      block: function
-      level: info
-      lineno: 61
-      logger_name: svc-otel.svc_otel.vendor.provider
-      message: 正在创建增强服务实例...
-      sensitive_patterns: []
-      type: string
-    - args: []
-      block: function
-      level: info
-      lineno: 85
-      logger_name: svc-otel.svc_otel.vendor.provider
-      message: 正在删除增强服务实例...
-      sensitive_patterns: []
-      type: string
     loguru: []
     structlog: []
   svc-rabbitmq/svc_rabbitmq/utils.py:
@@ -9380,15 +8638,15 @@ results:
 summary:
   by_level:
     critical: 3
-    debug: 97
+    debug: 90
     error: 52
-    exception: 275
-    info: 260
-    warning: 179
+    exception: 247
+    info: 233
+    warning: 164
   by_library:
-    logging: 866
-  files_scanned: 293
-  scan_duration_ms: 20924
-  sensitive_calls: 23
-  total_count: 866
-  total_log_calls: 866
+    logging: 789
+  files_scanned: 2368
+  scan_duration_ms: 49094
+  sensitive_calls: 25
+  total_count: 789
+  total_log_calls: 789

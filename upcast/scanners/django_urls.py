@@ -87,7 +87,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         url_modules = self._propagate_include_prefixes(url_modules)
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
-        summary = self._calculate_summary(url_modules, scan_duration_ms)
+        summary = self._calculate_summary(url_modules, len(files), scan_duration_ms)
 
         return DjangoUrlOutput(summary=summary, results=url_modules, metadata={"scanner_name": "django-urls"})
 
@@ -137,10 +137,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             if context_key in visited_contexts or context_key in scheduled_contexts:
                 return
             if context_counts[module] >= self.max_mount_contexts:
-                raise ValueError(
-                    "max_mount_contexts="
-                    f"{self.max_mount_contexts} exceeded for URL module {module!r}"
-                )
+                raise ValueError(f"max_mount_contexts={self.max_mount_contexts} exceeded for URL module {module!r}")
             context_counts[module] += 1
             scheduled_contexts.add(context_key)
             pending.append((module, prefix, ancestors))
@@ -178,10 +175,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             module = unvisited_modules[0]
             enqueue(module, "", (module,))
 
-        return {
-            module: UrlModule(urlpatterns=expanded_patterns[module])
-            for module in url_modules
-        }
+        return {module: UrlModule(urlpatterns=expanded_patterns[module]) for module in url_modules}
 
     def _build_module_alias_targets(self, url_modules: dict[str, UrlModule]) -> dict[str, set[str]]:
         """Map generic module aliases to the scanned module paths they identify."""
@@ -262,9 +256,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         return patterns
 
-    def _extract_mutated_url_patterns(
-        self, module: nodes.Module, file_path: Path, scan_root: Path
-    ) -> list[UrlPattern]:
+    def _extract_mutated_url_patterns(self, module: nodes.Module, file_path: Path, scan_root: Path) -> list[UrlPattern]:
         """Extract routes added through ``urlpatterns.append/extend``.
 
         Only modules with a real assignment or augmented assignment to
@@ -321,9 +313,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             if router_name is not None:
                 patterns.extend(
                     self._build_router_registration_patterns(
-                        parse_router_registrations(
-                            module, router_name, self._get_module_path(file_path, scan_root)
-                        ),
+                        parse_router_registrations(module, router_name, self._get_module_path(file_path, scan_root)),
                         base_pattern=None,
                         name=None,
                         file_path=file_path,
@@ -440,9 +430,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             return patterns
 
         if isinstance(value_node, nodes.BinOp) and value_node.op == "+":
-            return self._extract_url_patterns(value_node.left, module, file_path, scan_root) + self._extract_url_patterns(
-                value_node.right, module, file_path, scan_root
-            )
+            return self._extract_url_patterns(
+                value_node.left, module, file_path, scan_root
+            ) + self._extract_url_patterns(value_node.right, module, file_path, scan_root)
 
         if isinstance(value_node, (nodes.List, nodes.Tuple)):
             # Static list/tuple of patterns
@@ -683,9 +673,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         }
 
         if call_node.args:
-            result["include_module"], result["namespace"] = self._parse_include_argument(
-                call_node.args[0], module
-            )
+            result["include_module"], result["namespace"] = self._parse_include_argument(call_node.args[0], module)
 
         # Check for namespace keyword argument
         for keyword in call_node.keywords:
@@ -694,9 +682,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         return result
 
-    def _parse_include_argument(
-        self, first_arg: nodes.NodeNG, module: nodes.Module
-    ) -> tuple[str | None, str | None]:
+    def _parse_include_argument(self, first_arg: nodes.NodeNG, module: nodes.Module) -> tuple[str | None, str | None]:
         """Parse the positional include target and optional namespace tuple."""
         if isinstance(first_arg, nodes.Const):
             return str(first_arg.value), None
@@ -725,8 +711,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         """Return whether a local name is assigned from a DRF-style Router."""
         for assignment in module.nodes_of_class(nodes.Assign):
             if not any(
-                isinstance(target, nodes.AssignName) and target.name == router_name
-                for target in assignment.targets
+                isinstance(target, nodes.AssignName) and target.name == router_name for target in assignment.targets
             ):
                 continue
             value = assignment.value
@@ -766,15 +751,9 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
         include_module = pattern.include_module or ""
         router_name = include_module[8:-1]  # Remove "<router:" and ">"
 
-        registrations = parse_router_registrations(
-            module, router_name, self._get_module_path(file_path, scan_root)
-        )
+        registrations = parse_router_registrations(module, router_name, self._get_module_path(file_path, scan_root))
         if not registrations:
-            return [
-                pattern.model_copy(
-                    update={"note": f"Router {router_name!r} registrations unresolved"}
-                )
-            ]
+            return [pattern.model_copy(update={"note": f"Router {router_name!r} registrations unresolved"})]
         return self._build_router_registration_patterns(
             registrations,
             base_pattern=pattern.pattern,
@@ -922,7 +901,12 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
             module_parts = [*file_path.parts[:-1], file_path.stem]
             return ".".join(module_parts)
 
-    def _calculate_summary(self, url_modules: dict[str, UrlModule], scan_duration_ms: int) -> DjangoUrlSummary:
+    def _calculate_summary(
+        self,
+        url_modules: dict[str, UrlModule],
+        files_scanned: int,
+        scan_duration_ms: int,
+    ) -> DjangoUrlSummary:
         """Calculate summary statistics.
 
         Args:
@@ -937,7 +921,7 @@ class DjangoUrlScanner(BaseScanner[DjangoUrlOutput]):
 
         return DjangoUrlSummary(
             total_count=total_patterns,
-            files_scanned=total_modules,
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             total_modules=total_modules,
             total_patterns=total_patterns,

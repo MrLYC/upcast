@@ -30,6 +30,8 @@ from upcast.models.http_requests import HttpRequestOutput
 from upcast.models.logging import LoggingOutput
 from upcast.models.metrics import PrometheusMetricOutput
 from upcast.models.module_symbols import ModuleSymbolOutput
+from upcast.models.offset_usage import OffsetUsageOutput
+from upcast.models.queue_usage import QueueUsageOutput
 from upcast.models.redis_usage import RedisUsageOutput
 from upcast.models.signals import SignalOutput
 from upcast.models.unit_tests import UnitTestOutput
@@ -51,6 +53,8 @@ MODEL_TEMPLATE_MAP = {
     DjangoViewOutput: "django_views.md.jinja2",
     ExceptionHandlerOutput: "exception_handlers.md.jinja2",
     PrometheusMetricOutput: "metrics.md.jinja2",
+    OffsetUsageOutput: "offset_usage.md.jinja2",
+    QueueUsageOutput: "queue_usage.md.jinja2",
     RedisUsageOutput: "redis_usage.md.jinja2",
     UnitTestOutput: "unit_tests.md.jinja2",
     ModuleSymbolOutput: "module_symbols.md.jinja2",
@@ -153,7 +157,10 @@ def render_to_markdown(
     # Render template
     markdown = template.render(**context)
 
-    return markdown
+    # Scanner findings can include source strings with trailing whitespace.
+    # Trim it at the rendering boundary so generated Markdown remains clean.
+    normalized = "\n".join(line.rstrip(" \t") for line in markdown.split("\n"))
+    return f"{normalized.rstrip(chr(10))}\n"
 
 
 def render_to_file(

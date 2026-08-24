@@ -563,7 +563,7 @@ def parse_signal_send(
     if not result:
         return None
 
-    signal_name, method_type = result
+    signal_name, _method_type = result
 
     # Extract sender parameter
     sender = None

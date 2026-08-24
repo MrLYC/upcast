@@ -1,11 +1,9 @@
 import sys
-from pathlib import Path
 from typing import Optional
 
 import click
 
 from upcast.common.cli import run_scanner_cli
-from upcast.reporting.django_report import build_django_report
 from upcast.scanners import (
     BlockingOperationsScanner,
     ComplexityScanner,
@@ -777,46 +775,6 @@ def scan_django_views_cmd(
         from upcast.common.cli import handle_scan_error
 
         handle_scan_error(e, verbose=verbose)
-
-
-@main.command(name="merge-django-report")
-@click.option("--urls", "urls_file", required=True, type=click.Path(exists=True, dir_okay=False), help="scan-django-urls YAML")
-@click.option("--views", "views_file", required=True, type=click.Path(exists=True, dir_okay=False), help="scan-django-views YAML")
-@click.option("-o", "--output", required=True, type=click.Path(), help="Combined CSV output")
-@click.option(
-    "--verification-output",
-    type=click.Path(),
-    help="Source verification YAML (defaults to <output>.verification.yaml)",
-)
-@click.argument("root", type=click.Path(exists=True, file_okay=False))
-def merge_django_report_cmd(
-    urls_file: str,
-    views_file: str,
-    output: str,
-    verification_output: str | None,
-    root: str,
-) -> None:
-    """Merge Django URL/view YAML and verify every report row against source."""
-    csv_path = Path(output)
-    verification_path = (
-        Path(verification_output)
-        if verification_output
-        else csv_path.with_suffix(csv_path.suffix + ".verification.yaml")
-    )
-    summary = build_django_report(
-        Path(root),
-        Path(urls_file),
-        Path(views_file),
-        csv_path,
-        verification_path,
-    )
-    click.echo(f"CSV written to: {csv_path}")
-    click.echo(f"Verification written to: {verification_path}")
-    click.echo(
-        "Summary: "
-        f"{summary['rows']} rows, {summary['mismatches']} mismatches, "
-        f"{summary['unresolved']} unresolved"
-    )
 
 
 @main.command(name="scan-django-models")

@@ -81,7 +81,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
                 tests_by_file[rel_path] = file_tests
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
-        summary = self._calculate_summary(tests_by_file, scan_duration_ms)
+        summary = self._calculate_summary(tests_by_file, len(files), scan_duration_ms)
 
         return UnitTestOutput(summary=summary, results=tests_by_file, metadata={"scanner_name": "unit-tests"})
 
@@ -554,6 +554,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
     def _calculate_summary(
         self,
         tests_by_file: dict[str, list[UnitTestInfo]],
+        files_scanned: int,
         scan_duration_ms: int,
     ) -> UnitTestSummary:
         """Calculate summary statistics.
@@ -571,7 +572,7 @@ class UnitTestScanner(BaseScanner[UnitTestOutput]):
 
         return UnitTestSummary(
             total_count=total_tests,
-            files_scanned=total_files,
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             total_tests=total_tests,
             total_files=total_files,

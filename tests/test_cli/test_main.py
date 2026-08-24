@@ -23,10 +23,23 @@ def test_main_help_lists_all_public_commands():
         "scan-exception-handlers",
         "scan-unit-tests",
         "scan-django-urls",
+        "scan-django-views",
         "scan-django-models",
         "scan-signals",
         "scan-django-settings",
+        "scan-queue-usage",
+        "scan-offset-usage",
         "scan-redis-usage",
         "scan-module-symbols",
     ]:
         assert command in result.output
+
+
+def test_main_help_does_not_reference_removed_django_report_command():
+    """The CLI should not advertise the removed Django report merger."""
+    runner = CliRunner()
+
+    result = runner.invoke(main, ["--help"])
+
+    assert result.exit_code == 0
+    assert "merge-django-report" not in result.output

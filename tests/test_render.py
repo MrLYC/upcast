@@ -14,6 +14,8 @@ from upcast.models.http_requests import (
     HttpRequestSummary,
     HttpRequestUsage,
 )
+from upcast.models.offset_usage import OffsetParameter, OffsetUsage, OffsetUsageOutput, OffsetUsageSummary
+from upcast.models.queue_usage import QueueParameter, QueueUsage, QueueUsageOutput, QueueUsageSummary
 from upcast.models.signals import SignalInfo, SignalOutput, SignalSummary, SignalUsage
 from upcast.render import create_jinja_env, get_template_name, render_to_file, render_to_markdown
 
@@ -110,6 +112,138 @@ class TestRenderToMarkdown:
         assert "https://api.example.com" in markdown
         assert "requests.get" in markdown
         assert "test.py" in markdown
+
+    def test_render_strips_trailing_whitespace(self):
+        """Rendered Markdown should never emit trailing spaces from scanner data."""
+        output = HttpRequestOutput(
+            summary=HttpRequestSummary(
+                total_count=0,
+                files_scanned=0,
+                total_requests=0,
+                unique_urls=0,
+                by_library={},
+            ),
+            results={},
+        )
+
+        markdown = render_to_markdown(output, language="en", title="HTTP Requests ")
+
+        assert all(not line.endswith((" ", "\t")) for line in markdown.splitlines())
+        assert markdown.endswith("\n")
+        assert not markdown.endswith("\n\n")
+
+    def test_render_has_single_final_newline_for_empty_result_group(self):
+        """Rendered Markdown should not leave an empty line after an empty result group."""
+        output = QueueUsageOutput(
+            summary=QueueUsageSummary(
+                total_count=0,
+                files_scanned=0,
+                total_usages=0,
+                by_category={},
+                by_framework={},
+                hardcoded_parameters=0,
+                dynamic_parameters=0,
+                unknown_parameters=0,
+            ),
+            results={"rabbitmq": []},
+        )
+
+        markdown = render_to_markdown(output, language="zh", title="队列使用")
+
+        assert markdown.endswith("\n")
+        assert not markdown.endswith("\n\n")
+
+    def test_render_queue_usage_zh(self):
+        """Queue findings should render their parameter hardcoding evidence."""
+        output = QueueUsageOutput(
+            summary=QueueUsageSummary(
+                total_count=1,
+                files_scanned=1,
+                total_usages=1,
+                by_category={"task_queue": 1},
+                by_framework={"celery": 1},
+                hardcoded_parameters=1,
+                dynamic_parameters=0,
+                unknown_parameters=0,
+            ),
+            results={
+                "task_queue": [
+                    QueueUsage(
+                        category="task_queue",
+                        framework="celery",
+                        operation="publish",
+                        file="tasks.py",
+                        line=12,
+                        column=4,
+                        statement='task.apply_async(queue="jobs")',
+                        parameters=[
+                            QueueParameter(
+                                name="queue",
+                                expression='"jobs"',
+                                value="jobs",
+                                source_kind="literal",
+                                hardcoded=True,
+                            )
+                        ],
+                        hardcoding_status="hardcoded",
+                    )
+                ]
+            },
+        )
+
+        markdown = render_to_markdown(output, language="zh", title="队列使用")
+
+        assert "队列使用" in markdown
+        assert "task_queue" in markdown
+        assert "queue" in markdown
+        assert "硬编码" in markdown
+        assert not markdown.endswith("\n\n")
+
+    def test_render_offset_usage_zh(self):
+        """Offset findings should render pagination parameter evidence."""
+        offset = OffsetParameter(
+            name="offset",
+            expression="(page - 1) * page_size",
+            value=None,
+            source_kind="expression",
+            hardcoded=False,
+        )
+        output = OffsetUsageOutput(
+            summary=OffsetUsageSummary(
+                total_count=1,
+                files_scanned=1,
+                by_pattern={"queryset_slice": 1},
+                by_framework={"django": 1},
+                direct_offset_count=1,
+                indirect_pagination_count=0,
+                dynamic_count=1,
+            ),
+            results={
+                "queryset_slice": [
+                    OffsetUsage(
+                        pattern="queryset_slice",
+                        framework="django",
+                        operation="slice",
+                        file="views.py",
+                        line=18,
+                        column=11,
+                        statement="queryset[offset : offset + 20]",
+                        parameters=[offset],
+                        offset=offset,
+                        hardcoding_status="dynamic",
+                        warning="Offset pagination can become slow.",
+                    )
+                ]
+            },
+        )
+
+        markdown = render_to_markdown(output, language="zh", title="分页使用")
+
+        assert "分页使用" in markdown
+        assert "queryset_slice" in markdown
+        assert "offset" in markdown
+        assert "硬编码" in markdown
+        assert not markdown.endswith("\n\n")
 
     def test_render_django_models_zh(self):
         """Test rendering Django models in Chinese."""

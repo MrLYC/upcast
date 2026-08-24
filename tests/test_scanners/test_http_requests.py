@@ -1,8 +1,5 @@
 """Tests for HttpRequestScanner."""
 
-import astroid
-
-from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
 from upcast.scanners.http_requests import (
     HttpRequestsScanner,
     HttpRequestUsage,
@@ -33,8 +30,8 @@ class TestHttpRequestModels:
 class TestHttpRequestScannerIntegration:
     """Integration tests for HttpRequestScanner."""
 
-    def test_scanner_uses_hybrid_pipeline_for_http_request_candidates(self, tmp_path, monkeypatch):
-        """Scanner should use the hybrid pipeline to discover HTTP request candidates."""
+    def test_scanner_reuses_parsed_calls_without_a_second_pipeline_parse(self, tmp_path, monkeypatch):
+        """The scanner should inspect the AST it already parsed for the file."""
         test_file = tmp_path / "test.py"
         test_file.write_text(
             """
@@ -48,37 +45,82 @@ response = requests.get('https://api.example.com/users')
         calls: list[tuple[str, str]] = []
 
         def fake_run_pipeline(*, spec, source, file_path):
-            module = astroid.parse(source, path=file_path)
-            request_call = next(module.nodes_of_class(astroid.nodes.Call))
             calls.append((spec.name, file_path))
-            return PipelineRunResult(
-                candidates=[
-                    StructuralCandidate(
-                        file_path=file_path,
-                        structural_span={
-                            "start": [request_call.lineno, request_call.col_offset],
-                            "end": [request_call.end_lineno, request_call.end_col_offset],
-                        },
-                        captures={
-                            "self": request_call,
-                            "REQUEST": request_call.func,
-                            "ARGS": request_call.args,
-                        },
-                        snippet=request_call.as_string(),
-                    )
-                ],
-                decisions=[SemanticDecision(status="confirmed")],
-                findings=[],
-            )
+            raise AssertionError("HTTP candidate discovery must not reparse the source")
 
         monkeypatch.setattr("upcast.scanners.http_requests.run_pipeline", fake_run_pipeline, raising=False)
 
         output = scanner.scan(test_file)
 
-        assert calls == [("scan-http-requests", str(test_file))]
+        assert calls == []
         assert output.summary.total_count == 1
         assert "https://api.example.com/users" in output.results
         assert output.results["https://api.example.com/users"].method == "GET"
+
+    def test_scanner_indexes_session_bindings_once_per_scope(self, tmp_path, monkeypatch):
+        """Non-request calls must not rescan a scope for the same bindings."""
+        test_file = tmp_path / "test.py"
+        test_file.write_text(
+            "\n".join([
+                "import requests",
+                "client = requests.Session()",
+                *[f"worker.handle_{index}()" for index in range(40)],
+            ])
+        )
+
+        scanner = HttpRequestsScanner()
+        original_iter_local_assignments = scanner._iter_local_assignments
+        assignment_walks: list[object] = []
+
+        def counted_iter_local_assignments(owner, line_limit):
+            assignment_walks.append(owner)
+            return original_iter_local_assignments(owner, line_limit)
+
+        monkeypatch.setattr(scanner, "_iter_local_assignments", counted_iter_local_assignments)
+
+        output = scanner.scan(test_file)
+
+        assert output.summary.total_count == 0
+        assert len(assignment_walks) <= 2
+
+    def test_aggregate_request_ties_follow_first_usage(self):
+        """Equal request counts must not depend on the process hash seed."""
+        scanner = HttpRequestsScanner()
+        first_usage = HttpRequestUsage(
+            file="first.py",
+            line=1,
+            statement="requests.get(url)",
+            method="GET",
+            params=None,
+            headers=None,
+            json_body=None,
+            form=None,
+            timeout=None,
+            session_based=False,
+            is_async=False,
+        )
+        second_usage = HttpRequestUsage(
+            file="second.py",
+            line=1,
+            statement="httpx.post(url)",
+            method="POST",
+            params=None,
+            headers=None,
+            json_body=None,
+            form=None,
+            timeout=None,
+            session_based=False,
+            is_async=False,
+        )
+
+        assert scanner._select_primary(["GET", "POST"]) == "GET"
+
+        result = scanner._aggregate_requests({
+            "https://api.example.com": [("requests", first_usage), ("httpx", second_usage)]
+        })
+
+        assert result["https://api.example.com"].method == "GET"
+        assert result["https://api.example.com"].library == "requests"
 
     def test_scanner_detects_requests_get(self, tmp_path):
         """Test scanner detects requests.get."""

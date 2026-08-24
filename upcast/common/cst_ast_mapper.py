@@ -1,24 +1,24 @@
 """CST (ast-grep / tree-sitter) 与 AST (astroid) 双向节点映射工具。
 
-本模块提供 CSTASTMapper 类，用于在 ast-grep（基于 tree-sitter 的具体语法树）
-和 astroid（抽象语法树）之间进行双向节点映射和模式搜索。
+本模块提供 CSTASTMapper 类,用于在 ast-grep(基于 tree-sitter 的具体语法树)
+和 astroid(抽象语法树)之间进行双向节点映射和模式搜索。
 
-核心映射原则：
-- 使用行列坐标范围（lineno, col_offset, end_lineno, end_col_offset）作为映射基准。
-- 对于精确坐标匹配的节点，直接返回对应节点。
-- 对于 tree-sitter 的 CST 特有节点（如 argument_list、block），
-  寻找最小包含该范围的 astroid 父节点（b_contains_a 策略）。
-- 对于 astroid 的无坐标节点（如 Arguments、Comprehension、MatchCase、Module），
+核心映射原则:
+- 使用行列坐标范围(lineno, col_offset, end_lineno, end_col_offset)作为映射基准。
+- 对于精确坐标匹配的节点,直接返回对应节点。
+- 对于 tree-sitter 的 CST 特有节点(如 argument_list、block),
+  寻找最小包含该范围的 astroid 父节点(b_contains_a 策略)。
+- 对于 astroid 的无坐标节点(如 Arguments、Comprehension、MatchCase、Module),
   递归映射其子节点或父节点。
 
-坐标约定（两侧统一）：
+坐标约定(两侧统一):
 - lineno / end_lineno: 1-based 行号
-- col_offset / end_col_offset: 0-based 列偏移（exclusive 结尾，与 tree-sitter 一致）
+- col_offset / end_col_offset: 0-based 列偏移(exclusive 结尾,与 tree-sitter 一致)
 
-可选依赖：
-    本模块依赖 ``ast-grep-py``，该包未包含在项目的默认依赖中。
-    若未安装，导入 ``CSTASTMapper`` 不会报错，但实例化时会抛出 ``ImportError``。
-    安装方式：``pip install ast-grep-py``。
+可选依赖:
+    本模块依赖 ``ast-grep-py``,该包未包含在项目的默认依赖中。
+    若未安装,导入 ``CSTASTMapper`` 不会报错,但实例化时会抛出 ``ImportError``。
+    安装方式:``pip install ast-grep-py``。
 """
 
 from __future__ import annotations
@@ -44,15 +44,15 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# 坐标范围类型：(start_line, start_col, end_line, end_col)，均为 int
+# 坐标范围类型:(start_line, start_col, end_line, end_col),均为 int
 _Range = tuple[int, int, int, int]
 
 
 # ============================================================
-# 节点类型映射表（基于双向映射实验数据）
+# 节点类型映射表(基于双向映射实验数据)
 # ============================================================
 
-# tree-sitter kind -> 对应的 astroid 节点类型列表（按优先级排序）
+# tree-sitter kind -> 对应的 astroid 节点类型列表(按优先级排序)
 _TS_TO_ASTROID: dict[str, list[str]] = {
     # 定义与声明
     "class_definition": ["ClassDef"],
@@ -118,7 +118,7 @@ _TS_TO_ASTROID: dict[str, list[str]] = {
     "case_pattern": ["MatchValue", "MatchAs", "Const"],
 }
 
-# astroid 节点类型 -> 对应的 tree-sitter kind 列表（按优先级排序）
+# astroid 节点类型 -> 对应的 tree-sitter kind 列表(按优先级排序)
 _ASTROID_TO_TS: dict[str, list[str]] = {
     # 定义与声明
     "ClassDef": ["class_definition"],
@@ -187,12 +187,12 @@ _ASTROID_TO_TS: dict[str, list[str]] = {
     "Expr": ["expression_statement"],
 }
 
-# astroid 中天生缺失完整坐标的节点类型（不可直接用于坐标映射）
+# astroid 中天生缺失完整坐标的节点类型(不可直接用于坐标映射)
 _ASTROID_NO_COORDS: frozenset[str] = frozenset({"Arguments", "Comprehension", "MatchCase", "Module"})
 
 
 def _get_ast_range(node: nodes.NodeNG) -> _Range | None:
-    """获取 astroid 节点的坐标范围，若坐标不完整则返回 None。"""
+    """获取 astroid 节点的坐标范围,若坐标不完整则返回 None。"""
     for attr in ("lineno", "col_offset", "end_lineno", "end_col_offset"):
         if getattr(node, attr, None) is None:
             return None
@@ -205,24 +205,24 @@ def _range_contains(outer: _Range, inner: _Range) -> bool:
 
 
 def _range_size(rng: _Range) -> tuple[int, int]:
-    """返回范围大小（行跨度，列跨度），用于排序找最小包含节点。"""
+    """返回范围大小(行跨度,列跨度),用于排序找最小包含节点。"""
     return (rng[2] - rng[0], rng[3] - rng[1])
 
 
 class CSTASTMapper:
     """ast-grep (tree-sitter CST) 与 astroid (AST) 双向节点映射器。
 
-    在初始化时遍历两棵树并建立坐标索引，后续所有映射和搜索操作均基于索引进行，
+    在初始化时遍历两棵树并建立坐标索引,后续所有映射和搜索操作均基于索引进行,
     不需要重复遍历树结构。
 
-    索引结构：
-    - 精确查找：``_Range -> [node]`` 字典，O(1)。
-    - 包含查找：按起始行分桶（``start_line -> [(_Range, node)]``），
-      查找时只扫描起始行 <= inner.start_line 的桶，并剪枝掉
-      end_line < inner.end_line 的候选，大幅降低扫描量。
+    索引结构:
+    - 精确查找:``_Range -> [node]`` 字典,O(1)。
+    - 包含查找:按起始行分桶(``start_line -> [(_Range, node)]``),
+      查找时只扫描起始行 <= inner.start_line 的桶,并剪枝掉
+      end_line < inner.end_line 的候选,大幅降低扫描量。
 
     .. note::
-        本类依赖可选依赖 ``ast-grep-py``。若未安装，实例化时会抛出 ``ImportError``。
+        本类依赖可选依赖 ``ast-grep-py``。若未安装,实例化时会抛出 ``ImportError``。
 
     Examples:
         >>> import astroid
@@ -237,26 +237,25 @@ class CSTASTMapper:
         """初始化映射器并建立坐标索引。
 
         Args:
-            sg_root: ast-grep SgRoot 对象（通过 ``SgRoot(source, "python")`` 创建）。
-            astroid_tree: astroid 解析树（通过 ``astroid.parse(source)`` 创建）。
+            sg_root: ast-grep SgRoot 对象(通过 ``SgRoot(source, "python")`` 创建)。
+            astroid_tree: astroid 解析树(通过 ``astroid.parse(source)`` 创建)。
 
         Raises:
             ImportError: 若 ``ast-grep-py`` 未安装。
         """
         if not _AST_GREP_AVAILABLE:
             raise ImportError(
-                "CSTASTMapper requires the optional dependency 'ast-grep-py'. "
-                "Install it with: pip install ast-grep-py"
+                "CSTASTMapper requires the optional dependency 'ast-grep-py'. Install it with: pip install ast-grep-py"
             )
 
         self.sg_root = sg_root
         self.astroid_tree = astroid_tree
 
-        # 精确坐标索引：_Range -> 节点列表
+        # 精确坐标索引:_Range -> 节点列表
         self._ts_by_range: dict[_Range, list[SgNode]] = defaultdict(list)
         self._ast_by_range: dict[_Range, list[nodes.NodeNG]] = defaultdict(list)
 
-        # 包含查找索引：start_line -> [(_Range, first_node)]，按 end_line 降序排列
+        # 包含查找索引:start_line -> [(_Range, first_node)],按 end_line 降序排列
         # 用于优化 _find_min_containing_* 的扫描效率
         self._ts_by_start_line: dict[int, list[tuple[_Range, SgNode]]] = defaultdict(list)
         self._ast_by_start_line: dict[int, list[tuple[_Range, nodes.NodeNG]]] = defaultdict(list)
@@ -268,15 +267,15 @@ class CSTASTMapper:
     # ============================================================
 
     def _build_indices(self) -> None:
-        """遍历两棵树，建立坐标索引。"""
+        """遍历两棵树,建立坐标索引。"""
         self._index_ts(self.sg_root.root())
         self._index_ast(self.astroid_tree)
 
     def _index_ts(self, node: SgNode) -> None:
-        """递归索引 tree-sitter 节点（仅索引 named 节点）。"""
+        """递归索引 tree-sitter 节点(仅索引 named 节点)。"""
         if node.is_named():
             rng = node.range()
-            # tree-sitter 使用 0-based 行号，统一转为 1-based
+            # tree-sitter 使用 0-based 行号,统一转为 1-based
             key: _Range = (rng.start.line + 1, rng.start.column, rng.end.line + 1, rng.end.column)
             self._ts_by_range[key].append(node)
             self._ts_by_start_line[key[0]].append((key, node))
@@ -284,7 +283,7 @@ class CSTASTMapper:
             self._index_ts(child)
 
     def _index_ast(self, node: nodes.NodeNG) -> None:
-        """递归索引 astroid 节点（仅索引坐标完整的节点）。"""
+        """递归索引 astroid 节点(仅索引坐标完整的节点)。"""
         rng = _get_ast_range(node)
         if rng is not None:
             self._ast_by_range[rng].append(node)
@@ -297,17 +296,17 @@ class CSTASTMapper:
     # ============================================================
 
     def _ts_range(self, node: SgNode) -> _Range:
-        """获取 tree-sitter 节点的坐标范围（1-based 行，0-based 列）。"""
+        """获取 tree-sitter 节点的坐标范围(1-based 行,0-based 列)。"""
         rng = node.range()
         return (rng.start.line + 1, rng.start.column, rng.end.line + 1, rng.end.column)
 
     def _find_min_containing_ast(self, ts_rng: _Range) -> nodes.NodeNG | None:
         """寻找最小包含指定 tree-sitter 范围的 astroid 节点。
 
-        用于处理 CST 特有节点（如 argument_list）无法精确匹配时的降级策略。
+        用于处理 CST 特有节点(如 argument_list)无法精确匹配时的降级策略。
 
-        优化：只扫描起始行 <= ts_rng.start_line 的桶，并跳过
-        end_line < ts_rng.end_line 的候选，大幅减少无效比较。
+        优化:只扫描起始行 <= ts_rng.start_line 的桶,并跳过
+        end_line < ts_rng.end_line 的候选,大幅减少无效比较。
         """
         best: tuple[_Range, nodes.NodeNG] | None = None
         inner_start = (ts_rng[0], ts_rng[1])
@@ -318,12 +317,15 @@ class CSTASTMapper:
             if start_line > ts_rng[0]:
                 continue
             for ast_rng, ast_node in entries:
-                # 快速剪枝：结束行不够大，直接跳过
+                # 快速剪枝:结束行不够大,直接跳过
                 if (ast_rng[2], ast_rng[3]) < inner_end:
                     continue
-                if (ast_rng[0], ast_rng[1]) <= inner_start and (ast_rng[2], ast_rng[3]) >= inner_end:
-                    if best is None or _range_size(ast_rng) < _range_size(best[0]):
-                        best = (ast_rng, ast_node)
+                if (
+                    (ast_rng[0], ast_rng[1]) <= inner_start
+                    and (ast_rng[2], ast_rng[3]) >= inner_end
+                    and (best is None or _range_size(ast_rng) < _range_size(best[0]))
+                ):
+                    best = (ast_rng, ast_node)
         return best[1] if best else None
 
     def _find_min_containing_ts(self, ast_rng: _Range) -> SgNode | None:
@@ -331,7 +333,7 @@ class CSTASTMapper:
 
         用于处理 astroid 无坐标节点的降级策略。
 
-        优化：只扫描起始行 <= ast_rng.start_line 的桶，并跳过
+        优化:只扫描起始行 <= ast_rng.start_line 的桶,并跳过
         end_line < ast_rng.end_line 的候选。
         """
         best: tuple[_Range, SgNode] | None = None
@@ -344,9 +346,12 @@ class CSTASTMapper:
             for ts_rng, ts_node in entries:
                 if (ts_rng[2], ts_rng[3]) < inner_end:
                     continue
-                if (ts_rng[0], ts_rng[1]) <= inner_start and (ts_rng[2], ts_rng[3]) >= inner_end:
-                    if best is None or _range_size(ts_rng) < _range_size(best[0]):
-                        best = (ts_rng, ts_node)
+                if (
+                    (ts_rng[0], ts_rng[1]) <= inner_start
+                    and (ts_rng[2], ts_rng[3]) >= inner_end
+                    and (best is None or _range_size(ts_rng) < _range_size(best[0]))
+                ):
+                    best = (ts_rng, ts_node)
         return best[1] if best else None
 
     # ============================================================
@@ -356,16 +361,16 @@ class CSTASTMapper:
     def cst_to_ast(self, sg_node: SgNode) -> nodes.NodeNG | None:
         """将 tree-sitter 节点映射到最匹配的 astroid 节点。
 
-        映射策略（按优先级）：
+        映射策略(按优先级):
         1. 精确坐标匹配 + 类型匹配。
-        2. 精确坐标匹配（忽略类型）。
-        3. 寻找最小包含该范围的 astroid 父节点（处理 CST 特有节点）。
+        2. 精确坐标匹配(忽略类型)。
+        3. 寻找最小包含该范围的 astroid 父节点(处理 CST 特有节点)。
 
         Args:
-            sg_node: tree-sitter 节点（``ast_grep_py.SgNode``）。
+            sg_node: tree-sitter 节点(``ast_grep_py.SgNode``)。
 
         Returns:
-            对应的 astroid 节点，无法映射时返回 ``None``。
+            对应的 astroid 节点,无法映射时返回 ``None``。
         """
         if not sg_node.is_named():
             return None
@@ -381,27 +386,27 @@ class CSTASTMapper:
                     return node
             return candidates[0]
 
-        # 降级：寻找最小包含父节点
+        # 降级:寻找最小包含父节点
         return self._find_min_containing_ast(ts_rng)
 
     def ast_to_cst(self, ast_node: nodes.NodeNG) -> SgNode | None:
         """将 astroid 节点映射到最匹配的 tree-sitter 节点。
 
-        映射策略（按优先级）：
-        1. 对于无坐标节点（Arguments、Comprehension 等），递归映射子节点或父节点。
+        映射策略(按优先级):
+        1. 对于无坐标节点(Arguments、Comprehension 等),递归映射子节点或父节点。
         2. 精确坐标匹配 + 类型匹配。
-        3. 精确坐标匹配（忽略类型）。
+        3. 精确坐标匹配(忽略类型)。
         4. 寻找最小包含该范围的 tree-sitter 父节点。
 
         Args:
-            ast_node: astroid 节点（``astroid.nodes.NodeNG``）。
+            ast_node: astroid 节点(``astroid.nodes.NodeNG``)。
 
         Returns:
-            对应的 tree-sitter 节点，无法映射时返回 ``None``。
+            对应的 tree-sitter 节点,无法映射时返回 ``None``。
         """
         node_type = type(ast_node).__name__
 
-        # 无坐标节点：递归映射子节点，再尝试父节点
+        # 无坐标节点:递归映射子节点,再尝试父节点
         if node_type in _ASTROID_NO_COORDS:
             for child in ast_node.get_children():
                 result = self.ast_to_cst(child)
@@ -424,15 +429,15 @@ class CSTASTMapper:
                     return node
             return candidates[0]
 
-        # 降级：寻找最小包含父节点
+        # 降级:寻找最小包含父节点
         return self._find_min_containing_ts(ast_rng)
 
     def search_cst(self, pattern: str, root: SgNode | None = None) -> list[SgNode]:
         """使用 ast-grep 模式字符串搜索 tree-sitter 节点。
 
         Args:
-            pattern: ast-grep 模式字符串，例如 ``"class $NAME($$$BASES): $$$BODY"``。
-            root: 搜索起始节点。若为 ``None``，则从整棵树的根节点开始搜索。
+            pattern: ast-grep 模式字符串,例如 ``"class $NAME($$$BASES): $$$BODY"``。
+            root: 搜索起始节点。若为 ``None``,则从整棵树的根节点开始搜索。
 
         Returns:
             所有匹配的 tree-sitter 节点列表。
@@ -445,17 +450,17 @@ class CSTASTMapper:
             return []
 
     def search_ast(self, pattern: str, root: SgNode | None = None) -> list[nodes.NodeNG]:
-        """使用 ast-grep 模式字符串搜索，并将结果映射为 astroid 节点。
+        """使用 ast-grep 模式字符串搜索,并将结果映射为 astroid 节点。
 
-        先调用 :meth:`search_cst` 获取 tree-sitter 节点，再通过 :meth:`cst_to_ast`
-        逐一映射，对结果进行去重后返回。
+        先调用 :meth:`search_cst` 获取 tree-sitter 节点,再通过 :meth:`cst_to_ast`
+        逐一映射,对结果进行去重后返回。
 
         Args:
-            pattern: ast-grep 模式字符串，例如 ``"def $NAME($$$PARAMS): $$$BODY"``。
-            root: 搜索起始节点。若为 ``None``，则从整棵树的根节点开始搜索。
+            pattern: ast-grep 模式字符串,例如 ``"def $NAME($$$PARAMS): $$$BODY"``。
+            root: 搜索起始节点。若为 ``None``,则从整棵树的根节点开始搜索。
 
         Returns:
-            对应的 astroid 节点列表（已去重，保持原始顺序）。
+            对应的 astroid 节点列表(已去重,保持原始顺序)。
         """
         ts_nodes = self.search_cst(pattern, root=root)
         result: list[nodes.NodeNG] = []
@@ -472,17 +477,17 @@ class CSTASTMapper:
         return result
 
     def cst_to_ast_by_matches(self, sg_node: SgNode, *var_names: str) -> dict[str, nodes.NodeNG | None]:
-        """从 ast-grep 匹配节点中提取单捕获组（``$VAR``）并映射为 astroid 节点。
+        """从 ast-grep 匹配节点中提取单捕获组(``$VAR``)并映射为 astroid 节点。
 
         适用于 ast-grep 模式中使用 ``$NAME``、``$BASE`` 等单节点捕获变量的场景。
-        每个变量名对应模式中的一个 ``$VAR`` 捕获组，``get_match`` 返回单个节点。
+        每个变量名对应模式中的一个 ``$VAR`` 捕获组,``get_match`` 返回单个节点。
 
         Args:
             sg_node: 已通过 :meth:`search_cst` 或 :meth:`search_ast` 获取的匹配节点。
-            *var_names: 要提取的捕获组变量名，不含 ``$`` 前缀，例如 ``"NAME"``, ``"BASE"``。
+            *var_names: 要提取的捕获组变量名,不含 ``$`` 前缀,例如 ``"NAME"``, ``"BASE"``。
 
         Returns:
-            字典，键为变量名，值为对应的 astroid 节点（若捕获组不存在或无法映射则为 ``None``）。
+            字典,键为变量名,值为对应的 astroid 节点(若捕获组不存在或无法映射则为 ``None``)。
 
         Examples:
             >>> ts_nodes = mapper.search_cst("class $NAME($$$BASES): $$$BODY")
@@ -499,20 +504,18 @@ class CSTASTMapper:
                 result[var] = self.cst_to_ast(captured)
         return result
 
-    def cst_to_ast_by_multiple_matches(
-        self, sg_node: SgNode, *var_names: str
-    ) -> dict[str, list[nodes.NodeNG]]:
-        """从 ast-grep 匹配节点中提取多捕获组（``$$$VAR``）并映射为 astroid 节点列表。
+    def cst_to_ast_by_multiple_matches(self, sg_node: SgNode, *var_names: str) -> dict[str, list[nodes.NodeNG]]:
+        """从 ast-grep 匹配节点中提取多捕获组(``$$$VAR``)并映射为 astroid 节点列表。
 
         适用于 ast-grep 模式中使用 ``$$$BASES``、``$$$PARAMS`` 等多节点捕获变量的场景。
-        每个变量名对应模式中的一个 ``$$$VAR`` 捕获组，``get_multiple_matches`` 返回节点列表。
+        每个变量名对应模式中的一个 ``$$$VAR`` 捕获组,``get_multiple_matches`` 返回节点列表。
 
         Args:
             sg_node: 已通过 :meth:`search_cst` 或 :meth:`search_ast` 获取的匹配节点。
-            *var_names: 要提取的捕获组变量名，不含 ``$$$`` 前缀，例如 ``"BASES"``, ``"PARAMS"``。
+            *var_names: 要提取的捕获组变量名,不含 ``$$$`` 前缀,例如 ``"BASES"``, ``"PARAMS"``。
 
         Returns:
-            字典，键为变量名，值为对应的 astroid 节点列表（无法映射的节点会被过滤掉）。
+            字典,键为变量名,值为对应的 astroid 节点列表(无法映射的节点会被过滤掉)。
 
         Examples:
             >>> ts_nodes = mapper.search_cst("class $NAME($$$BASES): $$$BODY")

@@ -8,13 +8,6 @@ from astroid import nodes
 
 from upcast.common.ast_utils import get_import_info, safe_as_string
 from upcast.common.file_utils import get_relative_path_str
-from upcast.common.hybrid_scan_pipeline import (
-    LocateStage,
-    MapStage,
-    PipelineSpec,
-    ProjectStage,
-    run_pipeline,
-)
 from upcast.common.inference import infer_value
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.http_requests import HttpRequestInfo, HttpRequestOutput, HttpRequestSummary, HttpRequestUsage
@@ -50,9 +43,19 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         "aiohttp.ClientSession": ("aiohttp", True),
     }
 
+    def __init__(
+        self,
+        include_patterns: list[str] | None = None,
+        exclude_patterns: list[str] | None = None,
+        verbose: bool = False,
+    ) -> None:
+        super().__init__(include_patterns, exclude_patterns, verbose)
+        self._session_bindings_cache: dict[int, dict[str, list[tuple[int | None, tuple[str, bool]]]]] = {}
+
     def scan(self, path: Path) -> HttpRequestOutput:
         """Scan for HTTP request patterns."""
         start_time = time.time()
+        self._session_bindings_cache.clear()
         files = self.get_files_to_scan(path)
         base_path = path if path.is_dir() else path.parent
 
@@ -66,7 +69,7 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
             imports = get_import_info(module)
             rel_path = get_relative_path_str(file_path, base_path)
 
-            for node in self._iter_candidate_calls(module, file_path):
+            for node in self._iter_candidate_calls(module):
                 request_entry = self._check_request_call(node, rel_path, imports)
                 if request_entry:
                     library, usage = request_entry
@@ -82,53 +85,15 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
         return HttpRequestOutput(summary=summary, results=requests_info, metadata={"scanner_name": "http-requests"})
 
-    def _iter_candidate_calls(self, module: nodes.Module, file_path: Path) -> list[nodes.Call]:
-        """Discover candidate HTTP request calls via hybrid pipeline with AST fallback."""
-        fallback_nodes = list(module.nodes_of_class(nodes.Call))
+    def _iter_candidate_calls(self, module: nodes.Module) -> list[nodes.Call]:
+        """Return all call candidates from the AST already parsed for the file.
 
-        try:
-            source = file_path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            return fallback_nodes
-
-        try:
-            pipeline_result = run_pipeline(
-                spec=PipelineSpec(
-                    name="scan-http-requests",
-                    locate=LocateStage(pattern="$REQUEST($$$ARGS)"),
-                    map=MapStage(),
-                    semantic_filters=[],
-                    project=ProjectStage(kind="http_request_candidate"),
-                ),
-                source=source,
-                file_path=str(file_path),
-            )
-        except Exception:
-            return fallback_nodes
-
-        selected_nodes: list[nodes.Call] = []
-        seen_node_ids: set[int] = set()
-
-        for candidate, decision in zip(
-            pipeline_result.candidates,
-            pipeline_result.decisions,
-            strict=True,
-        ):
-            if decision.status != "confirmed":
-                continue
-
-            node = candidate.captures.get("self")
-            if not isinstance(node, nodes.Call):
-                continue
-
-            node_id = id(node)
-            if node_id in seen_node_ids:
-                continue
-
-            selected_nodes.append(node)
-            seen_node_ids.add(node_id)
-
-        return selected_nodes or fallback_nodes
+        HTTP request identification has no structural or semantic pre-filter:
+        every call is evaluated by :meth:`_check_request_call`.  Re-parsing the
+        same source through the hybrid pipeline therefore adds work without
+        removing any candidate or changing the output contract.
+        """
+        return list(module.nodes_of_class(nodes.Call))
 
     def _extract_url_with_imports(self, node: nodes.Call, imports: dict[str, str]) -> str | None:
         """Extract URL from request call with import context.
@@ -298,6 +263,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         if not isinstance(func_node.expr, nodes.Name):
             return None, None, False, False
 
+        if not any(method in methods for methods in self.HTTP_LIBRARIES.values()):
+            return None, None, False, False
+
         session_info = self._resolve_session_library(func_node.expr.name, func_node, imports)
         if not session_info:
             return None, None, False, False
@@ -338,17 +306,43 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
         imports: dict[str, str],
     ) -> tuple[str, bool] | None:
         """Find a session/client binding inside a scope or module."""
-        for assign_node in self._iter_local_assignments(owner, line_limit):
-            resolved = self._resolve_assignment_session_binding(assign_node, variable_name, imports)
-            if resolved:
-                return resolved
-
-        for with_node in self._iter_local_with_bindings(owner, line_limit):
-            resolved = self._resolve_with_session_binding(with_node, variable_name, imports)
-            if resolved:
+        bindings = self._session_bindings_for_scope(owner, imports)
+        for binding_line, resolved in bindings.get(variable_name, []):
+            if line_limit is None or not binding_line or binding_line <= line_limit:
                 return resolved
 
         return None
+
+    def _session_bindings_for_scope(
+        self,
+        owner: nodes.NodeNG,
+        imports: dict[str, str],
+    ) -> dict[str, list[tuple[int | None, tuple[str, bool]]]]:
+        """Index supported session bindings once for a lexical scope."""
+        cache_key = id(owner)
+        cached = self._session_bindings_cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        bindings: dict[str, list[tuple[int | None, tuple[str, bool]]]] = {}
+        for assign_node in self._iter_local_assignments(owner, None):
+            resolved = self._resolve_session_constructor(assign_node.value, imports)
+            if not resolved:
+                continue
+            for target in assign_node.targets:
+                if isinstance(target, nodes.AssignName):
+                    bindings.setdefault(target.name, []).append((assign_node.lineno, resolved))
+
+        for with_node in self._iter_local_with_bindings(owner, None):
+            for context_expr, optional_vars in with_node.items:
+                if not isinstance(optional_vars, nodes.AssignName):
+                    continue
+                resolved = self._resolve_session_constructor(context_expr, imports)
+                if resolved:
+                    bindings.setdefault(optional_vars.name, []).append((with_node.lineno, resolved))
+
+        self._session_bindings_cache[cache_key] = bindings
+        return bindings
 
     def _iter_local_assignments(self, owner: nodes.NodeNG, line_limit: int | None) -> list[nodes.Assign]:
         """Return local assignments in owner up to the requested line limit."""
@@ -872,6 +866,22 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
                 return infer_value(keyword.value).get_if_type((int, float))
         return None
 
+    @staticmethod
+    def _select_primary(values: list[str]) -> str:
+        """Return the most frequent value, keeping the first value on ties."""
+        if not values:
+            raise ValueError("Cannot select a primary value from an empty sequence")
+
+        counts: dict[str, int] = {}
+        for value in values:
+            counts[value] = counts.get(value, 0) + 1
+
+        primary = values[0]
+        for value in values[1:]:
+            if counts[value] > counts[primary]:
+                primary = value
+        return primary
+
     def _aggregate_requests(
         self, requests_by_url: dict[str, list[tuple[str, HttpRequestUsage]]]
     ) -> dict[str, HttpRequestInfo]:
@@ -886,9 +896,9 @@ class HttpRequestsScanner(BaseScanner[HttpRequestOutput]):
 
             # Determine primary method and library
             methods = [u.method for u in usages]
-            primary_method = max(set(methods), key=methods.count)
+            primary_method = self._select_primary(methods)
             libraries = [library for library, _ in entries]
-            library = max(set(libraries), key=libraries.count)
+            library = self._select_primary(libraries)
 
             result[url] = HttpRequestInfo(
                 method=primary_method,

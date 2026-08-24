@@ -2,6 +2,7 @@ metadata:
   scanner_name: signal
 results:
 - category: model_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paas_wl/bk_app/applications/handlers.py
     handler: on_app_created
@@ -45,9 +46,10 @@ results:
     statement: null
   senders: []
   signal: post_save
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paas_wl/bk_app/cnative/specs/handlers.py
     handler: on_custom_domain_updated
@@ -56,9 +58,10 @@ results:
     statement: null
   senders: []
   signal: cnative_custom_domain_updated
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paas_wl/bk_app/cnative/specs/handlers.py
     handler: sync_default_entrances_for_cnative_module_switching
@@ -77,9 +80,10 @@ results:
     statement: null
   senders: []
   signal: application_default_module_switch
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/ci/handlers.py
     handler: start_ci_job
@@ -113,9 +117,10 @@ results:
     statement: null
   senders: []
   signal: post_appenv_deploy
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/paas_analysis/handlers.py
     handler: on_release_created_callback
@@ -124,9 +129,10 @@ results:
     statement: null
   senders: []
   signal: on_release_created
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: update_console_members
@@ -140,9 +146,10 @@ results:
     statement: null
   senders: []
   signal: application_member_updated
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: validate_app_code_uniquely
@@ -151,9 +158,10 @@ results:
     statement: null
   senders: []
   signal: prepare_use_application_code
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: validate_app_name_uniquely
@@ -162,9 +170,10 @@ results:
     statement: null
   senders: []
   signal: prepare_use_application_name
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: register_app_core_data
@@ -173,9 +182,10 @@ results:
     statement: null
   senders: []
   signal: before_finishing_application_creation
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: on_change_application_name
@@ -184,9 +194,10 @@ results:
     statement: null
   senders: []
   signal: prepare_change_application_name
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: offline_handler
@@ -200,9 +211,10 @@ results:
     statement: null
   senders: []
   signal: module_environment_offline_success
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: sync_logo
@@ -221,9 +233,10 @@ results:
     statement: null
   senders: []
   signal: application_logo_updated
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/bk_plugins/bk_plugins/handlers.py
     handler: on_plugin_app_created
@@ -252,9 +265,10 @@ results:
     statement: null
   senders: []
   signal: post_create_application
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/bk_plugins/bk_plugins/handlers.py
     handler: on_pre_deployment
@@ -268,9 +282,10 @@ results:
     statement: null
   senders: []
   signal: pre_appenv_deploy
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/platform/engine/handlers.py
     handler: start_phase
@@ -279,9 +294,10 @@ results:
     statement: null
   senders: []
   signal: pre_phase_start
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/platform/engine/handlers.py
     handler: end_phase
@@ -290,9 +306,10 @@ results:
     statement: null
   senders: []
   signal: post_phase_end
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/platform/engine/processes/handlers.py
     handler: _on_processes_updated
@@ -301,9 +318,10 @@ results:
     statement: null
   senders: []
   signal: processes_updated
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/platform/sourcectl/source_types.py
     handler: reload_settings
@@ -312,9 +330,43 @@ results:
     statement: null
   senders: []
   signal: setting_changed
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paas_wl/bk_app/cnative/specs/signals.py
+    lineno: 22
+    providing_args: []
+  receivers:
+  - file: apiserver/paasng/paasng/misc/audit/handlers.py
+    handler: on_cnative_deploy_finished
+    lineno: 121
+    sender: null
+    statement: null
+  senders:
+  - file: apiserver/paasng/paasng/platform/engine/deploy/bg_wait/wait_bkapp.py
+    handler: null
+    lineno: 252
+    sender: null
+    statement: post_cnative_env_deploy.send(dp.environment, deploy=dp)
+  signal: post_cnative_env_deploy
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paas_wl/workloads/networking/ingress/signals.py
+    lineno: 21
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: cnative_custom_domain_updated
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/accessories/publish/market/signals.py
+    lineno: 22
+    providing_args: []
   receivers:
   - file: apiserver/paasng/paasng/accessories/publish/sync_market/handlers.py
     handler: on_product_create_or_updated
@@ -338,25 +390,73 @@ results:
     sender: self.__class__
     statement: null
   signal: product_create_or_update_by_operator
-  status: ''
+  status: null
   type: django
 - category: custom_signals
-  receivers:
-  - file: apiserver/paasng/paasng/misc/audit/handlers.py
-    handler: on_cnative_deploy_finished
-    lineno: 121
-    sender: null
-    statement: null
+  definition:
+    file: apiserver/paasng/paasng/accessories/publish/market/signals.py
+    lineno: 25
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: product_contact_updated
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/core/signals.py
+    lineno: 21
+    providing_args: []
+  receivers: []
   senders:
-  - file: apiserver/paasng/paasng/platform/engine/deploy/bg_wait/wait_bkapp.py
+  - file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
     handler: null
-    lineno: 252
-    sender: null
-    statement: post_cnative_env_deploy.send(dp.environment, deploy=dp)
-  signal: post_cnative_env_deploy
-  status: ''
+    lineno: 42
+    sender: self
+    statement: null
+  signal: post_change_app_router
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/core/signals.py
+    lineno: 24
+    providing_args: []
+  receivers: []
+  senders:
+  - file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
+    handler: null
+    lineno: 55
+    sender: self
+    statement: null
+  signal: rollback_change_app_router
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 21
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: prepare_use_application_code
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 24
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: prepare_use_application_name
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 27
+    providing_args: []
   receivers:
   - file: apiserver/paasng/tests/api/test_applications.py
     handler: turn_on_bk_log_feature_for_app
@@ -405,9 +505,74 @@ results:
     sender: create_app
     statement: post_create_application.send(sender=create_app, application=application)
   signal: post_create_application
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 30
+    providing_args: []
+  receivers:
+  - file: apiserver/paasng/tests/conftest.py
+    handler: register_app_core_data
+    lineno: 406
+    sender: null
+    statement: null
+  - file: apiserver/paasng/tests/conftest.py
+    handler: register_app_core_data
+    lineno: 419
+    sender: null
+    statement: null
+  senders: []
+  signal: before_finishing_application_creation
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 33
+    providing_args: []
+  receivers:
+  - file: apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py
+    handler: on_change_application_name
+    lineno: 31
+    sender: null
+    statement: null
+  senders:
+  - file: apiserver/paasng/paasng/platform/declarative/application/fields.py
+    handler: null
+    lineno: 59
+    sender: self.application
+    statement: prepare_change_application_name.send(sender=self.application, code=app_code,
+      **update_field_dict)
+  signal: prepare_change_application_name
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 36
+    providing_args: []
+  receivers:
+  - file: apiserver/paasng/paasng/platform/evaluation/handlers.py
+    handler: on_environment_offline_succeed
+    lineno: 26
+    sender: null
+    statement: null
+  senders:
+  - file: apiserver/paasng/paasng/platform/engine/deploy/archive/base.py
+    handler: null
+    lineno: 119
+    sender: OfflineOperation
+    statement: null
+  signal: module_environment_offline_success
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 39
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/applications/views.py
@@ -431,9 +596,13 @@ results:
     sender: application
     statement: application_member_updated.send(sender=application, application=application)
   signal: application_member_updated
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 42
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/declarative/application/controller.py
@@ -447,9 +616,13 @@ results:
     sender: application
     statement: null
   signal: application_default_module_switch
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/applications/signals.py
+    lineno: 46
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/declarative/application/controller.py
@@ -458,53 +631,13 @@ results:
     sender: application
     statement: application_logo_updated.send(sender=application, application=application)
   signal: application_logo_updated
-  status: ''
+  status: null
   type: django
 - category: custom_signals
-  receivers:
-  - file: apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py
-    handler: on_change_application_name
-    lineno: 31
-    sender: null
-    statement: null
-  senders:
-  - file: apiserver/paasng/paasng/platform/declarative/application/fields.py
-    handler: null
-    lineno: 59
-    sender: self.application
-    statement: prepare_change_application_name.send(sender=self.application, code=app_code,
-      **update_field_dict)
-  signal: prepare_change_application_name
-  status: ''
-  type: django
-- category: custom_signals
-  receivers:
-  - file: apiserver/paasng/paasng/platform/evaluation/handlers.py
-    handler: on_environment_offline_succeed
-    lineno: 26
-    sender: null
-    statement: null
-  senders:
-  - file: apiserver/paasng/paasng/platform/engine/deploy/archive/base.py
-    handler: null
-    lineno: 119
-    sender: OfflineOperation
-    statement: null
-  signal: module_environment_offline_success
-  status: ''
-  type: django
-- category: custom_signals
-  receivers: []
-  senders:
-  - file: apiserver/paasng/paasng/platform/engine/workflow/flow.py
-    handler: null
-    lineno: 176
-    sender: null
-    statement: post_phase_end.send(self, status=status, phase=self.phase_type)
-  signal: post_phase_end
-  status: ''
-  type: django
-- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 22
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/engine/workflow/flow.py
@@ -518,31 +651,83 @@ results:
     sender: null
     statement: post_appenv_deploy.send(deployment.app_environment, deployment=deployment)
   signal: post_appenv_deploy
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 25
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: pre_appenv_deploy
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 29
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: pre_appenv_build
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 33
+    providing_args: []
+  receivers: []
+  senders: []
+  signal: pre_phase_start
+  status: unused
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 36
+    providing_args: []
   receivers: []
   senders:
-  - file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
+  - file: apiserver/paasng/paasng/platform/engine/workflow/flow.py
     handler: null
-    lineno: 42
-    sender: self
-    statement: null
-  signal: post_change_app_router
-  status: ''
+    lineno: 176
+    sender: null
+    statement: post_phase_end.send(self, status=status, phase=self.phase_type)
+  signal: post_phase_end
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 40
+    providing_args: []
   receivers: []
-  senders:
-  - file: apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py
-    handler: null
-    lineno: 55
-    sender: self
-    statement: null
-  signal: rollback_change_app_router
-  status: ''
+  senders: []
+  signal: on_release_created
+  status: unused
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/engine/signals.py
+    lineno: 43
+    providing_args: []
+  receivers:
+  - file: apiserver/paasng/tests/paasng/platform/engine/processes/test_wait.py
+    handler: _on_updated
+    lineno: 111
+    sender: null
+    statement: null
+  senders: []
+  signal: processes_updated
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/modules/handlers.py
+    lineno: 24
+    providing_args: []
   receivers:
   - file: apiserver/paasng/paasng/platform/modules/handlers.py
     handler: async_setup_module_log_model
@@ -561,20 +746,13 @@ results:
     sender: initialize_module
     statement: on_module_initialized.send(sender=initialize_module, module=module)
   signal: on_module_initialized
-  status: ''
+  status: null
   type: django
 - category: custom_signals
-  receivers: []
-  senders:
-  - file: apiserver/paasng/paasng/platform/sourcectl/views.py
-    handler: null
-    lineno: 103
-    sender: self
-    statement: empty_svn_accounts_fetched.send(sender=self, username=request.user.username)
-  signal: empty_svn_accounts_fetched
-  status: ''
-  type: django
-- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/sourcectl/signals.py
+    lineno: 21
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/sourcectl/views.py
@@ -583,9 +761,28 @@ results:
     sender: self
     statement: null
   signal: svn_account_updated
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/sourcectl/signals.py
+    lineno: 24
+    providing_args: []
+  receivers: []
+  senders:
+  - file: apiserver/paasng/paasng/platform/sourcectl/views.py
+    handler: null
+    lineno: 103
+    sender: self
+    statement: empty_svn_accounts_fetched.send(sender=self, username=request.user.username)
+  signal: empty_svn_accounts_fetched
+  status: null
+  type: django
+- category: custom_signals
+  definition:
+    file: apiserver/paasng/paasng/platform/sourcectl/signals.py
+    lineno: 28
+    providing_args: []
   receivers: []
   senders:
   - file: apiserver/paasng/paasng/platform/sourcectl/views.py
@@ -594,36 +791,13 @@ results:
     sender: self
     statement: repo_updated.send(sender=self, module_id=module.id, operator=request.user.username)
   signal: repo_updated
-  status: ''
+  status: null
   type: django
 - category: custom_signals
-  receivers:
-  - file: apiserver/paasng/tests/conftest.py
-    handler: register_app_core_data
-    lineno: 406
-    sender: null
-    statement: null
-  - file: apiserver/paasng/tests/conftest.py
-    handler: register_app_core_data
-    lineno: 419
-    sender: null
-    statement: null
-  senders: []
-  signal: before_finishing_application_creation
-  status: ''
-  type: django
-- category: custom_signals
-  receivers:
-  - file: apiserver/paasng/tests/paasng/platform/engine/processes/test_wait.py
-    handler: _on_updated
-    lineno: 111
-    sender: null
-    statement: null
-  senders: []
-  signal: processes_updated
-  status: ''
-  type: django
-- category: custom_signals
+  definition:
+    file: svc-rabbitmq/tasks/models.py
+    lineno: 38
+    providing_args: []
   receivers:
   - file: svc-rabbitmq/tasks/scheduler.py
     handler: close_old_connections
@@ -637,9 +811,13 @@ results:
     sender: null
     statement: sig_task_pre_call.send(self)
   signal: sig_task_pre_call
-  status: ''
+  status: null
   type: django
 - category: custom_signals
+  definition:
+    file: svc-rabbitmq/tasks/models.py
+    lineno: 39
+    providing_args: []
   receivers:
   - file: svc-rabbitmq/tasks/scheduler.py
     handler: close_old_connections
@@ -653,9 +831,10 @@ results:
     sender: null
     statement: sig_task_post_call.send(self)
   signal: sig_task_post_call
-  status: ''
+  status: null
   type: django
 - category: other_signals
+  definition: null
   receivers:
   - file: apiserver/paasng/paasng/celery.py
     handler: config_loggers
@@ -664,15 +843,15 @@ results:
     statement: null
   senders: []
   signal: setup_logging
-  status: ''
+  status: null
   type: celery
 summary:
   celery_receivers: 1
   celery_senders: 0
-  custom_signals_defined: 20
+  custom_signals_defined: 28
   django_receivers: 54
   django_senders: 31
   files_scanned: 2368
-  scan_duration_ms: 21407
-  total_count: 39
-  unused_custom_signals: 0
+  scan_duration_ms: 25169
+  total_count: 47
+  unused_custom_signals: 8

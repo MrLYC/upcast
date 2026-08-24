@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import time
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar
@@ -93,9 +94,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         module_by_alias = self._build_module_aliases(contexts)
         contexts_by_module = {context.module_path: context for context in contexts}
         symbol_index = {
-            (context.module_path, name): node
-            for context in contexts
-            for name, node in context.symbols.items()
+            (context.module_path, name): node for context in contexts for name, node in context.symbols.items()
         }
         export_aliases = self._build_export_aliases(contexts, module_by_alias)
         route_links = self._discover_route_links(contexts, module_by_alias, export_aliases, scan_root)
@@ -144,7 +143,9 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
                             identified_by=(
                                 ["drf_api_view_decorator"]
                                 if "api_view" in decorator_names
-                                else ["view_marker_decorator"] if explicit else ["route_reference"]
+                                else ["view_marker_decorator"]
+                                if explicit
+                                else ["route_reference"]
                             ),
                         )
                     )
@@ -449,11 +450,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         """Return Router variables whose ``.urls`` are mounted in this URLconf."""
         mounted: set[str] = set()
         for node in context.module.nodes_of_class(nodes.Call):
-            if (
-                self._is_module_level(node, context.module)
-                and self._call_name(node.func) == "include"
-                and node.args
-            ):
+            if self._is_module_level(node, context.module) and self._call_name(node.func) == "include" and node.args:
                 mounted.update(self._router_names_in(node.args[0]))
             if (
                 isinstance(node.func, nodes.Attribute)
@@ -484,9 +481,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
             and isinstance(candidate.expr, nodes.Name)
         }
 
-    def _router_key(
-        self, context: _ModuleContext, local_name: str, module_by_alias: dict[str, str]
-    ) -> tuple[str, str]:
+    def _router_key(self, context: _ModuleContext, local_name: str, module_by_alias: dict[str, str]) -> tuple[str, str]:
         imported = context.imports.get(local_name)
         if imported is None:
             return context.module_path, local_name
@@ -527,9 +522,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
             imported = context.imports.get(node.name)
             if imported and imported[1]:
                 return module_by_alias.get(imported[0], imported[0]), imported[1]
-            wildcard_modules = [
-                value for key, value in context.imports.items() if key == "*" or key.startswith("*:")
-            ]
+            wildcard_modules = [value for key, value in context.imports.items() if key == "*" or key.startswith("*:")]
             if wildcard_modules:
                 return module_by_alias.get(wildcard_modules[0][0], wildcard_modules[0][0]), node.name
             return None
@@ -566,51 +559,53 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         contexts: list[_ModuleContext],
         module_by_alias: dict[str, str],
     ) -> dict[tuple[str, str], tuple[str, str]]:
+        """Build explicit and wildcard reexport aliases with worklist propagation.
+
+        A wildcard reexport can depend on another wildcard reexport.  Repeating
+        a full pass across every module until the aliases stop changing makes a
+        long chain quadratic.  Propagating only newly available exports keeps
+        the same alias graph while visiting each material alias change once.
+        """
         aliases: dict[tuple[str, str], tuple[str, str]] = {}
-        contexts_by_alias = {
-            module_by_alias.get(context.module_path, context.module_path): context for context in contexts
-        }
+        priorities: dict[tuple[str, str], int] = {}
+        wildcard_importers: dict[str, list[tuple[str, int]]] = {}
+        pending: deque[tuple[str, str]] = deque()
+        queued: set[tuple[str, str]] = set()
 
-        def resolve(target: tuple[str, str]) -> tuple[str, str]:
-            seen: set[tuple[str, str]] = set()
-            while target in aliases and target not in seen:
-                seen.add(target)
-                target = aliases[target]
-            return target
+        def enqueue(key: tuple[str, str]) -> None:
+            if key not in queued:
+                queued.add(key)
+                pending.append(key)
 
-        # Package exports can be nested (for example package -> viewsets ->
-        # concrete module).  Iterate until all wildcard and direct imports have
-        # reached a fixed point instead of resolving only one re-export layer.
-        for _ in range(len(contexts) + 1):
-            changed = False
-            for context in contexts:
-                source_module = module_by_alias.get(context.module_path, context.module_path)
-                for local_name, (module_name, imported_name) in context.imports.items():
-                    target_module = module_by_alias.get(module_name, module_name)
-                    if local_name == "*" or local_name.startswith("*:"):
-                        target_context = contexts_by_alias.get(target_module)
-                        if target_context is None:
-                            continue
-                        exported_names = set(target_context.symbols)
-                        exported_names.update(
-                            name for (export_module, name) in aliases if export_module == target_module
-                        )
-                        for exported_name in exported_names:
-                            key = (source_module, exported_name)
-                            target = resolve((target_module, exported_name))
-                            if aliases.get(key) != target:
-                                aliases[key] = target
-                                changed = True
-                        continue
-                    if imported_name is None:
-                        continue
-                    key = (source_module, local_name)
-                    target = resolve((target_module, imported_name))
-                    if aliases.get(key) != target:
-                        aliases[key] = target
-                        changed = True
-            if not changed:
-                break
+        def set_alias(key: tuple[str, str], target: tuple[str, str], priority: int) -> None:
+            current_priority = priorities.get(key)
+            if current_priority is not None and current_priority > priority:
+                return
+            if current_priority == priority and aliases.get(key) == target:
+                return
+            aliases[key] = target
+            priorities[key] = priority
+            enqueue(key)
+
+        for context in contexts:
+            source_module = module_by_alias.get(context.module_path, context.module_path)
+            for priority, (local_name, (module_name, imported_name)) in enumerate(context.imports.items()):
+                target_module = module_by_alias.get(module_name, module_name)
+                if local_name == "*" or local_name.startswith("*:"):
+                    wildcard_importers.setdefault(target_module, []).append((source_module, priority))
+                elif imported_name is not None:
+                    set_alias((source_module, local_name), (target_module, imported_name), priority)
+
+            for symbol_name in context.symbols:
+                enqueue((source_module, symbol_name))
+
+        while pending:
+            exported_module, exported_name = pending.popleft()
+            queued.remove((exported_module, exported_name))
+            target = aliases.get((exported_module, exported_name), (exported_module, exported_name))
+            for source_module, priority in wildcard_importers.get(exported_module, []):
+                set_alias((source_module, exported_name), target, priority)
+
         return aliases
 
     def _is_view_class(
@@ -686,11 +681,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         return imports
 
     def _collect_symbols(self, module: nodes.Module) -> dict[str, nodes.NodeNG]:
-        return {
-            node.name: node
-            for node in module.body
-            if isinstance(node, (nodes.FunctionDef, nodes.ClassDef))
-        }
+        return {node.name: node for node in module.body if isinstance(node, (nodes.FunctionDef, nodes.ClassDef))}
 
     def _build_module_aliases(self, contexts: list[_ModuleContext]) -> dict[str, str]:
         alias_targets: dict[str, set[str]] = {}
@@ -698,9 +689,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
             for module_alias in self._module_aliases(context.module_path):
                 alias_targets.setdefault(module_alias, set()).add(context.module_path)
         return {
-            module_alias: next(iter(targets))
-            for module_alias, targets in alias_targets.items()
-            if len(targets) == 1
+            module_alias: next(iter(targets)) for module_alias, targets in alias_targets.items() if len(targets) == 1
         }
 
     @staticmethod
@@ -748,7 +737,11 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
             if isinstance(child, nodes.Assign):
                 if any(isinstance(target, nodes.AssignName) and target.name == name for target in child.targets):
                     return child.value
-            elif isinstance(child, nodes.AnnAssign) and isinstance(child.target, nodes.AssignName) and child.target.name == name:
+            elif (
+                isinstance(child, nodes.AnnAssign)
+                and isinstance(child.target, nodes.AssignName)
+                and child.target.name == name
+            ):
                 return child.value
         return None
 
@@ -795,7 +788,7 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         return login, csrf
 
     def _api_view_methods(self, node: nodes.FunctionDef) -> list[str]:
-        for decorator in (node.decorators.nodes if node.decorators else []):
+        for decorator in node.decorators.nodes if node.decorators else []:
             if self._decorator_name(decorator) != "api_view" or not isinstance(decorator, nodes.Call):
                 continue
             if decorator.args:
@@ -857,13 +850,18 @@ class DjangoViewScanner(BaseScanner[DjangoViewOutput]):
         return name in self._VIEW_BASES or name.endswith("ViewSet") or name.endswith("APIView")
 
     def _looks_like_drf_base(self, name: str) -> bool:
-        return name in {
-            "APIView",
-            "ViewSet",
-            "GenericViewSet",
-            "ModelViewSet",
-            "ReadOnlyModelViewSet",
-        } or name.endswith("ViewSet") or name.endswith("APIView")
+        return (
+            name
+            in {
+                "APIView",
+                "ViewSet",
+                "GenericViewSet",
+                "ModelViewSet",
+                "ReadOnlyModelViewSet",
+            }
+            or name.endswith("ViewSet")
+            or name.endswith("APIView")
+        )
 
     def _attribute_parts(self, node: nodes.Attribute) -> tuple[str, list[str]]:
         parts = [node.attrname]

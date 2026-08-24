@@ -339,6 +339,6 @@ summary:
   by_category:
     database: 5
     time_based: 28
-  files_scanned: 21
-  scan_duration_ms: 20464
+  files_scanned: 2368
+  scan_duration_ms: 44159
   total_count: 33

@@ -1,6 +1,10 @@
 """Tests for the Django view scanner."""
 
-from upcast.scanners.django_views import DjangoViewScanner
+from pathlib import Path
+
+import astroid
+
+from upcast.scanners.django_views import DjangoViewScanner, _ModuleContext
 
 
 def _views(output):
@@ -129,7 +133,9 @@ urlpatterns = [path("health/", HealthHandler().health)]
     )
 
     output = DjangoViewScanner().scan(tmp_path)
-    view = next(view for views in output.results.values() for view in views if view.qualname.endswith("HealthHandler.health"))
+    view = next(
+        view for views in output.results.values() for view in views if view.qualname.endswith("HealthHandler.health")
+    )
 
     assert view.kind == "method"
     assert view.status == "confirmed"
@@ -435,3 +441,40 @@ def build_patterns():
     output = DjangoViewScanner().scan(tmp_path)
 
     assert all(view.name != "health" for views in output.results.values() for view in views)
+
+
+def test_resolves_deep_wildcard_reexports_without_repeated_full_import_traversals():
+    """Wildcard reexports should propagate through a chain without global fixed-point scans."""
+
+    class CountingImports(dict):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.items_calls = 0
+
+        def items(self):
+            self.items_calls += 1
+            return super().items()
+
+    scanner = DjangoViewScanner()
+    chain_length = 80
+    contexts = []
+    for index in range(chain_length):
+        module_path = f"demo.module_{index}"
+        source = (
+            f"from demo.module_{index + 1} import *\n" if index + 1 < chain_length else "class HealthView:\n    pass\n"
+        )
+        module = astroid.parse(source, path=f"module_{index}.py")
+        contexts.append(
+            _ModuleContext(
+                module_path=module_path,
+                file_path=Path(f"module_{index}.py"),
+                module=module,
+                imports=CountingImports(scanner._collect_imports(module, module_path)),
+                symbols=scanner._collect_symbols(module),
+            )
+        )
+
+    aliases = scanner._build_export_aliases(contexts, scanner._build_module_aliases(contexts))
+
+    assert aliases[("demo.module_0", "HealthView")] == (f"demo.module_{chain_length - 1}", "HealthView")
+    assert sum(context.imports.items_calls for context in contexts) <= chain_length * 2

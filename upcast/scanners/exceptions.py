@@ -60,6 +60,7 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
             self._scan_file(file_path)
 
         summary = self._calculate_summary(
+            files_scanned=len(files),
             scan_duration_ms=int((time.time() - start_time) * 1000),
         )
 
@@ -315,11 +316,10 @@ class ExceptionHandlerScanner(BaseScanner[ExceptionHandlerOutput]):
                     return True
         return False
 
-    def _calculate_summary(self, scan_duration_ms: int) -> ExceptionHandlerSummary:
+    def _calculate_summary(self, files_scanned: int, scan_duration_ms: int) -> ExceptionHandlerSummary:
         """Calculate summary statistics."""
         total_handlers = len(self.handlers)
         total_except_clauses = sum(len(h.exception_blocks) for h in self.handlers)
-        files_scanned = len({h.file for h in self.handlers})
 
         return ExceptionHandlerSummary(
             total_count=total_except_clauses,

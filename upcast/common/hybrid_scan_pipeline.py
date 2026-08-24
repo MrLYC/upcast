@@ -174,9 +174,7 @@ def _locate_candidates(*, mapper: CSTASTMapper, pattern: str, file_path: str) ->
     return candidates
 
 
-def _evaluate_candidate(
-    *, candidate: StructuralCandidate, filters: list[SemanticFilterStage]
-) -> SemanticDecision:
+def _evaluate_candidate(*, candidate: StructuralCandidate, filters: list[SemanticFilterStage]) -> SemanticDecision:
     class_node = candidate.captures.get("NAME") or candidate.captures.get("self")
     class_name = getattr(class_node, "name", candidate.snippet)
     facts: dict[str, Any] = {"class_name": class_name}
@@ -192,7 +190,9 @@ def _evaluate_candidate(
 
     status: DecisionStatus = "confirmed"
     for filter_stage in filters:
-        filter_status, filter_reason_codes, filter_facts = _evaluate_filter(candidate=candidate, filter_stage=filter_stage)
+        filter_status, filter_reason_codes, filter_facts = _evaluate_filter(
+            candidate=candidate, filter_stage=filter_stage
+        )
         reason_codes.extend(filter_reason_codes)
         facts.update(filter_facts)
 
@@ -204,7 +204,9 @@ def _evaluate_candidate(
     return SemanticDecision(status=status, reason_codes=reason_codes, facts=facts)
 
 
-def _evaluate_filter(*, candidate: StructuralCandidate, filter_stage: SemanticFilterStage) -> tuple[DecisionStatus, list[str], dict[str, Any]]:
+def _evaluate_filter(
+    *, candidate: StructuralCandidate, filter_stage: SemanticFilterStage
+) -> tuple[DecisionStatus, list[str], dict[str, Any]]:
     if filter_stage.target != "self" and filter_stage.target in candidate.missing_captures:
         return (
             "unknown",

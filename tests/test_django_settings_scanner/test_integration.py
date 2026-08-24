@@ -1,73 +1,101 @@
 """Integration tests for Django settings scanner."""
 
+import builtins
 from pathlib import Path
 
 import pytest
 
-from upcast.common.hybrid_scan_pipeline import PipelineRunResult, SemanticDecision, StructuralCandidate
+from upcast.common.hybrid_scan_pipeline import PipelineRunResult
 from upcast.scanners.django_settings import DjangoSettingsScanner
 
 
 class TestDjangoSettingsScanner:
     """Test DjangoSettingsScanner integration."""
 
-    def test_iter_candidate_assignments_falls_back_to_ast_when_pipeline_fails(
+    def test_reuses_source_lines_for_multiple_setting_usages(
         self,
         tmp_path: Path,
         scanner: DjangoSettingsScanner,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """The candidate helper should fall back to raw AST traversal on pipeline failure."""
+        """Collecting several usages from one file should not reread it per usage."""
+        views_file = tmp_path / "views.py"
+        views_file.write_text(
+            "from django.conf import settings\nfirst = settings.ONE\nsecond = settings.TWO\nthird = settings.THREE\n",
+            encoding="utf-8",
+        )
+        original_open = builtins.open
+        views_open_count = 0
+
+        def track_open(file: object, *args: object, **kwargs: object) -> object:
+            nonlocal views_open_count
+            if Path(file) == views_file:
+                views_open_count += 1
+            return original_open(file, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "open", track_open)
+
+        result = scanner.scan(tmp_path)
+
+        assert {"ONE", "TWO", "THREE"}.issubset(result.results)
+        assert views_open_count == 2
+
+    def test_scan_uses_ast_candidates_without_redundant_hybrid_pipeline_runs(
+        self,
+        tmp_path: Path,
+        scanner: DjangoSettingsScanner,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Candidate extraction should not run a structural search it always discards."""
+        (tmp_path / "settings.py").write_text("DEBUG = True\n")
+        (tmp_path / "views.py").write_text(
+            "from django.conf import settings\nvalue = settings.DEBUG\n",
+        )
+        calls: list[str] = []
+
+        def record_pipeline(*args: object, **kwargs: object) -> PipelineRunResult:
+            calls.append("called")
+            return PipelineRunResult(candidates=[], decisions=[], findings=[])
+
+        monkeypatch.setattr(
+            "upcast.scanners.django_settings.run_pipeline",
+            record_pipeline,
+            raising=False,
+        )
+
+        result = scanner.scan(tmp_path)
+
+        assert "DEBUG" in result.results
+        assert calls == []
+
+    def test_iter_candidate_assignments_returns_ast_assignments(
+        self,
+        tmp_path: Path,
+        scanner: DjangoSettingsScanner,
+    ) -> None:
+        """The candidate helper should use the complete AST assignment set."""
         settings_file = tmp_path / "settings.py"
         settings_file.write_text("DEBUG = True\n")
 
         module = scanner.parse_file(settings_file)
         assert module is not None
 
-        def boom(*args: object, **kwargs: object) -> object:
-            raise RuntimeError("pipeline unavailable")
-
-        monkeypatch.setattr("upcast.scanners.django_settings.run_pipeline", boom)
-
         candidates = scanner._iter_candidate_assignments(module, settings_file)
 
         assert len(candidates) == 1
         assert candidates[0].targets[0].name == "DEBUG"
 
-    def test_iter_candidate_assignments_falls_back_to_ast_when_pipeline_is_partial(
+    def test_iter_candidate_assignments_includes_all_ast_assignments(
         self,
         tmp_path: Path,
         scanner: DjangoSettingsScanner,
-        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        """The candidate helper should fall back when pipeline coverage is incomplete."""
+        """The candidate helper should not omit any AST assignments."""
         settings_file = tmp_path / "settings.py"
         settings_file.write_text("DEBUG = True\nSECRET_KEY = 'test-secret'\n")
 
         module = scanner.parse_file(settings_file)
         assert module is not None
-
-        assignments = list(module.nodes_of_class(type(module.body[0])))
-        assert len(assignments) == 2
-
-        partial_result = PipelineRunResult(
-            candidates=[
-                StructuralCandidate(
-                    file_path=str(settings_file),
-                    structural_span={"start": [1, 0], "end": [1, 12]},
-                    captures={"self": assignments[0]},
-                    missing_captures=[],
-                    snippet="DEBUG = True",
-                )
-            ],
-            decisions=[SemanticDecision(status="confirmed")],
-            findings=[],
-        )
-
-        monkeypatch.setattr(
-            "upcast.scanners.django_settings.run_pipeline",
-            lambda *args, **kwargs: partial_result,
-        )
 
         candidates = scanner._iter_candidate_assignments(module, settings_file)
 

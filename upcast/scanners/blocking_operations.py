@@ -67,7 +67,7 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
                     operations_by_category[operation.category].append(operation)
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(operations_by_category, scan_duration_ms)
+        summary = self._calculate_summary(operations_by_category, len(files), scan_duration_ms)
         return BlockingOperationsOutput(
             summary=summary, results=operations_by_category, metadata={"scanner_name": "blocking-operations"}
         )
@@ -252,16 +252,17 @@ class BlockingOperationsScanner(BaseScanner[BlockingOperationsOutput]):
         return None
 
     def _calculate_summary(
-        self, operations: dict[str, list[BlockingOperation]], scan_duration_ms: int
+        self,
+        operations: dict[str, list[BlockingOperation]],
+        files_scanned: int,
+        scan_duration_ms: int,
     ) -> BlockingOperationsSummary:
         """Calculate summary statistics."""
         by_category = {cat: len(ops) for cat, ops in operations.items() if ops}
         total = sum(by_category.values())
-        files = len({op.file for ops in operations.values() for op in ops})
-
         return BlockingOperationsSummary(
             total_count=total,
-            files_scanned=files,
+            files_scanned=files_scanned,
             by_category=by_category,
             scan_duration_ms=scan_duration_ms,
         )

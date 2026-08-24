@@ -69,6 +69,56 @@ def test_scanner_summary_is_grouped_and_ordinary_slices_are_ignored():
     assert all(finding.file == "offset_patterns.py" for finding in _findings(output))
 
 
+def test_scanner_does_not_treat_list_named_qs_as_a_queryset(tmp_path: Path):
+    source = tmp_path / "ordinary.py"
+    source.write_text(
+        """
+from app.models import User
+
+qs = [1, 2, 3, 4]
+queryset = (1, 2, 3, 4)
+list_window = qs[1:3]
+tuple_window = queryset[1:3]
+orm_qs = User.objects.order_by("id")
+orm_window = orm_qs[1:3]
+""",
+        encoding="utf-8",
+    )
+
+    output = OffsetUsageScanner().scan(tmp_path)
+
+    findings = _findings(output)
+
+    assert len(findings) == 1
+    assert findings[0].pattern == "queryset_slice"
+    assert findings[0].offset is not None
+    assert findings[0].offset.expression == "1"
+
+
+def test_scanner_tracks_queryset_attributes_and_filter_queryset_results(tmp_path: Path):
+    source = tmp_path / "views.py"
+    source.write_text(
+        """
+from app.models import User
+
+class UserView:
+    def get(self):
+        queryset = self.queryset
+        from_attribute = queryset[1:3]
+        filtered = self.filter_queryset(User.objects.all())
+        from_filter = filtered[2:4]
+""",
+        encoding="utf-8",
+    )
+
+    output = OffsetUsageScanner().scan(tmp_path)
+
+    findings = _findings(output)
+
+    assert len(findings) == 2
+    assert [finding.offset.value for finding in findings if finding.offset is not None] == [1, 2]
+
+
 def test_scanner_detects_default_drf_pagination_settings():
     output = OffsetUsageScanner().scan(SETTINGS_FIXTURE)
 

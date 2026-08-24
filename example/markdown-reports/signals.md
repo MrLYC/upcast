@@ -4,16 +4,16 @@
 - **scanner_name**: signal
 
 ## 概要信息
-- **总数量**: 39
+- **总数量**: 47
 - **已扫描文件数**: 2368
-- **扫描耗时**: 21593 毫秒
+- **扫描耗时**: 25155 毫秒
 
 - **Django 接收器**: 54
 - **Django 发送器**: 31
 - **Celery 接收器**: 1
 - **Celery 发送器**: 0
-- **自定义信号定义**: 20
-- **未使用的自定义信号**: 0
+- **自定义信号定义**: 28
+- **未使用的自定义信号**: 8
 
 ## 结果详情
 
@@ -310,6 +310,37 @@
 ---
 
 
+### post_cnative_env_deploy
+
+**类型**: django
+**类别**: custom_signals
+
+#### 接收器
+
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+| apiserver/paasng/paasng/misc/audit/handlers.py |  | on_cnative_deploy_finished | 不适用 | 不适用 | 不适用 |
+
+#### 发送器
+
+| 文件 | 行号 | 模式 | 发送器 | 代码 |
+|------|------|------|--------|------|
+| apiserver/paasng/paasng/platform/engine/deploy/bg_wait/wait_bkapp.py |  | 不适用 | 不适用 | 不适用 |
+
+---
+
+
+### cnative_custom_domain_updated
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
+
+---
+
+
 ### product_create_or_update_by_operator
 
 **类型**: django
@@ -332,22 +363,65 @@
 ---
 
 
-### post_cnative_env_deploy
+### product_contact_updated
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
+
+---
+
+
+### post_change_app_router
 
 **类型**: django
 **类别**: custom_signals
 
-#### 接收器
-
-| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
-|------|------|--------|------|--------|------|
-| apiserver/paasng/paasng/misc/audit/handlers.py |  | on_cnative_deploy_finished | 不适用 | 不适用 | 不适用 |
 
 #### 发送器
 
 | 文件 | 行号 | 模式 | 发送器 | 代码 |
 |------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/engine/deploy/bg_wait/wait_bkapp.py |  | 不适用 | 不适用 | 不适用 |
+| apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py |  | 不适用 | self | 不适用 |
+
+---
+
+
+### rollback_change_app_router
+
+**类型**: django
+**类别**: custom_signals
+
+
+#### 发送器
+
+| 文件 | 行号 | 模式 | 发送器 | 代码 |
+|------|------|------|--------|------|
+| apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py |  | 不适用 | self | 不适用 |
+
+---
+
+
+### prepare_use_application_code
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
+
+---
+
+
+### prepare_use_application_name
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
 
 ---
 
@@ -375,6 +449,62 @@
 | apiserver/paasng/paasng/platform/declarative/application/controller.py |  | 不适用 | self.__class__ | 不适用 |
 | apiserver/paasng/tests/utils/helpers.py |  | 不适用 | create_app | 不适用 |
 | apiserver/paasng/tests/utils/helpers.py |  | 不适用 | create_app | 不适用 |
+
+---
+
+
+### before_finishing_application_creation
+
+**类型**: django
+**类别**: custom_signals
+
+#### 接收器
+
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+| apiserver/paasng/tests/conftest.py |  | register_app_core_data | 不适用 | 不适用 | 不适用 |
+| apiserver/paasng/tests/conftest.py |  | register_app_core_data | 不适用 | 不适用 | 不适用 |
+
+
+---
+
+
+### prepare_change_application_name
+
+**类型**: django
+**类别**: custom_signals
+
+#### 接收器
+
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+| apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py |  | on_change_application_name | 不适用 | 不适用 | 不适用 |
+
+#### 发送器
+
+| 文件 | 行号 | 模式 | 发送器 | 代码 |
+|------|------|------|--------|------|
+| apiserver/paasng/paasng/platform/declarative/application/fields.py |  | 不适用 | self.application | 不适用 |
+
+---
+
+
+### module_environment_offline_success
+
+**类型**: django
+**类别**: custom_signals
+
+#### 接收器
+
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+| apiserver/paasng/paasng/platform/evaluation/handlers.py |  | on_environment_offline_succeed | 不适用 | 不适用 | 不适用 |
+
+#### 发送器
+
+| 文件 | 行号 | 模式 | 发送器 | 代码 |
+|------|------|------|--------|------|
+| apiserver/paasng/paasng/platform/engine/deploy/archive/base.py |  | 不适用 | OfflineOperation | 不适用 |
 
 ---
 
@@ -428,42 +558,51 @@
 ---
 
 
-### prepare_change_application_name
+### post_appenv_deploy
 
 **类型**: django
 **类别**: custom_signals
 
-#### 接收器
-
-| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
-|------|------|--------|------|--------|------|
-| apiserver/paasng/tests/paasng/platform/declarative/application/conftest.py |  | on_change_application_name | 不适用 | 不适用 | 不适用 |
 
 #### 发送器
 
 | 文件 | 行号 | 模式 | 发送器 | 代码 |
 |------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/declarative/application/fields.py |  | 不适用 | self.application | 不适用 |
+| apiserver/paasng/paasng/platform/engine/workflow/flow.py |  | 不适用 | 不适用 | 不适用 |
+| apiserver/paasng/tests/paasng/platform/engine/test_handlers.py |  | 不适用 | 不适用 | 不适用 |
 
 ---
 
 
-### module_environment_offline_success
+### pre_appenv_deploy
 
 **类型**: django
 **类别**: custom_signals
+**状态**: unused
 
-#### 接收器
 
-| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
-|------|------|--------|------|--------|------|
-| apiserver/paasng/paasng/platform/evaluation/handlers.py |  | on_environment_offline_succeed | 不适用 | 不适用 | 不适用 |
 
-#### 发送器
+---
 
-| 文件 | 行号 | 模式 | 发送器 | 代码 |
-|------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/engine/deploy/archive/base.py |  | 不适用 | OfflineOperation | 不适用 |
+
+### pre_appenv_build
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
+
+---
+
+
+### pre_phase_start
+
+**类型**: django
+**类别**: custom_signals
+**状态**: unused
+
+
 
 ---
 
@@ -483,48 +622,28 @@
 ---
 
 
-### post_appenv_deploy
+### on_release_created
 
 **类型**: django
 **类别**: custom_signals
+**状态**: unused
 
 
-#### 发送器
-
-| 文件 | 行号 | 模式 | 发送器 | 代码 |
-|------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/engine/workflow/flow.py |  | 不适用 | 不适用 | 不适用 |
-| apiserver/paasng/tests/paasng/platform/engine/test_handlers.py |  | 不适用 | 不适用 | 不适用 |
 
 ---
 
 
-### post_change_app_router
+### processes_updated
 
 **类型**: django
 **类别**: custom_signals
 
+#### 接收器
 
-#### 发送器
+| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
+|------|------|--------|------|--------|------|
+| apiserver/paasng/tests/paasng/platform/engine/processes/test_wait.py |  | _on_updated | 不适用 | 不适用 | 不适用 |
 
-| 文件 | 行号 | 模式 | 发送器 | 代码 |
-|------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py |  | 不适用 | self | 不适用 |
-
----
-
-
-### rollback_change_app_router
-
-**类型**: django
-**类别**: custom_signals
-
-
-#### 发送器
-
-| 文件 | 行号 | 模式 | 发送器 | 代码 |
-|------|------|------|--------|------|
-| apiserver/paasng/paasng/platform/mgrlegacy/app_migrations/entrance.py |  | 不适用 | self | 不适用 |
 
 ---
 
@@ -550,7 +669,7 @@
 ---
 
 
-### empty_svn_accounts_fetched
+### svn_account_updated
 
 **类型**: django
 **类别**: custom_signals
@@ -565,7 +684,7 @@
 ---
 
 
-### svn_account_updated
+### empty_svn_accounts_fetched
 
 **类型**: django
 **类别**: custom_signals
@@ -591,37 +710,6 @@
 | 文件 | 行号 | 模式 | 发送器 | 代码 |
 |------|------|------|--------|------|
 | apiserver/paasng/paasng/platform/sourcectl/views.py |  | 不适用 | self | 不适用 |
-
----
-
-
-### before_finishing_application_creation
-
-**类型**: django
-**类别**: custom_signals
-
-#### 接收器
-
-| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
-|------|------|--------|------|--------|------|
-| apiserver/paasng/tests/conftest.py |  | register_app_core_data | 不适用 | 不适用 | 不适用 |
-| apiserver/paasng/tests/conftest.py |  | register_app_core_data | 不适用 | 不适用 | 不适用 |
-
-
----
-
-
-### processes_updated
-
-**类型**: django
-**类别**: custom_signals
-
-#### 接收器
-
-| 文件 | 行号 | 处理器 | 模式 | 发送器 | 代码 |
-|------|------|--------|------|--------|------|
-| apiserver/paasng/tests/paasng/platform/engine/processes/test_wait.py |  | _on_updated | 不适用 | 不适用 | 不适用 |
-
 
 ---
 
@@ -679,4 +767,3 @@
 
 
 ---
-

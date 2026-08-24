@@ -1,0 +1,42 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **Total Queue Usages**: {{ summary.total_usages }}
+- **Hardcoded Parameters**: {{ summary.hardcoded_parameters }}
+- **Dynamic Parameters**: {{ summary.dynamic_parameters }}
+- **Unknown Parameters**: {{ summary.unknown_parameters }}
+
+### By Category
+{% for category, count in summary.by_category.items() %}
+- **{{ category }}**: {{ count }}
+{% endfor %}
+
+### By Framework
+{% for framework, count in summary.by_framework.items() %}
+- **{{ framework }}**: {{ count }}
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for category, usages in results.items() %}
+
+### {{ category }}
+
+| Framework | Operation | File | Line | Function | Class | Hardcoding Status | Statement |
+| --- | --- | --- | ---: | --- | --- | --- | --- |
+{% for usage in usages %}
+| {{ usage.framework }} | {{ usage.operation }} | {{ usage.file }} | {{ usage.line }} | {{ usage.function or 'N/A' }} | {{ usage.class_name or 'N/A' }} | {{ usage.hardcoding_status }} | `{{ usage.statement or 'N/A' }}` |
+{% endfor %}
+
+{% for usage in usages if usage.parameters %}
+#### Parameters ({{ usage.file }}:{{ usage.line }})
+
+| Name | Expression | Value | Source Kind | Hardcoded |
+| --- | --- | --- | --- | --- |
+{% for parameter in usage.parameters %}
+| {{ parameter.name }} | `{{ parameter.expression or 'N/A' }}` | {{ parameter.value if parameter.value is not none else 'N/A' }} | {{ parameter.source_kind }} | {% if parameter.hardcoded is true %}Yes{% elif parameter.hardcoded is false %}No{% else %}Unknown{% endif %} |
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endblock %}

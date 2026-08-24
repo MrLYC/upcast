@@ -4,12 +4,12 @@
 - **scanner_name**: django-urls
 
 ## 概要信息
-- **总数量**: 533
-- **已扫描文件数**: 59
-- **扫描耗时**: 618 毫秒
+- **总数量**: 591
+- **已扫描文件数**: 2368
+- **扫描耗时**: 43944 毫秒
 
 - **URL配置模块总数**: 59
-- **URL模式总数**: 533
+- **URL模式总数**: 591
 
 ## 结果详情
 
@@ -319,6 +319,7 @@
 |------|------|------|------|---------|------|
 | re_path | 不适用 | None.CIInfoViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.ci.info | 不适用 |  |
 | re_path | 不适用 | None.CIInfoViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.ci.detail | 不适用 |  |
+| re_path | 不适用 | None.CIJobViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.ci.jobs | 不适用 |  |
 
 #### 模式详情
 
@@ -327,6 +328,9 @@
 
 **re_path**: `不适用`
 - 视图: None.CIInfoViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.CIJobViewSet if pattern.view_name else pattern.include_module
 
 
 ---
@@ -459,6 +463,12 @@
 | re_path | 不适用 | views.logs.ModuleIngressLogAPIView if pattern.view_name else (pattern.include_module or '不适用') | api.logs.ingress.aggregate_date_histogram.legacy | 不适用 |  |
 | re_path | 不适用 | views.logs.ModuleIngressLogAPIView if pattern.view_name else (pattern.include_module or '不适用') | api.logs.ingress.aggregate_fields_filters.legacy | 不适用 |  |
 | re_path | sys/api/log/applications/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/envs/(?P<environment>stag|prod)/structured/list/$ | views.logs.SysStructuredLogAPIView if pattern.view_name else (pattern.include_module or '不适用') | sys.api.logs.structured | 不适用 | 分组: code, module_name, environment |
+| re_path | 不适用 | views.config.CustomCollectorConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | 不适用 | 不适用 |  |
+| re_path | 不适用 | views.config.CustomCollectorConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | 不适用 | 不适用 |  |
+| re_path | 不适用 | views.config.CustomCollectorConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | 不适用 | 不适用 |  |
+| re_path | 不适用 | views.config.CustomCollectorConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | 不适用 | 不适用 |  |
+| re_path | 不适用 | views.legacy.V1StdoutLogAPIView if pattern.view_name else (pattern.include_module or '不适用') | api.logs.standard.list.deprecated | 不适用 |  |
+| re_path | sys/api/log/applications/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/structured/list/$ | views.legacy.V1SysStructuredLogAPIView if pattern.view_name else (pattern.include_module or '不适用') | sys.api.logs.structured.deprecated | 不适用 | 分组: code, module_name |
 
 #### 模式详情
 
@@ -512,6 +522,24 @@
 
 **re_path**: `sys/api/log/applications/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/envs/(?P<environment>stag|prod)/structured/list/$`
 - 视图: views.logs.SysStructuredLogAPIView if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: views.config.CustomCollectorConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: views.config.CustomCollectorConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: views.config.CustomCollectorConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: views.config.CustomCollectorConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: views.legacy.V1StdoutLogAPIView if pattern.view_name else pattern.include_module
+
+**re_path**: `sys/api/log/applications/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/structured/list/$`
+- 视图: views.legacy.V1SysStructuredLogAPIView if pattern.view_name else pattern.include_module
 
 
 ---
@@ -649,6 +677,10 @@
 | re_path | ^api/market/products/(?P<code>[^/]+)/?$ | None.ProductCombinedViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.products.detail | 不适用 | 分组: code |
 | re_path | ^api/market/products/?$ | None.ProductCreateViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.products.list | 不适用 |  |
 | re_path | ^api/market/corp_products/$ | None.CorpProductViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.corp_products | 不适用 |  |
+| re_path | ^api/market/applications/(?P<code>[^/]+)/switch/$ | None.MarketConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.application.switch | 不适用 | 分组: code |
+| re_path | ^api/market/applications/(?P<code>[^/]+)/config/$ | None.MarketConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.application.config | 不适用 | 分组: code |
+| re_path | ^api/market/applications/(?P<code>[^/]+)/publish/preparations/$ | None.PublishViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.market.application.publish.preparations | 不适用 | 分组: code |
+| re_path | api/bkapps/applications/(?P<code>[^/]+)/entrances/market/$ | None.MarketConfigViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.entrances.market_entrance | 不适用 | 分组: code |
 
 #### 模式详情
 
@@ -670,6 +702,18 @@
 **re_path**: `^api/market/corp_products/$`
 - 视图: None.CorpProductViewSet if pattern.view_name else pattern.include_module
 
+**re_path**: `^api/market/applications/(?P<code>[^/]+)/switch/$`
+- 视图: None.MarketConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/market/applications/(?P<code>[^/]+)/config/$`
+- 视图: None.MarketConfigViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/market/applications/(?P<code>[^/]+)/publish/preparations/$`
+- 视图: None.PublishViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `api/bkapps/applications/(?P<code>[^/]+)/entrances/market/$`
+- 视图: None.MarketConfigViewSet if pattern.view_name else pattern.include_module
+
 
 ---
 
@@ -679,11 +723,15 @@
 | 类型 | 模式 | 视图 | 名称 | 命名空间 | 详情 |
 |------|------|------|------|---------|------|
 | re_path | ^api/bkapps/applications/statistics/pv/top5 | None.StatisticsPVAPIView if pattern.view_name else (pattern.include_module or '不适用') | api.global.statistics.pv.top5 | 不适用 |  |
+| re_path | ^api/sync_market/test_on_product_deploy/(?P<code>[^/]+)/ | None.TestONProductDeployAPIView if pattern.view_name else (pattern.include_module or '不适用') | api.sync_market.test_on_product_deploy | 不适用 | 分组: code |
 
 #### 模式详情
 
 **re_path**: `^api/bkapps/applications/statistics/pv/top5`
 - 视图: None.StatisticsPVAPIView if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/sync_market/test_on_product_deploy/(?P<code>[^/]+)/`
+- 视图: None.TestONProductDeployAPIView if pattern.view_name else pattern.include_module
 
 
 ---
@@ -1470,6 +1518,25 @@
 | re_path | ^operation/statistics/deploy/apps/export/$ | views.operation.deploy.AppDeployStatisticsView if pattern.view_name else (pattern.include_module or '不适用') | admin.operation.statistics.deploy.apps.export | 不适用 |  |
 | re_path | ^operation/statistics/deploy/developers/$ | views.operation.deploy.DevelopersDeployStatisticsView if pattern.view_name else (pattern.include_module or '不适用') | admin.operation.statistics.deploy.developers | 不适用 |  |
 | re_path | ^operation/statistics/deploy/developers/export/$ | views.operation.deploy.DevelopersDeployStatisticsView if pattern.view_name else (pattern.include_module or '不适用') | admin.operation.statistics.deploy.developers.export | 不适用 |  |
+| re_path | ^configuration/tmpls/manage/$ | views.templates.TemplateManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.tmpl.manage | 不适用 |  |
+| re_path | ^configuration/tmpls/$ | views.templates.TemplateViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.tmpl | 不适用 |  |
+| re_path | ^configuration/tmpls/(?P<pk>[^/]+)/ | views.templates.TemplateViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.tmpl.detail | 不适用 | 分组: pk |
+| re_path | ^configuration/bk_plugins/tags/manage/$ | views.bk_plugins.BKPluginTagManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.tags.manage | 不适用 |  |
+| re_path | ^configuration/bk_plugins/tags/$ | views.bk_plugins.BKPluginTagView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.tags | 不适用 |  |
+| re_path | ^configuration/bk_plugins/tags/(?P<pk>[^/]+)/ | views.bk_plugins.BKPluginTagView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.tags.detail | 不适用 | 分组: pk |
+| re_path | ^configuration/bk_plugins/distributors/manage/$ | views.bk_plugins.BKPluginDistributorsManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.distributors.manage | 不适用 |  |
+| re_path | ^configuration/bk_plugins/distributors/$ | views.bk_plugins.BKPluginDistributorsView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.distributors | 不适用 |  |
+| re_path | ^configuration/bk_plugins/distributors/(?P<pk>[^/]+)/ | views.bk_plugins.BKPluginDistributorsView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.bk_plugins.distributors.detail | 不适用 | 分组: pk |
+| re_path | ^configuration/dashboard_template/manage/$ | views.dashboard_templates.DashboardTemplateManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.dashboard_tmpl.manage | 不适用 |  |
+| re_path | ^configuration/dashboard_template/$ | views.dashboard_templates.DashboardTemplateViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.dashboard_tmpl | 不适用 |  |
+| re_path | ^configuration/dashboard_template/(?P<pk>[^/]+)/ | views.dashboard_templates.DashboardTemplateViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.configuration.dashboard_tmpl.detail | 不适用 | 分组: pk |
+| re_path | ^platform/builtin_config_vars/manage/$ | views.builtin_config_vars.BuiltinConfigVarView if pattern.view_name else (pattern.include_module or '不适用') | admin.builtin_config_vars.manage | 不适用 |  |
+| re_path | ^platform/builtin_config_vars/$ | views.builtin_config_vars.BuiltinConfigVarViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.builtin_config_vars | 不适用 |  |
+| re_path | ^platform/builtin_config_vars/(?P<pk>[^/]+)/ | views.builtin_config_vars.BuiltinConfigVarViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.builtin_config_vars.detail | 不适用 | 分组: pk |
+| re_path | ^audit/$ | views.audit.AdminOperationAuditManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.audit.index | 不适用 |  |
+| re_path | ^audit/application$ | views.audit.AdminAppOperationAuditManageView if pattern.view_name else (pattern.include_module or '不适用') | admin.audit.app | 不适用 |  |
+| re_path | ^api/audit/operations/(?P<pk>[^/]+)/ | views.audit.AdminOperationAuditViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.audit.detail | 不适用 | 分组: pk |
+| re_path | ^api/audit/application/operations/(?P<pk>[^/]+)/ | views.audit.AdminAppOperationAuditViewSet if pattern.view_name else (pattern.include_module or '不适用') | admin.audit.app.detail | 不适用 | 分组: pk |
 
 #### 模式详情
 
@@ -1707,6 +1774,63 @@
 **re_path**: `^operation/statistics/deploy/developers/export/$`
 - 视图: views.operation.deploy.DevelopersDeployStatisticsView if pattern.view_name else pattern.include_module
 
+**re_path**: `^configuration/tmpls/manage/$`
+- 视图: views.templates.TemplateManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/tmpls/$`
+- 视图: views.templates.TemplateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/tmpls/(?P<pk>[^/]+)/`
+- 视图: views.templates.TemplateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/tags/manage/$`
+- 视图: views.bk_plugins.BKPluginTagManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/tags/$`
+- 视图: views.bk_plugins.BKPluginTagView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/tags/(?P<pk>[^/]+)/`
+- 视图: views.bk_plugins.BKPluginTagView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/distributors/manage/$`
+- 视图: views.bk_plugins.BKPluginDistributorsManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/distributors/$`
+- 视图: views.bk_plugins.BKPluginDistributorsView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/bk_plugins/distributors/(?P<pk>[^/]+)/`
+- 视图: views.bk_plugins.BKPluginDistributorsView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/dashboard_template/manage/$`
+- 视图: views.dashboard_templates.DashboardTemplateManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/dashboard_template/$`
+- 视图: views.dashboard_templates.DashboardTemplateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^configuration/dashboard_template/(?P<pk>[^/]+)/`
+- 视图: views.dashboard_templates.DashboardTemplateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^platform/builtin_config_vars/manage/$`
+- 视图: views.builtin_config_vars.BuiltinConfigVarView if pattern.view_name else pattern.include_module
+
+**re_path**: `^platform/builtin_config_vars/$`
+- 视图: views.builtin_config_vars.BuiltinConfigVarViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^platform/builtin_config_vars/(?P<pk>[^/]+)/`
+- 视图: views.builtin_config_vars.BuiltinConfigVarViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^audit/$`
+- 视图: views.audit.AdminOperationAuditManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^audit/application$`
+- 视图: views.audit.AdminAppOperationAuditManageView if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/audit/operations/(?P<pk>[^/]+)/`
+- 视图: views.audit.AdminOperationAuditViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/audit/application/operations/(?P<pk>[^/]+)/`
+- 视图: views.audit.AdminAppOperationAuditViewSet if pattern.view_name else pattern.include_module
+
 
 ---
 
@@ -1819,6 +1943,22 @@
 | re_path | ^api/bkapps/applications/(?P<code>[^/]+)/members/(?P<user_id>[0-9a-z]+)/?$ | None.ApplicationMembersViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.members.detail | 不适用 | 分组: code, user_id |
 | re_path | ^api/bkapps/applications/(?P<code>[^/]+)/leave/?$ | None.ApplicationMembersViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.members.leave | 不适用 | 分组: code |
 | re_path | ^api/bkapps/applications/members/roles/$ | None.ApplicationMembersViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.members.get_roles | 不适用 |  |
+| re_path | ^api/bkapps/accounts/marked_applications/(?P<code>[^/]+)/$ | None.ApplicationMarkedViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.user.mark.applications.detail | 不适用 | 分组: code |
+| re_path | ^api/bkapps/accounts/marked_applications/$ | None.ApplicationMarkedViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.user.mark.applications | 不适用 |  |
+| re_path | ^api/bkapps/applications/statistics/group_by_state/$ | None.ApplicationGroupByStateStatisticsView if pattern.view_name else (pattern.include_module or '不适用') | api.applications.statistics.group_by_state | 不适用 |  |
+| re_path | ^api/bkapps/applications/summary/group_by_field/$ | None.ApplicationGroupByFieldStatisticsView if pattern.view_name else (pattern.include_module or '不适用') | api.applications.statistics.group_by_field | 不适用 |  |
+| re_path | ^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/$ | None.ApplicationFeatureFlagViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.feature_flags.list | 不适用 | 分组: code |
+| re_path | ^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/env/(?P<environment>[^/]+)/$ | None.ApplicationFeatureFlagViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.feature_flags.list_with_env | 不适用 | 分组: code, module_name, environment |
+| re_path | ^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/switch/app_desc_flag/$ | None.ApplicationFeatureFlagViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.feature_flags.switch.app_desc_flag | 不适用 | 分组: code |
+| re_path | ^api/bkapps/applications/(?P<code>[^/]+)/protections/$ | None.ApplicationResProtectionsViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.protections | 不适用 | 分组: code |
+| re_path | ^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/$ | None.OauthTokenViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.oauth.token | 不适用 | 分组: app_code, env_name |
+| re_path | ^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/refresh$ | None.OauthTokenViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.oauth.token.refresh | 不适用 | 分组: app_code, env_name |
+| re_path | ^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/validate$ | None.OauthTokenViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.oauth.token.validate | 不适用 | 分组: app_code, env_name |
+| re_path | ^sys/api/light-applications/$ | None.LightAppViewSet if pattern.view_name else (pattern.include_module or '不适用') | sys.api.light-applications | 不适用 |  |
+| re_path | ^apigw/api/bkapps/applications/$ | None.ApplicationCreateViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.apigw.create_lesscode_app | 不适用 |  |
+| re_path | ^api/bkapps/ai_agent/$ | None.ApplicationCreateViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.create_ai_agent_app | 不适用 |  |
+| re_path | ^sys/api/bkapps/(?P<sys_id>[^/]+)/third_app/$ | None.SysAppViewSet if pattern.view_name else (pattern.include_module or '不适用') | sys.applications.create_third_app.sys | 不适用 | 分组: sys_id |
+| re_path | ^api/bkapps/applications/(?P<code>[^/]+)/deployment/module_order/$ | None.ApplicationDeploymentModuleOrderViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.applications.deployment.module_order | 不适用 | 分组: code |
 
 #### 模式详情
 
@@ -1875,6 +2015,54 @@
 
 **re_path**: `^api/bkapps/applications/members/roles/$`
 - 视图: None.ApplicationMembersViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/accounts/marked_applications/(?P<code>[^/]+)/$`
+- 视图: None.ApplicationMarkedViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/accounts/marked_applications/$`
+- 视图: None.ApplicationMarkedViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/statistics/group_by_state/$`
+- 视图: None.ApplicationGroupByStateStatisticsView if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/summary/group_by_field/$`
+- 视图: None.ApplicationGroupByFieldStatisticsView if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/$`
+- 视图: None.ApplicationFeatureFlagViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/modules/(?P<module_name>[^/]+)/env/(?P<environment>[^/]+)/$`
+- 视图: None.ApplicationFeatureFlagViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/feature_flags/(?P<code>[^/]+)/switch/app_desc_flag/$`
+- 视图: None.ApplicationFeatureFlagViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<code>[^/]+)/protections/$`
+- 视图: None.ApplicationResProtectionsViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/$`
+- 视图: None.OauthTokenViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/refresh$`
+- 视图: None.OauthTokenViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<app_code>[^/]+)/oauth/token/(?P<env_name>test|prod|lesscode)/validate$`
+- 视图: None.OauthTokenViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^sys/api/light-applications/$`
+- 视图: None.LightAppViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^apigw/api/bkapps/applications/$`
+- 视图: None.ApplicationCreateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/ai_agent/$`
+- 视图: None.ApplicationCreateViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^sys/api/bkapps/(?P<sys_id>[^/]+)/third_app/$`
+- 视图: None.SysAppViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<code>[^/]+)/deployment/module_order/$`
+- 视图: None.ApplicationDeploymentModuleOrderViewSet if pattern.view_name else pattern.include_module
 
 
 ---
@@ -2010,6 +2198,12 @@
 | re_path | 不适用 | None.ImageArtifactViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.build.image.list | 不适用 |  |
 | re_path | 不适用 | None.ImageArtifactViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.build.image.detail | 不适用 |  |
 | re_path | 不适用 | None.BuildProcessViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.build_process.list | 不适用 |  |
+| re_path | ^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/app/$ | None.ConfigVarBuiltinViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.config_vars.builtin.app | 不适用 | 分组: code |
+| re_path | ^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/bk_platform/$ | None.ConfigVarBuiltinViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.config_vars.builtin.bk_platform | 不适用 | 分组: code |
+| re_path | ^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/runtime/$ | None.ConfigVarBuiltinViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.config_vars.builtin.runtime | 不适用 | 分组: code |
+| re_path | 不适用 | None.ProcessResourceMetricsViewset if pattern.view_name else (pattern.include_module or '不适用') | api.process.metrics.get | 不适用 |  |
+| re_path | 不适用 | None.DeployPhaseViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.deploy.phase | 不适用 |  |
+| re_path | 不适用 | None.DeployPhaseViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.deploy.phase.result | 不适用 |  |
 
 #### 模式详情
 
@@ -2090,6 +2284,24 @@
 
 **re_path**: `不适用`
 - 视图: None.BuildProcessViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/app/$`
+- 视图: None.ConfigVarBuiltinViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/bk_platform/$`
+- 视图: None.ConfigVarBuiltinViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `^api/bkapps/applications/(?P<code>[^/]+)/config_vars/builtin/runtime/$`
+- 视图: None.ConfigVarBuiltinViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.ProcessResourceMetricsViewset if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.DeployPhaseViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.DeployPhaseViewSet if pattern.view_name else pattern.include_module
 
 
 ---
@@ -2332,6 +2544,11 @@
 | re_path | 不适用 | None.RepoBackendControlViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.sourcectl.repo.modify | 不适用 |  |
 | re_path | 不适用 | None.ModuleSourcePackageViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.sourcectl.source_package.create_via_url | 不适用 |  |
 | re_path | 不适用 | None.ModuleSourcePackageViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.sourcectl.source_package | 不适用 |  |
+| re_path | 不适用 | None.RepoDataViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.repo.branches | 不适用 |  |
+| re_path | 不适用 | None.SVNRepoTagsView if pattern.view_name else (pattern.include_module or '不适用') | api.applications.repo.tags | 不适用 |  |
+| re_path | 不适用 | None.RevisionInspectViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.repo.revisions.detail | 不适用 |  |
+| re_path | 不适用 | None.RepoDataViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.repo.revision.comment-diff | 不适用 |  |
+| re_path | 不适用 | None.RepoDataViewSet if pattern.view_name else (pattern.include_module or '不适用') | api.repo.revision.comment-diff-external | 不适用 |  |
 
 #### 模式详情
 
@@ -2364,6 +2581,21 @@
 
 **re_path**: `不适用`
 - 视图: None.ModuleSourcePackageViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.RepoDataViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.SVNRepoTagsView if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.RevisionInspectViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.RepoDataViewSet if pattern.view_name else pattern.include_module
+
+**re_path**: `不适用`
+- 视图: None.RepoDataViewSet if pattern.view_name else pattern.include_module
 
 
 ---
@@ -2792,4 +3024,3 @@
 
 
 ---
-

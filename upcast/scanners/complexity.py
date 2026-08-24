@@ -63,7 +63,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
                 modules[rel_path] = results
 
         scan_duration_ms = int((time.perf_counter() - start_time) * 1000)
-        summary = self._calculate_summary(modules, scan_duration_ms)
+        summary = self._calculate_summary(modules, len(files), scan_duration_ms)
         return ComplexityOutput(summary=summary, results=modules, metadata={"scanner_name": "complexity-patterns"})
 
     def _scan_module(self, module: nodes.Module, file_path: Path) -> list[ComplexityResult]:
@@ -214,7 +214,10 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
             return "critical"
 
     def _calculate_summary(
-        self, modules: dict[str, list[ComplexityResult]], scan_duration_ms: int
+        self,
+        modules: dict[str, list[ComplexityResult]],
+        files_scanned: int,
+        scan_duration_ms: int,
     ) -> ComplexitySummary:
         """Calculate summary statistics."""
         all_results = [r for results in modules.values() for r in results]
@@ -224,7 +227,7 @@ class ComplexityScanner(BaseScanner[ComplexityOutput]):
 
         return ComplexitySummary(
             total_count=len(all_results),
-            files_scanned=len(modules),
+            files_scanned=files_scanned,
             high_complexity_count=len(all_results),
             by_severity=by_severity,
             scan_duration_ms=scan_duration_ms,

@@ -19,13 +19,6 @@ from upcast.common.django.settings_utils import (
     is_settings_hasattr_call,
 )
 from upcast.common.file_utils import get_relative_path_str
-from upcast.common.hybrid_scan_pipeline import (
-    LocateStage,
-    MapStage,
-    PipelineSpec,
-    ProjectStage,
-    run_pipeline,
-)
 from upcast.common.scanner_base import BaseScanner
 from upcast.models.django_settings import (
     DjangoSettingsOutput,
@@ -49,6 +42,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         """
         super().__init__(verbose=verbose)
         self.current_file = ""
+        self._source_lines: dict[Path, list[str]] = {}
 
     def scan(self, path: Path) -> DjangoSettingsOutput:  # noqa: C901
         """Scan path for Django settings definitions and usages.
@@ -60,6 +54,7 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
             DjangoSettingsOutput with comprehensive setting information
         """
         start_time = time.perf_counter()
+        self._source_lines = {}
 
         # Collect definitions and usages
         definitions_by_setting: dict[str, list[SettingDefinitionItem]] = defaultdict(list)
@@ -242,50 +237,14 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
         fallback_nodes: list[nodes.NodeNG],
         project_kind: str,
     ) -> list[nodes.NodeNG]:
-        """Discover candidates via hybrid pipeline and fall back to AST traversal."""
-        try:
-            source = file_path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            return fallback_nodes
+        """Return complete AST candidates for settings extraction.
 
-        try:
-            pipeline_result = run_pipeline(
-                spec=PipelineSpec(
-                    name="scan-django-settings",
-                    locate=LocateStage(pattern=pattern),
-                    map=MapStage(),
-                    semantic_filters=[],
-                    project=ProjectStage(kind=project_kind),
-                ),
-                source=source,
-                file_path=str(file_path),
-            )
-        except Exception:
-            return fallback_nodes
-
-        selected_node_ids: set[int] = set()
-        seen_node_ids: set[int] = set()
-
-        for candidate, decision in zip(pipeline_result.candidates, pipeline_result.decisions, strict=True):
-            if decision.status != "confirmed":
-                continue
-
-            node = candidate.captures.get("self")
-            if not isinstance(node, node_type):
-                continue
-
-            node_id = id(node)
-            if node_id in seen_node_ids:
-                continue
-
-            selected_node_ids.add(node_id)
-            seen_node_ids.add(node_id)
-
-        fallback_node_ids = {id(node) for node in fallback_nodes}
-        if selected_node_ids != fallback_node_ids:
-            return fallback_nodes
-
-        return [node for node in fallback_nodes if id(node) in selected_node_ids]
+        This scanner has no semantic filters at this stage. Its previous
+        structural pass was accepted only when it selected the exact same AST
+        nodes as ``fallback_nodes``, so it could not affect the result while
+        adding three full-source searches per file.
+        """
+        return fallback_nodes
 
     def _extract_value(self, node: nodes.NodeNG) -> Any:
         """Extract value from an AST node recursively.
@@ -386,10 +345,13 @@ class DjangoSettingsScanner(BaseScanner[DjangoSettingsOutput]):
             Code line as string
         """
         try:
-            with open(file_path, encoding="utf-8") as f:
-                lines = f.readlines()
-                if 1 <= lineno <= len(lines):
-                    return lines[lineno - 1].strip()
+            lines = self._source_lines.get(file_path)
+            if lines is None:
+                with open(file_path, encoding="utf-8") as f:
+                    lines = f.readlines()
+                self._source_lines[file_path] = lines
+            if 1 <= lineno <= len(lines):
+                return lines[lineno - 1].strip()
         except Exception:  # noqa: S110
             pass
         return "..."

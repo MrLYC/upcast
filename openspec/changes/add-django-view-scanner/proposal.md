@@ -1,6 +1,6 @@
 ## Why
 
-`scan-django-urls` establishes where Django routes are declared, but URL references alone do not explain what a resolved view accesses or how it is protected.  In particular, users need an auditable, static report of view identity, DRF actions, model use, authentication and authorization evidence, and explicit uncertainty rather than a guessed security conclusion.
+`scan-django-urls` establishes where Django routes are declared, but URL references alone do not explain what a resolved view accesses or how it is protected. In particular, users need an auditable, static report of view identity, DRF actions, model use, authentication and authorization evidence, and explicit uncertainty rather than a guessed security conclusion.
 
 ## What Changes
 

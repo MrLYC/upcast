@@ -4,13 +4,13 @@
 - **scanner_name**: unit-tests
 
 ## 概要信息
-- **总数量**: 1607
-- **已扫描文件数**: 331
-- **扫描耗时**: 6537 毫秒
+- **总数量**: 2675
+- **已扫描文件数**: 2368
+- **扫描耗时**: 53943 毫秒
 
-- **测试总数**: 1607
+- **测试总数**: 2675
 - **测试文件总数**: 331
-- **断言总数**: 3658
+- **断言总数**: 3656
 
 ## 结果详情
 
@@ -108,14 +108,12 @@
 
 | 测试名称 | 行数 | 断言数 | 主体MD5 | 目标 |
 |---------|------|--------|---------|------|
-| test_url | 34-36 | 0 | cf152b78... |  (reverse),  (pytest) |
 | test_get_missing | 44-47 | 1 | eb040a48... |  |
 | test_get_normal | 49-53 | 2 | 81df3c26... |  |
 | test_upsert_normal | 55-59 | 2 | 18047e06... |  |
 | test_upsert_module_absent | 61-65 | 2 | b79068f6... |  |
 | test_upsert_invalid_module | 67-72 | 1 | d49af7a6... |  |
 | test_upsert_duplicated_entries | 74-86 | 1 | fc4dc237... |  |
-| test_url | 90-92 | 0 | beebeccb... |  (reverse),  (pytest) |
 | test_get_missing | 112-115 | 1 | eb040a48... |  |
 | test_get | 117-130 | 3 | ee1bbf3c... |  |
 | test_upsert | 132-163 | 2 | f1b94507... |  (pytest) |
@@ -2697,7 +2695,6 @@
 | test_normal | 180-185 | 1 | d2b7d683... |  (PresetEnvVariable) |
 | test_invalid_value | 189-194 | 2 | 28bfedb4... |  (ManifestImportError),  (pytest) |
 | test_invalid_spec | 196-201 | 2 | 13f4377d... |  (ManifestImportError),  (pytest) |
-| test_normal | 203-205 | 0 | baf640d3... |  |
 | test_invalid_mount_path_input | 210-218 | 2 | 6dacc38a... |  (ManifestImportError),  (pytest) |
 | test_normal | 220-236 | 1 | c5bed930... |  (Mount) |
 | test_invalid_replicas_input | 246-253 | 2 | 29105875... |  (ManifestImportError),  (pytest) |
@@ -3230,7 +3227,6 @@
 | test_get_or_create | 32-38 | 2 | dee7f943... |  (DeployPhaseTypes) |
 | test_attach | 40-50 | 2 | 3a24f4eb... |  (NoUnlinkedDeployPhaseError),  (DeployPhaseTypes),  (pytest),  (create_fake_deployment) |
 | test_get_unattached | 52-56 | 1 | 9d948317... |  (DeployPhaseTypes) |
-| test_rebuild_steps | 58-59 | 0 | 3e9b7652... |  |
 
 ---
 
@@ -4077,7 +4073,6 @@
 | 测试名称 | 行数 | 断言数 | 主体MD5 | 目标 |
 |---------|------|--------|---------|------|
 | test_get_items | 23-38 | 1 | edf42164... |  (get_items),  (pytest) |
-| test_get_items_exceptions | 41-51 | 1 | b194fabb... |  (get_items),  (pytest) |
 
 ---
 
@@ -4087,7 +4082,6 @@
 | 测试名称 | 行数 | 断言数 | 主体MD5 | 目标 |
 |---------|------|--------|---------|------|
 | test_find_coded_error_message | 29-38 | 1 | 04e8ce8f... |  (GetClusterEgressInfoError),  (find_coded_error_message),  (pytest) |
-| test_find_innermost_exception | 73-87 | 1 | 37c513f2... |  (find_innermost_exception),  (pytest) |
 | test_wrap_validation_error_dict | 90-94 | 3 | 7861e0af... |  (wrap_validation_error),  (ValidationError) |
 | test_wrap_validation_error_list | 97-100 | 2 | bd19c138... |  (wrap_validation_error),  (ValidationError) |
 | test_wrap_validation_error_str | 103-106 | 2 | 5e1a149e... |  (wrap_validation_error),  (ValidationError) |
@@ -4267,4 +4261,3 @@
 | test_create_legacy_app_2 | 98-103 | 0 | c766e7b3... |  (legacy_db),  (configure_regions) |
 
 ---
-

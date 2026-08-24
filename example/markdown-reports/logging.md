@@ -4,21 +4,21 @@
 - **scanner_name**: logging
 
 ## 概要信息
-- **总数量**: 866
-- **已扫描文件数**: 293
-- **扫描耗时**: 20975 毫秒
+- **总数量**: 789
+- **已扫描文件数**: 2368
+- **扫描耗时**: 168448 毫秒
 
-- **日志调用总数**: 866
-- **敏感调用数**: 23
+- **日志调用总数**: 789
+- **敏感调用数**: 25
 
 ### 按库统计调用
-- **logging**: 866 次调用
+- **logging**: 789 次调用
 
 ### 按级别统计调用
-- **info**: 260 次调用
-- **warning**: 179 次调用
-- **exception**: 275 次调用
-- **debug**: 97 次调用
+- **info**: 233 次调用
+- **warning**: 164 次调用
+- **exception**: 247 次调用
+- **debug**: 90 次调用
 - **error**: 52 次调用
 - **critical**: 3 次调用
 
@@ -200,23 +200,6 @@
 | 534 | debug | apiserver.paasng.paas_wl.bk_app.deploy.app_res.controllers | interrupting command pod:{command.name}... | fstring | function | 否 |
 | 539 | warning | apiserver.paasng.paas_wl.bk_app.deploy.app_res.controllers | Try to interrupt command pod, but the pod have gone! | string | except | 否 |
 | 542 | exception | apiserver.paasng.paas_wl.bk_app.deploy.app_res.controllers | Failed to interrupt command pod! | string | except | 否 |
-
-
-
-
----
-
-
-### 文件: apiserver/paasng/paas_wl/bk_app/deploy/management/commands/delete_slug.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 110 | info | apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug | 正在删除构建产物 %s | string | function | 否 |
-| 125 | info | apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug | 文件 %s 不符合删除规则 %s, 跳过删除. | string | if | 否 |
-| 130 | info | apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug | 删除文件 %s, 将释放 %s bytes 空间 | string | try | 否 |
-| 136 | exception | apiserver.paasng.paas_wl.bk_app.deploy.management.commands.delete_slug | 删除资源 %s 失败 | string | except | 否 |
 
 
 
@@ -1124,7 +1107,6 @@
 | 138 | exception | apiserver.paasng.paasng.accessories.log.views.logs | error log query conditions | string | except | 否 |
 | 223 | error | apiserver.paasng.paasng.accessories.log.views.logs | Request error when querying logs: %s | string | except | 否 |
 | 226 | exception | apiserver.paasng.paasng.accessories.log.views.logs | failed to get logs | string | except | 否 |
-| 269 | exception | apiserver.paasng.paasng.accessories.log.views.logs | scroll_id 失效, 日志查询失败 | string | except | 否 |
 | 273 | error | apiserver.paasng.paasng.accessories.log.views.logs | request error when querying logs: %s | string | except | 否 |
 | 276 | exception | apiserver.paasng.paasng.accessories.log.views.logs | failed to get logs | string | except | 否 |
 | 313 | error | apiserver.paasng.paasng.accessories.log.views.logs | request error when aggregate time-based histogram: %s | string | except | 否 |
@@ -1216,8 +1198,6 @@
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 77 | info | apiserver.paasng.paasng.accessories.publish.sync_market.engine | 成功更新应用%s的数据, 影响记录%s条，更新数据:%s | string | function | 否 |
-| 308 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.engine | `{self.product.tag.name}` 未关联桌面标签 | fstring | except | 否 |
 | 327 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.engine | The env object does not exist, app: %s(%s). | string | except | 否 |
 | 333 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.engine | The mobile config object does not exist, app: %s(%s). | string | except | 否 |
 | 425 | info | apiserver.paasng.paasng.accessories.publish.sync_market.engine | sync exposed url for {application} | fstring | function | 否 |
@@ -1235,15 +1215,7 @@
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 73 | debug | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | product:%s state changed to %s | string | if | 否 |
-| 138 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步修改 Product 属性到桌面失败！product: %s | string | except | 否 |
-| 162 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步开发者信息到桌面失败！ | string | except | 否 |
 | 171 | info | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | op role is not defined, skip synchronization | string | except | 否 |
-| 173 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步运营人员信息到桌面失败！ | string | except | 否 |
-| 258 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步应用开发者信息至桌面失败! | string | except | 否 |
-| 320 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 未创建 product, 不同步信息至市场 | string | if | 否 |
-| 355 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步修改 Product 属性到桌面失败！product: %s | string | except | 否 |
-| 368 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 未创建 product, 不同步信息至市场 | string | if | 否 |
-| 378 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | 同步修改 Product 属性到桌面失败！product: %s | string | except | 否 |
 | 397 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | Unable to sync deployment for {application.code} | fstring | except | 否 |
 | 423 | exception | apiserver.paasng.paasng.accessories.publish.sync_market.handlers | Unable to sync application logo to market | string | except | 否 |
 
@@ -1275,7 +1247,6 @@
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 35 | warning | apiserver.paasng.paasng.accessories.publish.sync_market.utils | BK_CONSOLE_DB_CONF not provided, skip running %s | string | if | 否 |
-| 48 | info | apiserver.paasng.paasng.accessories.publish.sync_market.utils | 成功更新应用%s的迁移状态为: %s, 影响记录%s条 | string | with | 否 |
 
 
 
@@ -1637,8 +1608,6 @@
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 49 | warning | apiserver.paasng.paasng.bk_plugins.bk_plugins.tasks | 该插件<%s>未曾部署，跳过该环境的下架操作 | string | except | 否 |
-| 51 | exception | apiserver.paasng.paasng.bk_plugins.bk_plugins.tasks | _('存在正在进行的下架任务，请勿重复操作') | string | except | 否 |
 | 53 | exception | apiserver.paasng.paasng.bk_plugins.bk_plugins.tasks | app offline error | string | except | 否 |
 
 
@@ -1689,17 +1658,24 @@
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 118 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | create iam grade managers error, message:{resp['message']} 
+| 118 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | create iam grade managers error, message:{resp['message']}
  data: {data} | fstring | if | 否 |
-| 136 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'get grade manager members error, grade_manager_id: {}, message:{}'.format(grade... | format | if | 否 |
-| 160 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'add grade manager (id: {}) members error, message:{} \n data: {}'.format(grade_... | format | if | 否 |
-| 181 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'delete grade manager members error, message:{} \n id: {}, params: {}'.format(re... | format | if | 否 |
-| 216 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'create user groups error, message:{} \n grade_manager_id: {}, data: {}'.format(... | format | if | 否 |
-| 239 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'delete user group error, group_id: {}, message:{}'.format(group_id, resp['messa... | format | if | 否 |
-| 258 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'get user group members error, message:{} \n id: {}, params: {}'.format(resp['me... | format | if | 否 |
-| 287 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'add user group members error, message:{} \n id: {}, data: {}'.format(resp['mess... | format | if | 否 |
-| 310 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'delete user group members error, message:{} \n id: {}, params: {}'.format(resp[... | format | if | 否 |
-| 356 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | 'grant user groups policies error, message:{} \n user_group_id: {}, data: {}'.fo... | format | if | 否 |
+| 136 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | get grade manager members error, grade_manager_id: {}, message:{} | format | if | 否 |
+| 160 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | add grade manager (id: {}) members error, message:{}
+ data: {} | format | if | 否 |
+| 181 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | delete grade manager members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 216 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | create user groups error, message:{}
+ grade_manager_id: {}, data: {} | format | if | 否 |
+| 239 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | delete user group error, group_id: {}, message:{} | format | if | 否 |
+| 258 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | get user group members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 287 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | add user group members error, message:{}
+ id: {}, data: {} | format | if | 否 |
+| 310 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | delete user group members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 356 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.iam_adaptor.management.client | grant user groups policies error, message:{}
+ user_group_id: {}, data: {} | format | if | 否 |
 
 
 
@@ -1716,19 +1692,19 @@
 | 72 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | search service catalogs from itsm error, message:{resp} | fstring | if | 否 |
 | 85 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | the root catalog information cannot be queried from itsm, catalogs: {catalogs} | fstring | function | 否 |
 | 103 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | the plugin_center catalog information cannot be queried from itsm, catalogs: {ca... | fstring | function | 否 |
-| 122 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | create plugin_center catalog at itsm error, message:{resp} 
+| 122 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | create plugin_center catalog at itsm error, message:{resp}
 data: {data} | fstring | if | 否 |
 | 140 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | Failed to query the services under the catalog(id:{catalog_id}) on itsm error:{r... | fstring | if | 否 |
 | 174 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | import service({service_path}) to itsm error, message:{resp} | fstring | if | 否 |
-| 199 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | create application ticket at itsm  error, message:{resp} 
+| 199 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | create application ticket at itsm  error, message:{resp}
 data: {data} | fstring | if | 否 |
-| 217 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | get application ticket status from itsm error, message:{resp} 
+| 217 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | get application ticket status from itsm error, message:{resp}
 sn: {sn} | fstring | if | 否 |
-| 244 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | withdraw application ticket status from itsm error, message:{resp} 
+| 244 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | withdraw application ticket status from itsm error, message:{resp}
 data: {data} | fstring | if | 否 |
-| 262 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | verify token from itsm error, resp:{resp} 
+| 262 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.itsm_adaptor.client | verify token from itsm error, resp:{resp}
 token: {token} | fstring | if | 是 |
-| 266 | exception | root | itsm token checksum fails, resp:{resp} 
+| 266 | exception | root | itsm token checksum fails, resp:{resp}
 token: {token} | fstring | if | 是 |
 
 
@@ -1818,12 +1794,7 @@ token: {token} | fstring | if | 是 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 70 | warning | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 即将删除插件<%s/%s>的源码仓库<%s> | string | try | 否 |
-| 78 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 删除插件仓库<%s>失败! | string | except | 否 |
-| 105 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 同步插件信息至第三方系统失败, 请联系相应的平台管理员排查 | string | except | 否 |
-| 108 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 同步插件信息至第三方系统失败, 请联系相应的平台管理员排查 | string | except | 否 |
 | 135 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | The callback to the third API fails when updating the visible range | string | if | 否 |
-| 146 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 创建仓库返回异常, 异常信息: %s | string | except | 否 |
-| 152 | exception | apiserver.paasng.paasng.bk_plugins.pluginscenter.shim | 执行 git 指令异常, 请联系管理员排查 | string | except | 否 |
 
 
 
@@ -1983,20 +1954,6 @@ token: {token} | fstring | if | 是 |
 ---
 
 
-### 文件: apiserver/paasng/paasng/core/core/storages/dbrouter.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 64 | info | apiserver.paasng.paasng.core.core.storages.dbrouter | _('检测到重命名前的 migration 记录 {}, 跳过执行当前 migration').format(str(sentinel)) | format | if | 否 |
-
-
-
-
----
-
-
 ### 文件: apiserver/paasng/paasng/core/core/storages/utils.py
 
 #### 标准库日志
@@ -2044,7 +2001,7 @@ token: {token} | fstring | if | 是 |
 | 125 | warning | apiserver.paasng.paasng.infras.accounts.middlewares | Invalid token header. No private token provided. | string | if | 是 |
 | 128 | warning | apiserver.paasng.paasng.infras.accounts.middlewares | Invalid token header. Token string should not contain spaces. | string | if | 是 |
 | 156 | info | apiserver.paasng.paasng.infras.accounts.middlewares | Authenticated user by AuthenticatedApp, username: %s, ip: %s, path: %s | string | if | 否 |
-| 251 | warning | apiserver.paasng.paasng.infras.accounts.middlewares | Invalid auth header: {user_data} | fstring | except | 否 |
+| 251 | warning | apiserver.paasng.paasng.infras.accounts.middlewares | Invalid auth header: {user_data} | fstring | except | 是 |
 
 
 
@@ -2131,9 +2088,9 @@ token: {token} | fstring | if | 是 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 79 | error | apiserver.paasng.paasng.infras.bkmonitorv3.client | Failed to create space on BK Monitor, resp:%s 
+| 79 | error | apiserver.paasng.paasng.infras.bkmonitorv3.client | Failed to create space on BK Monitor, resp:%s
 data: %s | string | if | 否 |
-| 109 | info | apiserver.paasng.paasng.infras.bkmonitorv3.client | Failed to update app space on BK Monitor, resp:{resp} 
+| 109 | info | apiserver.paasng.paasng.infras.bkmonitorv3.client | Failed to update app space on BK Monitor, resp:{resp}
 data: {data} | fstring | if | 否 |
 | 134 | info | apiserver.paasng.paasng.infras.bkmonitorv3.client | Failed to get space detail of %s on BK Monitor, resp: %s | string | if | 否 |
 | 274 | info | apiserver.paasng.paasng.infras.bkmonitorv3.client | quick_import_dashboard, resp:{resp}, bk_biz_id: {biz_or_space_id}, dash_name: {d... | fstring | try | 否 |
@@ -2150,24 +2107,34 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 101 | exception | apiserver.paasng.paasng.infras.iam.client | create iam grade managers error, message:{resp['message']} 
+| 101 | exception | apiserver.paasng.paasng.infras.iam.client | create iam grade managers error, message:{resp['message']}
  data: {data} | fstring | if | 否 |
-| 122 | exception | apiserver.paasng.paasng.infras.iam.client | 'delete grade manager error, message:{} grade_manager_id: {}'.format(resp['messa... | format | if | 否 |
+| 122 | exception | apiserver.paasng.paasng.infras.iam.client | delete grade manager error, message:{} grade_manager_id: {} | format | if | 否 |
 | 148 | exception | apiserver.paasng.paasng.infras.iam.client | fetch iam grade managers error, message:{resp['message']} | fstring | if | 否 |
-| 172 | exception | apiserver.paasng.paasng.infras.iam.client | 'get grade manager members error, grade_manager_id: {}, message:{}'.format(grade... | format | if | 否 |
-| 204 | exception | apiserver.paasng.paasng.infras.iam.client | 'add grade manager (id: {}) members error, message:{} \n data: {}'.format(grade_... | format | if | 否 |
-| 229 | exception | apiserver.paasng.paasng.infras.iam.client | 'delete grade manager members error, message:{} \n id: {}, params: {}'.format(re... | format | if | 否 |
-| 272 | exception | apiserver.paasng.paasng.infras.iam.client | 'create user groups error, message:{} \n grade_manager_id: {}, data: {}'.format(... | format | if | 否 |
-| 304 | exception | apiserver.paasng.paasng.infras.iam.client | 'delete user group error, group_id: {}, message:{}'.format(group_id, resp['messa... | format | if | 否 |
-| 323 | exception | apiserver.paasng.paasng.infras.iam.client | 'get user group members error, message:{} \n id: {}, params: {}'.format(resp['me... | format | if | 否 |
-| 360 | exception | apiserver.paasng.paasng.infras.iam.client | 'add user group members error, message:{} \n id: {}, data: {}'.format(resp['mess... | format | if | 否 |
-| 386 | exception | apiserver.paasng.paasng.infras.iam.client | 'delete user group members error, message:{} \n id: {}, params: {}'.format(resp[... | format | if | 否 |
-| 414 | exception | apiserver.paasng.paasng.infras.iam.client | 'grant user groups policies error, message:{} \n user_group_id: {}, data: {}'.fo... | format | if | 否 |
-| 440 | exception | apiserver.paasng.paasng.infras.iam.client | 'revoke user groups policies error, message:{} \n user_group_id: {}, data: {}'.f... | format | if | 否 |
-| 491 | exception | apiserver.paasng.paasng.infras.iam.client | update iam grade managers error, message:{resp['message']} 
+| 172 | exception | apiserver.paasng.paasng.infras.iam.client | get grade manager members error, grade_manager_id: {}, message:{} | format | if | 否 |
+| 204 | exception | apiserver.paasng.paasng.infras.iam.client | add grade manager (id: {}) members error, message:{}
+ data: {} | format | if | 否 |
+| 229 | exception | apiserver.paasng.paasng.infras.iam.client | delete grade manager members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 272 | exception | apiserver.paasng.paasng.infras.iam.client | create user groups error, message:{}
+ grade_manager_id: {}, data: {} | format | if | 否 |
+| 304 | exception | apiserver.paasng.paasng.infras.iam.client | delete user group error, group_id: {}, message:{} | format | if | 否 |
+| 323 | exception | apiserver.paasng.paasng.infras.iam.client | get user group members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 360 | exception | apiserver.paasng.paasng.infras.iam.client | add user group members error, message:{}
+ id: {}, data: {} | format | if | 否 |
+| 386 | exception | apiserver.paasng.paasng.infras.iam.client | delete user group members error, message:{}
+ id: {}, params: {} | format | if | 否 |
+| 414 | exception | apiserver.paasng.paasng.infras.iam.client | grant user groups policies error, message:{}
+ user_group_id: {}, data: {} | format | if | 否 |
+| 440 | exception | apiserver.paasng.paasng.infras.iam.client | revoke user groups policies error, message:{}
+ user_group_id: {}, data: {} | format | if | 否 |
+| 491 | exception | apiserver.paasng.paasng.infras.iam.client | update iam grade managers error, message:{resp['message']}
  data: {data} | fstring | if | 否 |
-| 518 | exception | apiserver.paasng.paasng.infras.iam.client | 'grant user groups policies in bk monitor error, msg:{} \n user_group_id: {}, da... | format | if | 否 |
-| 548 | exception | apiserver.paasng.paasng.infras.iam.client | 'grant user groups policies in bk log error, message:{} \n user_group_id: {}, da... | format | if | 否 |
+| 518 | exception | apiserver.paasng.paasng.infras.iam.client | grant user groups policies in bk monitor error, msg:{}
+ user_group_id: {}, data... | format | if | 否 |
+| 548 | exception | apiserver.paasng.paasng.infras.iam.client | grant user groups policies in bk log error, message:{}
+ user_group_id: {}, data... | format | if | 否 |
 
 
 
@@ -2571,20 +2538,8 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 74 | debug | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 错误码: {e.code} | fstring | except | 否 |
-| 78 | warning | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | [deprecated] 捕获到可能是旧版本的蓝鲸制品库(bkrepo)的错误码, 忽略. | string | if | 否 |
 | 118 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | init_enabled is set to {init_enabled}, skip init bkrepo | fstring | if | 否 |
 | 123 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | super_username or super_password is empty, skip init bkrepo | string | if | 否 |
-| 126 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 开始初始化 bkrepo | string | function | 否 |
-| 130 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 项目: %s | string | function | 否 |
-| 135 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 项目: %s | string | function | 否 |
-| 141 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 用户: %s | string | function | 否 |
-| 146 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 用户: %s | string | function | 否 |
-| 156 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 的仓库: %s | string | for | 否 |
-| 163 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将创建 bkrepo 用户: bklesscode | string | function | 否 |
-| 175 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 即将上传开发框架模板至 %s | string | if | 否 |
-| 178 | warning | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 源码模板不存在! 请检查 %s | string | else | 否 |
-| 180 | info | apiserver.paasng.paasng.plat_admin.initialization.management.commands.init_bkrepo | 初始化 bkrepo 成功 | string | function | 否 |
 
 
 
@@ -2687,21 +2642,6 @@ data: {data} | fstring | if | 否 |
 ---
 
 
-### 文件: apiserver/paasng/paasng/platform/applications/management/commands/force_del_app.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 85 | exception | apiserver.paasng.paasng.platform.applications.management.commands.force_del_app | {filter_key} 为 {filter_value} 从 PaaS2.0 中删除失败. | fstring | except | 否 |
-| 96 | info | apiserver.paasng.paasng.platform.applications.management.commands.force_del_app | {filter_key} 为 {filter_value} 的应用鉴权信息已经从 Application 表中删除 | fstring | function | 否 |
-
-
-
-
----
-
-
 ### 文件: apiserver/paasng/paasng/platform/applications/models.py
 
 #### 标准库日志
@@ -2741,16 +2681,13 @@ data: {data} | fstring | if | 否 |
 | 510 | exception | apiserver.paasng.paasng.platform.applications.views | unable to delete application {application.code} | fstring | except | 否 |
 | 543 | info | apiserver.paasng.paasng.platform.applications.views | Failed to update app space on BK Monitor, {e} | fstring | except | 否 |
 | 545 | exception | apiserver.paasng.paasng.platform.applications.views | Failed to update app space on BK Monitor | string | except | 否 |
-| 819 | warning | apiserver.paasng.paasng.platform.applications.views | _('集群未配置默认的根域名, 请检查 region=%s 下的集群配置是否合理.') | string | except | 否 |
 | 897 | exception | apiserver.paasng.paasng.platform.applications.views | Invalid app_desc.yaml cause create app failed | string | except | 否 |
 | 900 | exception | apiserver.paasng.paasng.platform.applications.views | Controller error cause create app failed | string | except | 否 |
 | 1173 | warning | apiserver.paasng.paasng.platform.applications.views | Verification code is not currently supported, return app secret directly | string | else | 是 |
 | 1274 | exception | apiserver.paasng.paasng.platform.applications.views | Create lapp %s(%s) failed! | string | except | 否 |
 | 1280 | exception | apiserver.paasng.paasng.platform.applications.views | save app base info fail. | string | except | 否 |
-| 1290 | exception | apiserver.paasng.paasng.platform.applications.views | 同步开发者信息到桌面失败！ | string | except | 否 |
 | 1313 | exception | apiserver.paasng.paasng.platform.applications.views | save app base info fail. | string | except | 否 |
 | 1347 | exception | apiserver.paasng.paasng.platform.applications.views | save app base info fail. | string | except | 否 |
-| 1356 | exception | apiserver.paasng.paasng.platform.applications.views | 同步开发者信息到桌面失败！ | string | except | 否 |
 | 1429 | exception | apiserver.paasng.paasng.platform.applications.views | Fail to update logo cache. | string | except | 否 |
 
 
@@ -2765,10 +2702,10 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 84 | exception | apiserver.paasng.paasng.platform.bk_lesscode.client | create lesscode app error, message:{resp['message']} 
+| 84 | exception | apiserver.paasng.paasng.platform.bk_lesscode.client | create lesscode app error, message:{resp['message']}
  data: {data} | fstring | if | 否 |
 | 96 | exception | apiserver.paasng.paasng.platform.bk_lesscode.client | Get lesscode app address path error. | string | except | 否 |
-| 101 | exception | apiserver.paasng.paasng.platform.bk_lesscode.client | create lesscode app error, message:{resp['message']} 
+| 101 | exception | apiserver.paasng.paasng.platform.bk_lesscode.client | create lesscode app error, message:{resp['message']}
  params: {params} | fstring | if | 否 |
 
 
@@ -2811,8 +2748,6 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 174 | warning | apiserver.paasng.paasng.platform.bkapp_model.manifest | 模块<%s> 未定义任何进程 | string | if | 否 |
-| 182 | warning | apiserver.paasng.paasng.platform.bkapp_model.manifest | 模块<%s>的 %s 进程 未定义启动命令, 将使用镜像默认命令运行 | string | except | 否 |
 | 255 | debug | apiserver.paasng.paasng.platform.bkapp_model.manifest | unknown ResQuotaPlan value `%s`, try to convert ProcessSpecPlan to ResQuotaPlan | string | except | 否 |
 
 
@@ -2862,21 +2797,6 @@ data: {data} | fstring | if | 否 |
 | 307 | info | apiserver.paasng.paasng.platform.declarative.application.controller | Skip, service "%s" already created shared attachment | string | if | 否 |
 | 314 | info | apiserver.paasng.paasng.platform.declarative.application.controller | Skip, service "%s" already bound | string | if | 否 |
 | 317 | info | apiserver.paasng.paasng.platform.declarative.application.controller | Bind service "%s" to Module "%s". | string | else | 否 |
-
-
-
-
----
-
-
-### 文件: apiserver/paasng/paasng/platform/declarative/application/fields.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 45 | warning | apiserver.paasng.paasng.platform.declarative.application.fields | 应用<%s> 的中文名将从 '%s' 修改成 '%s' | string | if | 否 |
-| 52 | warning | apiserver.paasng.paasng.platform.declarative.application.fields | 应用<%s> 的英文名将从 '%s' 修改成 '%s' | string | if | 否 |
 
 
 
@@ -2967,7 +2887,6 @@ data: {data} | fstring | if | 否 |
 | 158 | warning | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | failed to watch build logs for App: %s | string | except | 否 |
 | 186 | exception | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | Duplicate slug-builder Pod exists | string | except | 否 |
 | 190 | debug | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | SlugBuilder created: %s | string | function | 否 |
-| 237 | warning | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | 清理应用 %s 的 slug builder 失败, 原因: %s | string | except | 否 |
 | 289 | exception | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | call bk_ci pipeline failed during deploy[{self.bp}] | fstring | except | 否 |
 | 299 | exception | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | critical error happened during deploy[{self.bp}] | fstring | except | 否 |
 | 344 | exception | apiserver.paasng.paasng.platform.engine.deploy.bg_build.executors | call bk_ci pipeline for build status and logs failed during deploy[{self.bp}] | fstring | except | 否 |
@@ -3020,7 +2939,6 @@ data: {data} | fstring | if | 否 |
 | 224 | warning | apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp | Error polling AppModelDeploy status, result: %s | string | if | 否 |
 | 228 | warning | apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp | polling AppModelDeploy is interrupted | string | if | 否 |
 | 232 | info | apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp | Update AppModelDeploy status with data: %s | string | else | 否 |
-| 247 | debug | apiserver.paasng.paasng.platform.engine.deploy.bg_wait.wait_bkapp | Step not found or duplicated, name: %s | string | except | 否 |
 
 
 
@@ -3083,28 +3001,12 @@ data: {data} | fstring | if | 否 |
 ---
 
 
-### 文件: apiserver/paasng/paasng/platform/engine/deploy/release/legacy.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 81 | debug | apiserver.paasng.paasng.platform.engine.deploy.release.legacy | Step not found or duplicated, name: %s | string | except | 否 |
-| 98 | debug | apiserver.paasng.paasng.platform.engine.deploy.release.legacy | Step not found or duplicated, name: %s | string | except | 否 |
-
-
-
-
----
-
-
 ### 文件: apiserver/paasng/paasng/platform/engine/deploy/release/operator.py
 
 #### 标准库日志
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 81 | debug | apiserver.paasng.paasng.platform.engine.deploy.release.operator | Step not found or duplicated, name: %s | string | except | 否 |
 | 124 | warning | apiserver.paasng.paasng.platform.engine.deploy.release.operator | Name conflicts when creating new AppModelDeploy object, name: %s. | string | except | 否 |
 | 205 | exception | apiserver.paasng.paasng.platform.engine.deploy.release.operator | An error occur when creating BkLogConfig | string | except | 否 |
 | 213 | exception | apiserver.paasng.paasng.platform.engine.deploy.release.operator | An error occur when sync ServiceMonitor | string | except | 否 |
@@ -3196,7 +3098,7 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 64 | info | apiserver.paasng.paasng.platform.engine.management.commands.update_operations_pending_status | DRY-RUN: 
+| 64 | info | apiserver.paasng.paasng.platform.engine.management.commands.update_operations_pending_status | DRY-RUN:
  | string | if | 否 |
 | 68 | info | apiserver.paasng.paasng.platform.engine.management.commands.update_operations_pending_status | going to update type<%s> count<%s> | string | function | 否 |
 | 79 | info | apiserver.paasng.paasng.platform.engine.management.commands.update_operations_pending_status | update type<%s> done | string | try | 否 |
@@ -3247,8 +3149,8 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 46 | info | apiserver.paasng.paasng.platform.engine.monitoring | 'Start counting frozen deployments since {}'.format(edge_date.format()) | format | function | 否 |
-| 52 | info | apiserver.paasng.paasng.platform.engine.monitoring | 'Frozen deployments count: {}'.format(frozen_deployments_cnt) | format | function | 否 |
+| 46 | info | apiserver.paasng.paasng.platform.engine.monitoring | Start counting frozen deployments since {} | format | function | 否 |
+| 52 | info | apiserver.paasng.paasng.platform.engine.monitoring | Frozen deployments count: {} | format | function | 否 |
 
 
 
@@ -3439,7 +3341,7 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 85 | exception | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base | Apply %s failed. | string | except | 否 |
-| 94 | critical | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base | rollback app for LApplication[%s] is None 
+| 94 | critical | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base | rollback app for LApplication[%s] is None
  %s | string | if | 否 |
 | 108 | exception | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base | Apply %s %s failed. | string | except | 否 |
 
@@ -3458,7 +3360,6 @@ data: {data} | fstring | if | 否 |
 | 57 | warning | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.service | support {service_name} to migrate | fstring | if | 否 |
 | 70 | debug | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.service | service_attachment for application:%s not exists! | string | except | 否 |
 | 141 | warning | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.service | service rollback delete service_attachment delete fail | string | except | 否 |
-| 283 | warning | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.service | 无法绑定至合适的 plan | string | if | 否 |
 
 
 
@@ -3495,22 +3396,6 @@ data: {data} | fstring | if | 否 |
 ---
 
 
-### 文件: apiserver/paasng/paasng/platform/mgrlegacy/legacy_proxy.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 151 | exception | apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy | 从旧版本Paas获取应用Logo失败. | string | except | 否 |
-| 153 | info | apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy | 尝试返回默认logo | string | function | 否 |
-| 160 | exception | apiserver.paasng.paasng.platform.mgrlegacy.legacy_proxy | 从旧版本Paas获取应用默认Logo失败. | string | except | 否 |
-
-
-
-
----
-
-
 ### 文件: apiserver/paasng/paasng/platform/mgrlegacy/migrate.py
 
 #### 标准库日志
@@ -3523,7 +3408,7 @@ data: {data} | fstring | if | 否 |
 | 97 | info | apiserver.paasng.paasng.platform.mgrlegacy.migrate | Skip migration %s... | string | if | 否 |
 | 129 | info | apiserver.paasng.paasng.platform.mgrlegacy.migrate | Start rollback %s for %s | string | function | 否 |
 | 133 | exception | apiserver.paasng.paasng.platform.mgrlegacy.migrate | rollback fail! | string | except | 否 |
-| 149 | critical | apiserver.paasng.paasng.platform.mgrlegacy.migrate | rollback app for %s is None 
+| 149 | critical | apiserver.paasng.paasng.platform.mgrlegacy.migrate | rollback app for %s is None
  %s | string | if | 否 |
 
 
@@ -3608,7 +3493,6 @@ data: {data} | fstring | if | 否 |
 | 453 | info | apiserver.paasng.paasng.platform.modules.manager | going to delete EngineApp related to Module<%s> | string | function | 否 |
 | 457 | info | apiserver.paasng.paasng.platform.modules.manager | going to delete Module<%s> | string | function | 否 |
 | 471 | info | apiserver.paasng.paasng.platform.modules.manager | service<{rel.db_obj.service_id}-{rel.db_obj.service_instance_id}> deleted.  | fstring | for | 否 |
-| 528 | exception | apiserver.paasng.paasng.platform.modules.manager | 应用<%s>获取预设增强服务<%s>失败 | string | except | 否 |
 
 
 
@@ -3622,8 +3506,6 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 49 | debug | apiserver.paasng.paasng.platform.modules.models.runtime | module %s 未初始化 BuildConfig | string | except | 否 |
-| 122 | debug | apiserver.paasng.paasng.platform.modules.models.runtime | module %s 未初始化 BuildConfig | string | except | 否 |
 | 219 | warning | apiserver.paasng.paasng.platform.modules.models.runtime | Unable to get default image for region: %s, will use %s by default | string | except | 否 |
 
 
@@ -3640,20 +3522,6 @@ data: {data} | fstring | if | 否 |
 |------|------|--------|------|------|--------|------|
 | 203 | exception | apiserver.paasng.paasng.platform.modules.views | unable to clean module<%s> of application<%s> related resources | string | except | 否 |
 | 258 | info | apiserver.paasng.paasng.platform.modules.views | Switching default module for application[{application.code}], {default_module.na... | fstring | function | 否 |
-
-
-
-
----
-
-
-### 文件: apiserver/paasng/paasng/platform/scene_app/initializer.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 76 | exception | apiserver.paasng.paasng.platform.scene_app.initializer | _('加载应用描述文件失败') | string | except | 否 |
 
 
 
@@ -3711,7 +3579,6 @@ data: {data} | fstring | if | 否 |
 |------|------|--------|------|------|--------|------|
 | 96 | warning | apiserver.paasng.paasng.platform.smart_app.services.detector | Unable to list contents in the package file, path: %s. | string | except | 否 |
 | 111 | warning | apiserver.paasng.paasng.platform.smart_app.services.detector | Invalid relative path detected: %s | string | if | 否 |
-| 121 | exception | apiserver.paasng.paasng.platform.smart_app.services.detector | _('应用描述文件内容不是有效 YAML 格式') | string | except | 否 |
 | 138 | warning | apiserver.paasng.paasng.platform.smart_app.services.detector | failed to extract version from app_desc, detail: %s | string | except | 否 |
 | 159 | debug | apiserver.paasng.paasng.platform.smart_app.services.detector | parsing source package's stats object. | string | function | 否 |
 | 185 | info | apiserver.paasng.paasng.platform.smart_app.services.detector | The logo.png does not exist, using default logo. | string | except | 否 |
@@ -3766,9 +3633,7 @@ data: {data} | fstring | if | 否 |
 | 152 | exception | apiserver.paasng.paasng.platform.smart_app.views | Create app error ! | string | except | 否 |
 | 166 | exception | apiserver.paasng.paasng.platform.smart_app.views | Handling S-Mart Package Exceptions! | string | except | 否 |
 | 169 | exception | apiserver.paasng.paasng.platform.smart_app.views | Failed to access container registry! | string | except | 否 |
-| 289 | exception | apiserver.paasng.paasng.platform.smart_app.views | S-Mart package does not exist！ | string | except | 否 |
 | 294 | error | apiserver.paasng.paasng.platform.smart_app.views | the provided digital signature is inconsistent with the digital signature of the... | string | if | 否 |
-| 307 | exception | apiserver.paasng.paasng.platform.smart_app.views | Failed to update app info！ | string | except | 否 |
 | 320 | exception | apiserver.paasng.paasng.platform.smart_app.views | Handling S-Mart Package Exceptions! | string | except | 否 |
 | 323 | exception | apiserver.paasng.paasng.platform.smart_app.views | Failed to access container registry! | string | except | 否 |
 
@@ -3805,7 +3670,7 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 84 | exception | apiserver.paasng.paasng.platform.sourcectl.connector | unable to render app source template %s | string | except | 否 |
-| 260 | debug | apiserver.paasng.paasng.platform.sourcectl.connector | Creating basic auth of repo<%s> | string | if | 否 |
+| 260 | debug | apiserver.paasng.paasng.platform.sourcectl.connector | Creating basic auth of repo<%s> | string | if | 是 |
 | 311 | debug | apiserver.paasng.paasng.platform.sourcectl.connector | compressing templated source, key=%s... | string | with | 否 |
 | 363 | exception | apiserver.paasng.paasng.platform.sourcectl.connector | unable to render app source template %s | string | except | 否 |
 
@@ -3821,7 +3686,7 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 64 | warning | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git | repo<%s> has no basic auth, maybe missing | string | except | 否 |
+| 64 | warning | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git | repo<%s> has no basic auth, maybe missing | string | except | 是 |
 | 88 | exception | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git | Failed to access the remote git repo, command error. | string | except | 否 |
 | 91 | exception | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git | Failed to access the remote git repo, reason unknown. | string | except | 否 |
 | 138 | debug | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_git | version_name: %s, revision: %s | string | function | 否 |
@@ -3838,7 +3703,7 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 47 | warning | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_svn | repo<%s> has no basic auth, maybe missing | string | except | 否 |
+| 47 | warning | apiserver.paasng.paasng.platform.sourcectl.controllers.bare_svn | repo<%s> has no basic auth, maybe missing | string | except | 是 |
 
 
 
@@ -3942,22 +3807,6 @@ data: {data} | fstring | if | 否 |
 | 69 | info | apiserver.paasng.paasng.platform.sourcectl.management.commands.clean_source_package | About to clean up the source package %s | string | for | 否 |
 | 76 | info | apiserver.paasng.paasng.platform.sourcectl.management.commands.clean_source_package | Cleaned up source package %s, reclaimed %s bytes successfully. | string | if | 否 |
 | 82 | info | apiserver.paasng.paasng.platform.sourcectl.management.commands.clean_source_package | [dry-run] %s bytes will be reclaimed after cleaning the source package %s. | string | else | 否 |
-
-
-
-
----
-
-
-### 文件: apiserver/paasng/paasng/platform/sourcectl/migrations/0007_init_source_type_specs.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 29 | info | apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs | 初始化 BareGit 代码库配置 | string | function | 否 |
-| 35 | info | apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs | 初始化 BareSVN 代码库配置 | string | function | 否 |
-| 40 | info | apiserver.paasng.paasng.platform.sourcectl.migrations.0007_init_source_type_specs | 初始化代码库配置完成 | string | function | 否 |
 
 
 
@@ -4088,7 +3937,7 @@ data: {data} | fstring | if | 否 |
 |------|------|--------|------|------|--------|------|
 | 98 | warning | apiserver.paasng.paasng.platform.sourcectl.svn.admin | No bk svn sourcectl was configured | string | except | 否 |
 | 109 | critical | apiserver.paasng.paasng.platform.sourcectl.svn.admin | response.content | string | if | 否 |
-| 331 | debug | apiserver.paasng.paasng.platform.sourcectl.svn.admin | 'SvnAuthClient4Developer: mock call {func_name} with: ({args}, {kwargs})'.format... | format | function | 否 |
+| 331 | debug | apiserver.paasng.paasng.platform.sourcectl.svn.admin | SvnAuthClient4Developer: mock call {func_name} with: ({args}, {kwargs}) | format | function | 否 |
 
 
 
@@ -4313,7 +4162,7 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 61 | exception | apiserver.paasng.paasng.utils.notification_plugins | request to tof failed. | string | except | 否 |
-| 67 | warning | apiserver.paasng.paasng.utils.notification_plugins | 'send {method} to {receiver} failed: {code}/{reason}'.format(method=method, rece... | format | function | 否 |
+| 67 | warning | apiserver.paasng.paasng.utils.notification_plugins | send {method} to {receiver} failed: {code}/{reason} | format | function | 否 |
 | 92 | error | apiserver.paasng.paasng.utils.notification_plugins | The receivers of sending mail is empty, skipped | string | if | 否 |
 | 109 | error | apiserver.paasng.paasng.utils.notification_plugins | The receivers of sending rtx is empty, skipped | string | if | 否 |
 | 126 | error | apiserver.paasng.paasng.utils.notification_plugins | The receivers of sending weixin is empty, skipped | string | if | 否 |
@@ -4332,22 +4181,7 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 45 | warning | apiserver.paasng.paasng.utils.notifier | Dummy notification backend invoked, receivers: %s | string | function | 否 |
-| 89 | exception | apiserver.paasng.paasng.utils.notifier | 'sending sentry<{dsn}> failed'.format(dsn=dsn) | format | except | 否 |
-
-
-
-
----
-
-
-### 文件: apiserver/paasng/paasng/utils/termcolors.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 107 | warning | apiserver.paasng.paasng.utils.termcolors | 输入不合法, 转换成黑色. | string | if | 否 |
-| 124 | warning | apiserver.paasng.paasng.utils.termcolors | 输入不合法, 转换成黑色. | string | else | 否 |
+| 89 | exception | apiserver.paasng.paasng.utils.notifier | sending sentry<{dsn}> failed | format | except | 否 |
 
 
 
@@ -4484,21 +4318,6 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 36 | info | svc-bkrepo.svc_bk_repo.vendor.helper | Equivalent curl command: %s | string | try | 否 |
-| 43 | exception | svc-bkrepo.svc_bk_repo.vendor.helper | 未知错误, %s | string | except | 否 |
-
-
-
-
----
-
-
-### 文件: svc-bkrepo/svc_bk_repo/vendor/views.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 113 | info | svc-bkrepo.svc_bk_repo.vendor.views | 仓库: %s 未配置容量配额, 无需扩容. | string | except | 否 |
 
 
 
@@ -4512,14 +4331,7 @@ data: {data} | fstring | if | 否 |
 
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
-| 80 | info | svc-mysql.svc_mysql.vendor.helper | Mysql 正在执行 {sql}... | fstring | with | 否 |
-| 87 | exception | svc-mysql.svc_mysql.vendor.helper | MySQL 执行 % 失败 | string | except | 否 |
-| 102 | exception | svc-mysql.svc_mysql.vendor.helper | MySQL创建连接失败: {(self.user, self.password, self.name)} | fstring | if | 是 |
-| 104 | exception | svc-mysql.svc_mysql.vendor.helper | 未知数据库异常: %s | string | except | 否 |
 | 131 | info | svc-mysql.svc_mysql.vendor.helper | Grant privileges to user<%s> | string | function | 否 |
-| 145 | info | svc-mysql.svc_mysql.vendor.helper | Mysql 正在执行 `{create_user_sql.replace(password, '******')}`... | fstring | for | 是 |
-| 154 | info | svc-mysql.svc_mysql.vendor.helper | Mysql 正在执行 `{grant_sql}`... | fstring | for | 否 |
-| 156 | info | svc-mysql.svc_mysql.vendor.helper | Mysql 正在执行 `flush privileges;` | string | with | 否 |
 
 
 
@@ -4550,21 +4362,6 @@ data: {data} | fstring | if | 否 |
 | 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
 |------|------|--------|------|------|--------|------|
 | 79 | error | svc-otel.svc_otel.bkmonitorv3.client | Failed to create APM BK Monitor, resp:{resp} pm_name: {apm_name}, space_uid:{bk... | fstring | if | 否 |
-
-
-
-
----
-
-
-### 文件: svc-otel/svc_otel/vendor/provider.py
-
-#### 标准库日志
-
-| 行号 | 级别 | 日志器 | 消息 | 类型 | 代码块 | 敏感 |
-|------|------|--------|------|------|--------|------|
-| 61 | info | svc-otel.svc_otel.vendor.provider | 正在创建增强服务实例... | string | function | 否 |
-| 85 | info | svc-otel.svc_otel.vendor.provider | 正在删除增强服务实例... | string | function | 否 |
 
 
 
@@ -4713,4 +4510,3 @@ data: {data} | fstring | if | 否 |
 
 
 ---
-

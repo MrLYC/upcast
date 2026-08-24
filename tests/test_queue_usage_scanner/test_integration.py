@@ -192,6 +192,35 @@ kombu_queue = KombuQueue("jobs", routing_key="jobs")
     assert any(finding.framework == "kombu" for finding in output.results["rabbitmq"])
 
 
+def test_scans_in_process_observation_and_kombu_ack_operations(tmp_path: Path):
+    source = tmp_path / "operations.py"
+    source.write_text(
+        """
+from queue import Queue
+from kombu import Connection
+
+local_queue = Queue()
+local_queue.empty()
+local_queue.full()
+local_queue.get(block=False)
+
+connection = Connection("memory://")
+channel = connection.channel()
+channel.basic_get("jobs")
+channel.basic_ack(delivery_tag)
+""",
+        encoding="utf-8",
+    )
+
+    output = _scanner()().scan(tmp_path)
+
+    in_process = output.results["in_process"]
+    assert {finding.operation for finding in in_process} >= {"empty", "full", "get"}
+
+    rabbitmq = output.results["rabbitmq"]
+    assert {finding.operation for finding in rabbitmq} >= {"basic_get", "basic_ack"}
+
+
 def test_marks_unresolved_expression_as_unknown(tmp_path: Path):
     source = tmp_path / "unknown.py"
     source.write_text(
@@ -223,7 +252,7 @@ app = Celery("worker")
 def celery_task(value):
     return value
 
-@app.task
+@app.task(queue="critical")
 def app_task(value):
     return value
 
@@ -243,6 +272,12 @@ dramatiq_task.send_with_options(queue_name="critical", delay=1000)
 
     assert any(finding.framework == "celery" and finding.operation == "apply_async" for finding in task_findings)
     assert any(finding.framework == "celery" and finding.operation == "delay" for finding in task_findings)
+    assert any(
+        finding.framework == "celery"
+        and finding.operation == "register"
+        and any(parameter.name == "queue" for parameter in finding.parameters)
+        for finding in task_findings
+    )
     assert any(
         finding.framework == "dramatiq" and finding.operation == "send_with_options" for finding in task_findings
     )

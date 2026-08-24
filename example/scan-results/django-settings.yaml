@@ -1424,15 +1424,12 @@ results:
       lineno: 1423
       statement: 'BK_AUDIT_SETTINGS = {''log_queue_limit'': 50000, ''exporters'':
         [''bk_audit.contrib.opentelemetry.exporters.OTLogExporter''], ''service_name_handler'':
-        ''bk_audit.contrib.opentelemetry.utils.ServiceNameHandler'', ''ot_endpoint'':
-        None, ''bk_data_token'': None}'
+        ''bk_audit.contrib.opentelemetry.utils.ServiceNameHandler''}'
       type: dict
       value:
-        bk_data_token: null
         exporters:
         - bk_audit.contrib.opentelemetry.exporters.OTLogExporter
         log_queue_limit: 50000
-        ot_endpoint: null
         service_name_handler: bk_audit.contrib.opentelemetry.utils.ServiceNameHandler
     usage_count: 0
     usages: []
@@ -2240,18 +2237,10 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 1405
-      statement: 'BK_NOTICE = {''STAGE'': None, ''LANGUAGE_COOKIE_NAME'': None, ''DEFAULT_LANGUAGE'':
-        ''en'', ''PLATFORM'': None, ''BK_API_URL_TMPL'': None, ''BK_API_APP_CODE'':
-        None, ''BK_API_SECRET_KEY'': None}'
+      statement: 'BK_NOTICE = {''DEFAULT_LANGUAGE'': ''en''}'
       type: dict
       value:
-        BK_API_APP_CODE: null
-        BK_API_SECRET_KEY: null
-        BK_API_URL_TMPL: null
         DEFAULT_LANGUAGE: en
-        LANGUAGE_COOKIE_NAME: null
-        PLATFORM: null
-        STAGE: null
     usage_count: 0
     usages: []
   BK_NOTICE_ENV:
@@ -2871,16 +2860,14 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 563
-      statement: 'CACHES = {''default'': None}'
+      statement: CACHES = {}
       type: dict
-      value:
-        default: null
+      value: {}
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 565
-      statement: 'CACHES = {''default'': None}'
+      statement: CACHES = {}
       type: dict
-      value:
-        default: null
+      value: {}
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 567
       statement: 'CACHES = {''default'': {''BACKEND'': ''django.core.cache.backends.filebased.FileBasedCache'',
@@ -2892,13 +2879,11 @@ results:
           LOCATION: /tmp/django_cache
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 259
-      statement: 'CACHES = {''database'': {''BACKEND'': ''django.core.cache.backends.db.DatabaseCache'',
-        ''LOCATION'': None}}'
+      statement: 'CACHES = {''database'': {''BACKEND'': ''django.core.cache.backends.db.DatabaseCache''}}'
       type: dict
       value:
         database:
           BACKEND: django.core.cache.backends.db.DatabaseCache
-          LOCATION: null
     usage_count: 0
     usages: []
   CELERY_ACCEPT_CONTENT:
@@ -2998,13 +2983,11 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 638
-      statement: 'CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {''master_name'': None,
-        ''sentinel_kwargs'': {''password'': None}}'
+      statement: 'CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {''sentinel_kwargs'':
+        {}}'
       type: dict
       value:
-        master_name: null
-        sentinel_kwargs:
-          password: null
+        sentinel_kwargs: {}
     usage_count: 0
     usages: []
   CELERY_RESULT_SERIALIZER:
@@ -3677,82 +3660,47 @@ results:
       value: {}
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 141
-      statement: 'DATABASES = {''default'': None}'
+      statement: DATABASES = {}
       type: dict
-      value:
-        default: null
+      value: {}
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 143
-      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql'',
-        ''NAME'': None, ''USER'': None, ''PASSWORD'': None, ''HOST'': None, ''PORT'':
-        None, ''OPTIONS'': None}}'
+      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql''}}'
       type: dict
       value:
         default:
           ENGINE: django.db.backends.mysql
-          HOST: null
-          NAME: null
-          OPTIONS: null
-          PASSWORD: null
-          PORT: null
-          USER: null
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 140
-      statement: 'DATABASES = {''default'': None}'
+      statement: DATABASES = {}
       type: dict
-      value:
-        default: null
+      value: {}
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 142
-      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql'',
-        ''NAME'': None, ''USER'': None, ''PASSWORD'': None, ''HOST'': None, ''PORT'':
-        None, ''OPTIONS'': None}}'
+      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql''}}'
       type: dict
       value:
         default:
           ENGINE: django.db.backends.mysql
-          HOST: null
-          NAME: null
-          OPTIONS: null
-          PASSWORD: null
-          PORT: null
-          USER: null
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 140
-      statement: 'DATABASES = {''default'': None}'
+      statement: DATABASES = {}
       type: dict
-      value:
-        default: null
+      value: {}
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 142
-      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql'',
-        ''NAME'': None, ''USER'': None, ''PASSWORD'': None, ''HOST'': None, ''PORT'':
-        None, ''OPTIONS'': None}}'
+      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql''}}'
       type: dict
       value:
         default:
           ENGINE: django.db.backends.mysql
-          HOST: null
-          NAME: null
-          OPTIONS: null
-          PASSWORD: null
-          PORT: null
-          USER: null
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 125
-      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql'',
-        ''NAME'': None, ''USER'': None, ''PASSWORD'': None, ''HOST'': None, ''PORT'':
-        None, ''OPTIONS'': None}}'
+      statement: 'DATABASES = {''default'': {''ENGINE'': ''django.db.backends.mysql''}}'
       type: dict
       value:
         default:
           ENGINE: django.db.backends.mysql
-          HOST: null
-          NAME: null
-          OPTIONS: null
-          PASSWORD: null
-          PORT: null
-          USER: null
     usage_count: 2
     usages:
     - file: apiserver/paasng/paasng/misc/monitoring/healthz/probes.py
@@ -4436,11 +4384,10 @@ results:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 937
       statement: 'DEFAULT_REGION_TEMPLATE = {''name'': ''default'', ''display_name'':
-        ''默认版'', ''basic_info'': {''description'': ''默认版'', ''link_production_app'':
-        None, ''link_engine_app'': ''http://example.com/{region}-{name}/'', ''extra_logo_bucket_info'':
-        {}, ''deploy_ver_for_update_svn_account'': ''default'', ''legacy_deploy_version'':
-        ''default'', ''built_in_config_var'': {''LOGIN_URL'': {''stag'': None, ''prod'':
-        None}, ''REMOTE_STATIC_URL'': {''stag'': ''http://example.com/static_api/'',
+        ''默认版'', ''basic_info'': {''description'': ''默认版'', ''link_engine_app'': ''http://example.com/{region}-{name}/'',
+        ''extra_logo_bucket_info'': {}, ''deploy_ver_for_update_svn_account'': ''default'',
+        ''legacy_deploy_version'': ''default'', ''built_in_config_var'': {''LOGIN_URL'':
+        {}, ''REMOTE_STATIC_URL'': {''stag'': ''http://example.com/static_api/'',
         ''prod'': ''http://example.com/static_api/''}}}, ''entrance_config'': {''exposed_url_type'':
         1, ''manually_upgrade_to_subdomain_allowed'': False}, ''mul_modules_config'':
         {''creation_allowed'': True}, ''enabled_feature_flags'': [], ''provide_env_vars_platform'':
@@ -4449,9 +4396,7 @@ results:
       value:
         basic_info:
           built_in_config_var:
-            LOGIN_URL:
-              prod: null
-              stag: null
+            LOGIN_URL: {}
             REMOTE_STATIC_URL:
               prod: http://example.com/static_api/
               stag: http://example.com/static_api/
@@ -4460,7 +4405,6 @@ results:
           extra_logo_bucket_info: {}
           legacy_deploy_version: default
           link_engine_app: http://example.com/{region}-{name}/
-          link_production_app: null
         display_name: 默认版
         enabled_feature_flags: []
         entrance_config:
@@ -5645,16 +5589,9 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/workloads.py
       lineno: 291
-      statement: 'FOR_TESTS_CLUSTER_CONFIG = {''url'': None, ''ca_data'': None, ''cert_data'':
-        None, ''key_data'': None, ''token_value'': None, ''force_domain'': None}'
+      statement: FOR_TESTS_CLUSTER_CONFIG = {}
       type: dict
-      value:
-        ca_data: null
-        cert_data: null
-        force_domain: null
-        key_data: null
-        token_value: null
-        url: null
+      value: {}
     usage_count: 6
     usages:
     - file: apiserver/paasng/tests/utils/cluster.py
@@ -6868,10 +6805,9 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 312
-      statement: LOCALE_PATHS = (None,)
+      statement: LOCALE_PATHS = ()
       type: tuple
-      value:
-      - null
+      value: []
     usage_count: 0
     usages: []
   LOCAL_SETTINGS:
@@ -6923,9 +6859,7 @@ results:
         %(message)s'', ''datefmt'': ''%Y-%m-%d %H:%M:%S''}, ''simple'': {''format'':
         ''%(levelname)s %(message)s''}}, ''handlers'': {''console'': {''level'': ''DEBUG'',
         ''class'': ''logging.StreamHandler'', ''formatter'': ''verbose''}, ''sentry'':
-        {''level'': ''ERROR'', ''class'': None, ''dsn'': None}, ''file'': {''level'':
-        ''DEBUG'', ''class'': None, ''formatter'': ''verbose'', ''filename'': None}},
-        ''loggers'': None}'
+        {''level'': ''ERROR''}, ''file'': {''level'': ''DEBUG'', ''formatter'': ''verbose''}}}'
       type: dict
       value:
         disable_existing_loggers: true
@@ -6942,15 +6876,10 @@ results:
             formatter: verbose
             level: DEBUG
           file:
-            class: null
-            filename: null
             formatter: verbose
             level: DEBUG
           sentry:
-            class: null
-            dsn: null
             level: ERROR
-        loggers: null
         version: 1
     usage_count: 1
     usages:
@@ -7284,22 +7213,19 @@ results:
       value: null
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 240
-      statement: 'METRIC_CLIENT_TOKEN_DICT = {''monitoring'': None}'
+      statement: METRIC_CLIENT_TOKEN_DICT = {}
       type: dict
-      value:
-        monitoring: null
+      value: {}
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 239
-      statement: 'METRIC_CLIENT_TOKEN_DICT = {''monitoring'': None}'
+      statement: METRIC_CLIENT_TOKEN_DICT = {}
       type: dict
-      value:
-        monitoring: null
+      value: {}
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 247
-      statement: 'METRIC_CLIENT_TOKEN_DICT = {''monitoring'': None}'
+      statement: METRIC_CLIENT_TOKEN_DICT = {}
       type: dict
-      value:
-        monitoring: null
+      value: {}
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 227
       statement: METRIC_CLIENT_TOKEN_DICT = {}
@@ -7869,40 +7795,34 @@ results:
       value: null
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 271
-      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''key'': None,
-        ''algorithm'': ''HS256''}]'
+      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''algorithm'':
+        ''HS256''}]'
       type: list
       value:
       - algorithm: HS256
         iss: paas-v3
-        key: null
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 268
-      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''key'': None,
-        ''algorithm'': ''HS256''}]'
+      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''algorithm'':
+        ''HS256''}]'
       type: list
       value:
       - algorithm: HS256
         iss: paas-v3
-        key: null
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 276
-      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''key'': None,
-        ''algorithm'': ''HS256''}]'
+      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': ''paas-v3'', ''algorithm'':
+        ''HS256''}]'
       type: list
       value:
       - algorithm: HS256
         iss: paas-v3
-        key: null
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 232
-      statement: 'PAAS_SERVICE_JWT_CLIENTS = [{''iss'': None, ''key'': None, ''algorithm'':
-        None}]'
+      statement: PAAS_SERVICE_JWT_CLIENTS = [{}]
       type: list
       value:
-      - algorithm: null
-        iss: null
-        key: null
+      - {}
     usage_count: 0
     usages: []
   PAAS_SERVICE_PROVIDER_CLS:
@@ -8579,10 +8499,9 @@ results:
     definitions:
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 84
-      statement: 'RAVEN_CONFIG = {''dsn'': None}'
+      statement: RAVEN_CONFIG = {}
       type: dict
-      value:
-        dsn: null
+      value: {}
     usage_count: 0
     usages: []
   REDIS_CONNECTION_OPTIONS:
@@ -8593,12 +8512,11 @@ results:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 552
       statement: 'REDIS_CONNECTION_OPTIONS = {''socket_timeout'': 3, ''socket_connect_timeout'':
-        3, ''socket_keepalive'': True, ''socket_keepalive_options'': None}'
+        3, ''socket_keepalive'': True}'
       type: dict
       value:
         socket_connect_timeout: 3
         socket_keepalive: true
-        socket_keepalive_options: null
         socket_timeout: 3
     usage_count: 1
     usages:
@@ -9475,28 +9393,24 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 323
-      statement: STATICFILES_DIRS = (None,)
+      statement: STATICFILES_DIRS = ()
       type: tuple
-      value:
-      - null
+      value: []
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 113
-      statement: STATICFILES_DIRS = [None]
+      statement: STATICFILES_DIRS = []
       type: list
-      value:
-      - null
+      value: []
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 112
-      statement: STATICFILES_DIRS = [None]
+      statement: STATICFILES_DIRS = []
       type: list
-      value:
-      - null
+      value: []
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 112
-      statement: STATICFILES_DIRS = [None]
+      statement: STATICFILES_DIRS = []
       type: list
-      value:
-      - null
+      value: []
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 224
       statement: STATICFILES_DIRS = []
@@ -9686,28 +9600,23 @@ results:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 353
       statement: 'TEMPLATES = [{''BACKEND'': ''django.template.backends.django.DjangoTemplates'',
-        ''DIRS'': None, ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'':
-        None}}]'
+        ''APP_DIRS'': True, ''OPTIONS'': {}}]'
       type: list
       value:
       - APP_DIRS: true
         BACKEND: django.template.backends.django.DjangoTemplates
-        DIRS: null
-        OPTIONS:
-          context_processors: null
+        OPTIONS: {}
     - file: svc-bkrepo/svc_bk_repo/settings/__init__.py
       lineno: 119
       statement: 'TEMPLATES = [{''BACKEND'': ''django.template.backends.django.DjangoTemplates'',
-        ''DIRS'': [None], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'':
-        [''django.template.context_processors.debug'', ''django.template.context_processors.request'',
-        ''django.contrib.auth.context_processors.auth'', ''django.contrib.messages.context_processors.messages'',
-        ''svc_bk_repo.middleware.context_processors'']}}]'
+        ''DIRS'': [], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'': [''django.template.context_processors.debug'',
+        ''django.template.context_processors.request'', ''django.contrib.auth.context_processors.auth'',
+        ''django.contrib.messages.context_processors.messages'', ''svc_bk_repo.middleware.context_processors'']}}]'
       type: list
       value:
       - APP_DIRS: true
         BACKEND: django.template.backends.django.DjangoTemplates
-        DIRS:
-        - null
+        DIRS: []
         OPTIONS:
           context_processors:
           - django.template.context_processors.debug
@@ -9718,16 +9627,14 @@ results:
     - file: svc-mysql/svc_mysql/settings/__init__.py
       lineno: 118
       statement: 'TEMPLATES = [{''BACKEND'': ''django.template.backends.django.DjangoTemplates'',
-        ''DIRS'': [None], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'':
-        [''django.template.context_processors.debug'', ''django.template.context_processors.request'',
-        ''django.contrib.auth.context_processors.auth'', ''django.contrib.messages.context_processors.messages'',
-        ''svc_mysql.middleware.context_processors'']}}]'
+        ''DIRS'': [], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'': [''django.template.context_processors.debug'',
+        ''django.template.context_processors.request'', ''django.contrib.auth.context_processors.auth'',
+        ''django.contrib.messages.context_processors.messages'', ''svc_mysql.middleware.context_processors'']}}]'
       type: list
       value:
       - APP_DIRS: true
         BACKEND: django.template.backends.django.DjangoTemplates
-        DIRS:
-        - null
+        DIRS: []
         OPTIONS:
           context_processors:
           - django.template.context_processors.debug
@@ -9738,16 +9645,14 @@ results:
     - file: svc-otel/svc_otel/settings/__init__.py
       lineno: 118
       statement: 'TEMPLATES = [{''BACKEND'': ''django.template.backends.django.DjangoTemplates'',
-        ''DIRS'': [None], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'':
-        [''django.template.context_processors.debug'', ''django.template.context_processors.request'',
-        ''django.contrib.auth.context_processors.auth'', ''django.contrib.messages.context_processors.messages'',
-        ''svc_otel.middleware.context_processors'']}}]'
+        ''DIRS'': [], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'': [''django.template.context_processors.debug'',
+        ''django.template.context_processors.request'', ''django.contrib.auth.context_processors.auth'',
+        ''django.contrib.messages.context_processors.messages'', ''svc_otel.middleware.context_processors'']}}]'
       type: list
       value:
       - APP_DIRS: true
         BACKEND: django.template.backends.django.DjangoTemplates
-        DIRS:
-        - null
+        DIRS: []
         OPTIONS:
           context_processors:
           - django.template.context_processors.debug
@@ -9758,15 +9663,14 @@ results:
     - file: svc-rabbitmq/svc_rabbitmq/settings/__init__.py
       lineno: 105
       statement: 'TEMPLATES = [{''BACKEND'': ''django.template.backends.django.DjangoTemplates'',
-        ''DIRS'': [None], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'':
-        [''django.template.context_processors.request'', ''django.contrib.auth.context_processors.auth'',
-        ''django.contrib.messages.context_processors.messages'', ''svc_rabbitmq.middleware.context_processors'']}}]'
+        ''DIRS'': [], ''APP_DIRS'': True, ''OPTIONS'': {''context_processors'': [''django.template.context_processors.request'',
+        ''django.contrib.auth.context_processors.auth'', ''django.contrib.messages.context_processors.messages'',
+        ''svc_rabbitmq.middleware.context_processors'']}}]'
       type: list
       value:
       - APP_DIRS: true
         BACKEND: django.template.backends.django.DjangoTemplates
-        DIRS:
-        - null
+        DIRS: []
         OPTIONS:
           context_processors:
           - django.template.context_processors.request
@@ -9801,10 +9705,9 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 351
-      statement: TEMPLATE_DIRS = [None]
+      statement: TEMPLATE_DIRS = []
       type: list
-      value:
-      - null
+      value: []
     usage_count: 0
     usages: []
   THIRD_APP_INIT_CODES:
@@ -10234,13 +10137,11 @@ results:
     definitions:
     - file: apiserver/paasng/paasng/settings/__init__.py
       lineno: 330
-      statement: 'WEBPACK_LOADER = {''DEFAULT'': {''BUNDLE_DIR_NAME'': ''bundles/'',
-        ''STATS_FILE'': None}}'
+      statement: 'WEBPACK_LOADER = {''DEFAULT'': {''BUNDLE_DIR_NAME'': ''bundles/''}}'
       type: dict
       value:
         DEFAULT:
           BUNDLE_DIR_NAME: bundles/
-          STATS_FILE: null
     usage_count: 0
     usages: []
   WSGI_APPLICATION:
@@ -10277,7 +10178,7 @@ results:
     usages: []
 summary:
   files_scanned: 2368
-  scan_duration_ms: 69115
+  scan_duration_ms: 62022
   total_count: 473
   total_definitions: 615
   total_settings: 473

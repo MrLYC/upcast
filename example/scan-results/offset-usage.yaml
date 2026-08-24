@@ -1,0 +1,356 @@
+metadata:
+  runtime_limit: Findings do not prove SQL plans or database latency.
+  scanner_name: offset-usage
+  static_analysis: true
+results:
+  django_paginator: []
+  drf_limit_offset:
+  - class_name: VolumeMountViewSet
+    column: 4
+    file: apiserver/paasng/paas_wl/bk_app/cnative/specs/views.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: unknown
+    limit: null
+    line: 172
+    offset: null
+    operation: configure
+    page: null
+    page_size: null
+    parameters: []
+    pattern: drf_limit_offset
+    statement: pagination_class = LimitOffsetPagination
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: PluginInstanceViewSet
+    column: 4
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/views.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: unknown
+    limit: null
+    line: 194
+    offset: null
+    operation: configure
+    page: null
+    page_size: null
+    parameters: []
+    pattern: drf_limit_offset
+    statement: pagination_class = LimitOffsetPagination
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: OperationRecordViewSet
+    column: 4
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/views.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: unknown
+    limit: null
+    line: 526
+    offset: null
+    operation: configure
+    page: null
+    page_size: null
+    parameters: []
+    pattern: drf_limit_offset
+    statement: pagination_class = LimitOffsetPagination
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: PluginReleaseViewSet
+    column: 4
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/views.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: unknown
+    limit: null
+    line: 569
+    offset: null
+    operation: configure
+    page: null
+    page_size: null
+    parameters: []
+    pattern: drf_limit_offset
+    statement: pagination_class = LimitOffsetPagination
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: null
+    column: 0
+    file: apiserver/paasng/paasng/plat_admin/system/utils.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: fully_hardcoded
+    limit: null
+    line: 21
+    offset: null
+    operation: declare
+    page: null
+    page_size: null
+    parameters:
+    - expression: '100'
+      hardcoded: true
+      name: max_limit
+      source_kind: literal
+      value: 100
+    pattern: drf_limit_offset
+    statement: "\n\nclass MaxLimitOffsetPagination(LimitOffsetPagination):\n    \"\
+      \"\"限制最大分页数\"\"\"\n    max_limit = 100\n    max_offset = 900\n    \n    def\
+      \ get_offset(self, request):\n        \"\"\"LimitOffsetPagination 的 get_limit()\
+      \ 中处理了 max_limit\"\"\"\n        try:\n            return _positive_int(request.query_params[self.offset_query_param],\
+      \ strict=True, cutoff=self.max_offset)\n        except (KeyError, ValueError):\n\
+      \            return 0\n"
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: null
+    column: 0
+    file: apiserver/paasng/paasng/platform/applications/pagination.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: fully_hardcoded
+    limit:
+      expression: '12'
+      hardcoded: true
+      name: default_limit
+      source_kind: literal
+      value: 12
+    line: 24
+    offset: null
+    operation: declare
+    page: null
+    page_size: null
+    parameters:
+    - expression: '12'
+      hardcoded: true
+      name: default_limit
+      source_kind: literal
+      value: 12
+    pattern: drf_limit_offset
+    statement: "\n\nclass ApplicationListPagination(LimitOffsetPagination):\n    \"\
+      \"\"应用列表分页器，用于添加各种应用类型数量等参数\"\"\"\n    default_limit = 12\n    \n    def get_paginated_response(self,\
+      \ data, extra_data):\n        return Response(OrderedDict([('count', self.count),\
+      \ ('next', self.get_next_link()), ('previous', self.get_previous_link()), ('extra_data',\
+      \ extra_data), ('results', data)]))\n"
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: null
+    column: 0
+    file: apiserver/paasng/paasng/settings/__init__.py
+    framework: django-rest-framework
+    function: null
+    hardcoding_status: fully_hardcoded
+    limit: null
+    line: 364
+    offset: null
+    operation: configure
+    page: null
+    page_size:
+      expression: '100'
+      hardcoded: true
+      name: page_size
+      source_kind: literal
+      value: 100
+    parameters:
+    - expression: '100'
+      hardcoded: true
+      name: page_size
+      source_kind: literal
+      value: 100
+    pattern: drf_limit_offset
+    statement: 'REST_FRAMEWORK = {''EXCEPTION_HANDLER'': ''paasng.utils.views.custom_exception_handler'',
+      ''DEFAULT_PERMISSION_CLASSES'': (''rest_framework.permissions.IsAuthenticated'',
+      ), ''DEFAULT_PAGINATION_CLASS'': ''rest_framework.pagination.LimitOffsetPagination'',
+      ''PAGE_SIZE'': 100, ''TEST_REQUEST_DEFAULT_FORMAT'': ''json'', ''DEFAULT_AUTHENTICATION_CLASSES'':
+      (''rest_framework.authentication.SessionAuthentication'', ), ''DATETIME_FORMAT'':
+      ''%Y-%m-%d %H:%M:%S'', ''SEARCH_PARAM'': ''search_term'', ''ORDERING_PARAM'':
+      ''order_by'', ''DEFAULT_RENDERER_CLASSES'': [''rest_framework.renderers.JSONRenderer'',
+      ''paasng.utils.views.BkStandardApiJSONRenderer'']}'
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  drf_page_number: []
+  queryset_slice:
+  - class_name: PluginProvider
+    column: 23
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/management/providers.py
+    framework: django
+    function: list_instance
+    hardcoding_status: dynamic
+    limit:
+      expression: page.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    line: 41
+    offset:
+      expression: page.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    operation: slice
+    page: null
+    page_size: null
+    parameters:
+    - expression: page.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    - expression: page.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    pattern: queryset_slice
+    statement: qs[page.slice_from:page.slice_to]
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: PluginProvider
+    column: 23
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/iam_adaptor/management/providers.py
+    framework: django
+    function: search_instance
+    hardcoding_status: dynamic
+    limit:
+      expression: page.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    line: 73
+    offset:
+      expression: page.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    operation: slice
+    page: null
+    page_size: null
+    parameters:
+    - expression: page.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    - expression: page.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    pattern: queryset_slice
+    statement: qs[page.slice_from:page.slice_to]
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: ApplicationProvider
+    column: 23
+    file: apiserver/paasng/paasng/infras/iam/open_apis/providers/application.py
+    framework: django
+    function: list_instance
+    hardcoding_status: dynamic
+    limit:
+      expression: page_obj.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    line: 38
+    offset:
+      expression: page_obj.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    operation: slice
+    page: null
+    page_size: null
+    parameters:
+    - expression: page_obj.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    - expression: page_obj.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    pattern: queryset_slice
+    statement: applications[page_obj.slice_from:page_obj.slice_to]
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: ApplicationProvider
+    column: 23
+    file: apiserver/paasng/paasng/infras/iam/open_apis/providers/application.py
+    framework: django
+    function: search_instance
+    hardcoding_status: dynamic
+    limit:
+      expression: page_obj.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    line: 78
+    offset:
+      expression: page_obj.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    operation: slice
+    page: null
+    page_size: null
+    parameters:
+    - expression: page_obj.slice_to
+      hardcoded: false
+      name: limit
+      source_kind: configuration
+      value: null
+    - expression: page_obj.slice_from
+      hardcoded: false
+      name: offset
+      source_kind: configuration
+      value: null
+    pattern: queryset_slice
+    statement: applications[page_obj.slice_from:page_obj.slice_to]
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  - class_name: ApplicationListView
+    column: 19
+    file: apiserver/paasng/paasng/plat_admin/admin42/views/applications.py
+    framework: django
+    function: get_app_resource_context_data
+    hardcoding_status: partially_hardcoded
+    limit:
+      expression: offset + limit
+      hardcoded: null
+      name: limit
+      source_kind: expression
+      value: null
+    line: 106
+    offset:
+      expression: offset
+      hardcoded: false
+      name: offset
+      source_kind: runtime
+      value: null
+    operation: slice
+    page: null
+    page_size: null
+    parameters:
+    - expression: offset + limit
+      hardcoded: null
+      name: limit
+      source_kind: expression
+      value: null
+    - expression: offset
+      hardcoded: false
+      name: offset
+      source_kind: runtime
+      value: null
+    pattern: queryset_slice
+    statement: queryset[offset:offset + limit]
+    warning: May generate SQL OFFSET; validate with a runtime query plan.
+  raw_sql: []
+summary:
+  by_framework:
+    django: 5
+    django-rest-framework: 7
+  by_pattern:
+    drf_limit_offset: 7
+    queryset_slice: 5
+  direct_offset_count: 5
+  dynamic_count: 5
+  files_scanned: 2368
+  indirect_pagination_count: 7
+  scan_duration_ms: 27241
+  total_count: 12

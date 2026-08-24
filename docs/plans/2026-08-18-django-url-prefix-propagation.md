@@ -13,6 +13,7 @@
 ### Task 1: Add a failing cross-module prefix regression test (completed)
 
 **Files:**
+
 - Modify: `tests/test_scanners/test_django_urls.py`
 
 **Step 1: Write the failing test**
@@ -34,6 +35,7 @@ Expected: FAIL because the current scanner returns the child-local path.
 ### Task 2: Implement generic URLconf graph propagation (completed)
 
 **Files:**
+
 - Modify: `upcast/scanners/django_urls.py`
 - Possibly modify: `upcast/models/django_urls.py` only if metadata needs to document mount-context duplication
 
@@ -58,6 +60,7 @@ Keep the regex anchor `^` once, remove a child-leading anchor when a parent pref
 ### Task 3: Verify scanner compatibility (completed)
 
 **Files:**
+
 - Modify: `tests/test_scanners/test_django_urls.py` as needed for existing inline/router behavior
 - Modify: `tests/test_cli/test_scan_django_urls.py` only if CLI counts intentionally change
 
@@ -78,6 +81,7 @@ git diff --check
 ### Task 4: Regenerate and independently validate Kingeye outputs (completed)
 
 **Files:**
+
 - Generate: `/home/liuyicong/udisk/tmp/kingeye/urls.yaml`
 - Reuse unchanged: `/home/liuyicong/udisk/tmp/kingeye/views.yaml`
 - Generate: `/home/liuyicong/udisk/tmp/kingeye/django-report.csv`

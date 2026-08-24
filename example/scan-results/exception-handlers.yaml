@@ -6258,7 +6258,7 @@ results:
     log_warning_count: 0
     pass_count: 0
     raise_count: 0
-    return_count: 1
+    return_count: 0
   file: apiserver/paasng/paasng/accessories/publish/market/models.py
   finally_lineno: null
   finally_lines: null
@@ -10845,30 +10845,6 @@ results:
   - break_count: 0
     continue_count: 0
     exceptions:
-    - AccountFeatureFlag.DoesNotExist
-    lineno: 303
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/infras/accounts/models.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 301
-  try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
     - KeyError
     lineno: 192
     lines: 2
@@ -14783,7 +14759,7 @@ results:
     log_warning_count: 0
     pass_count: 0
     raise_count: 0
-    return_count: 1
+    return_count: 0
   file: apiserver/paasng/paasng/plat_admin/numbers/app.py
   finally_lineno: null
   finally_lines: null
@@ -15810,30 +15786,6 @@ results:
   nested_exceptions: false
   try_lineno: 228
   try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
-    - ImportError
-    lineno: 136
-    lines: 3
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/platform/applications/views.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 133
-  try_lines: 3
 - else_lineno: null
   else_lines: null
   exception_blocks:
@@ -21196,30 +21148,6 @@ results:
   - break_count: 0
     continue_count: 0
     exceptions:
-    - ImportError
-    lineno: 42
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/platform/mgrlegacy/models.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 40
-  try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
     - MigrationProcess.DoesNotExist
     lineno: 57
     lines: 11
@@ -21238,30 +21166,6 @@ results:
   nested_exceptions: false
   try_lineno: 50
   try_lines: 7
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
-    - ImportError
-    lineno: 299
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/platform/mgrlegacy/models.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 297
-  try_lines: 2
 - else_lineno: null
   else_lines: null
   exception_blocks:
@@ -21388,30 +21292,6 @@ results:
   - break_count: 0
     continue_count: 0
     exceptions:
-    - ImportError
-    lineno: 36
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/platform/mgrlegacy/utils.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 34
-  try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
     - ValueError
     lineno: 74
     lines: 2
@@ -21501,30 +21381,6 @@ results:
   finally_lines: null
   nested_exceptions: false
   try_lineno: 230
-  try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
-    - ImportError
-    lineno: 53
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/paasng/platform/mgrlegacy/views.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 51
   try_lines: 2
 - else_lineno: 320
   else_lines: 2
@@ -26269,30 +26125,6 @@ results:
   - break_count: 0
     continue_count: 0
     exceptions:
-    - DummyMsgError
-    lineno: 86
-    lines: 2
-    log_critical_count: 0
-    log_debug_count: 0
-    log_error_count: 0
-    log_exception_count: 0
-    log_info_count: 0
-    log_warning_count: 0
-    pass_count: 0
-    raise_count: 0
-    return_count: 0
-  file: apiserver/paasng/tests/paasng/test_utils/test_error_message.py
-  finally_lineno: null
-  finally_lines: null
-  nested_exceptions: false
-  try_lineno: 84
-  try_lines: 2
-- else_lineno: null
-  else_lines: null
-  exception_blocks:
-  - break_count: 0
-    continue_count: 0
-    exceptions:
     - ImportError
     lineno: 28
     lines: 2
@@ -27744,8 +27576,8 @@ results:
   try_lineno: 312
   try_lines: 2
 summary:
-  files_scanned: 422
-  scan_duration_ms: 19547
-  total_count: 1189
-  total_except_clauses: 1189
-  total_handlers: 1092
+  files_scanned: 2368
+  scan_duration_ms: 42833
+  total_count: 1182
+  total_except_clauses: 1182
+  total_handlers: 1085

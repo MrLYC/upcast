@@ -1,0 +1,363 @@
+metadata:
+  scanner_name: queue-usage
+  static_analysis: true
+results:
+  in_process:
+  - category: in_process
+    class_name: ParallelChainedGenerator
+    column: 34
+    file: apiserver/paasng/paas_wl/bk_app/processes/watch.py
+    framework: queue
+    function: __init__
+    hardcoding_status: unknown
+    line: 177
+    operation: construct
+    parameters: []
+    statement: queue.Queue()
+  kafka: []
+  rabbitmq: []
+  redis:
+  - category: redis
+    class_name: LogstashRedisHandler
+    column: 22
+    file: apiserver/paasng/paasng/utils/logging.py
+    framework: redis
+    function: __init__
+    hardcoding_status: unknown
+    line: 38
+    operation: construct
+    parameters:
+    - expression: pool
+      hardcoded: null
+      name: connection_pool
+      source_kind: unknown
+      value: null
+    statement: redis.Redis(connection_pool=pool)
+  task_queue:
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/accessories/log/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 24
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/bk_plugins/bk_plugins/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 32
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/bk_plugins/pluginscenter/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 45
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 6
+    file: apiserver/paasng/paasng/celery.py
+    framework: celery
+    function: null
+    hardcoding_status: fully_hardcoded
+    line: 27
+    operation: construct
+    parameters:
+    - expression: '''paasng'''
+      hardcoded: true
+      name: name
+      source_kind: literal
+      value: paasng
+    statement: Celery('paasng')
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/infras/iam/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 24
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 28
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/misc/monitoring/monitor/alert_rules/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 40
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/applications/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 33
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/applications/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 60
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/archive/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 27
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/bg_build/bg_build.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 45
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 4
+    file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+    framework: celery
+    function: exec_command
+    hardcoding_status: partially_hardcoded
+    line: 53
+    operation: delay
+    parameters:
+    - expression: cmd_obj.uuid
+      hardcoded: false
+      name: args
+      source_kind: configuration
+      value: null
+    - expression: extra_envs or {}
+      hardcoded: null
+      name: extra_envs
+      source_kind: unknown
+      value: null
+    - expression: stream_channel_id
+      hardcoded: null
+      name: stream_channel_id
+      source_kind: unknown
+      value: null
+    statement: execute_bg_command.delay(cmd_obj.uuid, stream_channel_id=stream_channel_id,
+      extra_envs=extra_envs or {})
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 57
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/bg_command/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 81
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/building.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 84
+    operation: register
+    parameters:
+    - expression: I18nTask
+      hardcoded: null
+      name: base
+      source_kind: unknown
+      value: null
+    statement: shared_task(base=I18nTask)
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/building.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 100
+    operation: register
+    parameters:
+    - expression: I18nTask
+      hardcoded: null
+      name: base
+      source_kind: unknown
+      value: null
+    statement: shared_task(base=I18nTask)
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/engine/deploy/image_release.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 51
+    operation: register
+    parameters:
+    - expression: I18nTask
+      hardcoded: null
+      name: base
+      source_kind: unknown
+      value: null
+    statement: shared_task(base=I18nTask)
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/evaluation/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 127
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/evaluation/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 168
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 40
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 61
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 77
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 100
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 117
+    operation: register
+    parameters: []
+    statement: shared_task
+  - category: task_queue
+    class_name: null
+    column: 1
+    file: apiserver/paasng/paasng/platform/mgrlegacy/tasks.py
+    framework: celery
+    function: null
+    hardcoding_status: unknown
+    line: 134
+    operation: register
+    parameters: []
+    statement: shared_task
+summary:
+  by_category:
+    in_process: 1
+    redis: 1
+    task_queue: 25
+  by_framework:
+    celery: 25
+    queue: 1
+    redis: 1
+  dynamic_parameters: 1
+  files_scanned: 2368
+  hardcoded_parameters: 1
+  scan_duration_ms: 21601
+  total_count: 27
+  total_usages: 27
+  unknown_parameters: 6

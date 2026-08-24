@@ -6,7 +6,7 @@
 ## 概要信息
 - **总数量**: 7679
 - **已扫描文件数**: 2368
-- **扫描耗时**: 25951 毫秒
+- **扫描耗时**: 25618 毫秒
 
 - **Total Modules**: 2368
 - **Total Imports**: 17215
@@ -97,8 +97,8 @@
 | DeployResult | 无 | 无 | 无 | dataclass | 不适用 |
 | HelmChart | 无 | 无 | 无 | dataclass | 不适用 |
 | HelmRelease | 无 | 无 | 无 | dataclass | 不适用 |
-| HelmReleaseParser | 无 | __init__, parse | 无 | 无 | 不适用 |
-| WorkloadsDetector | 无 | __init__, get_statuses, _get_status, _gen_deploy_status, _gen_sts_status, _gen_ds_status | 无 | 无 | 组件状态探测器 |
+| HelmReleaseParser | 无 | parse | 无 | 无 | 不适用 |
+| WorkloadsDetector | 无 | get_statuses | 无 | 无 | 组件状态探测器 |
 
 ---
 
@@ -499,7 +499,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcessSpecPlanManageViewSet | paas_wl.apis.admin.mixins.PaginationMixin, rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | _list_data, get_context_data, create, edit, list_binding_app | exclude_from_schema, serializer_class, permission_classes, filter_backends, search_fields, queryset | 无 | ProcessSpecPlan 管理API |
+| ProcessSpecPlanManageViewSet | paas_wl.apis.admin.mixins.PaginationMixin, rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | get_context_data, create, edit, list_binding_app | exclude_from_schema, serializer_class, permission_classes, filter_backends, search_fields, queryset | 无 | ProcessSpecPlan 管理API |
 | ProcessSpecManageViewSet | rest_framework.viewsets.GenericViewSet | get_app, switch_process_plan, scale | permission_classes | 无 | ProcessSpec 管理API |
 | ProcessInstanceViewSet | rest_framework.viewsets.GenericViewSet | get_app, retrieve | exclude_from_schema, permission_classes | 无 | 不适用 |
 
@@ -623,7 +623,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_app_created | `@receiver(post_save, sender=WlApp):` | receiver | Do extra things when an app was created |
+| on_app_created | `def on_app_created(sender, instance, created, *args, **kwargs):` | receiver | Do extra things when an app was created |
 | create_initial_config | `def create_initial_config(app: WlApp):` | 无 | Make sure the initial Config was created |
 
 
@@ -1194,7 +1194,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| App | paas_wl.bk_app.applications.models.UuidAuditedModel | scheduler_safe_name, scheduler_safe_name_with_region, namespace, module_name, latest_config, use_dev_sandbox, __str__ | owner, region, name, structure, type | 无 | App Model |
+| App | paas_wl.bk_app.applications.models.UuidAuditedModel | scheduler_safe_name, scheduler_safe_name_with_region, namespace, module_name, latest_config, use_dev_sandbox | owner, region, name, structure, type | 无 | App Model |
 
 ---
 
@@ -1254,9 +1254,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Build | paas_wl.utils.models.UuidAuditedModel | get_image, get_universal_entrypoint, get_entrypoint_for_proc, get_command_for_proc, is_build_from_cnb, image_repository, image_tag, get_env_variables, get_artifact_detail, artifact_invoke_message, version, __str__ | application_id, module_id, owner, app, slug_path, image, source_type, branch, revision, procfile, env_variables, bkapp_revision_id, artifact_type, artifact_detail, artifact_deleted, artifact_metadata | 无 | 不适用 |
+| Build | paas_wl.utils.models.UuidAuditedModel | get_image, get_universal_entrypoint, get_entrypoint_for_proc, get_command_for_proc, is_build_from_cnb, image_repository, image_tag, get_env_variables, get_artifact_detail, artifact_invoke_message, version | application_id, module_id, owner, app, slug_path, image, source_type, branch, revision, procfile, env_variables, bkapp_revision_id, artifact_type, artifact_detail, artifact_deleted, artifact_metadata | 无 | 不适用 |
 | BuildProcessManager | django.db.models.Manager | new | 无 | 无 | 不适用 |
-| BuildProcess | paas_wl.utils.models.UuidAuditedModel | __str__, set_int_requested_at, check_interruption_allowed, set_logs_was_ready, update_status, buildpacks_as_build_env | application_id, module_id, owner, app, image, buildpacks, generation, invoke_message, source_tar_path, branch, revision, logs_was_ready_at, int_requested_at, completed_at, status, output_stream, build, objects | 无 | This Build Process was invoked via a source tarbal... |
+| BuildProcess | paas_wl.utils.models.UuidAuditedModel | set_int_requested_at, check_interruption_allowed, set_logs_was_ready, update_status, buildpacks_as_build_env | application_id, module_id, owner, app, image, buildpacks, generation, invoke_message, source_tar_path, branch, revision, logs_was_ready_at, int_requested_at, completed_at, status, output_stream, build, objects | 无 | This Build Process was invoked via a source tarbal... |
 
 ---
 
@@ -1322,7 +1322,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OutputStream | paas_wl.bk_app.applications.models.UuidAuditedModel | write | 无 | 无 | 不适用 |
-| OutputStreamLine | django.db.models.Model | __str__ | output_stream, stream, line, created, updated | 无 | 不适用 |
+| OutputStreamLine | django.db.models.Model | 无 | output_stream, stream, line, created, updated | 无 | 不适用 |
 
 ---
 
@@ -1353,7 +1353,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ReleaseManager | django.db.models.Manager | new, any_successful, get_latest, get_by_version | 无 | 无 | 不适用 |
-| Release | paas_wl.bk_app.applications.models.UuidAuditedModel | __str__, region, fail, get_procfile, get_envs, get_previous | owner, app, version, summary, failed, procfile, config, build, objects | 无 | 
+| Release | paas_wl.bk_app.applications.models.UuidAuditedModel | region, fail, get_procfile, get_envs, get_previous | owner, app, version, summary, failed, procfile, config, build, objects | 无 |
     Software release deployed by the application ... |
 
 ---
@@ -1381,7 +1381,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| validate_app_name | `def validate_app_name(value: str):` | 无 | 
+| validate_app_name | `def validate_app_name(value: str):` | 无 |
     Check that the value follows the kubernetes n... |
 | validate_app_structure | `def validate_app_structure(value: Dict):` | 无 | deprecated function. 被 migrations/0001_initial.py ... |
 
@@ -1410,9 +1410,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleAttrFromID | 无 | __get__, __get__, __get__ | key_field | 无 | A descriptor which make `{owner}.module` available... |
-| ModuleEnvAttrFromID | 无 | __get__, __get__, __get__ | key_field | 无 | A descriptor which make `{owner}.environment` avai... |
-| ModuleEnvAttrFromName | 无 | __get__, __get__, __get__ | key_field, module_key_field | 无 | A descriptor which make `{owner}.environment` avai... |
+| ModuleAttrFromID | 无 | 无 | key_field | 无 | A descriptor which make `{owner}.module` available... |
+| ModuleEnvAttrFromID | 无 | 无 | key_field | 无 | A descriptor which make `{owner}.environment` avai... |
+| ModuleEnvAttrFromName | 无 | 无 | key_field, module_key_field | 无 | A descriptor which make `{owner}.environment` avai... |
 
 ---
 
@@ -1473,7 +1473,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AddrResourceManager | 无 | __init__, build_mapping, _get_subdomain_domains, _get_subpath_domains, _get_custom_domains | 无 | 无 | Manage kubernetes resources which was related with... |
+| AddrResourceManager | 无 | build_mapping | 无 | 无 | Manage kubernetes resources which was related with... |
 
 ---
 
@@ -1519,7 +1519,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EnvVarsReader | 无 | __init__, read_all | 无 | 无 | Read "configurations.env" from app model resource ... |
+| EnvVarsReader | 无 | read_all | 无 | 无 | Read "configurations.env" from app model resource ... |
 
 ---
 
@@ -1674,7 +1674,7 @@
 | DomainResolution | pydantic.BaseModel | 无 | 无 | 无 | Domain resolution config |
 | SvcDiscEntryBkSaaS | pydantic.BaseModel | 无 | 无 | 无 | A service discovery entry that represents an appli... |
 | SvcDiscConfig | pydantic.BaseModel | 无 | 无 | 无 | Service discovery config |
-| Metric | pydantic.BaseModel | 无 | 无 | 无 | 
+| Metric | pydantic.BaseModel | 无 | 无 | 无 |
     Metric config.
 
     :param process: The name ... |
@@ -1799,7 +1799,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ImageCredentialsManager | _ImageCredentialsManager | __init__, _kres | kres | 无 | An ImageCredentialsManager using given k8s client,... |
+| ImageCredentialsManager | _ImageCredentialsManager | 无 | kres | 无 | An ImageCredentialsManager using given k8s client,... |
 
 ---
 
@@ -1888,8 +1888,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_custom_domain_updated | `@receiver(cnative_custom_domain_updated):` | receiver | Trigger a new networking deploy. |
-| sync_default_entrances_for_cnative_module_switching | `@receiver(application_default_module_switch):` | receiver | sync module's default domains and subpaths after s... |
+| on_custom_domain_updated | `def on_custom_domain_updated(sender, env: ModuleEnvironment, **kwargs):` | receiver | Trigger a new networking deploy. |
+| sync_default_entrances_for_cnative_module_switching | `def sync_default_entrances_for_cnative_module_switching(sender, application, new_module, old_module, **kwargs):` | receiver | sync module's default domains and subpaths after s... |
 
 
 ---
@@ -1925,7 +1925,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ImageParser | 无 | __init__, get_tag, get_repository, get_image_field | 无 | 无 | A Helper for parsing image field in bkapp |
+| ImageParser | 无 | get_tag, get_repository, get_image_field | 无 | 无 | A Helper for parsing image field in bkapp |
 
 ---
 
@@ -2298,7 +2298,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseVolumeSourceController | 无 | __init_subclass__, get_source_class, build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, delete_by_env, create_by_env, update_by_env, upsert_k8s_resource, delete_k8s_resource | 无 | 无 | 不适用 |
+| BaseVolumeSourceController | 无 | get_source_class, build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, delete_by_env, create_by_env, update_by_env, upsert_k8s_resource, delete_k8s_resource | 无 | 无 | 不适用 |
 | ConfigMapSourceController | BaseVolumeSourceController | build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, create_by_env, update_by_env, delete_by_env, upsert_k8s_resource, delete_k8s_resource | volume_source_type, model_class | 无 | 不适用 |
 | PersistentStorageSourceController | BaseVolumeSourceController | build_volume_source, list_by_app, create_by_app, delete_by_app, get_by_env, create_by_env, update_by_env, delete_by_env, upsert_k8s_resource, delete_k8s_resource | volume_source_type, model_class | 无 | 不适用 |
 | MountManager | 无 | new | 无 | 无 | 不适用 |
@@ -2354,7 +2354,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ResourceQuota | 无 | 无 | 无 | define | 不适用 |
-| ResQuotaReader | 无 | __init__, read_all | 无 | 无 | Read resQuotaPlan and resQuotas(envOverlay) from a... |
+| ResQuotaReader | 无 | read_all | 无 | 无 | Read resQuotaPlan and resQuotas(envOverlay) from a... |
 
 ---
 
@@ -2404,11 +2404,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkAppProcScaler | 无 | __init__, get_replicas, set_replicas, get_autoscaling, set_autoscaling, _get_bkapp_res, _validate_proc_type, _set_process, _set_autoscaling_overlay | 无 | 无 | Scale the bkapp's processes by updating the resour... |
-| ReplicasReader | 无 | __init__, read_all | 无 | 无 | Read "replicas" from app model resource object
+| BkAppProcScaler | 无 | get_replicas, set_replicas, get_autoscaling, set_autoscaling | 无 | 无 | Scale the bkapp's processes by updating the resour... |
+| ReplicasReader | 无 | read_all | 无 | 无 | Read "replicas" from app model resource object
 
   ... |
-| AutoscalingReader | 无 | __init__, read_all | 无 | 无 | Read "autoscaling" from an app model resource obje... |
+| AutoscalingReader | 无 | read_all | 无 | 无 | Read "autoscaling" from an app model resource obje... |
 
 ---
 
@@ -2469,7 +2469,7 @@
 |--------|------|--------|----------|
 | get_mres_from_cluster | `def get_mres_from_cluster(env: ModuleEnvironment) -> Optional[BkAppResource]:` | 无 | Get the application's model resource in given envi... |
 | create_or_update_bkapp_with_retries | `def create_or_update_bkapp_with_retries(client: base.EnhancedApiClient, env: ModuleEnvironment, manifest: Dict):` | 无 | 不适用 |
-| deploy | `def deploy(env: ModuleEnvironment, manifest: Dict) -> Dict:` | 无 | 
+| deploy | `def deploy(env: ModuleEnvironment, manifest: Dict) -> Dict:` | 无 |
     Create or update(replace) bkapp manifest in c... |
 | sync_networking | `def sync_networking(env: ModuleEnvironment, res: BkAppResource) -> None:` | 无 | Sync the networking related resources for env, suc... |
 | deploy_networking | `def deploy_networking(env: ModuleEnvironment) -> None:` | 无 | Deploy the networking related resources for env, s... |
@@ -2487,7 +2487,7 @@
 | ModelResState | 无 | 无 | 无 | define | State of deployed app model resource
 
     :param s... |
-| MresConditionParser | 无 | __init__, detect_state, _find_condition | 无 | 无 | Parse "conditions" in BkApp resource's status fiel... |
+| MresConditionParser | 无 | detect_state | 无 | 无 | Parse "conditions" in BkApp resource's status fiel... |
 
 ---
 
@@ -2611,7 +2611,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ConfigMapManager | 无 | __init__, read_data, write, remove, exists, resource_name, encode_data, decode_data | key_bk_saas | 无 | The manager for service discovery ConfigMap.
+| ConfigMapManager | 无 | read_data, write, remove, exists, resource_name, encode_data, decode_data | key_bk_saas | 无 | The manager for service discovery ConfigMap.
 
     ... |
 
@@ -2715,7 +2715,7 @@
 |------|------|------|------|--------|----------|
 | ResQuotaPlanOptionsView | rest_framework.views.APIView | get | 无 | 无 | 资源配额方案 选项视图 |
 | MresVersionViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve | permission_classes | 无 | 应用资源版本相关视图 |
-| ImageRepositoryView | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _validate_registry_permission, list_tags | permission_classes | 无 | 不适用 |
+| ImageRepositoryView | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list_tags | permission_classes | 无 | 不适用 |
 | VolumeMountViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, create, update, destroy | permission_classes, pagination_class | 无 | 不适用 |
 | MountSourceViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, create, update, destroy | permission_classes | 无 | 不适用 |
 | StorageClassViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | check | permission_classes | 无 | 不适用 |
@@ -2769,7 +2769,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ArchiveOperationController | 无 | __init__, start, stop_all_processes | 无 | 无 | Controller for offline operation |
+| ArchiveOperationController | 无 | start, stop_all_processes | 无 | 无 | Controller for offline operation |
 
 ---
 
@@ -2864,8 +2864,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployAction | 无 | __init__, perform, recycle_resource, ensure_bk_monitor_if_need, ensure_bk_log_if_need | 无 | 无 | 不适用 |
-| ObsoleteProcessesCleaner | 无 | __init__, clean_up, find_all, get_deployment_name | 无 | 无 | 清理已经过期的进程资源（主要指 Deployment 与 Service）。
+| DeployAction | 无 | perform, recycle_resource, ensure_bk_monitor_if_need, ensure_bk_log_if_need | 无 | 无 | 不适用 |
+| ObsoleteProcessesCleaner | 无 | clean_up, find_all, get_deployment_name | 无 | 无 | 清理已经过期的进程资源（主要指 Deployment 与 Service）。
 
     目前，共有两... |
 
@@ -2930,7 +2930,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppCommandExecutor | 无 | __attrs_post_init__, perform, wait_for_succeeded | 无 | define | 不适用 |
+| AppCommandExecutor | 无 | perform, wait_for_succeeded | 无 | define | 不适用 |
 
 ---
 
@@ -3012,15 +3012,15 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResourceHandlerBase | 无 | __init__, new_by_app | 无 | 无 | The base class for handling resources. |
-| ProcessesHandler | ResourceHandlerBase | __init__, deploy, shutdown, scale, delete, delete_gracefully, res_identifiers, get_default_services | 无 | 无 | Process handler. |
+| ResourceHandlerBase | 无 | new_by_app | 无 | 无 | The base class for handling resources. |
+| ProcessesHandler | ResourceHandlerBase | deploy, shutdown, scale, delete, delete_gracefully, res_identifiers, get_default_services | 无 | 无 | Process handler. |
 | NamespacesHandler | ResourceHandlerBase | ensure_namespace, delete, create, check_service_account_secret | 无 | 无 | Handler for namespace resources |
-| WaitPodDelete | 无 | __init__, wait | _check_interval | 无 | 不适用 |
-| PodScheduleHandler | ResourceHandlerBase | _get_pod_status, _delete_finished_pod, _delete_pod, _wait_pod_succeeded, _get_pod_logs, check_pod_timeout, get_pod_timeout | 无 | 无 | PodScheduleHandler 提供了操作 Pod 的公共方法. |
+| WaitPodDelete | 无 | wait | _check_interval | 无 | 不适用 |
+| PodScheduleHandler | ResourceHandlerBase | check_pod_timeout, get_pod_timeout | 无 | 无 | PodScheduleHandler 提供了操作 Pod 的公共方法. |
 | BuildHandler | PodScheduleHandler | build_slug, delete_builder, interrupt_builder, wait_for_succeeded, wait_for_logs_readiness, get_build_log, normalize_builder_name | 无 | 无 | Handler for slugbuilder pod. |
 | CommandHandler | PodScheduleHandler | run, run_command, delete_command, interrupt_command, wait_for_succeeded, wait_for_logs_readiness, get_command_logs, check_pod_timeout, get_pod_timeout | 无 | 无 | Handler for running command |
-| ProcAutoscalingHandler | ResourceHandlerBase | __init__, deploy, delete | 无 | 无 | 不适用 |
-| BkAppHookHandler | 无 | __init__, wait_for_logs_readiness, fetch_logs, wait_hook_finished | 无 | 无 | 不适用 |
+| ProcAutoscalingHandler | ResourceHandlerBase | deploy, delete | 无 | 无 | 不适用 |
+| BkAppHookHandler | 无 | wait_for_logs_readiness, fetch_logs, wait_hook_finished | 无 | 无 | 不适用 |
 
 ---
 
@@ -3216,9 +3216,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppProcessesController | 无 | __init__, start, stop, scale, _scale, _deploy_autoscaling, _disable_autoscaling, _get_spec, _build_proc_autoscaling | 无 | 无 | Controls app's processes, includes common operatio... |
-| CNativeProcController | 无 | __init__, start, stop, scale, scale_static, disable_autoscaling_if_enabled, scale_auto, _get_module_process_spec | 无 | 无 | Process controller for cloud-native applications |
-| ProcSpecUpdater | 无 | __init__, set_start, set_stop, change_replicas, set_autoscaling, spec_object | 无 | 无 | It update the ProcessSpec object for the given env... |
+| AppProcessesController | 无 | start, stop, scale | 无 | 无 | Controls app's processes, includes common operatio... |
+| CNativeProcController | 无 | start, stop, scale, scale_static, disable_autoscaling_if_enabled, scale_auto | 无 | 无 | Process controller for cloud-native applications |
+| ProcSpecUpdater | 无 | set_start, set_stop, change_replicas, set_autoscaling, spec_object | 无 | 无 | It update the ProcessSpec object for the given env... |
 
 ---
 
@@ -3338,10 +3338,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DevSandboxController | 无 | __init__, deploy, delete, get_sandbox_detail, _deploy | 无 | 无 | DevSandbox Controller
+| DevSandboxController | 无 | deploy, delete, get_sandbox_detail | 无 | 无 | DevSandbox Controller
 
     :param app: Application... |
-| DevSandboxWithCodeEditorController | 无 | __init__, deploy, _deploy, _create_dev_sandbox, _create_code_editor, delete, _get_url, get_detail | 无 | 无 | DevSandboxWithCodeEditor Controller,
+| DevSandboxWithCodeEditorController | 无 | deploy, delete, get_detail | 无 | 无 | DevSandboxWithCodeEditor Controller,
 
     区别于 DevS... |
 
@@ -3382,7 +3382,7 @@
 | IngressPathBackend | 无 | 无 | 无 | dataclass | Ingress Path Backend object |
 | IngressDomain | 无 | 无 | 无 | dataclass | Ingress Domain object |
 | DevSandboxDetail | 无 | 无 | 无 | dataclass | 不适用 |
-| DevSandboxWithCodeEditorUrls | 无 | __init__ | 无 | 无 | 不适用 |
+| DevSandboxWithCodeEditorUrls | 无 | 无 | 无 | 无 | 不适用 |
 | DevSandboxWithCodeEditorDetail | 无 | 无 | 无 | dataclass | 不适用 |
 | SourceCodeConfig | 无 | 无 | 无 | dataclass | 源码持久化相关配置 |
 | CodeEditorConfig | 无 | 无 | 无 | dataclass | 代码编辑器相关配置 |
@@ -3504,7 +3504,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DevSandboxIngress | paas_wl.infras.resources.kube_res.base.AppEntity | __post_init__, create | 无 | dataclass | Ingress entity to expose DevContainerService |
+| DevSandboxIngress | paas_wl.infras.resources.kube_res.base.AppEntity | create | 无 | dataclass | Ingress entity to expose DevContainerService |
 
 ---
 
@@ -3578,8 +3578,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DevSandboxService | paas_wl.infras.resources.kube_res.base.AppEntity | __post_init__, create | 无 | dataclass | service entity to expose dev sandbox network |
-| CodeEditorService | paas_wl.infras.resources.kube_res.base.AppEntity | __post_init__, create | 无 | dataclass | service entity to expose code editor network |
+| DevSandboxService | paas_wl.infras.resources.kube_res.base.AppEntity | create | 无 | dataclass | service entity to expose dev sandbox network |
+| CodeEditorService | paas_wl.infras.resources.kube_res.base.AppEntity | create | 无 | dataclass | service entity to expose code editor network |
 
 ---
 
@@ -3649,8 +3649,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CodeEditorSerializer | AppEntitySerializer['CodeEditor'] | serialize, _construct_pod_spec, _set_volume_mounts | 无 | 无 | 不适用 |
-| CodeEditorDeserializer | AppEntityDeserializer['CodeEditor'] | deserialize, _get_main_container, _get_main_container_dict, _construct_config | 无 | 无 | 不适用 |
+| CodeEditorSerializer | AppEntitySerializer['CodeEditor'] | serialize | 无 | 无 | 不适用 |
+| CodeEditorDeserializer | AppEntityDeserializer['CodeEditor'] | deserialize | 无 | 无 | 不适用 |
 
 ---
 
@@ -3690,7 +3690,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DevSandboxIngressSerializer | AppEntitySerializer['DevSandboxIngress'] | get_api_version_from_gvk, serialize | 无 | 无 | Serializer for DevContainerIngress in ApiVersion n... |
-| DevSandboxIngressDeserializer | AppEntityDeserializer['DevSandboxIngress'] | deserialize, _parse_ingress_domains, _parse_backends | 无 | 无 | 不适用 |
+| DevSandboxIngressDeserializer | AppEntityDeserializer['DevSandboxIngress'] | deserialize | 无 | 无 | 不适用 |
 
 ---
 
@@ -3739,8 +3739,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DevSandboxSerializer | AppEntitySerializer['DevSandbox'] | serialize, _construct_pod_spec, _set_volume_mounts | 无 | 无 | 不适用 |
-| DevSandboxDeserializer | AppEntityDeserializer['DevSandbox'] | deserialize, _get_main_container, _get_main_container_dict, _construct_source_code_config | 无 | 无 | 不适用 |
+| DevSandboxSerializer | AppEntitySerializer['DevSandbox'] | serialize | 无 | 无 | 不适用 |
+| DevSandboxDeserializer | AppEntityDeserializer['DevSandbox'] | deserialize | 无 | 无 | 不适用 |
 
 ---
 
@@ -3875,7 +3875,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Endpoint | 无 | 无 | 无 | dataclass | 
+| Endpoint | 无 | 无 | 无 | dataclass |
     Metric Endpoint
 
     :param interval: 蓝鲸监控采集 ... |
@@ -3950,7 +3950,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ServiceMonitorDeserializer | AppEntityDeserializer['ServiceMonitor'] | deserialize | api_version | 无 | 不适用 |
-| ServiceMonitorSerializer | AppEntitySerializer['ServiceMonitor'] | serialize, _construct_endpoints_spec | api_version | 无 | 不适用 |
+| ServiceMonitorSerializer | AppEntitySerializer['ServiceMonitor'] | serialize | api_version | 无 | 不适用 |
 
 ---
 
@@ -3989,7 +3989,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppMonitorController | 无 | __init__, create_or_patch, remove | 无 | 无 | 不适用 |
+| AppMonitorController | 无 | create_or_patch, remove | 无 | 无 | 不适用 |
 | NullController | 无 | create_or_patch, remove | 无 | 无 | 不适用 |
 
 ---
@@ -4212,7 +4212,7 @@
 | BkAppLogConfig | paas_wl.infras.resources.kube_res.base.AppEntity | 无 | 无 | dataclass | BkAppLogConfig 蓝鲸日志采集项配置
 
     :param data_id: 采集项I... |
-| BkAppLogConfigManager | AppEntityManager[BkAppLogConfig] | __init__, delete | 无 | 无 | 不适用 |
+| BkAppLogConfigManager | AppEntityManager[BkAppLogConfig] | delete | 无 | 无 | 不适用 |
 
 ---
 
@@ -4287,7 +4287,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppLogConfigController | 无 | __init__, create_or_patch, remove | 无 | 无 | 不适用 |
+| AppLogConfigController | 无 | create_or_patch, remove | 无 | 无 | 不适用 |
 | NullController | 无 | create_or_patch, remove | 无 | 无 | 不适用 |
 
 ---
@@ -4452,7 +4452,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ProcessesInfo | typing.NamedTuple | 无 | 无 | 无 | real-time processes info |
-| ProcController | typing.Protocol | __init__, start, stop, scale | 无 | 无 | Control app's processes |
+| ProcController | typing.Protocol | start, stop, scale | 无 | 无 | Control app's processes |
 | ProcControllerHub | 无 | register_controller, get | 无 | 无 | Get proc controller by different application type. |
 
 ---
@@ -4513,7 +4513,7 @@
 |------|------|------|------|--------|----------|
 | ProcessOperationTooOften | Exception | 无 | 无 | 无 | 进程操作过于频繁 |
 | ProcessNotFound | Exception | 无 | 无 | 无 | Unable to find the process |
-| ScaleProcessError | Exception | __init__, caused_by_not_found | 无 | 无 | Unable to scale process due to internal errors.
+| ScaleProcessError | Exception | caused_by_not_found | 无 | 无 | Unable to scale process due to internal errors.
 
  ... |
 | UnknownProcessTypeError | paas_wl.infras.resources.kube_res.exceptions.AppEntityDeserializeError | 无 | 无 | 无 | Unable to detect process type from Deployment/Pod |
@@ -4636,9 +4636,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcessDeserializer | AppEntityDeserializer['Process'] | deserialize, _deserialize_for_default_app, _deserialize_for_cnative_app, _get_process_type, _get_main_container | 无 | 无 | Deserializer for Process |
-| InstanceDeserializer | AppEntityDeserializer['Instance'] | deserialize, _get_main_container, get_process_type, extract_rich_status, parse_instance_state | 无 | 无 | Deserializer for Instance |
-| ProcessSerializer | AppEntitySerializer['Process'] | serialize, _construct_pod_body_specs | 无 | 无 | Serializer for process |
+| ProcessDeserializer | AppEntityDeserializer['Process'] | deserialize | 无 | 无 | Deserializer for Process |
+| InstanceDeserializer | AppEntityDeserializer['Instance'] | deserialize, get_process_type, extract_rich_status, parse_instance_state | 无 | 无 | Deserializer for Instance |
+| ProcessSerializer | AppEntitySerializer['Process'] | serialize | 无 | 无 | Serializer for process |
 
 ---
 
@@ -4955,12 +4955,12 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ProcessSpecPlanManager | django.db.models.Manager | get_by_name | 无 | 无 | 不适用 |
-| ProcessSpecPlan | django.db.models.Model | get_resource_summary, __str__ | name, max_replicas, limits, requests, is_active, created, updated, objects | 无 | 不适用 |
-| ProcessSpec | paas_wl.utils.models.TimestampedModel | save, __str__, computed_replicas | name, type, engine_app, proc_command, port, target_replicas, target_status, plan, autoscaling | 无 | 不适用 |
-| AttrSetter | 无 | __init__, setattr | 无 | 无 | 不适用 |
-| ProcessSpecManager | 无 | __init__, sync, bulk_create_procs, bulk_update_procs, get_default_replicas, get_plan | 无 | 无 | 不适用 |
+| ProcessSpecPlan | django.db.models.Model | get_resource_summary | name, max_replicas, limits, requests, is_active, created, updated, objects | 无 | 不适用 |
+| ProcessSpec | paas_wl.utils.models.TimestampedModel | save, computed_replicas | name, type, engine_app, proc_command, port, target_replicas, target_status, plan, autoscaling | 无 | 不适用 |
+| AttrSetter | 无 | setattr | 无 | 无 | 不适用 |
+| ProcessSpecManager | 无 | sync, bulk_create_procs, bulk_update_procs, get_default_replicas, get_plan | 无 | 无 | 不适用 |
 | ProcessProbe | django.db.models.Model | 无 | app, process_type, probe_type, probe_handler, initial_delay_seconds, timeout_seconds, period_seconds, success_threshold, failure_threshold | 无 | 不适用 |
-| ProcessProbeManager | 无 | __init__, sync | 无 | 无 | 不适用 |
+| ProcessProbeManager | 无 | sync | 无 | 无 | 不适用 |
 
 ---
 
@@ -5035,8 +5035,8 @@
 |------|------|------|------|--------|----------|
 | PlainInstance | 无 | shorter_name, is_ready_for | 无 | define | 不适用 |
 | PlainProcess | 无 | is_all_ready | 无 | define | 不适用 |
-| CNativeProcessSpec | 无 | __attrs_post_init__ | 无 | define | 云原生应用的进程 spec. 其属性与 paas_wl.bk_app.processes.seria... |
-| ProcessManager | 无 | __init__, wl_app, sync_processes_specs, sync_processes_probes, list_processes_specs, list_processes, list_plain_processes, get_running_image, create_webconsole, get_previous_logs, _list_default_specs, _list_cnative_specs | 无 | 无 | Manager for engine processes |
+| CNativeProcessSpec | 无 | 无 | 无 | define | 云原生应用的进程 spec. 其属性与 paas_wl.bk_app.processes.seria... |
+| ProcessManager | 无 | wl_app, sync_processes_specs, sync_processes_probes, list_processes_specs, list_processes, list_plain_processes, get_running_image, create_webconsole, get_previous_logs | 无 | 无 | Manager for engine processes |
 
 ---
 
@@ -5330,7 +5330,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcessesViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | update, _perform_update, restart | permission_classes | 无 | 适用于所有类型应用，应用进程操作相关视图。 |
+| ProcessesViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | update, restart | permission_classes | 无 | 适用于所有类型应用，应用进程操作相关视图。 |
 | CNativeListAndWatchProcsViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, watch, process_event, get_repo_url | permission_classes, content_negotiation_class | 无 | 适用于云原生应用，按环境查看应用进程实例相关信息。支持一次查看多个模块。 |
 | ListAndWatchProcsViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, watch, process_event | permission_classes, content_negotiation_class | 无 | 适用于普通应用，查看应用进程实例相关信息，支持按模块与环境查看。 |
 | InstanceEventsViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list | permission_classes | 无 | 适用于所有类型应用，应用进程事件相关视图。 |
@@ -5387,9 +5387,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcInstByEnvListWatcher | 无 | __init__, cluster_name, namespace, list, watch | 无 | 无 | ListWatcher for Process(Deployment) & Instance(Pod... |
-| ProcInstByModuleEnvListWatcher | 无 | __init__, wl_app, list, watch | 无 | 无 | ListWatcher for Process(Deployment) & Instance(Pod... |
-| ParallelChainedGenerator | 无 | __init__, start, _consume_gen, iter_results, close | 无 | 无 | Consumes multiple generators in parallel |
+| ProcInstByEnvListWatcher | 无 | cluster_name, namespace, list, watch | 无 | 无 | ListWatcher for Process(Deployment) & Instance(Pod... |
+| ProcInstByModuleEnvListWatcher | 无 | wl_app, list, watch | 无 | 无 | ListWatcher for Process(Deployment) & Instance(Pod... |
+| ParallelChainedGenerator | 无 | start, iter_results, close | 无 | 无 | Consumes multiple generators in parallel |
 
 ---
 
@@ -5605,8 +5605,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DBConfigLoader | 无 | __init__, _load, get_all_cluster_names, list_configurations_by_name | 无 | 无 | Enhanced ConfigLoader, which is loaded from **db**... |
-| LegacyKubeConfigLoader | kubernetes.config.kube_config.KubeConfigLoader | from_file, _get_tag_from_context, get_all_tags, list_configurations_by_tag, _load_cluster_info, _set_config | 无 | 无 | Legacy ConfigLoader, which is loaded from **file**... |
+| DBConfigLoader | 无 | get_all_cluster_names, list_configurations_by_name | 无 | 无 | Enhanced ConfigLoader, which is loaded from **db**... |
+| LegacyKubeConfigLoader | kubernetes.config.kube_config.KubeConfigLoader | from_file, get_all_tags, list_configurations_by_tag | 无 | 无 | Legacy ConfigLoader, which is loaded from **file**... |
 
 ---
 
@@ -6030,11 +6030,11 @@
 |------|------|------|------|--------|----------|
 | PortMap | 无 | get_port_num | 无 | define | PortMap is used to declare the port of http/https ... |
 | Domain | 无 | structure | 无 | define | 不适用 |
-| IngressConfig | 无 | __attrs_post_init__, find_app_root_domain, find_subdomain_domain, find_subpath_domain, default_root_domain, default_sub_path_domain | 无 | define | 不适用 |
+| IngressConfig | 无 | find_app_root_domain, find_subdomain_domain, find_subpath_domain, default_root_domain, default_sub_path_domain | 无 | define | 不适用 |
 | ClusterManager | django.db.models.Manager | register_cluster, switch_default_cluster | 无 | 无 | 不适用 |
-| Cluster | paas_wl.utils.models.UuidAuditedModel | __str__, bcs_cluster_id, bcs_project_id, bk_biz_id, has_feature_flag | region, name, type, description, is_default, annotations, ca_data, cert_data, key_data, token_type, token_value, default_node_selector, default_tolerations, feature_flags, objects | 无 | 应用集群 |
+| Cluster | paas_wl.utils.models.UuidAuditedModel | bcs_cluster_id, bcs_project_id, bk_biz_id, has_feature_flag | region, name, type, description, is_default, annotations, ca_data, cert_data, key_data, token_type, token_value, default_node_selector, default_tolerations, feature_flags, objects | 无 | 应用集群 |
 | APIServer | paas_wl.utils.models.UuidAuditedModel | 无 | cluster, host, overridden_hostname | 无 | 不适用 |
-| EnhancedConfiguration | kubernetes.client.Configuration | create, _initialize_host, _initialize_auth, activate_resolver, extract_ip, __repr__ | 无 | 无 | Enhanced Configuration, which is loaded from db an... |
+| EnhancedConfiguration | kubernetes.client.Configuration | create, activate_resolver, extract_ip | 无 | 无 | Enhanced Configuration, which is loaded from db an... |
 
 ---
 
@@ -6131,8 +6131,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RegionClusterService | 无 | __init__, list_clusters, get_default_cluster, get_cluster_by_name, has_cluster | 无 | 无 | RegionClusterService provide interface for queryin... |
-| EnvClusterService | 无 | __init__, get_cluster, get_cluster_name, bind_cluster | 无 | 无 | EnvClusterService provide interface for managing t... |
+| RegionClusterService | 无 | list_clusters, get_default_cluster, get_cluster_by_name, has_cluster | 无 | 无 | RegionClusterService provide interface for queryin... |
+| EnvClusterService | 无 | get_cluster, get_cluster_name, bind_cluster | 无 | 无 | EnvClusterService provide interface for managing t... |
 
 ---
 
@@ -6407,8 +6407,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcessProbeManager | 无 | __init__, get_probe, get_readiness_probe, get_liveness_probe, get_startup_probe | 无 | 无 | 不适用 |
-| AddonManager | 无 | __init__, get_readiness_probe, get_sidecars, get_volumes, get_volume_mounts | 无 | 无 | 不适用 |
+| ProcessProbeManager | 无 | get_probe, get_readiness_probe, get_liveness_probe, get_startup_probe | 无 | 无 | 不适用 |
+| AddonManager | 无 | get_readiness_probe, get_sidecars, get_volumes, get_volume_mounts | 无 | 无 | 不适用 |
 
 ---
 
@@ -6509,10 +6509,10 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_global_configuration_pool | `@lru_cache:` | lru_cache | Get the global config pool object.
+| get_global_configuration_pool | `def get_global_configuration_pool() -> Dict[str, HAEndpointPool]:` | lru_cache | Get the global config pool object.
 
     NOTE: This... |
-| make_rest_client | `@lru_cache(maxsize=128):` | lru_cache | Use LRU cache to avoid re-creating HTTP connection... |
+| make_rest_client | `def make_rest_client(configuration: EnhancedConfiguration) -> RESTClientObject:` | lru_cache | Use LRU cache to avoid re-creating HTTP connection... |
 | get_all_cluster_names | `def get_all_cluster_names() -> List[str]:` | 无 | 不适用 |
 | get_client_by_cluster_name | `def get_client_by_cluster_name(cluster_name: str) -> EnhancedApiClient:` | 无 | Initialize an kubernetes api client object by give... |
 
@@ -6520,7 +6520,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EnhancedApiClient | BaseApiClient | __init__, call_api, rest_client, rest_client | 无 | 无 | Enhanced Kubernetes ApiClient, with some extra fea... |
+| EnhancedApiClient | BaseApiClient | call_api, rest_client | 无 | 无 | Enhanced Kubernetes ApiClient, with some extra fea... |
 
 ---
 
@@ -6579,7 +6579,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DummyBcsClient | 无 | create_web_console_sessions | 无 | 无 | Dummy BCS Clientwhen BCS is disabled. |
-| BcsClient | 无 | __init__, _prepare_headers, create_web_console_sessions | 无 | 无 | bcs 通过 APIGW 提供的 API |
+| BcsClient | 无 | create_web_console_sessions | 无 | 无 | bcs 通过 APIGW 提供的 API |
 
 ---
 
@@ -6639,15 +6639,15 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| KubeException | Exception | __init__ | 无 | 无 | 不适用 |
-| ResourceDuplicate | KubeException | __init__ | 无 | 无 | 不适用 |
-| ReadTargetStatusTimeout | KubeException | __init__ | 无 | 无 | 不适用 |
-| PodNotSucceededError | KubeException | __init__ | 无 | 无 | pod not succeeded |
+| KubeException | Exception | 无 | 无 | 无 | 不适用 |
+| ResourceDuplicate | KubeException | 无 | 无 | 无 | 不适用 |
+| ReadTargetStatusTimeout | KubeException | 无 | 无 | 无 | 不适用 |
+| PodNotSucceededError | KubeException | 无 | 无 | 无 | pod not succeeded |
 | PodAbsentError | PodNotSucceededError | 无 | 无 | 无 | pod not succeeded triggered by pod's absence |
 | PodTimeoutError | PodNotSucceededError | 无 | 无 | 无 | pod not succeeded triggered by timeout |
-| CreateServiceAccountTimeout | KubeException | __init__ | 无 | 无 | 不适用 |
-| ResourceMissing | KubeException | __init__ | 无 | 无 | 不适用 |
-| ResourceDeleteTimeout | KubeException | __init__ | 无 | 无 | 不适用 |
+| CreateServiceAccountTimeout | KubeException | 无 | 无 | 无 | 不适用 |
+| ResourceMissing | KubeException | 无 | 无 | 无 | 不适用 |
+| ResourceDeleteTimeout | KubeException | 无 | 无 | 无 | 不适用 |
 | MapperNotInVersionError | Exception | 无 | 无 | 无 | mapper is missing in this version |
 | NotAppScopedResource | Exception | 无 | 无 | 无 | raise NotAppScopedResource If no WlApp object is f... |
 
@@ -6717,22 +6717,22 @@
 |--------|------|--------|----------|
 | get_default_options | `def get_default_options():` | 无 | default_options is the default options for whole k... |
 | set_default_options | `def set_default_options(options: ClientOptionsDict):` | 无 | 不适用 |
-| wrap_missing_exc | `@contextmanager:` | contextmanager | A context manager which transform exc into Resourc... |
+| wrap_missing_exc | `def wrap_missing_exc(namespace: Namespace, name: str):` | contextmanager | A context manager which transform exc into Resourc... |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PatchType | blue_krill.data_types.enum.StrStructuredEnum | to_content_type | JSON, MERGE, STRATEGIC | 无 | Different merge types when patching a kubernetes r... |
-| KubeObjectList | 无 | __init__ | 无 | 无 | Handle List object returned by kubernetes client |
-| NameBasedMethodProxy | 无 | __set_name__, __get__, __get__, __get__ | 无 | 无 | A descriptor which proxy method calls to `self.ops... |
-| BaseKresource | 无 | __init__, clone_from | kind, get_preferred_version, get_available_versions, get, patch, replace_or_patch, create_or_update, get_or_create, create, delete, update_subres, patch_subres, update_status | 无 | Base class for kubernetes resource utils
+| KubeObjectList | 无 | 无 | 无 | 无 | Handle List object returned by kubernetes client |
+| NameBasedMethodProxy | 无 | 无 | 无 | 无 | A descriptor which proxy method calls to `self.ops... |
+| BaseKresource | 无 | clone_from | kind, get_preferred_version, get_available_versions, get, patch, replace_or_patch, create_or_update, get_or_create, create, delete, update_subres, patch_subres, update_status | 无 | Base class for kubernetes resource utils
 
     :par... |
-| BaseOperations | 无 | __init__, get_preferred_version, get_available_versions, default_kwargs | 无 | 无 | Base operation class for kubernetes resources
+| BaseOperations | 无 | get_preferred_version, get_available_versions, default_kwargs | 无 | 无 | Base operation class for kubernetes resources
 
    ... |
-| NameBasedOperations | BaseOperations | get, patch, replace_or_patch, create_or_update, get_or_create, create, delete, update_subres, patch_subres, update_status, _add_resource_version | 无 | 无 | All operations in this class are based on resource... |
+| NameBasedOperations | BaseOperations | get, patch, replace_or_patch, create_or_update, get_or_create, create, delete, update_subres, patch_subres, update_status | 无 | 无 | All operations in this class are based on resource... |
 | BatchOperations | BaseOperations | list, delete_collection, delete_individual, create_watch_stream, make_labels_string, make_fields_string | 无 | 无 | All operations in this class are performed in batc... |
 | KNode | BaseKresource | 无 | kind | 无 | 不适用 |
 | KNamespace | BaseKresource | wait_for_default_sa, wait_until_removed, default_sa_exists | kind | 无 | 不适用 |
@@ -6796,10 +6796,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LazyDiscoverer | _LazyDiscoverer | __search | 无 | 无 | LazyDiscoverer fixed cache bug
+| LazyDiscoverer | _LazyDiscoverer | 无 | 无 | 无 | LazyDiscoverer fixed cache bug
 
     Note: You cann... |
-| CoreDynamicClient | kubernetes.dynamic.DynamicClient | __init__, serialize_body, get_preferred_resource, delete_anyway, request | 无 | 无 | 为官方 SDK 里的 DynamicClient 追加新功能 |
+| CoreDynamicClient | kubernetes.dynamic.DynamicClient | serialize_body, get_preferred_resource, delete_anyway, request | 无 | 无 | 为官方 SDK 里的 DynamicClient 追加新功能 |
 
 ---
 
@@ -6844,7 +6844,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| set_default_version | `@receiver(post_save, sender=WlApp):` | receiver | Set the default resource generation version for ne... |
+| set_default_version | `def set_default_version(sender, instance, created, *args, **kwargs):` | receiver | Set the default resource generation version for ne... |
 
 
 ---
@@ -6893,7 +6893,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Process | typing.Protocol | 无 | 无 | 无 | A protocol that represents a process object with n... |
-| ResourceIdentifiers | 无 | __init__, pod_name, deployment_name, match_labels, pod_selector, labels | 无 | 无 | A class that stores the identifiers for kubernetes... |
+| ResourceIdentifiers | 无 | pod_name, deployment_name, match_labels, pod_selector, labels | 无 | 无 | A class that stores the identifiers for kubernetes... |
 | MapperPack | 无 | 无 | 无 | 无 | 不适用 |
 | MapperProcConfig | 无 | 无 | 无 | dataclass | The config object for initializing a resource mapp... |
 
@@ -7009,7 +7009,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppResVerManager | 无 | __init__, curr_version, update | 无 | 无 | 应用资源版本管理器 |
+| AppResVerManager | 无 | curr_version, update | 无 | 无 | 应用资源版本管理器 |
 
 ---
 
@@ -7073,23 +7073,23 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppEntity | 无 | __init_subclass__, is_applicable, is_concrete, get_resource_version | _kube_data | dataclass | Entity type related with WlApp |
+| AppEntity | 无 | is_applicable, is_concrete, get_resource_version | _kube_data | dataclass | Entity type related with WlApp |
 | GVKConfig | typing.NamedTuple | 无 | 无 | 无 | Group/Version/Kind config for current AppEntity ty... |
-| BaseTransformer | Generic[AET] | get_api_version_from_gvk, __init__, get_apiversion | api_version | 无 | Base class for Serializer and Deserializer
+| BaseTransformer | Generic[AET] | get_api_version_from_gvk, get_apiversion | api_version | 无 | Base class for Serializer and Deserializer
 
     :p... |
 | AppEntityDeserializer | BaseTransformer, Generic[AET] | deserialize | 无 | 无 | Base class for deserializing kube resource |
 | AppEntitySerializer | BaseTransformer, Generic[AET] | serialize | 无 | 无 | Base class for serializing AppEntities |
-| EntityTransformerPicker | Generic[T] | __init__, get_transformer, _build_transformer_mappings, _iter_transformer_type | 无 | 无 | 
+| EntityTransformerPicker | Generic[T] | get_transformer | 无 | 无 |
     A special type which holds multiple serialize... |
 | EntityDeserializerPicker | EntityTransformerPicker[AppEntityDeserializer] | 无 | 无 | 无 | 不适用 |
 | EntitySerializerPicker | EntityTransformerPicker[AppEntitySerializer] | 无 | 无 | 无 | 不适用 |
 | ResourceList | Generic[AET] | get_resource_version | 无 | dataclass | List container for multiple AppKubeResources |
 | WatchEvent | Generic[AET] | 无 | 无 | dataclass | 不适用 |
-| NamespaceScopedReader | Generic[AET] | retrieve_associated_wl_app, list_by_ns, list_by_ns_with_mdata, watch_by_ns, _exc_is_expired_rv, _make_deserializer, _load_gvk_config, _kres | 无 | 无 | A reader for namespace-scoped resources. |
-| AppEntityReader | Generic[AET] | __init__, get, list_by_app, list_by_app_with_meta, watch_by_app, _exc_is_expired_rv, _make_deserializer, _load_gvk_config, _kres, _get_namespace | 无 | 无 | Read app related kube resource, produces `AppEntit... |
-| AppEntityManager | AppEntityReader, Generic[AET] | __init__, save, create, delete_by_name, upsert, update, delete, _make_serializer, guide_res_argument | 无 | 无 | Help managing app related kube resource, allows wr... |
-| WaitDelete | Generic[AET] | __init__, wait | _check_interval | 无 | A helper to wait resource actually be deleted from... |
+| NamespaceScopedReader | Generic[AET] | retrieve_associated_wl_app, list_by_ns, list_by_ns_with_mdata, watch_by_ns | 无 | 无 | A reader for namespace-scoped resources. |
+| AppEntityReader | Generic[AET] | get, list_by_app, list_by_app_with_meta, watch_by_app | 无 | 无 | Read app related kube resource, produces `AppEntit... |
+| AppEntityManager | AppEntityReader, Generic[AET] | save, create, delete_by_name, upsert, update, delete, guide_res_argument | 无 | 无 | Help managing app related kube resource, allows wr... |
+| WaitDelete | Generic[AET] | wait | _check_interval | 无 | A helper to wait resource actually be deleted from... |
 | Schedule | 无 | 无 | 无 | dataclass | A schedule restriction for a resource(App) |
 
 ---
@@ -7137,7 +7137,7 @@
 |------|------|------|------|--------|----------|
 | AppEntityNotFound | Exception | 无 | 无 | 无 | Exception when required resource is not found in a... |
 | APIServerVersionIncompatible | Exception | 无 | 无 | 无 | Raised when apiserver does not support requested a... |
-| AppEntityDeserializeError | Exception | __init__ | 无 | 无 | Error in deserialize k8s resource |
+| AppEntityDeserializeError | Exception | 无 | 无 | 无 | Error in deserialize k8s resource |
 
 ---
 
@@ -7193,7 +7193,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LabelTolerationProviders | 无 | __init__, register_labels, register_tolerations, get_labels, get_tolerations | 无 | 无 | Allow registering extra functions for labels/toler... |
+| LabelTolerationProviders | 无 | register_labels, register_tolerations, get_labels, get_tolerations | 无 | 无 | Allow registering extra functions for labels/toler... |
 
 ---
 
@@ -7229,7 +7229,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_time_delta | `def get_time_delta(time_delta_string):` | 无 | 
+| get_time_delta | `def get_time_delta(time_delta_string):` | 无 |
     5m -> datetime.timedelta(minutes=5)
     5d ->... |
 | digest_if_length_exceeded | `def digest_if_length_exceeded(raw_str: str, limit: int):` | 无 | 如果字符串长度超长则将字符串摘要 |
@@ -7244,7 +7244,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AttrDict | collections.abc.MutableMapping | __init__, __getitem__, __setitem__, __delitem__, __iter__, __len__ | 无 | 无 | Dict-like object that can be accessed by attribute... |
+| AttrDict | collections.abc.MutableMapping | 无 | 无 | 无 | Dict-like object that can be accessed by attribute... |
 
 ---
 
@@ -7339,7 +7339,7 @@
 |------|------|------|------|--------|----------|
 | BuildStatus | blue_krill.data_types.enum.StrStructuredEnum | get_finished_states | SUCCESSFUL, FAILED, PENDING, INTERRUPTED | 无 | 不适用 |
 | CommandStatus | blue_krill.data_types.enum.StrStructuredEnum | get_finished_states, to_job_status | SCHEDULED, SUCCESSFUL, FAILED, PENDING, INTERRUPTED | 无 | 不适用 |
-| CommandType | blue_krill.data_types.enum.StrStructuredEnum | get_step_name, _missing_ | PRE_RELEASE_HOOK | 无 | 不适用 |
+| CommandType | blue_krill.data_types.enum.StrStructuredEnum | get_step_name | PRE_RELEASE_HOOK | 无 | 不适用 |
 | PodPhase | blue_krill.data_types.enum.StrStructuredEnum | 无 | SUCCEEDED, FAILED, RUNNING | 无 | 不适用 |
 
 ---
@@ -7370,13 +7370,13 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_patch_create_connection_with_dns | `def get_patch_create_connection_with_dns(dns_resolver) -> Callable:` | 无 | simply get patched create_connection |
-| custom_resolver | `@contextlib.contextmanager:` | contextlib.contextmanager | A context manager which updates DNS resolver recor... |
+| custom_resolver | `def custom_resolver(dns_map: Dict):` | contextlib.contextmanager | A context manager which updates DNS resolver recor... |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CustomLocalDnsResolver | threading.local | __init__ | 无 | 无 | Custom Local Dns Resolver
+| CustomLocalDnsResolver | threading.local | 无 | 无 | 无 | Custom Local Dns Resolver
     支持在线程级自定义 Dns 记录
    ... |
 
@@ -7496,7 +7496,7 @@
 |------|------|------|------|--------|----------|
 | HealthStatusType | blue_krill.data_types.enum.StrStructuredEnum | 无 | HEALTHY, UNHEALTHY, PROGRESSING, UNKNOWN | 无 | 不适用 |
 | HealthStatus | 无 | with_message | 无 | define | the resource health status |
-| FakeResponse | 无 | __init__, __serialize | 无 | 无 | 不适用 |
+| FakeResponse | 无 | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -7534,8 +7534,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Singleton | 无 | __new__ | _instance | 无 | 不适用 |
-| Local | Singleton | request, request, request_id, get_http_request_id, release | 无 | 无 | local 对象，配合中间件 RequestProvider 使用 |
+| Singleton | 无 | 无 | _instance | 无 | 不适用 |
+| Local | Singleton | request, request_id, get_http_request_id, release | 无 | 无 | local 对象，配合中间件 RequestProvider 使用 |
 
 ---
 
@@ -7589,7 +7589,7 @@
 | AuditedModel | django.db.models.Model | 无 | created, updated | 无 | Audited model with 'created' and 'updated' fields. |
 | UuidAuditedModel | AuditedModel | 无 | uuid | 无 | Add a UUID primary key to an class`AuditedModel`. |
 | TimestampedModel | django.db.models.Model | 无 | region, created, updated | 无 | Model with 'created' and 'updated' fields. |
-| BkUserField | django.db.models.CharField | __init__, from_db_value | description | 无 | Field for storing blueking user pk |
+| BkUserField | django.db.models.CharField | from_db_value | description | 无 | Field for storing blueking user pk |
 | SimpleUserIDWrapper | str | username | 无 | 无 | A simple user wrapper for convenience |
 
 ---
@@ -7808,8 +7808,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcAutoscalingDeserializer | AppEntityDeserializer['ProcAutoscaling'] | deserialize, _deserialize_for_default_app, _deserialize_for_cnative_app, _parse_metrics, _get_metric, _get_metric_value | 无 | 无 | Deserializer for ProcAutoscaling |
-| ProcAutoscalingSerializer | AppEntitySerializer['ProcAutoscaling'] | serialize, _gen_resource_metric_source | api_version | 无 | Serializer for process auto scaling |
+| ProcAutoscalingDeserializer | AppEntityDeserializer['ProcAutoscaling'] | deserialize | 无 | 无 | Deserializer for ProcAutoscaling |
+| ProcAutoscalingSerializer | AppEntitySerializer['ProcAutoscaling'] | serialize | api_version | 无 | Serializer for process auto scaling |
 
 ---
 
@@ -7849,7 +7849,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ConfigMap | paas_wl.infras.resources.kube_res.base.AppEntity | 无 | 无 | dataclass | 不适用 |
-| ConfigMapManager | AppEntityManager[ConfigMap] | __init__, delete | 无 | 无 | 不适用 |
+| ConfigMapManager | AppEntityManager[ConfigMap] | delete | 无 | 无 | 不适用 |
 
 ---
 
@@ -7900,7 +7900,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SecretType | blue_krill.data_types.enum.StrStructuredEnum | 无 | OPAQUE, SERVICE_ACCOUNT_TOKEN, DOCKER_CFG, DOCKER_CONFIG_JSON, BASIC_AUTH, SSH_AUTH, TLS, BOOTSTRAP_TOKEN | 无 | 
+| SecretType | blue_krill.data_types.enum.StrStructuredEnum | 无 | OPAQUE, SERVICE_ACCOUNT_TOKEN, DOCKER_CFG, DOCKER_CONFIG_JSON, BASIC_AUTH, SSH_AUTH, TLS, BOOTSTRAP_TOKEN | 无 |
     Secret 类型
 
     https://kubernetes.io/docs/con... |
@@ -8193,7 +8193,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ImageCredentials | paas_wl.infras.resources.kube_res.base.AppEntity | load_from_app, build_dockerconfig, build_app_registry_auth | 无 | dataclass | 不适用 |
-| ImageCredentialsManager | AppEntityManager[ImageCredentials] | __init__, delete | 无 | 无 | 不适用 |
+| ImageCredentialsManager | AppEntityManager[ImageCredentials] | delete | 无 | 无 | 不适用 |
 
 ---
 
@@ -8993,8 +8993,8 @@
 |------|------|------|------|--------|----------|
 | DomainPriorityType | blue_krill.data_types.enum.IntStructuredEnum | 无 | STABLE, WITHOUT_MODULE, ONLY_CODE | 无 | 不适用 |
 | Domain | 无 | as_url, as_dict, sort_by_len, sort_by_type | 无 | dataclass | A domain object |
-| ModuleEnvDomains | 无 | __init__, get_ingress_config, all, get_highest_priority | 无 | 无 | managing domains for module environment |
-| SubDomainAllocator | 无 | __init__, list_available, get_highest_priority, for_universal, for_default_module, for_default_module_prod_env, _make_host | DOT_SEP | 无 | Allocate domain objects
+| ModuleEnvDomains | 无 | get_ingress_config, all, get_highest_priority | 无 | 无 | managing domains for module environment |
+| SubDomainAllocator | 无 | list_available, get_highest_priority, for_universal, for_default_module, for_default_module_prod_env | DOT_SEP | 无 | Allocate domain objects
 
     :param port_map: The ... |
 
@@ -9040,8 +9040,8 @@
 |------|------|------|------|--------|----------|
 | SubpathPriorityType | blue_krill.data_types.enum.IntStructuredEnum | 无 | STABLE, WITHOUT_MODULE, ONLY_CODE | 无 | 不适用 |
 | Subpath | 无 | as_url, as_dict, sort_by_len, sort_by_type | 无 | dataclass | A subpath object |
-| ModuleEnvSubpaths | 无 | __init__, get_ingress_config, get_shortest, all, get_highest_priority | 无 | 无 | managing subpaths for module environment |
-| SubPathAllocator | 无 | __init__, list_available, get_highest_priority, for_universal, for_default_module, for_default_module_prod_env, make_stable_obj, _make_subpath | sep | 无 | Allocate subpath objects
+| ModuleEnvSubpaths | 无 | get_ingress_config, get_shortest, all, get_highest_priority | 无 | 无 | managing subpaths for module environment |
+| SubPathAllocator | 无 | list_available, get_highest_priority, for_universal, for_default_module, for_default_module_prod_env, make_stable_obj | sep | 无 | Allocate subpath objects
 
     :param port_map: The... |
 
@@ -9170,7 +9170,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| sync_default_entrances_for_module_switching | `@receiver(application_default_module_switch):` | receiver | sync module's default domains and subpaths after s... |
+| sync_default_entrances_for_module_switching | `def sync_default_entrances_for_module_switching(sender, application, new_module, old_module, **kwargs):` | receiver | sync module's default domains and subpaths after s... |
 | refresh_module_domains | `def refresh_module_domains(module: Module):` | 无 | Refresh a module's domains, you should call the fu... |
 | refresh_module_subpaths | `def refresh_module_subpaths(module: Module) -> None:` | 无 | Refresh a module's subpaths, you should call the f... |
 
@@ -9281,7 +9281,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseEnvAddresses | 无 | __init__, wl_app, ingress_cfg, list, list_subdomain, list_subpath, list_legacy, list_custom, has_custom_url, _make_url, _sort | 无 | 无 | Get all addresses for given environment |
+| BaseEnvAddresses | 无 | wl_app, ingress_cfg, list, list_subdomain, list_subpath, list_legacy, list_custom, has_custom_url | 无 | 无 | Get all addresses for given environment |
 | LiveEnvAddresses | BaseEnvAddresses | list, list_subdomain, list_subpath | 无 | 无 | Get all live addresses for given environment
 
     ... |
@@ -9470,7 +9470,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DomainWithCert | 无 | __init__, from_app_domain, from_custom_domain | 无 | 无 | 不适用 |
+| DomainWithCert | 无 | from_app_domain, from_custom_domain | 无 | 无 | 不适用 |
 
 ---
 
@@ -9618,17 +9618,17 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| restore_ingress_on_error | `@contextlib.contextmanager:` | contextlib.contextmanager | A context manager which syncs a domain's ingress r... |
+| restore_ingress_on_error | `def restore_ingress_on_error(domain: Domain, service_name: str):` | contextlib.contextmanager | A context manager which syncs a domain's ingress r... |
 | get_service_name | `def get_service_name(app: WlApp) -> str:` | 无 | Get service name for creating new ingress resource... |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ReplaceAppDomainService | 无 | __init__, _get_obj, replace_with | 无 | 无 | Service to perform AppDomain replacement
+| ReplaceAppDomainService | 无 | replace_with | 无 | 无 | Service to perform AppDomain replacement
 
     :par... |
-| DomainResourceDeleteService | 无 | __init__, do, _get_app_domain_for_deletion | 无 | 无 | Delete custom domain related resources |
+| DomainResourceDeleteService | 无 | do | 无 | 无 | Delete custom domain related resources |
 
 ---
 
@@ -9684,8 +9684,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | CustomDomainManager | typing.Protocol | create, update, delete | 无 | 无 | Manage custom domains for different kinds of appli... |
-| DftCustomDomainManager | 无 | __init__, create, update, delete | 无 | 无 | This manager was designed to be directly used by v... |
-| CNativeCustomDomainManager | 无 | __init__, create, update, delete | 无 | 无 | Manage custom domains for cloud native application... |
+| DftCustomDomainManager | 无 | create, update, delete | 无 | 无 | This manager was designed to be directly used by v... |
+| CNativeCustomDomainManager | 无 | create, update, delete | 无 | 无 | Manage custom domains for cloud native application... |
 
 ---
 
@@ -9920,7 +9920,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IngressNginxAdaptor | 无 | __init__, make_configuration_snippet, build_http_path, build_rewrite_target, parse_http_path | 无 | 无 | An Adaptor shield different versions(0.20.0 ~ 0.51... |
+| IngressNginxAdaptor | 无 | make_configuration_snippet, build_http_path, build_rewrite_target, parse_http_path | 无 | 无 | An Adaptor shield different versions(0.20.0 ~ 0.51... |
 | LegacyNginxRewrittenProvider | 无 | make_configuration_snippet, make_location_path, make_rewrite_target, parse_location_path | 无 | 无 | Maintains compatibility for ingress-nginx <= 0.21.... |
 | NginxRegexRewrittenProvider | 无 | make_configuration_snippet, make_rewrite_target, make_location_path, parse_location_path | 无 | 无 | Maintains compatibility for ingress-nginx >= 0.22.... |
 | ConfigurationSnippetPatcher | 无 | patch, unpatch, parse_service_info_from_rules | START_MARK, END_MARK, REGEX | 无 | 不适用 |
@@ -9981,7 +9981,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _patch_app_ingress | help | 无 | This command patchs legacy app ingresses:
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | This command patchs legacy app ingresses:
 
     Upd... |
 
@@ -10176,8 +10176,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppIngressMgr | abc.ABC | __init__, get, delete, sync, update_target, make_ingress_name, list_desired_domains, construct_server_snippet, construct_configuration_snippet, _get_plugins_snippets, get_plugins, get_annotations | 无 | 无 | Simple class for managing app ingress |
-| IngressUpdater | 无 | __init__, sync, update_target, _service_name_valid | DEFAULT_PORT_NAME | 无 | Helper class for updating ingress object |
+| AppIngressMgr | abc.ABC | get, delete, sync, update_target, make_ingress_name, list_desired_domains, construct_server_snippet, construct_configuration_snippet, get_plugins, get_annotations | 无 | 无 | Simple class for managing app ingress |
+| IngressUpdater | 无 | sync, update_target | DEFAULT_PORT_NAME | 无 | Helper class for updating ingress object |
 
 ---
 
@@ -10222,7 +10222,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| assign_custom_hosts | `@transaction.atomic():` | transaction.atomic | Assign custom_domains to app, may update multiple ... |
+| assign_custom_hosts | `def assign_custom_hosts(app: WlApp, domains: List[AutoGenDomain], default_service_name: str):` | transaction.atomic | Assign custom_domains to app, may update multiple ... |
 | save_subdomains | `def save_subdomains(app: WlApp, domains: List[AutoGenDomain]) -> Set[WlApp]:` | 无 | Save subdomains to database, return apps affected ... |
 
 #### 类
@@ -10230,8 +10230,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SubdomainAppIngressMgr | paas_wl.workloads.networking.ingress.managers.base.AppIngressMgr | make_ingress_name, list_desired_domains | 无 | 无 | manage the ingress rule with individual subdomains |
-| CustomDomainIngressMgr | paas_wl.workloads.networking.ingress.managers.base.AppIngressMgr | __init__, make_ingress_name, list_desired_domains, get_annotations | CUSTOM_DOMAIN_PREFIX | 无 | Manager for custom domain |
-| IngressDomainFactory | 无 | __init__, create | 无 | 无 | A factory class creates `PIngressDomain` objects |
+| CustomDomainIngressMgr | paas_wl.workloads.networking.ingress.managers.base.AppIngressMgr | make_ingress_name, list_desired_domains, get_annotations | CUSTOM_DOMAIN_PREFIX | 无 | Manager for custom domain |
+| IngressDomainFactory | 无 | create | 无 | 无 | A factory class creates `PIngressDomain` objects |
 
 ---
 
@@ -10277,7 +10277,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | UpdateTargetResult | typing.NamedTuple | 无 | 无 | 无 | Result type for `AppDefaultIngresses.safe_update_t... |
-| AppDefaultIngresses | 无 | __init__, list, sync_ignore_empty, safe_update_target, delete_if_service_matches | 无 | 无 | helps managing app's default ingress rules. |
+| AppDefaultIngresses | 无 | list, sync_ignore_empty, safe_update_target, delete_if_service_matches | 无 | 无 | helps managing app's default ingress rules. |
 | LegacyAppIngressMgr | paas_wl.workloads.networking.ingress.managers.base.AppIngressMgr | make_ingress_name, list_desired_domains | 无 | 无 | manage the default legacy default ingress resource |
 
 ---
@@ -10322,7 +10322,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcDefaultServices | 无 | __init__, create_or_patch, remove, should_create_ingress | 无 | 无 | Maintains default service and ingress rules for ea... |
+| ProcDefaultServices | 无 | create_or_patch, remove, should_create_ingress | 无 | 无 | Maintains default service and ingress rules for ea... |
 
 ---
 
@@ -10622,13 +10622,13 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppDomain | paas_wl.bk_app.applications.models.AuditedModel | has_customized_path_prefix, __str__ | app, region, host, path_prefix, https_enabled, https_auto_redirection, cert, shared_cert, source | 无 | Domains of applications, each object(entry) repres... |
+| AppDomain | paas_wl.bk_app.applications.models.AuditedModel | has_customized_path_prefix | app, region, host, path_prefix, https_enabled, https_auto_redirection, cert, shared_cert, source | 无 | Domains of applications, each object(entry) repres... |
 | BasicCert | paas_wl.bk_app.applications.models.AuditedModel | get_secret_name | region, name, cert_data, key_data | 无 | 不适用 |
 | AppDomainCert | BasicCert | 无 | type | 无 | WlApp's TLS Certifications, usually managed by use... |
 | AppDomainSharedCert | BasicCert | match_hostname | auto_match_cns, type | 无 | Shared TLS Certifications for AppDomain, every app... |
 | AppSubpathManager | django.db.models.Manager | create_obj | 无 | 无 | 不适用 |
-| AppSubpath | paas_wl.bk_app.applications.models.AuditedModel | __str__ | app, region, cluster_name, subpath, source, objects | 无 | stores application's subpaths |
-| Domain | paas_wl.utils.models.TimestampedModel | protocol, has_customized_path_prefix, __str__ | name, path_prefix, module_id, environment_id, https_enabled, module, environment | 无 | custom domain for application |
+| AppSubpath | paas_wl.bk_app.applications.models.AuditedModel | 无 | app, region, cluster_name, subpath, source, objects | 无 | stores application's subpaths |
+| Domain | paas_wl.utils.models.TimestampedModel | protocol, has_customized_path_prefix | name, path_prefix, module_id, environment_id, https_enabled, module, environment | 无 | custom domain for application |
 
 ---
 
@@ -10653,7 +10653,7 @@
 |--------|------|--------|----------|
 | register_plugin | `def register_plugin(plugin_cls: Type):` | 无 | Register a new service plugin class |
 | get_default_plugins | `def get_default_plugins() -> List[Type]:` | 无 | Return all default plugin types |
-| override_plugins | `@contextmanager:` | contextmanager | An context manager to override service plugins |
+| override_plugins | `def override_plugins(plugins: List[Type]):` | contextmanager | An context manager to override service plugins |
 
 #### 类
 
@@ -10722,13 +10722,13 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IngressPlugin | abc.ABC | __init__, make_server_snippet, make_configuration_snippet, _get_config | 无 | 无 | Ingress plugin type
+| IngressPlugin | abc.ABC | make_server_snippet, make_configuration_snippet | 无 | 无 | Ingress plugin type
 
     :param app: current WlApp... |
-| AccessControlPlugin | IngressPlugin | __init__, make_configuration_snippet | config_key, TMPL | 无 | Access control module for ingress
+| AccessControlPlugin | IngressPlugin | make_configuration_snippet | config_key, TMPL | 无 | Access control module for ingress
 
     Config form... |
-| PaasAnalysisPlugin | IngressPlugin | __init__, make_configuration_snippet | config_key, TMPL | 无 | Add paas analysis configs for ingress
+| PaasAnalysisPlugin | IngressPlugin | make_configuration_snippet | config_key, TMPL | 无 | Add paas analysis configs for ingress
 
     Config ... |
 
@@ -10774,7 +10774,7 @@
 |------|------|------|------|--------|----------|
 | ProcServicePortSLZ | rest_framework.serializers.Serializer | to_internal_value | name, protocol, port, target_port | 无 | 不适用 |
 | ProcServiceSLZ | rest_framework.serializers.Serializer | validate_ports | name, process_type, ports | 无 | 不适用 |
-| ProcIngressSLZ | rest_framework.serializers.Serializer | _get_service, validate | service_name, service_port_name | 无 | 不适用 |
+| ProcIngressSLZ | rest_framework.serializers.Serializer | validate | service_name, service_port_name | 无 | 不适用 |
 | AppDomainSharedCertSLZ | rest_framework.serializers.ModelSerializer | 无 | cert_data | 无 | 不适用 |
 | UpdateAppDomainSharedCertSLZ | rest_framework.serializers.ModelSerializer | 无 | cert_data | 无 | Serializer for updating shared cert object |
 
@@ -10888,7 +10888,7 @@
     :param a... |
 | get_service_dns_name | `def get_service_dns_name(app: WlApp, process_type: str) -> str:` | 无 | Return process's DNS name, can be used for communi... |
 | guess_default_service_name | `def guess_default_service_name(app: WlApp) -> str:` | 无 | Guess the default service name should be used when... |
-| get_main_process_service_name | `def get_main_process_service_name(app: WlApp) -> str:` | 无 | 
+| get_main_process_service_name | `def get_main_process_service_name(app: WlApp) -> str:` | 无 |
     获取提供服务的主进程 Service Name
 
     直接从 K8S 数据查询
@@ -11167,8 +11167,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CommandDeserializer | AppEntityDeserializer['Command'] | deserialize, _get_main_container, _get_main_container_status | api_version | 无 | 不适用 |
-| CommandSerializer | AppEntitySerializer['Command'] | serialize, _get_kube_labels, _get_kube_annotations | api_version | 无 | 不适用 |
+| CommandDeserializer | AppEntityDeserializer['Command'] | deserialize | api_version | 无 | 不适用 |
+| CommandSerializer | AppEntitySerializer['Command'] | serialize | api_version | 无 | 不适用 |
 
 ---
 
@@ -11257,7 +11257,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| worker_process_init_otel_trace_setup | `@worker_process_init.connect(weak=False):` | worker_process_init.connect | 不适用 |
+| worker_process_init_otel_trace_setup | `def worker_process_init_otel_trace_setup(*args, **kwargs):` | worker_process_init.connect | 不适用 |
 
 #### 类
 
@@ -11301,10 +11301,10 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| requests_callback | `def requests_callback(span: Span, response: Optional[Response]):` | 无 | 
+| requests_callback | `def requests_callback(span: Span, response: Optional[Response]):` | 无 |
     处理蓝鲸标准协议响应
      |
-| django_response_hook | `def django_response_hook(span: Span, request, response):` | 无 | 
+| django_response_hook | `def django_response_hook(span: Span, request, response):` | 无 |
     处理 PaasWL Django 响应
      |
 
@@ -11312,7 +11312,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKAppInstrumentor | opentelemetry.instrumentation.instrumentor.BaseInstrumentor | instrumentation_dependencies, _instrument, _uninstrument | 无 | 无 | 不适用 |
+| BKAppInstrumentor | opentelemetry.instrumentation.instrumentor.BaseInstrumentor | instrumentation_dependencies | 无 | 无 | 不适用 |
 
 ---
 
@@ -11334,7 +11334,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RequestIDProvider | 无 | __init__, __call__ | 无 | 无 | 向 request，response 注入 request_id |
+| RequestIDProvider | 无 | 无 | 无 | 无 | 向 request，response 注入 request_id |
 
 ---
 
@@ -11402,7 +11402,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PersistentVolumeClaim | paas_wl.infras.resources.kube_res.base.AppEntity | 无 | 无 | dataclass | 不适用 |
-| PersistentVolumeClaimManager | AppEntityManager[PersistentVolumeClaim] | __init__, delete, upsert | 无 | 无 | 不适用 |
+| PersistentVolumeClaimManager | AppEntityManager[PersistentVolumeClaim] | delete, upsert | 无 | 无 | 不适用 |
 
 ---
 
@@ -11636,7 +11636,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkAuthSecretViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _is_default_secret_in_engine_app, list, create, toggle, delete, view_secret_detail | permission_classes | 无 | 不适用 |
+| BkAuthSecretViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, create, toggle, delete, view_secret_detail | permission_classes | 无 | 不适用 |
 | BkAppSecretInEnvVaViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_default_secret, get_deployed_secret, rotate_default_secret | permission_classes | 无 | 不适用 |
 
 ---
@@ -11759,7 +11759,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkCIClient | 无 | __init__, trigger_codecc_pipeline, get_codecc_defect_tool_counts, get_codecc_taskinfo_by_build_id | 无 | 无 | 蓝盾通过 APIGW 提供的应用态 API |
+| BkCIClient | 无 | trigger_codecc_pipeline, get_codecc_defect_tool_counts, get_codecc_taskinfo_by_build_id | 无 | 无 | 蓝盾通过 APIGW 提供的应用态 API |
 
 ---
 
@@ -11780,8 +11780,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkCIGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
-| BkCIApiError | BkCIGatewayServiceError | __init__ | 无 | 无 | When calling the bk-iam api, bk-iam returns an err... |
+| BkCIGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
+| BkCIApiError | BkCIGatewayServiceError | 无 | 无 | 无 | When calling the bk-iam api, bk-iam returns an err... |
 
 ---
 
@@ -11820,7 +11820,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | NotSupportedCIBackend | Exception | 无 | 无 | 无 | 不支持的 CI 后端 |
-| NotSupportedRepoType | Exception | __init__ | 无 | 无 | 不支持 CI 的仓库类型 |
+| NotSupportedRepoType | Exception | 无 | 无 | 无 | 不支持 CI 的仓库类型 |
 | RepoNotFoundError | Exception | 无 | 无 | 无 | Unable to get a repository for running the CI job. |
 
 ---
@@ -11863,7 +11863,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| start_ci_job | `@receiver(post_appenv_deploy):` | receiver | 开始 CI 任务 |
+| start_ci_job | `def start_ci_job(sender: 'ApplicationEnvironment', deployment: 'Deployment', **kwargs):` | receiver | 开始 CI 任务 |
 
 
 ---
@@ -12132,7 +12132,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkApigatewayInnerComponent | apiserver.paasng.paasng.accessories.cloudapi.components.component.BaseComponent | get, post, _prepare_headers | host, system_name | 无 | 不适用 |
+| BkApigatewayInnerComponent | apiserver.paasng.paasng.accessories.cloudapi.components.component.BaseComponent | get, post | host, system_name | 无 | 不适用 |
 
 ---
 
@@ -12155,7 +12155,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseComponent | 无 | _call_api, _urljoin | 无 | 无 | 不适用 |
+| BaseComponent | 无 | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -12351,7 +12351,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CloudAPIViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list_apis, list_resource_permissions, apply, batch_apply, renew, allow_apply_by_api, list_app_resource_permissions, list_resource_permission_apply_records, retrieve_resource_permission_apply_record, list_esb_systems, list_component_permissions, apply_component_permissions, renew_component_permissions, list_app_component_permissions, list_component_permission_apply_records, retrieve_component_permission_apply_record, _get, _post, _trans_request_path_to_apigw_url | permission_classes | 无 | 不适用 |
+| CloudAPIViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list_apis, list_resource_permissions, apply, batch_apply, renew, allow_apply_by_api, list_app_resource_permissions, list_resource_permission_apply_records, retrieve_resource_permission_apply_record, list_esb_systems, list_component_permissions, apply_component_permissions, renew_component_permissions, list_app_component_permissions, list_component_permission_apply_records, retrieve_component_permission_apply_record | permission_classes | 无 | 不适用 |
 
 ---
 
@@ -12698,7 +12698,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DevSandboxViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | deploy, delete, get_detail | permission_classes | 无 | 不适用 |
-| DevSandboxWithCodeEditorViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | deploy, delete, get_detail, get_password, list_app_dev_sandbox, pre_deploy_check, _get_version_info | permission_classes | 无 | 不适用 |
+| DevSandboxWithCodeEditorViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | deploy, delete, get_detail, get_password, list_app_dev_sandbox, pre_deploy_check | permission_classes | 无 | 不适用 |
 
 ---
 
@@ -12787,8 +12787,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LogClientProtocol | typing.Protocol | execute_search, execute_scroll_search, aggregate_date_histogram, aggregate_fields_filters, get_mappings | 无 | 无 | LogClient protocol, all log search backend should ... |
-| BKLogClient | 无 | __init__, execute_search, execute_scroll_search, aggregate_date_histogram, aggregate_fields_filters, get_mappings, _call_api | 无 | 无 | BKLogClient is an implement of LogClientProtocol, ... |
-| ESLogClient | 无 | __init__, execute_search, execute_scroll_search, aggregate_date_histogram, aggregate_fields_filters, get_mappings, _get_indexes, _get_response_count | 无 | 无 | ESLogClient is an implement of LogClientProtocol, ... |
+| BKLogClient | 无 | execute_search, execute_scroll_search, aggregate_date_histogram, aggregate_fields_filters, get_mappings | 无 | 无 | BKLogClient is an implement of LogClientProtocol, ... |
+| ESLogClient | 无 | execute_search, execute_scroll_search, aggregate_date_histogram, aggregate_fields_filters, get_mappings | 无 | 无 | ESLogClient is an implement of LogClientProtocol, ... |
 
 ---
 
@@ -12818,7 +12818,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LogTimeChoices | blue_krill.data_types.enum.StrStructuredEnum | 无 | FIVE_MINUTES, ONE_HOUR, THREE_HOURS, SIX_HOURS, TWELVE_HOURS, ONE_DAY, THREE_DAYS, SEVEN_DAYS, CUSTOMIZED | 无 | 日志搜索-日期范围可选值 |
-| LogType | blue_krill.data_types.enum.StrStructuredEnum | 无 | STRUCTURED, STANDARD_OUTPUT, INGRESS | 无 | 
+| LogType | blue_krill.data_types.enum.StrStructuredEnum | 无 | STRUCTURED, STANDARD_OUTPUT, INGRESS | 无 |
     日志类型
      |
 | LogCollectorType | blue_krill.data_types.enum.StrStructuredEnum | 无 | BK_LOG, ELK | 无 | 日志采集器类型 |
@@ -12875,11 +12875,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LogQueryError | Exception | __init__ | 无 | 无 | 不适用 |
-| UnknownEngineAppNameError | Exception | __init__ | 无 | 无 | 不适用 |
-| LogLineInfoBrokenError | Exception | __init__ | 无 | 无 | 日志行关键信息缺失异常 |
+| LogQueryError | Exception | 无 | 无 | 无 | 不适用 |
+| UnknownEngineAppNameError | Exception | 无 | 无 | 无 | 不适用 |
+| LogLineInfoBrokenError | Exception | 无 | 无 | 无 | 日志行关键信息缺失异常 |
 | NoIndexError | Exception | 无 | 无 | 无 | 无可用 index |
-| BkLogGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkLogGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkLogApiError | BkLogGatewayServiceError | 无 | 无 | 无 | When calling the bk_log api, bk_log returns an err... |
 
 ---
@@ -12937,9 +12937,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ESFilter | 无 | __init__, filter_by_builtin_filters, filter_by_builtin_excludes | 无 | 无 | ESFilter will modify the filtering conditions of t... |
-| EnvFilter | ESFilter | __init__, filter_by_env | 无 | 无 | EnvFilter will modify the filtering conditions of ... |
-| ModuleFilter | ESFilter | __init__, filter_by_module | 无 | 无 | ModuleFilter will modify the filtering conditions ... |
+| ESFilter | 无 | filter_by_builtin_filters, filter_by_builtin_excludes | 无 | 无 | ESFilter will modify the filtering conditions of t... |
+| EnvFilter | ESFilter | filter_by_env | 无 | 无 | EnvFilter will modify the filtering conditions of ... |
+| ModuleFilter | ESFilter | filter_by_module | 无 | 无 | ModuleFilter will modify the filtering conditions ... |
 
 ---
 
@@ -13441,7 +13441,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKLogConfigProvider | 无 | __init__, timezone, storage_cluster_id | 无 | 无 | 不适用 |
+| BKLogConfigProvider | 无 | timezone, storage_cluster_id | 无 | 无 | 不适用 |
 
 ---
 
@@ -13506,7 +13506,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| setup_module_log_model | `@shared_task:` | shared_task | 不适用 |
+| setup_module_log_model | `def setup_module_log_model(module_id):` | shared_task | 不适用 |
 
 
 ---
@@ -13771,12 +13771,12 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LogBaseAPIView | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | instantiate_log_client, parse_time_range, make_search, _make_base_search, _get_log_query_config | permission_classes | 无 | 不适用 |
+| LogBaseAPIView | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | instantiate_log_client, parse_time_range, make_search | permission_classes | 无 | 不适用 |
 | LogAPIView | LogBaseAPIView | query_logs, query_logs_scroll, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | 不适用 |
 | StdoutLogAPIView | LogAPIView | 无 | line_model, log_type, logs_serializer_class | 无 | 不适用 |
 | StructuredLogAPIView | LogAPIView | 无 | line_model, log_type, logs_serializer_class | 无 | 不适用 |
 | IngressLogAPIView | LogAPIView | 无 | line_model, log_type, logs_serializer_class | 无 | 不适用 |
-| ModuleLogAPIMixin | _MixinBase | query_logs, query_logs_scroll, aggregate_date_histogram, aggregate_fields_filters, _get_log_query_config_by_env, _get_log_query_config, _make_base_search | 无 | 无 | 不适用 |
+| ModuleLogAPIMixin | _MixinBase | query_logs, query_logs_scroll, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | 不适用 |
 | ModuleStdoutLogAPIView | ModuleLogAPIMixin, StdoutLogAPIView | 无 | 无 | 无 | 不适用 |
 | ModuleStructuredLogAPIView | ModuleLogAPIMixin, StructuredLogAPIView | 无 | 无 | 无 | 不适用 |
 | ModuleIngressLogAPIView | ModuleLogAPIMixin, IngressLogAPIView | 无 | 无 | 无 | 不适用 |
@@ -13859,14 +13859,14 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| wrap_request_exc | `@contextmanager:` | contextmanager | 不适用 |
+| wrap_request_exc | `def wrap_request_exc():` | contextmanager | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PAClient | 无 | __init__, validate_resp, get_or_create_app_site, get_or_create_custom_site, get_site_pv_config, get_total_page_view_metric_about_site, get_metrics_dimension, get_metrics_aggregate_by_interval_about_site, get_site_ce_config, get_total_custom_event_metric_about_site, get_custom_event_overview, get_custom_event_detail, get_custom_event_trend_about_site | 无 | 无 | 不适用 |
-| SiteMetricsClient | 无 | __post_init__, get_site_pv_config, get_total_page_view_metric_about_site, get_metrics_dimension, get_metrics_aggregate_by_interval_about_site, get_site_ce_config, get_total_custom_event_metric_about_site, get_custom_event_overview, get_custom_event_detail, get_custom_event_trend_about_site | 无 | dataclass | 不适用 |
+| PAClient | 无 | validate_resp, get_or_create_app_site, get_or_create_custom_site, get_site_pv_config, get_total_page_view_metric_about_site, get_metrics_dimension, get_metrics_aggregate_by_interval_about_site, get_site_ce_config, get_total_custom_event_metric_about_site, get_custom_event_overview, get_custom_event_detail, get_custom_event_trend_about_site | 无 | 无 | 不适用 |
+| SiteMetricsClient | 无 | get_site_pv_config, get_total_page_view_metric_about_site, get_metrics_dimension, get_metrics_aggregate_by_interval_about_site, get_site_ce_config, get_total_custom_event_metric_about_site, get_custom_event_overview, get_custom_event_detail, get_custom_event_trend_about_site | 无 | dataclass | 不适用 |
 
 ---
 
@@ -13930,7 +13930,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PAClientException | Exception | 无 | 无 | 无 | BaseException For PA Client |
-| PAResponseError | PAClientException | __init__ | 无 | 无 | PaaSAnalysis 接口响应异常 |
+| PAResponseError | PAClientException | 无 | 无 | 无 | PaaSAnalysis 接口响应异常 |
 
 ---
 
@@ -13962,7 +13962,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_release_created_callback | `@receiver(on_release_created):` | receiver | 不适用 |
+| on_release_created_callback | `def on_release_created_callback(env, **kwargs):` | receiver | 不适用 |
 
 
 ---
@@ -14068,7 +14068,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_pv_uv_for_env | `def get_pv_uv_for_env(env: ModuleEnvironment, start_date: datetime.date, end_date: datetime.date, metric_source_type: str = 'ingress') -> Tuple[int, int]:` | 无 | 
+| get_pv_uv_for_env | `def get_pv_uv_for_env(env: ModuleEnvironment, start_date: datetime.date, end_date: datetime.date, metric_source_type: str = 'ingress') -> Tuple[int, int]:` | 无 |
     A shortcut for getting pv/uv from the given e... |
 | get_or_create_site_by_env | `def get_or_create_site_by_env(env: ModuleEnvironment) -> Site:` | 无 | Get or create a Site object by calling paas-analys... |
 | get_or_create_custom_site_for_application | `def get_or_create_custom_site_for_application(application: Application, site_name: str) -> Site:` | 无 | Get or create a Site object for application
@@ -14173,7 +14173,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| transform_client_exec | `@contextmanager:` | contextmanager | 不适用 |
+| transform_client_exec | `def transform_client_exec():` | contextmanager | 不适用 |
 
 #### 类
 
@@ -14552,7 +14552,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| update_market_config_source_module | `@receiver(application_default_module_switch):` | receiver | 更新应用主模块时需要同步更新应用市场配置中模块信息，否则会导致发布条件判断出现问题 |
+| update_market_config_source_module | `def update_market_config_source_module(sender, application, new_module, old_module, **kwargs):` | receiver | 更新应用主模块时需要同步更新应用市场配置中模块信息，否则会导致发布条件判断出现问题 |
 
 
 ---
@@ -14838,7 +14838,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TagManager | django.db.models.Manager | get_query_set, get_default_tag | 无 | 无 | 不适用 |
-| Tag | django.db.models.Model | get_name_display, __str__ | parent, name, remark, index, enabled, region, objects | 无 | 
+| Tag | django.db.models.Model | get_name_display | parent, name, remark, index, enabled, region, objects | 无 |
     按用途分类
      |
 | ProductManager | paasng.utils.models.WithOwnerManager | owned_and_collaborated_by, create_default_product | 无 | 无 | 不适用 |
@@ -14846,7 +14846,7 @@
 | DisplayOptions | django.db.models.Model | 无 | product, visible, width, height, is_win_maximize, win_bars, resizable, contact, open_mode | 无 | app展示相关的属性 |
 | MarketConfigManager | django.db.models.Manager | get_or_create_by_app, update_enabled, enable_app, disable_app | 无 | 无 | 不适用 |
 | MarketConfig | paasng.utils.models.TimestampedModel | on_release, on_offline | application, enabled, auto_enable_when_deploy, source_url_type, source_module, source_tp_url, custom_domain_url, prefer_https, objects | 无 | 应用市场相关功能配置 |
-| AvailableAddress | 无 | __post_init__ | 无 | dataclass | 不适用 |
+| AvailableAddress | 无 | 无 | 无 | dataclass | 不适用 |
 
 ---
 
@@ -14876,14 +14876,14 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PublishCondition | paasng.core.core.protections.base.BaseCondition | __init__, validate | 无 | 无 | Abstract base class for publish condition |
+| PublishCondition | paasng.core.core.protections.base.BaseCondition | validate | 无 | 无 | Abstract base class for publish condition |
 | ProductInfoCondition | PublishCondition | validate | action_name | 无 | 检查是否已经完善应用信息 |
 | ProdEnvReadinessCondition | PublishCondition | validate | action_name | 无 | 检查生产环境是否准备就绪 |
 | SourceURLValidationConditon | PublishCondition | validate | action_name | 无 | 检查无引擎应用是否设置有效的访问地址 |
-| AppPublishPreparer | paasng.core.core.protections.base.BaseConditionChecker | __init__, __str__ | condition_classes | 无 | Prepare for publishing application to market |
-| ModulePublishCondition | paasng.core.core.protections.base.BaseCondition | __init__ | 无 | 无 | Abstract base class for publish condition |
+| AppPublishPreparer | paasng.core.core.protections.base.BaseConditionChecker | 无 | condition_classes | 无 | Prepare for publishing application to market |
+| ModulePublishCondition | paasng.core.core.protections.base.BaseCondition | 无 | 无 | 无 | Abstract base class for publish condition |
 | ModuleProdEnvReadinessCondition | ModulePublishCondition | validate | action_name | 无 | 检查模块正式环境是否就绪 |
-| ModulePublishPreparer | paasng.core.core.protections.base.BaseConditionChecker | __init__, __str__ | condition_classes | 无 | Prepare to publish a module |
+| ModulePublishPreparer | paasng.core.core.protections.base.BaseConditionChecker | 无 | condition_classes | 无 | Prepare to publish a module |
 
 ---
 
@@ -14936,8 +14936,8 @@
 |------|------|------|------|--------|----------|
 | AppLogoField | rest_framework.serializers.ImageField | to_internal_value | 无 | 无 | 不适用 |
 | VisiableLabelsSlz | rest_framework.serializers.Serializer | 无 | id, type, name, display_name | 无 | 不适用 |
-| ProductTagField | rest_framework.serializers.SlugRelatedField | __init__, get_queryset, get_object | 无 | 无 | Field class for Product Tag object, query tag by U... |
-| ProductTagByNameField | rest_framework.serializers.SlugRelatedField | __init__, get_queryset, to_internal_value | 无 | 无 | Field class for Product Tag object, query tag by n... |
+| ProductTagField | rest_framework.serializers.SlugRelatedField | get_queryset, get_object | 无 | 无 | Field class for Product Tag object, query tag by U... |
+| ProductTagByNameField | rest_framework.serializers.SlugRelatedField | get_queryset, to_internal_value | 无 | 无 | Field class for Product Tag object, query tag by n... |
 | ProductBaseSLZ | rest_framework.serializers.Serializer | 无 | resizable, width, height, is_win_maximize, win_bars, name, introduction, description, contact, open_mode, related_corp_products, visiable_labels | i18n | 不适用 |
 | ProductCreateSLZ | rest_framework.serializers.ModelSerializer, ProductBaseSLZ | validate, create | logo, application, tag, name, introduction, description, logo_url, tag_name, code | 无 | 注册新的市场应用 |
 | ProductCombinedSLZ | rest_framework.serializers.ModelSerializer, ProductBaseSLZ | update | tag, name, introduction, description, application, code, logo, tag_name | 无 | 不适用 |
@@ -14945,13 +14945,13 @@
 | ProductStateSLZ | rest_framework.serializers.ModelSerializer | validate_state | 无 | 无 | 不适用 |
 | ProductLogoSLZ | rest_framework.serializers.ModelSerializer | update | logo, logo_url, code | 无 | 不适用 |
 | ProductOfflineSLZ | rest_framework.serializers.Serializer | 无 | recyle_online_resource | 无 | 不适用 |
-| MarketConfigSLZ | rest_framework.serializers.ModelSerializer | get_market_address, update, _regulate_custom_domain_url, _regulate_source_tp_url | source_tp_url, custom_domain_url, source_url_type, prefer_https, source_module_id, source_module_name, enabled, market_address | 无 | 不适用 |
+| MarketConfigSLZ | rest_framework.serializers.ModelSerializer | get_market_address, update | source_tp_url, custom_domain_url, source_url_type, prefer_https, source_module_id, source_module_name, enabled, market_address | 无 | 不适用 |
 | MarketConfigSwitchInputSLZ | rest_framework.serializers.Serializer | 无 | enabled | 无 | 不适用 |
 | AvailableAddressSLZ | rest_framework.serializers.Serializer | 无 | address, type | 无 | 不适用 |
 | AvailableAddressFullySLZ | AvailableAddressSLZ | 无 | hostname, scheme | 无 | 不适用 |
 | FailedProconditionSLZ | rest_framework.serializers.Serializer | 无 | message, action_name | 无 | 不适用 |
 | PublishProtectionSLZ | rest_framework.serializers.Serializer | 无 | all_conditions_matched, failed_conditions | 无 | 不适用 |
-| MarketEntranceSLZ | rest_framework.serializers.Serializer | validate, update, _validate_module_name, _validate_custom_domain_url, _validate_third_party_url | module, env, url, type | 无 | 切换市场访问地址 |
+| MarketEntranceSLZ | rest_framework.serializers.Serializer | validate, update | module, env, url, type | 无 | 切换市场访问地址 |
 
 ---
 
@@ -15007,7 +15007,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| publish_to_market_by_deployment | `@run_required_db_console_config:` | run_required_db_console_config | Publish the application to market, triggered by a ... |
+| publish_to_market_by_deployment | `def publish_to_market_by_deployment(deployment: Deployment):` | run_required_db_console_config | Publish the application to market, triggered by a ... |
 
 
 ---
@@ -15073,8 +15073,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | AvailableAddressMixin | 无 | default_access_entrance, default_access_entrances, domain_addresses, filter_domain_address | 无 | 无 | 不适用 |
-| ModuleEnvAvailableAddressHelper | AvailableAddressMixin | __init__, addresses | 无 | 无 | 模块访问地址 助手 |
-| MarketAvailableAddressHelper | AvailableAddressMixin | __post_init__, default_access_entrance_with_http, access_entrance, transform_protocol | 无 | dataclass | 应用市场访问地址(绑定模块的生产环境)助手 |
+| ModuleEnvAvailableAddressHelper | AvailableAddressMixin | addresses | 无 | 无 | 模块访问地址 助手 |
+| MarketAvailableAddressHelper | AvailableAddressMixin | default_access_entrance_with_http, access_entrance, transform_protocol | 无 | dataclass | 应用市场访问地址(绑定模块的生产环境)助手 |
 
 ---
 
@@ -15117,19 +15117,19 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ProductBaseViewSet | rest_framework.viewsets.ModelViewSet | get_application, get_serializer_context, get_queryset | 无 | 无 | 不适用 |
-| ProductCreateViewSet | ProductBaseViewSet | get_application | queryset, serializer_class, lookup_field | 无 | 
+| ProductCreateViewSet | ProductBaseViewSet | get_application | queryset, serializer_class, lookup_field | 无 |
     注册桌面产品
     create: 注册桌面产品
     - [测试地址](/api/m... |
-| ProductCombinedViewSet | ProductBaseViewSet | get_application, update | queryset, serializer_class, lookup_field | 无 | 
+| ProductCombinedViewSet | ProductBaseViewSet | get_application, update | queryset, serializer_class, lookup_field | 无 |
     产品属性
     retrieve: 获取产品属性
     - [测试地址](/api/m... |
-| TagViewSet | rest_framework.viewsets.ModelViewSet | 无 | queryset, serializer_class, pagination_class, lookup_field | 无 | 
+| TagViewSet | rest_framework.viewsets.ModelViewSet | 无 | queryset, serializer_class, pagination_class, lookup_field | 无 |
     产品分类(按用途)
     list: 获取分类列表
     - [测试地址](/api/... |
-| ProductStateViewSet | ProductBaseViewSet | 无 | queryset, serializer_class, lookup_field | 无 | 
+| ProductStateViewSet | ProductBaseViewSet | 无 | queryset, serializer_class, lookup_field | 无 |
     产品上线状态
     retrieve: 获取产品上线状态
     - [测试地址](/a... |
@@ -15180,7 +15180,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | RegionConverter | 无 | to_old, to_new | _data, _data_reverse | 无 | 不适用 |
-| PVTimeType | paasng.utils.basic.ChoicesEnum | 无 | TYPE_15m, TYPE_30m, TYPE_1h, TYPE_4h, TYPE_12h, TYPE_1d, TYPE_3d, TYPE_7d, TYPE_CUSTOMIZED, _choices_labels | 无 | 
+| PVTimeType | paasng.utils.basic.ChoicesEnum | 无 | TYPE_15m, TYPE_30m, TYPE_1h, TYPE_4h, TYPE_12h, TYPE_1d, TYPE_3d, TYPE_7d, TYPE_CUSTOMIZED, _choices_labels | 无 |
     应用访问量-日期范围类型
      |
 | SaaSPackageInfo | 无 | 无 | 无 | dataclass | 不适用 |
@@ -15230,7 +15230,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RemoteAppManager | 无 | __init__, display_options, single_field_hybrate, fields_hybrate, sync_data, hybrate_app_cate, hybrate_app_type, hybrate_audit_state, hybrate_cpu_limit, hybrate_created_date, hybrate_created_state, hybrate_creater, hybrate_deploy_env, hybrate_deploy_ver, hybrate_display_type, hybrate_init_svn_version, hybrate_is_already_online, hybrate_is_already_test, hybrate_is_base, hybrate_is_code_private, hybrate_is_default, hybrate_is_display, hybrate_is_lapp, hybrate_is_mapp, hybrate_is_max, hybrate_is_offical, hybrate_is_open, hybrate_is_select_svn_dir, hybrate_isflash, hybrate_isneed_reaudit, hybrate_isresize, hybrate_issetbar, hybrate_language, hybrate_logo, hybrate_mem_limit, hybrate_starnum, hybrate_starnum_ied, hybrate_state, hybrate_svn_domain, hybrate_tags_id, hybrate_use_celery, hybrate_use_celery_beat, get_mobile_config, hybrate_use_mobile_online, hybrate_use_mobile_test, hybrate_mobile_url_test, hybrate_mobile_url_prod, hybrate_usecount, hybrate_usecount_ied, hybrate_online_version, hybrate_tem_svn, hybrate_dev_time, hybrate_first_online_time, hybrate_first_test_time, hybrate_code, hybrate_builtin_path, hybrate_description, hybrate_external_url, hybrate_group_id, hybrate_extra, hybrate_open_mode, hybrate_height, hybrate_width, hybrate_id, hybrate_introduction, hybrate_name, hybrate_introduction_en, hybrate_name_en, hybrate_product_ip, hybrate_from_paasv3, hybrate_visiable_labels | 无 | 无 | 不适用 |
+| RemoteAppManager | 无 | display_options, single_field_hybrate, fields_hybrate, sync_data, hybrate_app_cate, hybrate_app_type, hybrate_audit_state, hybrate_cpu_limit, hybrate_created_date, hybrate_created_state, hybrate_creater, hybrate_deploy_env, hybrate_deploy_ver, hybrate_display_type, hybrate_init_svn_version, hybrate_is_already_online, hybrate_is_already_test, hybrate_is_base, hybrate_is_code_private, hybrate_is_default, hybrate_is_display, hybrate_is_lapp, hybrate_is_mapp, hybrate_is_max, hybrate_is_offical, hybrate_is_open, hybrate_is_select_svn_dir, hybrate_isflash, hybrate_isneed_reaudit, hybrate_isresize, hybrate_issetbar, hybrate_language, hybrate_logo, hybrate_mem_limit, hybrate_starnum, hybrate_starnum_ied, hybrate_state, hybrate_svn_domain, hybrate_tags_id, hybrate_use_celery, hybrate_use_celery_beat, get_mobile_config, hybrate_use_mobile_online, hybrate_use_mobile_test, hybrate_mobile_url_test, hybrate_mobile_url_prod, hybrate_usecount, hybrate_usecount_ied, hybrate_online_version, hybrate_tem_svn, hybrate_dev_time, hybrate_first_online_time, hybrate_first_test_time, hybrate_code, hybrate_builtin_path, hybrate_description, hybrate_external_url, hybrate_group_id, hybrate_extra, hybrate_open_mode, hybrate_height, hybrate_width, hybrate_id, hybrate_introduction, hybrate_name, hybrate_introduction_en, hybrate_name_en, hybrate_product_ip, hybrate_from_paasv3, hybrate_visiable_labels | 无 | 无 | 不适用 |
 
 ---
 
@@ -15308,32 +15308,32 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_product_deploy_success | `def on_product_deploy_success(product, environment, auto_enable_market=False, **kwargs):` | 无 | 
+| on_product_deploy_success | `def on_product_deploy_success(product, environment, auto_enable_market=False, **kwargs):` | 无 |
     app提测上线
     以后处于性能的考虑，可能只更新部分字段
      |
-| on_product_create_or_updated | `@receiver(product_create_or_update_by_operator):` | receiver, run_required_db_console_config | 
+| on_product_create_or_updated | `def on_product_create_or_updated(product: Product, **kwargs):` | receiver, run_required_db_console_config |
     app基本属性更新
     以后处于性能的考虑，可能只更新部分字段
      |
-| update_console_members | `@receiver(application_member_updated):` | receiver, run_required_db_console_config | 
+| update_console_members | `def update_console_members(sender, application, **kwargs):` | receiver, run_required_db_console_config |
     主要功能: 当应用成员发生变更时, 同步信息至桌面
      |
 | sync_console_app_developers | `def sync_console_app_developers(application: Application, session: Session):` | 无 | 不适用 |
 | sync_console_app_devopses | `def sync_console_app_devopses(application: Application, session: Session):` | 无 | 不适用 |
-| validate_app_code_uniquely | `@receiver(prepare_use_application_code):` | receiver, run_required_db_console_config | Check if code already exists in legacy database, i... |
-| validate_app_name_uniquely | `@receiver(prepare_use_application_name):` | receiver, run_required_db_console_config | Check if name already exists in legacy database, i... |
-| register_app_core_data | `@receiver(before_finishing_application_creation):` | receiver, run_required_db_console_config | 
+| validate_app_code_uniquely | `def validate_app_code_uniquely(sender, value: str, **kwargs):` | receiver, run_required_db_console_config | Check if code already exists in legacy database, i... |
+| validate_app_name_uniquely | `def validate_app_name_uniquely(sender, value: str, instance: Optional['Application'] = None, **kwargs):` | receiver, run_required_db_console_config | Check if name already exists in legacy database, i... |
+| register_app_core_data | `def register_app_core_data(sender, application: Application, **kwargs):` | receiver, run_required_db_console_config |
     主要功能：实现paas2.0与paas3.0中app的code和name唯一
     实现... |
-| on_change_application_name | `@receiver(prepare_change_application_name):` | receiver, run_required_db_console_config | 直接修改，占用名称 |
+| on_change_application_name | `def on_change_application_name(sender, code: str, name: Optional[str] = None, name_en: Optional[str] = None, **kwargs):` | receiver, run_required_db_console_config | 直接修改，占用名称 |
 | register_application_with_default | `def register_application_with_default(region, code, name):` | 无 | 使用默认数据注册到蓝鲸桌面DB（占用code和name字段） |
-| application_oauth_handler | `@receiver(post_save, sender=OAuth2Client):` | receiver, run_required_db_console_config | 监听App权限信息初始化, 同步写secrete key到console db |
-| offline_handler | `@receiver(module_environment_offline_success):` | receiver, run_required_db_console_config | 模块环境下架回调, 关于同步市场状态的逻辑 |
-| market_config_update_handler | `@receiver(post_save, sender=MarketConfig):` | receiver, run_required_db_console_config | 同步V3的市场配置到蓝鲸应用市场 |
-| sync_external_url_to_market | `@run_required_db_console_config:` | run_required_db_console_config | 同步访问地址至应用市场 |
-| sync_release_record | `@receiver(post_appenv_deploy):` | receiver, run_required_db_console_config | Sync a release record to legacy database when a de... |
-| sync_logo | `@receiver(application_logo_updated):` | receiver | Sync application's logo when updated |
+| application_oauth_handler | `def application_oauth_handler(sender, instance, created, raw, using, update_fields, *args, **kwargs):` | receiver, run_required_db_console_config | 监听App权限信息初始化, 同步写secrete key到console db |
+| offline_handler | `def offline_handler(sender, offline_instance, environment, **kwargs):` | receiver, run_required_db_console_config | 模块环境下架回调, 关于同步市场状态的逻辑 |
+| market_config_update_handler | `def market_config_update_handler(sender, instance: MarketConfig, created: bool, **kwargs):` | receiver, run_required_db_console_config | 同步V3的市场配置到蓝鲸应用市场 |
+| sync_external_url_to_market | `def sync_external_url_to_market(application: Application):` | run_required_db_console_config | 同步访问地址至应用市场 |
+| sync_release_record | `def sync_release_record(sender: ApplicationEnvironment, deployment: Deployment, **kwargs):` | receiver, run_required_db_console_config | Sync a release record to legacy database when a de... |
+| sync_logo | `def sync_logo(sender, application: Application, **kwargs):` | receiver | Sync application's logo when updated |
 
 
 ---
@@ -15546,7 +15546,7 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | run_required_db_console_config | `def run_required_db_console_config(func):` | 无 | 不适用 |
-| set_migrated_state | `@run_required_db_console_config:` | run_required_db_console_config | this is a tool function for legacy migration |
+| set_migrated_state | `def set_migrated_state(code, is_migrated):` | run_required_db_console_config | this is a tool function for legacy migration |
 
 
 ---
@@ -15578,7 +15578,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| StatisticsPVAPIView | rest_framework.views.APIView | get | 无 | 无 | 
+| StatisticsPVAPIView | rest_framework.views.APIView | get | 无 | 无 |
     应用访问量
     get: 获取应用访问量
     - [测试地址](/api/bkap... |
@@ -15703,7 +15703,7 @@
 | CanNotModifyPlan | BaseServicesException | 无 | 无 | 无 | remote or local service attachment already provide... |
 | ReferencedAttachmentNotFound | BaseServicesException | 无 | 无 | 无 | raised when trying to reference a nonexistent serv... |
 | SharedAttachmentAlreadyExists | BaseServicesException | 无 | 无 | 无 | raised when trying to create an already existed sh... |
-| DuplicatedServiceBoundError | BaseServicesException | 无 | 无 | 无 | 
+| DuplicatedServiceBoundError | BaseServicesException | 无 | 无 | 无 |
     when user try to create a sharing relation fo... |
 | BindServiceNoPlansError | Exception | 无 | 无 | 无 | When binding a service, appropriate plans cannot b... |
 
@@ -15797,11 +15797,11 @@
 |------|------|------|------|--------|----------|
 | LocalPlanObj | paasng.accessories.servicehub.services.PlanObj | from_db | 无 | dataclass | 不适用 |
 | LocalServiceObj | paasng.accessories.servicehub.services.ServiceObj | from_db_object, get_plans | category_id, category | dataclass | 不适用 |
-| LocalEngineAppInstanceRel | paasng.accessories.servicehub.services.EngineAppInstanceRel | __init__, get_service, is_provisioned, provision, recycle_resource, get_instance, get_plan | 无 | 无 | A relationship between EngineApp and Provisioned i... |
-| LocalServiceMgr | paasng.accessories.servicehub.services.BaseServiceMgr | get, find_by_name, list_by_category, list_by_region, list, _handle_service_data, create, update, destroy, bind_service, bind_service_partial, list_binded, list_all_rels, get_module_rel, list_unprovisioned_rels, list_provisioned_rels, get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_queryset_by_services, transform_rel_db_obj, module_is_bound_with, get_provisioned_envs, get_attachment_by_engine_app | service_obj_cls | 无 | Local in-database services manager |
-| LocalPlanMgr | paasng.accessories.servicehub.services.BasePlanMgr | __init__, list_plans, create_plan, update_plan, delete_plan, _get_service_in_db, _handle_plan_data | service_obj_cls | 无 | Local in-database plans manager |
-| LocalPlainInstanceMgr | paasng.accessories.servicehub.services.PlainInstanceMgr | __init__, is_provisioned, create, destroy | 无 | 无 | 纯粹的本地增强服务实例的管理器, 不涉及增强服务资源申请的流程 |
-| LocalServiceBinder | 无 | __init__, bind, bind_without_plan, _get_plan_by_env, _bind_for_env | 无 | 无 | Service binder for local services |
+| LocalEngineAppInstanceRel | paasng.accessories.servicehub.services.EngineAppInstanceRel | get_service, is_provisioned, provision, recycle_resource, get_instance, get_plan | 无 | 无 | A relationship between EngineApp and Provisioned i... |
+| LocalServiceMgr | paasng.accessories.servicehub.services.BaseServiceMgr | get, find_by_name, list_by_category, list_by_region, list, create, update, destroy, bind_service, bind_service_partial, list_binded, list_all_rels, get_module_rel, list_unprovisioned_rels, list_provisioned_rels, get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_queryset_by_services, transform_rel_db_obj, module_is_bound_with, get_provisioned_envs, get_attachment_by_engine_app | service_obj_cls | 无 | Local in-database services manager |
+| LocalPlanMgr | paasng.accessories.servicehub.services.BasePlanMgr | list_plans, create_plan, update_plan, delete_plan | service_obj_cls | 无 | Local in-database plans manager |
+| LocalPlainInstanceMgr | paasng.accessories.servicehub.services.PlainInstanceMgr | is_provisioned, create, destroy | 无 | 无 | 纯粹的本地增强服务实例的管理器, 不涉及增强服务资源申请的流程 |
+| LocalServiceBinder | 无 | bind, bind_without_plan | 无 | 无 | Service binder for local services |
 
 ---
 
@@ -15937,7 +15937,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, _get_service, handle | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -16050,9 +16050,9 @@
 | SharedServiceInfo | typing.NamedTuple | 无 | 无 | 无 | Shared service information object
 
     :param serv... |
-| MixedServiceMgr | 无 | __init__, get, find_by_name, get_without_region, get_or_404, get_module_rel, bind_service, get_provisioned_queryset_by_services, get_env_vars, get_enabled_env_keys, get_attachment_by_engine_app | get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_envs, module_is_bound_with, update, destroy, list_by_category, list_all_rels, list_unprovisioned_rels, list_provisioned_rels, list | 无 | A hub for managing services of mixed sources: data... |
-| MixedPlanMgr | 无 | __init__ | list, create, update, delete | 无 | A hub for managing plans of mixed sources: databas... |
-| DuplicatedBindingValidator | 无 | __init__, validate, _check_duplicated_normal, _check_duplicated_sharing | 无 | 无 | Validate duplicated service bindings
+| MixedServiceMgr | 无 | get, find_by_name, get_without_region, get_or_404, get_module_rel, bind_service, get_provisioned_queryset_by_services, get_env_vars, get_enabled_env_keys, get_attachment_by_engine_app | get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_envs, module_is_bound_with, update, destroy, list_by_category, list_all_rels, list_unprovisioned_rels, list_provisioned_rels, list | 无 | A hub for managing services of mixed sources: data... |
+| MixedPlanMgr | 无 | 无 | list, create, update, delete | 无 | A hub for managing plans of mixed sources: databas... |
+| DuplicatedBindingValidator | 无 | validate | 无 | 无 | Validate duplicated service bindings
 
     :param m... |
 
@@ -16200,11 +16200,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ServiceModuleAttachment | paasng.utils.models.OwnerTimestampedModel | __str__ | module, service | 无 | Module <-> Local Service relationship |
-| ServiceEngineAppAttachment | paasng.utils.models.OwnerTimestampedModel | create_service_instance, bind_service_instance, unbind_service_instance, delete, clean_service_instance, __str__ | engine_app, service, plan, service_instance, credentials_enabled | 无 | 
+| ServiceModuleAttachment | paasng.utils.models.OwnerTimestampedModel | 无 | module, service | 无 | Module <-> Local Service relationship |
+| ServiceEngineAppAttachment | paasng.utils.models.OwnerTimestampedModel | create_service_instance, bind_service_instance, unbind_service_instance, delete, clean_service_instance | engine_app, service, plan, service_instance, credentials_enabled | 无 |
     engine app bind to service instance and plan
 ... |
-| RemoteServiceModuleAttachment | paasng.utils.models.OwnerTimestampedModel | __str__ | module, service_id | 无 | Binding relationship of module <-> remote service |
+| RemoteServiceModuleAttachment | paasng.utils.models.OwnerTimestampedModel | 无 | module, service_id | 无 | Binding relationship of module <-> remote service |
 | RemoteServiceEngineAppAttachment | paasng.utils.models.OwnerTimestampedModel | 无 | engine_app, service_id, plan_id, service_instance_id, credentials_enabled | 无 | Binding relationship of engine app <-> remote serv... |
 | ServiceDBProperties | 无 | 无 | 无 | 无 | Storing service related database properties |
 | LocalServiceDBProperties | ServiceDBProperties | 无 | col_service_type, model_module_rel | 无 | 不适用 |
@@ -16271,14 +16271,14 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| wrap_request_exc | `@contextmanager:` | contextmanager | 不适用 |
+| wrap_request_exc | `def wrap_request_exc(client: 'RemoteServiceClient'):` | contextmanager | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RemoteSvcConfig | 无 | from_json, to_json, get_jwt_auth_conf, __post_init__, __str__ | 无 | dataclass | 不适用 |
-| RemoteServiceClient | 无 | __init__, validate_resp, get_meta_info, list_services, create_service, update_service, create_plan, update_plan, provision_instance, retrieve_instance, retrieve_instance_by_name, delete_instance, update_instance_config, create_client_side_instance, destroy_client_side_instance | REQUEST_LIST_TIMEOUT, REQUEST_DELETE_TIMEOUT, REQUEST_CREATE_TIMEOUT | 无 | Client for remote services |
+| RemoteSvcConfig | 无 | from_json, to_json, get_jwt_auth_conf | 无 | dataclass | 不适用 |
+| RemoteServiceClient | 无 | validate_resp, get_meta_info, list_services, create_service, update_service, create_plan, update_plan, provision_instance, retrieve_instance, retrieve_instance_by_name, delete_instance, update_instance_config, create_client_side_instance, destroy_client_side_instance | REQUEST_LIST_TIMEOUT, REQUEST_DELETE_TIMEOUT, REQUEST_CREATE_TIMEOUT | 无 | Client for remote services |
 
 ---
 
@@ -16334,7 +16334,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RemoteSvcFetcher | 无 | __init__, get_meta_info, fetch, validate_data | 无 | 无 | Fetches remote services |
+| RemoteSvcFetcher | 无 | get_meta_info, fetch, validate_data | 无 | 无 | Fetches remote services |
 | MetaInfoSLZ | rest_framework.serializers.Serializer | 无 | version | 无 | 不适用 |
 | RemoteSpecDefinitionSLZ | rest_framework.serializers.Serializer | 无 | name, display_name, description, recommended_value | 无 | 不适用 |
 | RemotePlanSLZ | rest_framework.serializers.Serializer | 无 | uuid, name, properties, description, specifications, is_active, config | 无 | 不适用 |
@@ -16359,7 +16359,7 @@
 | UnsupportedOperationError | BaseRemoteException | 无 | 无 | 无 | Exception be raised when the operation is unsuppor... |
 | FetchRemoteSvcError | BaseRemoteException | 无 | 无 | 无 | 不适用 |
 | RemoteClientError | Exception | 无 | 无 | 无 | Base exception class for remote.client module |
-| RClientResponseError | RemoteClientError | __init__ | 无 | 无 | Exception when response is not valid, provides an ... |
+| RClientResponseError | RemoteClientError | 无 | 无 | 无 | Exception when response is not valid, provides an ... |
 | BaseRemoteStoreException | Exception | 无 | 无 | 无 | Base exception class for remote store |
 | ServiceNotFound | BaseRemoteStoreException | 无 | 无 | 无 | 不适用 |
 | ServiceConfigNotFound | BaseRemoteStoreException | 无 | 无 | 无 | 不适用 |
@@ -16461,12 +16461,12 @@
 | RemotePlanObj | paasng.accessories.servicehub.services.PlanObj | from_data | 无 | dataclass | 不适用 |
 | RemoteServiceObj | paasng.accessories.servicehub.services.ServiceObj | from_data, category, get_plans, supports_inst_config, supports_rest_upsert | _data, category_id | dataclass | 不适用 |
 | EnvClusterInfo | 无 | get_egress_info, egress_info_json | 无 | dataclass | 不适用 |
-| RemoteEngineAppInstanceRel | paasng.accessories.servicehub.services.EngineAppInstanceRel | __init__, get_service, is_provisioned, provision, sync_instance_config, recycle_resource, get_instance, render_params, get_plan | 无 | 无 | A relationship between EngineApp and Provisioned i... |
-| RemotePlainInstanceMgr | paasng.accessories.servicehub.services.PlainInstanceMgr | __init__, get_service, get_remote_client, sync_instance_config, is_provisioned, create, destroy | 无 | 无 | 纯粹的远程增强服务实例的管理器, 仅调用远程接口创建增强服务实例, 不涉及增强服务资源申请的流程 |
-| RemoteServiceMgr | paasng.accessories.servicehub.services.BaseServiceMgr | __init__, get, find_by_name, list_by_category, list_by_region, list, _handle_service_data, update, destroy, list_binded, bind_service, bind_service_partial, list_all_rels, get_module_rel, list_unprovisioned_rels, list_provisioned_rels, get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_queryset_by_services, transform_rel_db_obj, module_is_bound_with, get_provisioned_envs, get_mysql_services, get_attachment_by_engine_app | service_obj_cls | 无 | Remote REST services manager |
-| RemotePlanMgr | paasng.accessories.servicehub.services.BasePlanMgr | __init__, list_plans, create_plan, update_plan, delete_plan, _get_remote_client | service_obj_cls | 无 | Remote REST plans manager |
-| RemoteServiceBinder | 无 | __init__, bind, bind_without_plan, _get_plan_by_env, _bind_for_env | 无 | 无 | Service binder for remote services |
-| RemoteServiceInstanceMgr | 无 | __init__, get_instance_by_name, _get_remote_client | 无 | 无 | Remote REST service instance manager |
+| RemoteEngineAppInstanceRel | paasng.accessories.servicehub.services.EngineAppInstanceRel | get_service, is_provisioned, provision, sync_instance_config, recycle_resource, get_instance, render_params, get_plan | 无 | 无 | A relationship between EngineApp and Provisioned i... |
+| RemotePlainInstanceMgr | paasng.accessories.servicehub.services.PlainInstanceMgr | get_service, get_remote_client, sync_instance_config, is_provisioned, create, destroy | 无 | 无 | 纯粹的远程增强服务实例的管理器, 仅调用远程接口创建增强服务实例, 不涉及增强服务资源申请的流程 |
+| RemoteServiceMgr | paasng.accessories.servicehub.services.BaseServiceMgr | get, find_by_name, list_by_category, list_by_region, list, update, destroy, list_binded, bind_service, bind_service_partial, list_all_rels, get_module_rel, list_unprovisioned_rels, list_provisioned_rels, get_attachment_by_instance_id, get_instance_rel_by_instance_id, get_provisioned_queryset, get_provisioned_queryset_by_services, transform_rel_db_obj, module_is_bound_with, get_provisioned_envs, get_mysql_services, get_attachment_by_engine_app | service_obj_cls | 无 | Remote REST services manager |
+| RemotePlanMgr | paasng.accessories.servicehub.services.BasePlanMgr | list_plans, create_plan, update_plan, delete_plan | service_obj_cls | 无 | Remote REST plans manager |
+| RemoteServiceBinder | 无 | bind, bind_without_plan | 无 | 无 | Service binder for remote services |
+| RemoteServiceInstanceMgr | 无 | get_instance_by_name | 无 | 无 | Remote REST service instance manager |
 
 ---
 
@@ -16518,9 +16518,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| StoreMixin | 无 | filter, bulk_get, _svc_supports_region | 无 | 无 | 不适用 |
-| MemoryStore | StoreMixin | __init__, bulk_upsert, get_source_config, get, all, empty | 无 | 无 | Remote service store |
-| RedisStore | StoreMixin | __init__, _make_svc_info_key, _make_svc_config_key, get_service_keys, bulk_upsert, get_source_config, get, all, empty | cache_key, namespace, encoding, registered_services_key, expires | 无 | 不适用 |
+| StoreMixin | 无 | filter, bulk_get | 无 | 无 | 不适用 |
+| MemoryStore | StoreMixin | bulk_upsert, get_source_config, get, all, empty | 无 | 无 | Remote service store |
+| RedisStore | StoreMixin | get_service_keys, bulk_upsert, get_source_config, get, all, empty | cache_key, namespace, encoding, registered_services_key, expires | 无 | 不适用 |
 
 ---
 
@@ -16633,17 +16633,17 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ServiceSpecificationDefinition | 无 | __post_init__, as_dict | 无 | dataclass | Service spec definition |
+| ServiceSpecificationDefinition | 无 | as_dict | 无 | dataclass | Service spec definition |
 | ServiceObj | 无 | public_specifications, protected_specifications, get_plans | category_id, category | dataclass | A universal service object |
 | PlanObj | 无 | with_service, service | 无 | dataclass | A universal plan object |
-| ServiceInstanceObj | 无 | __init__, get_credentials, credentials, credentials_insensitive, config, get_hidden_credentials | 无 | 无 | A universal Service Instance object |
+| ServiceInstanceObj | 无 | get_credentials, credentials, credentials_insensitive, config, get_hidden_credentials | 无 | 无 | A universal Service Instance object |
 | EngineAppInstanceRel | 无 | get_service, is_provisioned, provision, get_instance, get_plan, delete, recycle_resource | 无 | 无 | A relationship between EngineApp and Provinsioned ... |
 | PlainInstanceMgr | 无 | is_provisioned, create, destroy | 无 | 无 | 纯粹的增强服务实例的管理器, 不涉及增强服务资源申请的流程 |
 | BaseServiceMgr | 无 | list_by_category, list_binded, module_is_bound_with, bind_service, list_unprovisioned_rels, list_provisioned_rels, get_provisioned_queryset, get_provisioned_queryset_by_services, get_attachment_by_instance_id, get_module_rel, get, find_by_name, get_attachment_by_engine_app | service_obj_cls | 无 | Base class for service manager |
 | BasePlanMgr | 无 | list_plans, create_plan, update_plan, delete_plan | 无 | 无 | Base class for plan manager |
 | ServicePlansHelper | 无 | from_service, get_by_region | 无 | dataclass | Hepler work for plans |
-| ServiceSpecificationHelper | 无 | __post_init__, from_service, from_service_public_specifications, from_service_protected_specifications, filter_plans, get_recommended_spec, list_plans_spec_value, get_grouped_spec_values, _sanitize_specs, parse_spec_values_tree, format_given_specs | 无 | dataclass | Helper work for service specifications |
-| ModuleSpecificationsHelper | 无 | __post_init__, fill_spec_app_zone, fill_protected_specs | 无 | dataclass | 不适用 |
+| ServiceSpecificationHelper | 无 | from_service, from_service_public_specifications, from_service_protected_specifications, filter_plans, get_recommended_spec, list_plans_spec_value, get_grouped_spec_values, parse_spec_values_tree, format_given_specs | 无 | dataclass | Helper work for service specifications |
+| ModuleSpecificationsHelper | 无 | fill_spec_app_zone, fill_protected_specs | 无 | dataclass | 不适用 |
 
 ---
 
@@ -16696,10 +16696,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ServiceSharingManager | 无 | __init__, list_shareable, create, list_all_shared_info, list_shared_info, get_shared_info, destroy, get_env_variables, get_enabled_env_keys | 无 | 无 | Manage shared service attachments by module
+| ServiceSharingManager | 无 | list_shareable, create, list_all_shared_info, list_shared_info, get_shared_info, destroy, get_env_variables, get_enabled_env_keys | 无 | 无 | Manage shared service attachments by module
 
     :... |
-| SharingReferencesManager | 无 | __init__, list_related_modules, clear_related | 无 | 无 | Manage sharing references |
+| SharingReferencesManager | 无 | list_related_modules, clear_related | 无 | 无 | Manage sharing references |
 
 ---
 
@@ -16874,8 +16874,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ModuleServiceAttachmentsViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, retrieve_info | permission_classes | 无 | 蓝鲸应用(模块)增强服务附件相关视图 |
-| ModuleServicesViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_service, _get_application_by_code, bind, retrieve, retrieve_specs, unbind, list_provisioned_env_keys | 无 | 无 | 与蓝鲸应用模块相关的增强服务接口 |
-| ServiceViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, retrieve, list_by_template, list_by_region, list_related_apps, list_by_category, list_by_module, _gen_service_obj_allocations | serializer_class, permission_classes | 无 | 增强服务相关视图(与应用无关的) |
+| ModuleServicesViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_service, bind, retrieve, retrieve_specs, unbind, list_provisioned_env_keys | 无 | 无 | 与蓝鲸应用模块相关的增强服务接口 |
+| ServiceViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, retrieve, list_by_template, list_by_region, list_related_apps, list_by_category, list_by_module | serializer_class, permission_classes | 无 | 增强服务相关视图(与应用无关的) |
 | ServiceSetViewSet | rest_framework.viewsets.ViewSet | paginator, list_by_category, list_by_name | permission_classes | 无 | 增强服务集合-查询接口 |
 | ServicePlanViewSet | rest_framework.viewsets.ViewSet | retrieve_specifications | permission_classes | 无 | 不适用 |
 | ServiceSharingViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_service, list_shareable, create_shared, retrieve, destroy | permission_classes | 无 | 与共享增强服务有关的接口 |
@@ -17207,21 +17207,21 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ServiceCategory | django.db.models.Model | __str__ | name, sort_priority | 无 | 
+| ServiceCategory | django.db.models.Model | 无 | name, sort_priority | 无 |
     Service Category
      |
 | ServiceManager | django.db.models.Manager | get_by_natural_key | 无 | 无 | 不适用 |
-| Service | paasng.utils.models.UuidAuditedModel | natural_key, __str__, _get_service_vendor_instance, format_credentials, create_service_instance_by_plan, delete_service_instance, patch_service_instance_by_plan, prefer_async_delete, provider_name | region, name, display_name, logo, logo_b64, category, description, long_description, instance_tutorial, available_languages, config, is_active, is_visible, objects | 无 | 
+| Service | paasng.utils.models.UuidAuditedModel | natural_key, format_credentials, create_service_instance_by_plan, delete_service_instance, patch_service_instance_by_plan, prefer_async_delete, provider_name | region, name, display_name, logo, logo_b64, category, description, long_description, instance_tutorial, available_languages, config, is_active, is_visible, objects | 无 |
     Service model for PaaS
      |
-| ServiceInstance | paasng.utils.models.UuidAuditedModel | __str__ | service, plan, config, credentials, to_be_deleted | 无 | 
+| ServiceInstance | paasng.utils.models.UuidAuditedModel | 无 | service, plan, config, credentials, to_be_deleted | 无 |
     specific info of service
      |
-| PreCreatedInstance | paasng.utils.models.UuidAuditedModel | acquire, release, __str__ | plan, config, credentials, is_allocated | 无 | 预创建的服务实例 |
-| Plan | paasng.utils.models.UuidAuditedModel | is_eager, __str__, get_config | service, name, description, config, is_active | 无 | 
+| PreCreatedInstance | paasng.utils.models.UuidAuditedModel | acquire, release | plan, config, credentials, is_allocated | 无 | 预创建的服务实例 |
+| Plan | paasng.utils.models.UuidAuditedModel | is_eager, get_config | service, name, description, config, is_active | 无 |
     Plan model
     contain provider and resource ... |
-| ResourceId | django.db.models.Model | __str__ | namespace, uid | 无 | 不适用 |
+| ResourceId | django.db.models.Model | 无 | namespace, uid | 无 | 不适用 |
 | InstanceData | typing.NamedTuple | 无 | 无 | 无 | 不适用 |
 
 ---
@@ -17295,8 +17295,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseProvider | 无 | __init__, create, delete, patch, stats | 无 | 无 | 不适用 |
-| ResourcePoolProvider | BaseProvider | __init__, create, delete, patch, stats | display_name | 无 | 不适用 |
+| BaseProvider | 无 | create, delete, patch, stats | 无 | 无 | 不适用 |
+| ResourcePoolProvider | BaseProvider | create, delete, patch, stats | display_name | 无 | 不适用 |
 
 ---
 
@@ -17379,7 +17379,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MySQLProvider | paasng.accessories.services.providers.base.BaseProvider | __init__, _get_connection, _get_app_connection, _change_auth_ips, _grant_auth_ips, _revoke_auth_ips, create, delete, patch, stats | display_name | 无 | 
+| MySQLProvider | paasng.accessories.services.providers.base.BaseProvider | create, delete, patch, stats | display_name | 无 |
     desc: 普通数据库授权 / CDB 数据库授权
     example: qcloud... |
 
@@ -17429,7 +17429,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RabbitMQProvider | paasng.accessories.services.providers.base.BaseProvider | __init__, test_connection, put_request, del_request, get_request, create, delete, patch, stats | display_name | 无 | 申请 RabbitMQ 资源 |
+| RabbitMQProvider | paasng.accessories.services.providers.base.BaseProvider | test_connection, put_request, del_request, get_request, create, delete, patch, stats | display_name | 无 | 申请 RabbitMQ 资源 |
 
 ---
 
@@ -17498,7 +17498,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SentryClient | 无 | __init__, _request, create_team, create_project, _get_client_key, if_client_key_exists, create_project_client_key, create_member, _http_team_member, add_team_member, delete_team_member, get_team_members | 无 | 无 | 不适用 |
+| SentryClient | 无 | create_team, create_project, if_client_key_exists, create_project_client_key, create_member, add_team_member, delete_team_member, get_team_members | 无 | 无 | 不适用 |
 
 ---
 
@@ -17560,7 +17560,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SentryProvider | paasng.accessories.services.providers.base.BaseProvider | __init__, _gen_dsn, _gen_url, _gen_team_slug, _get_developers, create, patch, delete, stats | display_name | 无 | Sentry 资源处理 |
+| SentryProvider | paasng.accessories.services.providers.base.BaseProvider | create, patch, delete, stats | display_name | 无 | Sentry 资源处理 |
 
 ---
 
@@ -17617,7 +17617,7 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_vendor_config | `def get_vendor_config(vendor_name: str, *, result_cls: Type):` | 无 | Get basic config for vendor from settings |
-| generate_password | `def generate_password(length=10):` | 无 | 
+| generate_password | `def generate_password(length=10):` | 无 |
     随机生成DB密码
 
     # 生成至少 大小写数字, 且包含至少一位数字的密码
@@ -17635,8 +17635,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Base36Handler | 无 | encode, decode | BASE36 | 无 | 不适用 |
-| WRItem | 无 | from_dict, __init__, __str__ | 无 | 无 | A single weighted-random items |
-| WRItemList | 无 | from_json, __init__, initalize, get | precision | 无 | 不适用 |
+| WRItem | 无 | from_dict | 无 | 无 | A single weighted-random items |
+| WRItemList | 无 | from_json, initalize, get | precision | 无 | 不适用 |
 
 ---
 
@@ -17833,7 +17833,7 @@
 |------|------|------|------|--------|----------|
 | AppModuleTagManager | django.db.models.Manager | get_tags, tag_module, cleanup_module | 无 | 无 | Manager for module tag |
 | AppModuleTagRel | django.db.models.Model | 无 | module, tag_str, source, created, objects | 无 | A M2M relationship table for storing the relations... |
-| DocumentaryLink | django.db.models.Model | __str__, get_affinity_tags, get_affinity_tags_by_type, format_location | title, short_description, location, affinity_tags, anti_affinity_tags, priority, created | 无 | Links from document systems including blueking doc... |
+| DocumentaryLink | django.db.models.Model | get_affinity_tags, get_affinity_tags_by_type, format_location | title, short_description, location, affinity_tags, anti_affinity_tags, priority, created | 无 | Links from document systems including blueking doc... |
 | DeployFailurePattern | django.db.models.Model | 无 | type, value, tag_str, created | 无 | Stores common failure patterns for failed deployme... |
 
 ---
@@ -17921,11 +17921,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Tag | 无 | __init__, __str__, __repr__, __hash__, __eq__, __ne__ | 无 | 无 | Tag for recommendation
+| Tag | 无 | 无 | 无 | 无 | Tag for recommendation
 
     :param str tag_type: t... |
-| BaseFixedTypeTag | Tag | __init__ | 无 | 无 | 不适用 |
-| TagSet | 无 | __init__, get, get_tags, add, add_tags, validate_tags | 无 | 无 | All tags set |
+| BaseFixedTypeTag | Tag | 无 | 无 | 无 | 不适用 |
+| TagSet | 无 | get, get_tags, add, add_tags, validate_tags | 无 | 无 | All tags set |
 
 ---
 
@@ -18118,7 +18118,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PluginApiGWClient | typing_extensions.Protocol | sync_api, grant_permissions, revoke_permissions, update_gateway_status | 无 | 无 | Describes protocols of calling API Gateway managem... |
-| PluginDefaultAPIGateway | 无 | __init__, set_gw_name, sync, grant, revoke, update_gateway_status, _get_maintainers, _make_api_client, _get_credentials | description_tmp, grant_dimension | 无 | Manage the default BK API Gateway resource for a P... |
+| PluginDefaultAPIGateway | 无 | set_gw_name, sync, grant, revoke, update_gateway_status | description_tmp, grant_dimension | 无 | Manage the default BK API Gateway resource for a P... |
 
 ---
 
@@ -18214,8 +18214,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_plugin_app_created | `@receiver(post_create_application):` | receiver | Do extra jobs after a plugin was created |
-| on_pre_deployment | `@receiver(pre_appenv_deploy):` | receiver | Sync plugin's API-Gateway resource when applicatio... |
+| on_plugin_app_created | `def on_plugin_app_created(sender, application: Application, **kwargs):` | receiver | Do extra jobs after a plugin was created |
+| on_pre_deployment | `def on_pre_deployment(sender, deployment: Deployment, **kwargs):` | receiver | Sync plugin's API-Gateway resource when applicatio... |
 
 
 ---
@@ -18276,10 +18276,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| StructureLogLine | paasng.utils.es_log.models.LogLine | __attrs_post_init__ | 无 | define | 结构化日志结构
+| StructureLogLine | paasng.utils.es_log.models.LogLine | 无 | 无 | define | 结构化日志结构
 
     :param detail: alias of raw. This is ... |
-| PluginLoggingClient | 无 | __init__, query, instantiate_log_client, make_search, _make_base_search | _default_time_range, _module_name | 无 | 不适用 |
+| PluginLoggingClient | 无 | query, instantiate_log_client, make_search | _default_time_range, _module_name | 无 | 不适用 |
 
 ---
 
@@ -18533,7 +18533,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_plugin_env_variables | `@env_vars_providers.register_env:` | env_vars_providers.register_env | Get env vars for a bk-plugin object |
+| get_plugin_env_variables | `def get_plugin_env_variables(env: ModuleEnvironment) -> Dict[str, str]:` | env_vars_providers.register_env | Get env vars for a bk-plugin object |
 | make_bk_plugins | `def make_bk_plugins(applications: Iterator[Application]) -> List[BkPlugin]:` | 无 | Make a list of bk_plugin objects at once |
 | get_deployed_statuses | `def get_deployed_statuses(bk_plugin: BkPlugin) -> DeployedStatuses:` | 无 | Get the deployed statuses of a bk_plugin, result i... |
 | get_deployed_statuses_without_addresses | `def get_deployed_statuses_without_addresses(bk_plugin: BkPlugin) -> DeployedStatuses:` | 无 | Get the deployed statuses of given bk_plugin, resu... |
@@ -18549,9 +18549,9 @@
 |------|------|------|------|--------|----------|
 | BkPluginProfileManager | django.db.models.Manager | get_or_create_by_application | 无 | 无 | Custom manager for `BkPluginProfile` |
 | BkPluginProfile | paasng.utils.models.OwnerTimestampedModel | code, is_synced, pre_distributors, get_tag_info, mark_synced | application, introduction, contact, tag, api_gw_name, api_gw_id, api_gw_last_synced_at, pre_distributor_codes, objects | 无 | Profile which storing extra information for BkPlug... |
-| BkPluginDistributor | paasng.utils.models.TimestampedModel | __str__ | name, code_name, bk_app_code, introduction, plugins | 无 | A "Distributor" is responsible for providing a col... |
-| BkPluginTag | paasng.utils.models.AuditedModel | __str__, to_dict | name, code_name, priority | 无 | Plugins and applications use different markets, an... |
-| BkPlugin | pydantic.BaseModel | __init__, from_application, get_application, get_profile | _application | 无 | Type for representing a bk plugin |
+| BkPluginDistributor | paasng.utils.models.TimestampedModel | 无 | name, code_name, bk_app_code, introduction, plugins | 无 | A "Distributor" is responsible for providing a col... |
+| BkPluginTag | paasng.utils.models.AuditedModel | to_dict | name, code_name, priority | 无 | Plugins and applications use different markets, an... |
+| BkPlugin | pydantic.BaseModel | from_application, get_application, get_profile | _application | 无 | Type for representing a bk plugin |
 | DeployedStatus | pydantic.BaseModel | 无 | 无 | 无 | A helper class for storing deployed status |
 | DeployedStatusNoAddresses | pydantic.BaseModel | 无 | 无 | 无 | Simliar to `DeployedStatus`, but have no `addresse... |
 | BkPluginAppQuerySet | 无 | all, filter | 无 | 无 | QuerySet manager for bk_plugin related `Applicatio... |
@@ -18714,7 +18714,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| archive_prod_env | `@shared_task:` | shared_task | 下架插件应用默认模块的Prod环境
+| archive_prod_env | `def archive_prod_env(app_code: str, operator: str):` | shared_task | 下架插件应用默认模块的Prod环境
 
     :param str app_code: 需要下架的应... |
 
@@ -18833,7 +18833,7 @@
 | SysBkPluginsBatchViewset | FilterPluginsMixin, rest_framework.viewsets.ViewSet | list_detailed | 无 | ForceAllowAuthedApp.mark_view_set | Viewset for batch operations on bk_plugin type app... |
 | SysBkPluginLogsViewset | rest_framework.viewsets.ViewSet | list | 无 | 无 | Viewset for querying bk_plugin's logs |
 | SysBkPluginTagsViewSet | rest_framework.viewsets.ViewSet | list | 无 | 无 | Viewset for querying bk_plugin's tags |
-| BkPluginProfileViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, patch, _get_plugin | permission_classes | 无 | Viewset for managing BkPlugin's profile |
+| BkPluginProfileViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, patch | permission_classes | 无 | Viewset for managing BkPlugin's profile |
 | DistributorsViewSet | rest_framework.viewsets.ViewSet | list | 无 | 无 | Viewset for plugin distributors |
 | BkPluginTagsViewSet | rest_framework.viewsets.ViewSet | list | 无 | 无 | Viewset for plugin tags |
 | DistributorRelsViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, update | permission_classes | 无 | Viewset for managing a single bk_plugin's distribu... |
@@ -18924,7 +18924,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseBkDevopsClient | 无 | __init__, _prepare_headers | 无 | 无 | bk-devops 通过 APIGW 提供的 API
+| BaseBkDevopsClient | 无 | 无 | 无 | 无 | bk-devops 通过 APIGW 提供的 API
 
     :param bk_username... |
 | BkDevopsClient | BaseBkDevopsClient | get_metrics_summary, get_codecc_plugin_basic_info | 无 | 无 | 不适用 |
@@ -19045,7 +19045,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkDevopsGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkDevopsGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkDevopsApiError | BkDevopsGatewayServiceError | 无 | 无 | 无 | When calling the bk-devops api, bk-devops returns ... |
 
 ---
@@ -19127,7 +19127,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkUserManageClient | 无 | __init__, retrieve_department, get_all_parent_departments | 无 | 无 | 不适用 |
+| BkUserManageClient | 无 | retrieve_department, get_all_parent_departments | 无 | 无 | 不适用 |
 
 ---
 
@@ -19169,7 +19169,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkUserManageGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkUserManageGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkUserManageApiError | BkUserManageGatewayServiceError | 无 | 无 | 无 | When calling the bk_user api, bk_log returns an er... |
 
 ---
@@ -19225,7 +19225,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PluginConfigManager | 无 | __init__, save, delete, unique_key, build_conflict_message | 无 | 无 | 不适用 |
+| PluginConfigManager | 无 | save, delete, unique_key, build_conflict_message | 无 | 无 | 不适用 |
 
 ---
 
@@ -19381,9 +19381,9 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PluginFeatureFlag | blue_krill.data_types.enum.FeatureFlag | 无 | RE_RELEASE_HISTORY_VERSION, API_GATEWAY, PROCESS_MANAGE, STRUCTURE_LOG, APP_SECRETS, PLUGIN_DISTRIBUTER, CANCEL_RELEASE, SHOW_ENTRANCES_ADDRESS, CONFIGURATION_MANAGE, STDOUT_LOG, ACCESS_LOG, MARKET_INFO, PUBLISHER_INFO, LOWER_REPO_NAME, VISIBLE_RANGE_MANAGE | 无 | 不适用 |
-| FeatureFlagsManagerBase | 无 | __init__, list_all_features, has_feature | 无 | 无 | 不适用 |
-| PluginFeatureFlagsManager | FeatureFlagsManagerBase | __init__ | 无 | 无 | 不适用 |
-| PluginDefinitionFlagsManager | FeatureFlagsManagerBase | __init__ | 无 | 无 | 不适用 |
+| FeatureFlagsManagerBase | 无 | list_all_features, has_feature | 无 | 无 | 不适用 |
+| PluginFeatureFlagsManager | FeatureFlagsManagerBase | 无 | 无 | 无 | 不适用 |
+| PluginDefinitionFlagsManager | FeatureFlagsManagerBase | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -19434,7 +19434,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| update_release_status_when_stage_status_change | `@receiver(post_save, sender=PluginReleaseStage):` | receiver | 不适用 |
+| update_release_status_when_stage_status_change | `def update_release_status_when_stage_status_change(sender, instance: PluginReleaseStage, created, *args, **kwargs):` | receiver | 不适用 |
 
 
 ---
@@ -19586,7 +19586,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKIAMClient | 无 | __init__, create_grade_manager, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager_members, create_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, initial_user_group_policies | 无 | 无 | bk-iam 通过 APIGW 提供的管理端 API client |
+| BKIAMClient | 无 | create_grade_manager, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager_members, create_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, initial_user_group_policies | 无 | 无 | bk-iam 通过 APIGW 提供的管理端 API client |
 
 ---
 
@@ -19659,36 +19659,36 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | transform_api_error | `def transform_api_error(func):` | 无 | a decorator transform IAM client exception to APIE... |
-| fetch_grade_manager_members | `@transform_api_error:` | transform_api_error | 获取指定插件的分级管理员名单
+| fetch_grade_manager_members | `def fetch_grade_manager_members(plugin: PluginInstance) -> List[str]:` | transform_api_error | 获取指定插件的分级管理员名单
 
     :param plugin: 蓝鲸插件
      |
-| fetch_role_members | `@transform_api_error:` | transform_api_error | 获取指定插件属于指定角色的用户列表
+| fetch_role_members | `def fetch_role_members(plugin: PluginInstance, role: PluginRole) -> List[str]:` | transform_api_error | 获取指定插件属于指定角色的用户列表
 
     :param plugin: 蓝鲸插件
     :pa... |
-| add_role_members | `@transform_api_error:` | transform_api_error | 将用户添加为某个角色的成员
+| add_role_members | `def add_role_members(plugin: PluginInstance, role: PluginRole, usernames: List[str], expired_after_days: int = NEVER_EXPIRE_DAYS):` | transform_api_error | 将用户添加为某个角色的成员
 
     :param plugin: 蓝鲸插件
     :param ... |
-| delete_role_members | `@transform_api_error:` | transform_api_error | 将用户从某个角色的成员中删除
+| delete_role_members | `def delete_role_members(plugin: PluginInstance, role: PluginRole, usernames: List[str]):` | transform_api_error | 将用户从某个角色的成员中删除
 
     :param plugin: 蓝鲸插件
     :param... |
-| fetch_user_roles | `@transform_api_error:` | transform_api_error | 获取用户在插件中的对应的角色 |
+| fetch_user_roles | `def fetch_user_roles(plugin: PluginInstance, username: str) -> List[PluginRole]:` | transform_api_error | 获取用户在插件中的对应的角色 |
 | fetch_user_main_role | `def fetch_user_main_role(plugin: PluginInstance, username: str) -> Optional[Role]:` | 无 | 获取用户在插件中的主要角色 |
-| remove_user_all_roles | `@transform_api_error:` | transform_api_error | 
+| remove_user_all_roles | `def remove_user_all_roles(plugin: PluginInstance, usernames: List[str]):` | transform_api_error |
     删除用户在某个 APP 下的所有权限角色
 
     :param plugin: 蓝鲸插件... |
-| fetch_plugin_members | `@transform_api_error:` | transform_api_error | 
+| fetch_plugin_members | `def fetch_plugin_members(plugin: PluginInstance) -> List[PluginMember]:` | transform_api_error |
     获取一个蓝鲸插件所有用户（包含角色信息）
     顺序：管理员(role=2) - 开发者... |
-| setup_builtin_grade_manager | `@transform_api_error:` | transform_api_error | 初始化插件的分级管理员
+| setup_builtin_grade_manager | `def setup_builtin_grade_manager(plugin: PluginInstance):` | transform_api_error | 初始化插件的分级管理员
 
     :param plugin: 蓝鲸插件
      |
-| setup_builtin_user_groups | `@transform_api_error:` | transform_api_error | 初始化插件的内建用户组
+| setup_builtin_user_groups | `def setup_builtin_user_groups(plugin: PluginInstance):` | transform_api_error | 初始化插件的内建用户组
 
     :param plugin: 蓝鲸插件
      |
@@ -19791,8 +19791,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IAMPermissionTemplateRender | 无 | __init__, render, context | 无 | 无 | TemplateRender used to render jinja2 template loca... |
-| IAMMigrator | 无 | __init__, migrate | 无 | 无 | A client run iam migration script |
+| IAMPermissionTemplateRender | 无 | render, context | 无 | 无 | TemplateRender used to render jinja2 template loca... |
+| IAMMigrator | 无 | migrate | 无 | 无 | A client run iam migration script |
 
 ---
 
@@ -19827,11 +19827,11 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | PluginRelativeManager | django.db.models.Manager | filter_by_plugin | 无 | 无 | 不适用 |
-| PluginGradeManager | paasng.utils.models.AuditedModel | 无 | pd_id, plugin_id, grade_manager_id, objects | 无 | 
+| PluginGradeManager | paasng.utils.models.AuditedModel | 无 | pd_id, plugin_id, grade_manager_id, objects | 无 |
     IAM 分级管理员与插件的关系
 
     分级管理员管理用户加入用户组的申请，理论上来说，... |
-| PluginUserGroup | paasng.utils.models.AuditedModel | 无 | pd_id, plugin_id, role, user_group_id, objects | 无 | 
+| PluginUserGroup | paasng.utils.models.AuditedModel | 无 | pd_id, plugin_id, role, user_group_id, objects | 无 |
     IAM 用户组与插件开发中心用户组的关系
 
     每个插件默认会有 2 个用户组（不可删... |
@@ -19869,7 +19869,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKIAMClient | 无 | __init__, is_action_allowed, is_actions_allowed, is_batch_resource_actions_allowed, build_plugin_filters | 无 | 无 | bk-iam 通过 SDK 提供的 API client |
+| BKIAMClient | 无 | is_action_allowed, is_actions_allowed, is_batch_resource_actions_allowed, build_plugin_filters | 无 | 无 | bk-iam 通过 SDK 提供的 API client |
 
 ---
 
@@ -20030,7 +20030,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ItsmClient | 无 | __init__, search_service_catalogs, get_root_catalog_id, get_plugin_center_catalog_id, create_plugin_center_catalog, get_service_id_by_name, import_service, create_ticket, get_ticket_status, withdraw_ticket, verify_token | 无 | 无 | bk-itsm 通过 API 网关提供的 API |
+| ItsmClient | 无 | search_service_catalogs, get_root_catalog_id, get_plugin_center_catalog_id, create_plugin_center_catalog, get_service_id_by_name, import_service, create_ticket, get_ticket_status, withdraw_ticket, verify_token | 无 | 无 | bk-itsm 通过 API 网关提供的 API |
 
 ---
 
@@ -20070,7 +20070,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ItsmGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| ItsmGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | ItsmApiError | ItsmGatewayServiceError | 无 | 无 | 无 | When calling the bk-itsm api, bk-itsm returns an e... |
 | ItsmCatalogNotExistsError | ItsmGatewayServiceError | 无 | 无 | 无 | The specified catalog could not be queried on ITSM |
 | ItsmServiceNotExistsError | ItsmGatewayServiceError | 无 | 无 | 无 | The specified service could not be queried on ITSM |
@@ -20162,7 +20162,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | CanaryStatus | 无 | 无 | 无 | define | 不适用 |
-| PluginCallBackApiViewSet | rest_framework.viewsets.GenericViewSet | get_plugin_instance, itsm_stage_callback, itsm_create_callback, itsm_visible_range_callback, itsm_canary_callback, _convert_canary_status, _convert_release_status, _convert_create_status | authentication_classes | 无 | 不适用 |
+| PluginCallBackApiViewSet | rest_framework.viewsets.GenericViewSet | get_plugin_instance, itsm_stage_callback, itsm_create_callback, itsm_visible_range_callback, itsm_canary_callback | authentication_classes | 无 | 不适用 |
 
 ---
 
@@ -20218,7 +20218,7 @@
 
     itsm 返回数据格式：{
         "ticket_ur... |
-| is_itsm_ticket_closed | `def is_itsm_ticket_closed(sn: str) -> bool:` | 无 | 
+| is_itsm_ticket_closed | `def is_itsm_ticket_closed(sn: str) -> bool:` | 无 |
     ITSM 审批单据流程是否已经结束
 
     :param sn: 审批单据 ID
@@ -20295,7 +20295,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LogClientAdaptor | 无 | __init__, execute_search, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | 不适用 |
+| LogClientAdaptor | 无 | execute_search, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | 不适用 |
 
 ---
 
@@ -20355,8 +20355,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LogClientProtocol | typing.Protocol | execute_search, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | LogClient protocol, all log search backend should ... |
-| BKLogClient | 无 | __init__, execute_search, aggregate_date_histogram, aggregate_fields_filters, _call_api | 无 | 无 | BKLogClient is an implement of LogClientProtocol, ... |
-| ESLogClient | 无 | __init__, execute_search, aggregate_date_histogram, aggregate_fields_filters, _get_response_count, _get_properties_filters, _clean_property | 无 | 无 | ESLogClient is an implement of LogClientProtocol, ... |
+| BKLogClient | 无 | execute_search, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | BKLogClient is an implement of LogClientProtocol, ... |
+| ESLogClient | 无 | execute_search, aggregate_date_histogram, aggregate_fields_filters | 无 | 无 | ESLogClient is an implement of LogClientProtocol, ... |
 
 ---
 
@@ -20388,7 +20388,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkLogGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkLogGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkLogApiError | BkLogGatewayServiceError | 无 | 无 | 无 | When calling the bk_log api, bk_log returns an err... |
 
 ---
@@ -20413,7 +20413,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ElasticSearchFilter | 无 | __init__, filter_by_plugin, filter_by_builtin_filters, filter_by_builtin_excludes | 无 | 无 | 不适用 |
+| ElasticSearchFilter | 无 | filter_by_plugin, filter_by_builtin_filters, filter_by_builtin_excludes | 无 | 无 | 不适用 |
 
 ---
 
@@ -20441,7 +20441,7 @@
 |------|------|------|------|--------|----------|
 | StandardOutputLogLine | paasng.utils.es_log.models.LogLine | 无 | 无 | define | 标准输出日志结构 |
 | StructureLogLine | paasng.utils.es_log.models.LogLine | 无 | 无 | define | 结构化日志结构 |
-| IngressLogLine | paasng.utils.es_log.models.LogLine | __attrs_post_init__ | 无 | define | ingress 访问日志结构 |
+| IngressLogLine | paasng.utils.es_log.models.LogLine | 无 | 无 | define | ingress 访问日志结构 |
 
 ---
 
@@ -21455,7 +21455,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PluginReleaseExecutor | 无 | __init__, initial, enter_next_stage, rerun_current_stage, execute_current_stage, back_to_previous_stage, reset_release, cancel_release, execute_gray_release | 无 | 无 | ReleaseExecutor is controlling the lifecycle of Pl... |
+| PluginReleaseExecutor | 无 | initial, enter_next_stage, rerun_current_stage, execute_current_stage, back_to_previous_stage, reset_release, cancel_release, execute_gray_release | 无 | 无 | ReleaseExecutor is controlling the lifecycle of Pl... |
 
 ---
 
@@ -21519,10 +21519,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseStageController | 无 | __init__, __init_subclass__, get_stage_class, execute_post_command, execute_pre_command, execute, render_to_view, async_check_status | 无 | 无 | 发布步骤控制器基类 |
-| DeployAPIStage | BaseStageController | execute, render_to_view, async_check_status, _refresh_source_hash | invoke_method | 无 | 不适用 |
+| BaseStageController | 无 | get_stage_class, execute_post_command, execute_pre_command, execute, render_to_view, async_check_status | 无 | 无 | 发布步骤控制器基类 |
+| DeployAPIStage | BaseStageController | execute, render_to_view, async_check_status | invoke_method | 无 | 不适用 |
 | ItsmStage | BaseStageController | execute, render_to_view | invoke_method | 无 | 不适用 |
-| PipelineStage | BaseStageController | __init__, _update_pipline_status, render_to_view, async_check_status, execute, build_pipeline_params, execute_post_command | invoke_method | 无 | 不适用 |
+| PipelineStage | BaseStageController | render_to_view, async_check_status, execute, build_pipeline_params, execute_post_command | invoke_method | 无 | 不适用 |
 | SubPageStage | BaseStageController | execute, render_to_view, format_page_url | invoke_method | 无 | 不适用 |
 | BuiltinStage | BaseStageController | execute, render_to_view | invoke_method | 无 | 不适用 |
 
@@ -21613,7 +21613,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PluginUniqueValidator | 无 | __init__, __call__, validate_queryset, exclude_current_instance | requires_context | 无 | 不适用 |
+| PluginUniqueValidator | 无 | validate_queryset, exclude_current_instance | requires_context | 无 | 不适用 |
 | ItsmDetailSLZ | rest_framework.serializers.Serializer | 无 | ticket_url, sn, fields | 无 | 不适用 |
 | PluginRoleSLZ | rest_framework.serializers.Serializer | 无 | name, id | 无 | 不适用 |
 | PluginMemberSLZ | rest_framework.serializers.Serializer | get_avatar | username, role, avatar | 无 | 不适用 |
@@ -21720,11 +21720,11 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| init_plugin_in_view | `@_atomic_create_plugin_repository:` | _atomic_create_plugin_repository | 初始化插件
+| init_plugin_in_view | `def init_plugin_in_view(plugin: PluginInstance, operator: str):` | _atomic_create_plugin_repository | 初始化插件
 
     :param plugin: 蓝鲸插件
     :param operator... |
-| update_visible_range_and_callback | `@atomic:` | atomic | 更新可见范围，需要同步回调第三方 API |
+| update_visible_range_and_callback | `def update_visible_range_and_callback(plugin: PluginInstance, operator: str):` | atomic | 更新可见范围，需要同步回调第三方 API |
 | init_plugin_repository | `def init_plugin_repository(plugin: PluginInstance, operator: str):` | 无 | 初始化插件仓库 |
 | build_repository_template | `def build_repository_template(pd: PluginDefinition, repository_group: str) -> str:` | 无 | transfer a repository group to repository template |
 | get_source_hash_by_plugin_version | `def get_source_hash_by_plugin_version(plugin: PluginInstance, source_version_type: str, source_version_name: str, revision_type: str, release_id: str) -> str:` | 无 | 插件版本号对应的代码仓库的提交信息
@@ -21814,7 +21814,7 @@
 | PluginRepoInitializer | typing.Protocol | create_project, delete_project, initial_repo | 无 | 无 | 插件仓库初始化器 |
 | PluginRepoMemberMaintainer | typing.Protocol | add_member, remove_member | 无 | 无 | 插件仓库成员管理器 |
 | PluginRepoAccessor | typing.Protocol | extract_smart_revision, list_alternative_versions, build_compare_url, get_submit_info, get_project_id | 无 | 无 | 插件仓库访问器 |
-| TemplateRender | 无 | __init__, render | 无 | 无 | 插件模板渲染器 |
+| TemplateRender | 无 | render | 无 | 无 | 插件模板渲染器 |
 
 ---
 
@@ -21830,7 +21830,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| APIError | Exception | __init__ | 无 | 无 | 不适用 |
+| APIError | Exception | 无 | 无 | 无 | 不适用 |
 | AuthTokenMissingError | Exception | 无 | 无 | 无 | 缺少鉴权凭证错误 |
 | PluginRepoNameConflict | APIError | 无 | 无 | 无 | 仓库名称冲突, 同名仓库已存在 |
 
@@ -21861,7 +21861,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GitTemplateDownloader | 无 | __init__, download_to | 无 | 无 | TemplateDownloader implement with git |
+| GitTemplateDownloader | 无 | download_to | 无 | 无 | TemplateDownloader implement with git |
 
 ---
 
@@ -21933,10 +21933,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TencentGitAuth | requests.auth.AuthBase | __init__, __call__ | 无 | 无 | TencentGit api auth handler |
-| PluginRepoAccessor | 无 | __init__, extract_smart_revision, list_alternative_versions, get_submit_info, list_branches, list_tags, get_last_commit, _fetch_all_item, _fetch_items, _branch_data_to_version, build_compare_url, get_project_id | 无 | 无 | PluginRepoAccessor implement with TencentGit |
-| PluginRepoInitializer | 无 | __init__, create_project, delete_project, initial_repo, _get_accessible_template, _fix_git_user_config, _build_repo_url_with_auth, _get_namespace_id, _enable_ci | 无 | 无 | PluginRepoInitializer implement with TencentGit |
-| PluginRepoMemberMaintainer | 无 | __init__, add_member, remove_member, _get_user_id | 无 | 无 | PluginRepoMemberMaintainer implement with TencentG... |
+| TencentGitAuth | requests.auth.AuthBase | 无 | 无 | 无 | TencentGit api auth handler |
+| PluginRepoAccessor | 无 | extract_smart_revision, list_alternative_versions, get_submit_info, list_branches, list_tags, get_last_commit, build_compare_url, get_project_id | 无 | 无 | PluginRepoAccessor implement with TencentGit |
+| PluginRepoInitializer | 无 | create_project, delete_project, initial_repo | 无 | 无 | PluginRepoInitializer implement with TencentGit |
+| PluginRepoMemberMaintainer | 无 | add_member, remove_member | 无 | 无 | PluginRepoMemberMaintainer implement with TencentG... |
 
 ---
 
@@ -21962,7 +21962,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| poll_stage_status | `@shared_task:` | shared_task | 不适用 |
+| poll_stage_status | `def poll_stage_status(pd_id: str, plugin_id: str, release_id: str, stage_id: str):` | shared_task | 不适用 |
 
 #### 类
 
@@ -22325,7 +22325,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OperationGroup | _OperationGroup | 无 | 无 | 无 | 不适用 |
-| DynamicClient | bkapi_client_core.apigateway.APIGatewayClient | __init__, with_group, with_bkapi_authorization, with_i18n_hook | 无 | 无 | 不适用 |
+| DynamicClient | bkapi_client_core.apigateway.APIGatewayClient | with_group, with_bkapi_authorization, with_i18n_hook | 无 | 无 | 不适用 |
 
 ---
 
@@ -22458,7 +22458,7 @@
 | PluginReleaseViewSet | PluginInstanceMixin, rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | filter_queryset, retrieve, get_compare_url, create, enter_next_stage, back_to_previous_stage, re_release, cancel_release, rollback_release, get_release_schema, get_queryset | serializer_class, pagination_class, filter_backends, permission_classes, search_fields, ordering | method_decorator | 不适用 |
 | PluginReleaseStageViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | retrieve, rerun, update_stage_status | permission_classes | 无 | 不适用 |
 | PluginMarketViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | retrieve, upsert | permission_classes, serializer_class | 无 | 不适用 |
-| PluginMembersViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | list, leave, create, update_role, destroy, _check_admin_count | permission_classes, serializer_class | 无 | 不适用 |
+| PluginMembersViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | list, leave, create, update_role, destroy | permission_classes, serializer_class | 无 | 不适用 |
 | PluginLogViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | query_standard_output_logs, query_structure_logs, query_ingress_logs, aggregate_date_histogram, aggregate_fields_filters | permission_classes | 无 | 不适用 |
 | PluginConfigViewSet | PluginInstanceMixin, rest_framework.viewsets.GenericViewSet | list, upsert, destroy | permission_classes, pagination_class | 无 | 不适用 |
 | PluginVisibleRangeViewSet | PluginInstanceMixin, rest_framework.mixins.RetrieveModelMixin, rest_framework.viewsets.GenericViewSet | retrieve, update | serializer_class, permission_classes | 无 | 不适用 |
@@ -22496,7 +22496,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| config_loggers | `@setup_logging.connect:` | setup_logging.connect | Re-configure the logging using the django settings... |
+| config_loggers | `def config_loggers(*args, **kwargs):` | setup_logging.connect | Re-configure the logging using the django settings... |
 
 
 ---
@@ -22534,7 +22534,7 @@
 |------|------|------|------|--------|----------|
 | BaseCondition | 无 | validate | 无 | 无 | 不适用 |
 | FailedCondition | 无 | 无 | 无 | dataclass | 不适用 |
-| ProtectionStatus | 无 | __init__, activated, reason, __eq__ | 无 | 无 | 不适用 |
+| ProtectionStatus | 无 | activated, reason | 无 | 无 | 不适用 |
 | BaseConditionChecker | 无 | perform, all_matched | 无 | 无 | 不适用 |
 
 ---
@@ -22556,7 +22556,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ConditionNotMatched | Exception | __init__, as_dict | 无 | 无 | Raised if publish condition not matched |
+| ConditionNotMatched | Exception | as_dict | 无 | 无 | Raised if publish condition not matched |
 
 ---
 
@@ -22631,7 +22631,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| WorkloadsDBRouter | 无 | db_for_read, db_for_write, allow_relation, allow_migrate, _model_form_wl, _app_from_wl | _workloads_db_name | 无 | 
+| WorkloadsDBRouter | 无 | db_for_read, db_for_write, allow_relation, allow_migrate | _workloads_db_name | 无 |
     A router to control all database operations o... |
 
 ---
@@ -22662,7 +22662,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LazyStorage | django.utils.functional.LazyObject | __init__, _setup | 无 | 无 | 不适用 |
+| LazyStorage | django.utils.functional.LazyObject | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -22697,7 +22697,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DefaultRediStore | 无 | __init__, save, get | 无 | 无 | Store snapshot data, use redis as backend. |
+| DefaultRediStore | 无 | save, get | 无 | 无 | Store snapshot data, use redis as backend. |
 
 ---
 
@@ -22786,10 +22786,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DummyObject | django.utils.functional.LazyObject | _setup | 无 | 无 | 不适用 |
+| DummyObject | django.utils.functional.LazyObject | 无 | 无 | 无 | 不适用 |
 | DBManagerProtocol | typing_extensions.Protocol | engine, get_model, get_scoped_session, session_scope | 无 | 无 | 不适用 |
 | DummyDB | 无 | engine, get_model, get_scoped_session, session_scope | 无 | 无 | 不适用 |
-| SADBManager | 无 | get_instance, engine, __init__, get_model, get_scoped_session, __session_scope__, _prepare_models, _create_engine, make_uni_key | 无 | 无 | 不适用 |
+| SADBManager | 无 | get_instance, engine, get_model, get_scoped_session, make_uni_key | 无 | 无 | 不适用 |
 
 ---
 
@@ -22830,9 +22830,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppRegionHelper | 无 | __init__ | 无 | 无 | AppRegionHelper is a helper for connect Applicatio... |
-| BuiltInEnvsRegionHelper | 无 | __init__, get_envs | 无 | 无 | Helps getting env vars from region configs, for ex... |
-| S3BucketRegionHelper | 无 | __init__, get_logo_bucket | 无 | 无 | 不适用 |
+| AppRegionHelper | 无 | 无 | 无 | 无 | AppRegionHelper is a helper for connect Applicatio... |
+| BuiltInEnvsRegionHelper | 无 | get_envs | 无 | 无 | Helps getting env vars from region configs, for ex... |
+| S3BucketRegionHelper | 无 | get_logo_bucket | 无 | 无 | 不适用 |
 
 ---
 
@@ -22869,10 +22869,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RegionDoesNotExists | Exception | 无 | 无 | 无 | 
+| RegionDoesNotExists | Exception | 无 | 无 | 无 |
     Region Dost Not Exists
      |
-| RegionDuplicated | Exception | 无 | 无 | 无 | 
+| RegionDuplicated | Exception | 无 | 无 | 无 |
     Region Dost Not Exists
      |
 
@@ -22915,15 +22915,15 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RegionList | list | __str__, has_region_by_name, get_region_by_name | 无 | 无 | 不适用 |
-| RegionBasicInfo | 无 | __init__, get_extra_logo_bucket_name, get_logo_bucket_name | 无 | 无 | Basic info for region
+| RegionList | list | has_region_by_name, get_region_by_name | 无 | 无 | 不适用 |
+| RegionBasicInfo | 无 | get_extra_logo_bucket_name, get_logo_bucket_name | 无 | 无 | Basic info for region
 
     :param str description:... |
-| RegionMobileConfig | 无 | __init__ | 无 | 无 | 不适用 |
+| RegionMobileConfig | 无 | 无 | 无 | 无 | 不适用 |
 | RegionEntranceConfig | 无 | 无 | 无 | dataclass | 不适用 |
 | RegionMulModulesConfig | 无 | 无 | 无 | dataclass | 不适用 |
-| SvcCategoriesLoader | typing.Protocol | __call__ | 无 | 无 | The loader for loading service categories |
-| Region | 无 | __post_init__, __str__, __hash__, service_categories, load_dynamic_infos, get_built_in_config_var | 无 | dataclass | Region represents a region in current PaaS platfor... |
+| SvcCategoriesLoader | typing.Protocol | 无 | 无 | 无 | The loader for loading service categories |
+| Region | 无 | service_categories, load_dynamic_infos, get_built_in_config_var | 无 | dataclass | Region represents a region in current PaaS platfor... |
 
 ---
 
@@ -22952,7 +22952,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RegionSerializer | 无 | __init__, serialize | 无 | 无 | Serializer for Region object |
+| RegionSerializer | 无 | serialize | 无 | 无 | Serializer for Region object |
 | BasicInfoSLZ | rest_framework.serializers.Serializer | 无 | description | 无 | 不适用 |
 | ServiceCategorySLZ | rest_framework.serializers.Serializer | 无 | id, name, sort_priority | 无 | 不适用 |
 | ModuleMobileConfigSLZ | rest_framework.serializers.Serializer | 无 | enabled | 无 | Serializer for application mobile config |
@@ -23156,10 +23156,10 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SiteRole | paasng.utils.basic.ChoicesEnum | 无 | NOBODY, USER, ADMIN, SUPER_USER, BANNED_USER, PLATFORM_MANAGER, APP_TEMPLATES_MANAGER, PLATFORM_OPERATOR, SYSTEM_API_BASIC_READER, SYSTEM_API_BASIC_MAINTAINER, SYSTEM_API_LIGHT_APP_MAINTAINER, SYSTEM_API_LESSCODE, _choices_labels | 无 | 不适用 |
-| AccountFeatureFlag | paasng.utils.basic.ChoicesEnum | get_default_flags, register_ext_feature_flag | ALLOW_ADVANCED_CREATION_OPTIONS, ENABLE_WEB_CONSOLE, ALLOW_CREATE_SMART_APP, ALLOW_PLUGIN_CENTER, _choices_labels, _defaults | 无 | 
+| AccountFeatureFlag | paasng.utils.basic.ChoicesEnum | get_default_flags, register_ext_feature_flag | ALLOW_ADVANCED_CREATION_OPTIONS, ENABLE_WEB_CONSOLE, ALLOW_CREATE_SMART_APP, ALLOW_PLUGIN_CENTER, _choices_labels, _defaults | 无 |
     Account feature 常量表
      |
-| FunctionType | paasng.utils.basic.ChoicesEnum | 无 | DEFAULT, SVN, GET_APP_SECRET | 无 | 
+| FunctionType | paasng.utils.basic.ChoicesEnum | 无 | DEFAULT, SVN, GET_APP_SECRET | 无 |
     用到短信验证码的功能, 避免字符串硬编码
      |
 
@@ -23197,7 +23197,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SysUserFromVerifiedClientMiddleware | 无 | __init__, __call__, get_default_user | _client_role, _default_username, _default_role | 无 | When current request was issued by a verified inte... |
+| SysUserFromVerifiedClientMiddleware | 无 | get_default_user | _client_role, _default_username, _default_role | 无 | When current request was issued by a verified inte... |
 
 ---
 
@@ -23234,7 +23234,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _get_default_username | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -23336,10 +23336,10 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SiteAccessControlMiddleware | django.utils.deprecation.MiddlewareMixin | process_request | 无 | 无 | Control who can visit which paths in macro way |
-| PrivateTokenAuthenticationMiddleware | 无 | __init__, __call__, get_user, get_token_string, get_token_string_from_header | AUTH_HEADER_TYPE | 无 | Authenticate user by private token |
-| AuthenticatedAppAsUserMiddleware | 无 | __init__, __call__, process_view, get_user, create_user | 无 | 无 | When an API request forwarded by API Gateway was r... |
-| RequestIDProvider | 无 | __init__, __call__ | 无 | 无 | 向 request，response 注入 request_id |
-| WrapUsernameAsUserMiddleware | 无 | __init__, get_user, __call__ | BKPAASAPI_AUTHORIZATION_META_KEY | 无 | 用于免用户认证的 apigw 接口, 将头部获取的 bk_username 包装成 request ... |
+| PrivateTokenAuthenticationMiddleware | 无 | get_user, get_token_string, get_token_string_from_header | AUTH_HEADER_TYPE | 无 | Authenticate user by private token |
+| AuthenticatedAppAsUserMiddleware | 无 | process_view, get_user, create_user | 无 | 无 | When an API request forwarded by API Gateway was r... |
+| RequestIDProvider | 无 | 无 | 无 | 无 | 向 request，response 注入 request_id |
+| WrapUsernameAsUserMiddleware | 无 | get_user | BKPAASAPI_AUTHORIZATION_META_KEY | 无 | 用于免用户认证的 apigw 接口, 将头部获取的 bk_username 包装成 request ... |
 
 ---
 
@@ -23483,13 +23483,13 @@
 | UserPrivateTokenManager | django.db.models.Manager | create_token, get_by_natural_key | 无 | 无 | Custom manager for UserPrivateToken |
 | UserPrivateToken | django.db.models.Model | has_expired, natural_key | user, token, expires_at, is_active, objects | 无 | Private token can be used to authenticate an user,... |
 | UserProfileManager | django.db.models.Manager | get_profile, get_by_natural_key | 无 | 无 | Custom profile manager for user |
-| UserProfile | paasng.utils.models.TimestampedModel | username, __str__, natural_key | user, role, feature_flags, enable_regions, objects | 无 | Profile field for user |
-| SessionCodeVerifier | 无 | __init__, generate_code, set_current_code, get_current_code, validate, validate_and_clean | numbers | 无 | A verifier which generate a random code, and valid... |
+| UserProfile | paasng.utils.models.TimestampedModel | username, natural_key | user, role, feature_flags, enable_regions, objects | 无 | Profile field for user |
+| SessionCodeVerifier | 无 | generate_code, set_current_code, get_current_code, validate, validate_and_clean | numbers | 无 | A verifier which generate a random code, and valid... |
 | Oauth2TokenHolderQS | django.db.models.QuerySet | get_by_project, filter_valid_tokens | 无 | 无 | 不适用 |
 | Oauth2TokenHolder | paasng.utils.models.TimestampedModel | refresh, expired, get_scope | provider, access_token, token_type, refresh_token, scope, expire_at, user, objects | 无 | OAuth2 Token for sourcectl |
 | PrivateTokenHolder | paasng.utils.models.AuditedModel | refresh, expired, get_scope | provider, private_token, expire_at, user, objects | 无 | Private Token for sourcectl |
 | AccountFeatureFlagManager | django.db.models.Manager | has_feature, get_user_features, set_feature | 无 | 无 | 不适用 |
-| AccountFeatureFlag | paasng.utils.models.TimestampedModel | 无 | user, effect, name, objects | 无 | 
+| AccountFeatureFlag | paasng.utils.models.TimestampedModel | 无 | user, effect, name, objects | 无 |
     针对用户的特性标记
      |
 | AuthenticatedAppAsUserManager | django.db.models.Manager | get_by_natural_key | 无 | 无 | 不适用 |
@@ -23546,7 +23546,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BackendDisplayInfo | 无 | to_dict | 无 | define | 不适用 |
-| OAuth2Backend | 无 | __attrs_post_init__, __str__, get_oauth_session, get_scope, get_auth_docs, get_authorization_url, fetch_token, refresh_token | 无 | define | 不适用 |
+| OAuth2Backend | 无 | get_oauth_session, get_scope, get_auth_docs, get_authorization_url, fetch_token, refresh_token | 无 | define | 不适用 |
 | GitRepoBackend | OAuth2Backend | get_oauth_session | 无 | 无 | Git 仓库，如 GitLab，GitHub，Gitee 等共用 Backend |
 | GitLabBackend | GitRepoBackend | 无 | 无 | 无 | 不适用 |
 | GitHubBackend | GitRepoBackend | 无 | 无 | 无 | 不适用 |
@@ -23590,7 +23590,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKAppOauthError | Exception | __init__, __str__ | 无 | 无 | 不适用 |
+| BKAppOauthError | Exception | 无 | 无 | 无 | 不适用 |
 | BKAppOauthRequestError | BKAppOauthError | 无 | 无 | 无 | 调用 BKApp Oauth 接口异常 |
 | BKAppOauthResponseError | BKAppOauthError | 无 | 无 | 无 | BKApp Oauth 接口返回异常 |
 
@@ -23729,7 +23729,7 @@
 | app_view_actions_perm | `def app_view_actions_perm(view_action_map: Dict[str, AppAction], default_action: Optional[AppAction] = None) -> Type[BasePermission]:` | 无 | Create a permission class for application view, it... |
 | check_application_perm | `def check_application_perm(user, application: Application, action: AppAction):` | 无 | 检查指定用户是否对应用的某个操作具有权限。 |
 | can_exempt_application_perm | `def can_exempt_application_perm(user, application: Application) -> bool:` | 无 | 不适用 |
-| user_has_app_action_perm | `def user_has_app_action_perm(user, application: Application, action: AppAction) -> bool:` | 无 | 
+| user_has_app_action_perm | `def user_has_app_action_perm(user, application: Application, action: AppAction) -> bool:` | 无 |
     检查指定用户是否对应用的某个操作具有权限
 
     # TODO 如果后续需要支持 无权限... |
@@ -23763,9 +23763,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProtectedResource | 无 | __init__, has_permission, add_role, add_nobody_role, get_role, get_role_of_user, _get_role_of_user | 无 | 无 | Resource been protected, it can be referred to any... |
-| Permission | 无 | __init__, __str__ | 无 | 无 | 不适用 |
-| ObjectRole | 无 | __init__, has_perm | 无 | 无 | Role object |
+| ProtectedResource | 无 | has_permission, add_role, add_nobody_role, get_role, get_role_of_user | 无 | 无 | Resource been protected, it can be referred to any... |
+| Permission | 无 | 无 | 无 | 无 | 不适用 |
+| ObjectRole | 无 | has_perm | 无 | 无 | Role object |
 | ObjectNobodyRole | 无 | has_perm | name | 无 | A special role which has not rights to do anything |
 
 ---
@@ -23830,7 +23830,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GlobalSiteResource | apiserver.paasng.paasng.infras.accounts.permissions.base.ProtectedResource | _get_role_of_user | permissions | 无 | 不适用 |
+| GlobalSiteResource | apiserver.paasng.paasng.infras.accounts.permissions.base.ProtectedResource | 无 | permissions | 无 | 不适用 |
 
 ---
 
@@ -23892,7 +23892,7 @@
 | TokenHolderSLZ | rest_framework.serializers.Serializer | 无 | id, scope, provider | 无 | 不适用 |
 | OauthBackendInfoSLZ | rest_framework.serializers.Serializer | 无 | name, auth_url, display_info, display_properties, token_list | 无 | 不适用 |
 | OAuthRefreshTokenSLZ | rest_framework.serializers.Serializer | 无 | refresh_token | 无 | 不适用 |
-| AllRegionSpecsSLZ | 无 | __init__, serialize | 无 | 无 | 不适用 |
+| AllRegionSpecsSLZ | 无 | serialize | 无 | 无 | 不适用 |
 | TmplSLZ | rest_framework.serializers.Serializer | 无 | name, display_name, description, language, market_ready | 无 | 创建应用/模块时，需要的模板信息 |
 
 ---
@@ -24009,14 +24009,14 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| UserInfoViewSet | rest_framework.views.APIView | get | serializer_class | 无 | 
+| UserInfoViewSet | rest_framework.views.APIView | get | serializer_class | 无 |
     用户信息 相关
     get: 当前登录用户信息
     - [测试地址](/api/a... |
 | UserVerificationRateThrottle | rest_framework.throttling.UserRateThrottle | 无 | THROTTLE_RATES | 无 | 生成验证码接口调用频率限制 |
 | UserVerificationGenerationView | rest_framework.views.APIView | post | throttle_classes | 无 | 不适用 |
 | UserVerificationValidationView | rest_framework.views.APIView | put | serializer_class | 无 | 不适用 |
-| OauthTokenViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | fetch_paasv3cli_token, fetch_app_token, refresh_app_token, validate_app_token | permission_classes | 无 | 
+| OauthTokenViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | fetch_paasv3cli_token, fetch_app_token, refresh_app_token, validate_app_token | permission_classes | 无 |
     以用户身份申请 BKApp 的 AccessToken
      |
 | Oauth2BackendsViewSet | rest_framework.viewsets.ViewSet | get_user_from_request, pick_useful_params, list, bind, disconnect | 无 | 无 | Oauth2 backends |
@@ -24089,16 +24089,16 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| wrap_request_exc | `@contextmanager:` | contextmanager | 不适用 |
+| wrap_request_exc | `def wrap_request_exc():` | contextmanager | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseBkCIClient | 无 | __init__, _prepare_headers | 无 | 无 | bk-devops 通过 APIGW 提供的 API
+| BaseBkCIClient | 无 | 无 | 无 | 无 | bk-devops 通过 APIGW 提供的 API
 
     :param bk_username... |
-| BkCIPipelineClient | BaseBkCIClient | start_build, retrieve_build_detail, retrieve_build_status, stop_build, retrieve_full_log, _retrieve_log, _retrieve_log_num, _validate_resp | 无 | 无 | bk-devops pipeline 控制器 |
+| BkCIPipelineClient | BaseBkCIClient | start_build, retrieve_build_detail, retrieve_build_status, stop_build, retrieve_full_log | 无 | 无 | bk-devops pipeline 控制器 |
 
 ---
 
@@ -24209,7 +24209,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkCIGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkCIGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkCIApiError | BkCIGatewayServiceError | 无 | 无 | 无 | When calling the bk-devops api, bk-devops returns ... |
 
 ---
@@ -24317,7 +24317,7 @@
 |------|------|------|------|--------|----------|
 | BKLogQueryAPIProtocol | typing.Protocol | 无 | 无 | 无 | 不适用 |
 | BkLogManagementAPIProtocol | typing.Protocol | 无 | 无 | 无 | bk-log api protocol |
-| BkLogManagementClient | 无 | __init__, list_custom_collector_config, get_custom_collector_config_by_name_en, create_custom_collector_config, update_custom_collector_config | 无 | 无 | 不适用 |
+| BkLogManagementClient | 无 | list_custom_collector_config, get_custom_collector_config_by_name_en, create_custom_collector_config, update_custom_collector_config | 无 | 无 | 不适用 |
 
 ---
 
@@ -24404,7 +24404,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkLogGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkLogGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkLogApiError | BkLogGatewayServiceError | 无 | 无 | 无 | When calling the bk_log api, bk_log returns an err... |
 | BkLogSpaceDoesNotExist | BkLogApiError | 无 | 无 | 无 | The namespace applied to bk_log does not exist |
 | CollectorConfigNotPersisted | Exception | 无 | 无 | 无 | Collector config is not persisted |
@@ -24542,8 +24542,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BkMonitorBackend | typing_extensions.Protocol | metadata_get_space_detail, metadata_create_space, metadata_update_space, search_alert, search_alarm_strategy_v3, promql_query, as_code_import_config, quick_import_dashboard | 无 | 无 | Describes protocols of calling API service |
-| BKMonitorSpaceManager | 无 | __init__, create_space, update_space, get_space_detail | 无 | 无 | BK Monitor Space Management API provider |
-| BkMonitorClient | 无 | __init__, query_alerts, query_space_biz_id, query_alarm_strategies, promql_query, as_code_import_config, import_dashboard | 无 | 无 | API provided by BK Monitor
+| BKMonitorSpaceManager | 无 | create_space, update_space, get_space_detail | 无 | 无 | BK Monitor Space Management API provider |
+| BkMonitorClient | 无 | query_alerts, query_space_biz_id, query_alarm_strategies, promql_query, as_code_import_config, import_dashboard | 无 | 无 | API provided by BK Monitor
 
     :param backend: cl... |
 
@@ -24620,8 +24620,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkMonitorGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
-| BkMonitorApiError | BkMonitorGatewayServiceError | __init__ | 无 | 无 | When calling the bk_monitor api, bk_monitor return... |
+| BkMonitorGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
+| BkMonitorApiError | BkMonitorGatewayServiceError | 无 | 无 | 无 | When calling the bk_monitor api, bk_monitor return... |
 | BkMonitorSpaceDoesNotExist | BkMonitorApiError | 无 | 无 | 无 | The namespace applied to BK Monitoring does not ex... |
 
 ---
@@ -24734,11 +24734,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| QueryAlertsParams | 无 | to_dict, _build_query_string, _build_valid_args, create_by_app_codes | 无 | define | 
+| QueryAlertsParams | 无 | to_dict, create_by_app_codes | 无 | define |
     查询告警的参数
 
     :param start_time: 发生时间. datetim... |
-| QueryAlarmStrategiesParams | 无 | to_dict, _build_conditions | 无 | define | 
+| QueryAlarmStrategiesParams | 无 | to_dict | 无 | define |
     查询告警的参数
 
     :param app_code: 应用 code
@@ -24997,7 +24997,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKPaaSIAMMigrator | 无 | __init__, migrate | 无 | 无 | 
+| BKPaaSIAMMigrator | 无 | migrate | 无 | 无 |
     bkpaas 定制化 IAM Migrator
 
     由于 bkpaas 配置项与 I... |
@@ -25051,7 +25051,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKIAMClient | 无 | __init__, _prepare_headers, create_grade_managers, delete_grade_manager, fetch_grade_manager, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager_members, create_builtin_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, grant_user_group_policies, revoke_user_group_policies, update_grade_managers_with_bksaas_space, grant_user_group_policies_in_bk_monitor, grant_user_group_policies_in_bk_log | 无 | 无 | bk-iam 通过 APIGW 提供的 API |
+| BKIAMClient | 无 | create_grade_managers, delete_grade_manager, fetch_grade_manager, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager_members, create_builtin_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, grant_user_group_policies, revoke_user_group_policies, update_grade_managers_with_bksaas_space, grant_user_group_policies_in_bk_monitor, grant_user_group_policies_in_bk_log | 无 | 无 | bk-iam 通过 APIGW 提供的 API |
 
 ---
 
@@ -25089,10 +25089,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResourceType | blue_krill.data_types.enum.StrStructuredEnum | 无 | Application, BkMonitorSpace, BkMonitorApm, BkMonitorDashBoard, BkLogIndices, BkLogCollection, BkLogEsSource | 无 | 
+| ResourceType | blue_krill.data_types.enum.StrStructuredEnum | 无 | Application, BkMonitorSpace, BkMonitorApm, BkMonitorDashBoard, BkLogIndices, BkLogCollection, BkLogEsSource | 无 |
     iam 上注册的资源类型
      |
-| IAMErrorCodes | blue_krill.data_types.enum.IntStructuredEnum | 无 | CONFLICT | 无 | 
+| IAMErrorCodes | blue_krill.data_types.enum.IntStructuredEnum | 无 | CONFLICT | 无 |
     iam api 返回错误码
     https://bk.tencent.com/docs... |
 
@@ -25121,8 +25121,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKIAMGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
-| BKIAMApiError | BKIAMGatewayServiceError | __init__, parse_quota_message | 无 | 无 | When calling the bk-iam api, bk-iam returns an err... |
+| BKIAMGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
+| BKIAMApiError | BKIAMGatewayServiceError | parse_quota_message | 无 | 无 | When calling the bk-iam api, bk-iam returns an err... |
 
 ---
 
@@ -25157,27 +25157,27 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| fetch_role_members | `def fetch_role_members(app_code: str, role: ApplicationRole) -> List[str]:` | 无 | 
+| fetch_role_members | `def fetch_role_members(app_code: str, role: ApplicationRole) -> List[str]:` | 无 |
     通过指定应用与角色，获取对应的用户组信息
 
     :param app_code: 蓝鲸... |
-| add_role_members | `def add_role_members(app_code: str, role: ApplicationRole, usernames: Union[List[str], str], expired_after_days: int = NEVER_EXPIRE_DAYS):` | 无 | 
+| add_role_members | `def add_role_members(app_code: str, role: ApplicationRole, usernames: Union[List[str], str], expired_after_days: int = NEVER_EXPIRE_DAYS):` | 无 |
     将用户添加为某个角色的成员
 
     :param app_code: 蓝鲸应用 ID
  ... |
-| delete_role_members | `def delete_role_members(app_code: str, role: ApplicationRole, usernames: Union[List[str], str]):` | 无 | 
+| delete_role_members | `def delete_role_members(app_code: str, role: ApplicationRole, usernames: Union[List[str], str]):` | 无 |
     将用户从某个角色的成员中删除
 
     :param app_code: 蓝鲸应用 ID
 ... |
 | fetch_user_roles | `def fetch_user_roles(app_code: str, username: str) -> List[ApplicationRole]:` | 无 | 原实现中用户只会有一个角色，但是接入权限中心后，角色表现为用户组，同一用户可能有多个角色 |
 | fetch_user_main_role | `def fetch_user_main_role(app_code: str, username: str) -> ApplicationRole:` | 无 | 获取用户在某个应用中最高优先级的角色 |
-| remove_user_all_roles | `def remove_user_all_roles(app_code: str, usernames: Union[List[str], str]):` | 无 | 
+| remove_user_all_roles | `def remove_user_all_roles(app_code: str, usernames: Union[List[str], str]):` | 无 |
     删除用户在某个 APP 下的所有权限角色
 
     :param app_code: 蓝鲸... |
-| fetch_application_members | `def fetch_application_members(app_code: str) -> List[Dict]:` | 无 | 
+| fetch_application_members | `def fetch_application_members(app_code: str) -> List[Dict]:` | 无 |
     获取一个蓝鲸应用所有用户（包含角色信息）
     顺序：管理员 - 开发者 - 运营者
  ... |
@@ -25224,7 +25224,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LegacyAction | blue_krill.data_types.enum.StrStructuredEnum | 无 | DEVELOP_APP, MANAGE_SMART | 无 | 不适用 |
-| Permission | 无 | __init__, _make_request_without_resources, allowed_manage_smart, app_filters | 无 | 无 | 不适用 |
+| Permission | 无 | allowed_manage_smart, app_filters | 无 | 无 | 不适用 |
 
 ---
 
@@ -25288,7 +25288,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _prepare, _migrate, _migrate_single, _store_records | 无 | 无 | 
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | 无 | 无 |
     蓝鲸应用成员关系迁移到权限中心命令行工具
 
     使用示例：
@@ -25330,7 +25330,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _regrant_user_group_policies | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -25370,7 +25370,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _prepare, _sync, _sync_single, _store_records | 无 | 无 | 
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | 无 | 无 |
     蓝鲸应用成员关系迁移到权限中心命令行工具
 
     使用示例：
@@ -25429,11 +25429,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationGradeManager | paasng.utils.models.AuditedModel | __str__ | app_code, grade_manager_id | 无 | 
+| ApplicationGradeManager | paasng.utils.models.AuditedModel | 无 | app_code, grade_manager_id | 无 |
     IAM 分级管理员与开发者中心应用的关系
 
     分级管理员管理用户加入用户组的申请，理... |
-| ApplicationUserGroup | paasng.utils.models.AuditedModel | __str__ | app_code, role, user_group_id | 无 | 
+| ApplicationUserGroup | paasng.utils.models.AuditedModel | 无 | app_code, role, user_group_id | 无 |
     IAM 用户组与开发者中心应用的关系
 
     每个应用默认会有 3 个用户组（不可删除）... |
@@ -25481,7 +25481,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MethodType | blue_krill.data_types.enum.StrStructuredEnum | 无 | LIST_ATTR, LIST_ATTR_VALUE, LIST_INSTANCE, FETCH_INSTANCE_INFO, LIST_INSTANCE_BY_POLICY, SEARCH_INSTANCE | 无 | 
+| MethodType | blue_krill.data_types.enum.StrStructuredEnum | 无 | LIST_ATTR, LIST_ATTR_VALUE, LIST_INSTANCE, FETCH_INSTANCE_INFO, LIST_INSTANCE_BY_POLICY, SEARCH_INSTANCE | 无 |
     权限中心拉取资源的 method 参数值
     字段协议说明 https://bk.te... |
 
@@ -25531,7 +25531,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationProvider | iam.resource.provider.ResourceProvider | list_instance, fetch_instance_info, list_instance_by_policy, list_attr, list_attr_value, search_instance, _get_name_field, _fetch_application_approvers | 无 | 无 | 蓝鲸应用 Provider |
+| ApplicationProvider | iam.resource.provider.ResourceProvider | list_instance, fetch_instance_info, list_instance_by_policy, list_attr, list_attr_value, search_instance | 无 | 无 | 蓝鲸应用 Provider |
 
 ---
 
@@ -25564,7 +25564,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKPaaSResourceProvider | 无 | __init__, provide, list_attr, list_attr_value, list_instance, fetch_instance_info, list_instance_by_policy, search_instance, _parse_filter_and_page | 无 | 无 | 不适用 |
+| BKPaaSResourceProvider | 无 | provide, list_attr, list_attr_value, list_instance, fetch_instance_info, list_instance_by_policy, search_instance | 无 | 无 | 不适用 |
 
 ---
 
@@ -25636,7 +25636,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResourceAPIView | rest_framework.views.APIView | _get_options, post | authentication_classes | 无 | 统一入口: 提供给权限中心拉取各类资源 |
+| ResourceAPIView | rest_framework.views.APIView | post | authentication_classes | 无 | 统一入口: 提供给权限中心拉取各类资源 |
 
 ---
 
@@ -25671,7 +25671,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplyURLGenerator | 无 | generate_apply_url, _make_application | iam | 无 | 不适用 |
+| ApplyURLGenerator | 无 | generate_apply_url | iam | 无 | 不适用 |
 
 ---
 
@@ -25701,7 +25701,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IAMClient | 无 | resource_type_allowed, resource_inst_allowed, resource_type_multi_actions_allowed, resource_inst_multi_actions_allowed, batch_resource_multi_actions_allowed, _make_request | iam | 无 | 提供基础的 iam client 方法封装 |
+| IAMClient | 无 | resource_type_allowed, resource_inst_allowed, resource_type_multi_actions_allowed, resource_inst_multi_actions_allowed, batch_resource_multi_actions_allowed | iam | 无 | 提供基础的 iam client 方法封装 |
 
 ---
 
@@ -25725,7 +25725,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PermissionDeniedError | Exception | __init__, data, __str__ | message, code | 无 | 不适用 |
+| PermissionDeniedError | Exception | data | message, code | 无 | 不适用 |
 | AttrValidationError | Exception | 无 | 无 | 无 | 属性字段校验异常 |
 
 ---
@@ -25777,11 +25777,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResCreatorAction | 无 | __attrs_post_init__, to_data | 无 | define | 用于新建关联属性授权接口 |
-| PermCtx | 无 | validate_resource_id, resource_id | username, force_raise | define | 
+| ResCreatorAction | 无 | to_data | 无 | define | 用于新建关联属性授权接口 |
+| PermCtx | 无 | validate_resource_id, resource_id | username, force_raise | define |
     权限参数上下文
     note: 由于 force_raise 默认值的原因，其子类属性... |
-| Permission | abc.ABC, apiserver.paasng.paasng.infras.iam.permissions.client.IAMClient | can_action, can_multi_actions, resources_actions_allowed, grant_resource_creator_actions, make_res_request, _can_action, _can_multi_actions, _raise_permission_denied_error | 无 | 无 | 对接 IAM 的权限基类 |
+| Permission | abc.ABC, apiserver.paasng.paasng.infras.iam.permissions.client.IAMClient | can_action, can_multi_actions, resources_actions_allowed, grant_resource_creator_actions, make_res_request | 无 | 无 | 对接 IAM 的权限基类 |
 
 ---
 
@@ -25815,8 +25815,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResourceRequest | abc.ABC | from_dict, make_resources, _make_attribute | resource_type | 无 | 不适用 |
-| ActionResourcesRequest | 无 | __init__, to_action | 无 | 无 | 操作资源请求 |
+| ResourceRequest | abc.ABC | from_dict, make_resources | resource_type | 无 | 不适用 |
+| ActionResourcesRequest | 无 | to_action | 无 | 无 | 操作资源请求 |
 
 ---
 
@@ -25870,7 +25870,7 @@
 | AppCreatorAction | paasng.infras.iam.permissions.perm.ResCreatorAction | to_data | 无 | define | 不适用 |
 | AppPermCtx | paasng.infras.iam.permissions.perm.PermCtx | resource_id | code | define | 不适用 |
 | AppRequest | paasng.infras.iam.permissions.request.ResourceRequest | from_dict | code, resource_type | define | 不适用 |
-| ApplicationPermission | paasng.infras.iam.permissions.perm.Permission | get_method_by_action, can_view_basic_info, can_edit_basic_info, can_delete_application, can_manage_members, can_manage_access_control, can_manage_app_market, can_data_statistics, can_basic_develop, can_manage_cloud_api, can_view_alert_records, can_edit_alert_policy, can_manage_addons_services, can_manage_env_protection, can_manage_module, gen_user_app_filters, gen_develop_app_filters, _gen_app_filters_by_request | 无 | 无 | 应用权限 |
+| ApplicationPermission | paasng.infras.iam.permissions.perm.Permission | get_method_by_action, can_view_basic_info, can_edit_basic_info, can_delete_application, can_manage_members, can_manage_access_control, can_manage_app_market, can_data_statistics, can_basic_develop, can_manage_cloud_api, can_view_alert_records, can_edit_alert_policy, can_manage_addons_services, can_manage_env_protection, can_manage_module, gen_user_app_filters, gen_develop_app_filters | 无 | 无 | 应用权限 |
 
 ---
 
@@ -25893,7 +25893,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| add_monitoring_space_permission | `@shared_task:` | shared_task | 
+| add_monitoring_space_permission | `def add_monitoring_space_permission(app_code: str, app_name: str, bk_space_id: str):` | shared_task |
     给应用添加蓝鲸监控空间相关的权限，目前包括监控平台、日志平台权限
 
     :param ... |
@@ -25927,31 +25927,31 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| gen_grade_manager_name | `def gen_grade_manager_name(app_code: str) -> str:` | 无 | 
+| gen_grade_manager_name | `def gen_grade_manager_name(app_code: str) -> str:` | 无 |
     生成分级管理员名称（最大字符数限制 32）
     中：开发者中心-{app_code}
 ... |
-| gen_grade_manager_desc | `def gen_grade_manager_desc(app_code: str) -> str:` | 无 | 
+| gen_grade_manager_desc | `def gen_grade_manager_desc(app_code: str) -> str:` | 无 |
     生成分级管理员描述
     中：开发者中心应用（{app_code}）分级管理员，拥有审批... |
-| gen_user_group_name | `def gen_user_group_name(app_code: str, role: ApplicationRole) -> str:` | 无 | 
+| gen_user_group_name | `def gen_user_group_name(app_code: str, role: ApplicationRole) -> str:` | 无 |
     根据指定的用户角色，生成对应的用户组名称（最大字符数限制 32）
     中：开发者中心-... |
-| gen_user_group_desc | `def gen_user_group_desc(app_code: str, role: ApplicationRole) -> str:` | 无 | 
+| gen_user_group_desc | `def gen_user_group_desc(app_code: str, role: ApplicationRole) -> str:` | 无 |
     根据指定的用户角色，生成对应的用户组名称
     中：开发者中心应用（{app_code}... |
 | calc_expired_at | `def calc_expired_at(expire_after_days: int) -> int:` | 无 | 计算过期的时间戳，若传入的过期天数为负数，则表示永不过期 |
 | get_app_actions_by_role | `def get_app_actions_by_role(role: ApplicationRole) -> List[AppAction]:` | 无 | 根据角色类型，获取他们拥有的 APP 权限 |
-| get_paas_authorization_scopes | `def get_paas_authorization_scopes(app_code: str, app_name: str, role: ApplicationRole) -> dict:` | 无 | 
+| get_paas_authorization_scopes | `def get_paas_authorization_scopes(app_code: str, app_name: str, role: ApplicationRole) -> dict:` | 无 |
     应用在开发者中心的授权信息
 
     :param app_code: 应用编码
     ... |
-| get_bk_monitor_authorization_scope_list | `def get_bk_monitor_authorization_scope_list(bk_space_id: str, app_name: str, include_system: bool = False) -> list:` | 无 | 
+| get_bk_monitor_authorization_scope_list | `def get_bk_monitor_authorization_scope_list(bk_space_id: str, app_name: str, include_system: bool = False) -> list:` | 无 |
     应用在蓝鲸监控平台的授权信息
 
     :param bk_space_id: 蓝鲸监控的... |
-| get_bk_log_authorization_scope_list | `def get_bk_log_authorization_scope_list(bk_space_id: str, app_name: str, include_system: bool = False) -> list:` | 无 | 
+| get_bk_log_authorization_scope_list | `def get_bk_log_authorization_scope_list(bk_space_id: str, app_name: str, include_system: bool = False) -> list:` | 无 |
     应用在蓝鲸日志平台的授权信息
 
     :param bk_space_id: 蓝鲸监控的... |
@@ -26006,16 +26006,16 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppAdaptor | 无 | __init__, get, get_by_app_id, get_by_keyword, update, create, sync_oauth, get_saas_package_info, soft_delete | 无 | 无 | 不适用 |
-| AppTagAdaptor | 无 | __init__, get_tag_list, get | 无 | 无 | 不适用 |
-| AuthUserAdaptor | 无 | __init__, get_or_create | 无 | 无 | 用户信息，主要用于同步成员时，用户不存在时新建用户，若同步成员由 API 实现则可以删除 |
-| AppDeveloperAdaptor | 无 | __init__, get_apps_by_developer, get_developer_names, update_developers, _delete_developers, _add_developers, _create_developer_by_username, _get_developer_objs_by_usernames | 无 | 无 | 应用开发者 |
-| AppOpsAdaptor | 无 | __init__, get_ops_names, update_ops | 无 | 无 | 应用运营者 |
-| AppUseRecordAdaptor | 无 | __init__, get_records | 无 | 无 | 不适用 |
-| AppReleaseRecordAdaptor | 无 | __init__, create | 无 | 无 | 不适用 |
-| AppEnvVarAdaptor | 无 | __init__, list, get_by_name, get_by_prefix | 无 | 无 | 不适用 |
-| AppSecureInfoAdaptor | 无 | __init__, get | 无 | 无 | 不适用 |
-| EngineAppAdaptor | 无 | __init__, get | 无 | 无 | 不适用 |
+| AppAdaptor | 无 | get, get_by_app_id, get_by_keyword, update, create, sync_oauth, get_saas_package_info, soft_delete | 无 | 无 | 不适用 |
+| AppTagAdaptor | 无 | get_tag_list, get | 无 | 无 | 不适用 |
+| AuthUserAdaptor | 无 | get_or_create | 无 | 无 | 用户信息，主要用于同步成员时，用户不存在时新建用户，若同步成员由 API 实现则可以删除 |
+| AppDeveloperAdaptor | 无 | get_apps_by_developer, get_developer_names, update_developers | 无 | 无 | 应用开发者 |
+| AppOpsAdaptor | 无 | get_ops_names, update_ops | 无 | 无 | 应用运营者 |
+| AppUseRecordAdaptor | 无 | get_records | 无 | 无 | 不适用 |
+| AppReleaseRecordAdaptor | 无 | create | 无 | 无 | 不适用 |
+| AppEnvVarAdaptor | 无 | list, get_by_name, get_by_prefix | 无 | 无 | 不适用 |
+| AppSecureInfoAdaptor | 无 | get | 无 | 无 | 不适用 |
+| EngineAppAdaptor | 无 | get | 无 | 无 | 不适用 |
 
 ---
 
@@ -26087,8 +26087,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_v2_application_by_developer | `@no_type_check:` | no_type_check | relationship between `account_bkuser` and `paas_ap... |
-| get_developers_by_v2_application | `@no_type_check:` | no_type_check | relationship between `account_bkuser` and `paas_ap... |
+| get_v2_application_by_developer | `def get_v2_application_by_developer(username: str, session: Optional[Session] = None) -> List['LApplication']:` | no_type_check | relationship between `account_bkuser` and `paas_ap... |
+| get_developers_by_v2_application | `def get_developers_by_v2_application(application: LApplication, session: Optional[Session] = None) -> List[str]:` | no_type_check | relationship between `account_bkuser` and `paas_ap... |
 
 
 ---
@@ -26130,14 +26130,14 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| wrap_request_exc | `@contextmanager:` | contextmanager | 不适用 |
+| wrap_request_exc | `def wrap_request_exc():` | contextmanager | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkAppSecret | 无 | __post_init__ | 无 | dataclass | 不适用 |
-| BkOauthClient | 无 | __init__, _validate_resp, create_client, create_app_secret, del_app_secret, toggle_app_secret, get_app_secret_list, get_default_app_secret, get_secret_by_id | 无 | 无 | 不适用 |
+| BkAppSecret | 无 | 无 | 无 | dataclass | 不适用 |
+| BkOauthClient | 无 | create_client, create_app_secret, del_app_secret, toggle_app_secret, get_app_secret_list, get_default_app_secret, get_secret_by_id | 无 | 无 | 不适用 |
 
 ---
 
@@ -26175,7 +26175,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BkOauthApiException | Exception | 无 | 无 | 无 | BaseException for Bk Oauth |
-| BkOauthApiResponseError | BkOauthApiException | __init__ | 无 | 无 | Bk Oauth API Response Error |
+| BkOauthApiResponseError | BkOauthApiException | 无 | 无 | 无 | Bk Oauth API Response Error |
 | BkOauthClientDoesNotExist | Exception | 无 | 无 | 无 | Bk Oauth client not exist |
 
 ---
@@ -26272,7 +26272,7 @@
 | OAuth2Client | paasng.utils.models.TimestampedModel | 无 | client_id, client_secret | 无 | OAuth2 体系中的基本单位：Client
 
     settings.ENABLE_BK_OAU... |
-| BkAppSecretInEnvVar | paasng.utils.models.TimestampedModel | __str__ | bk_app_code, bk_app_secret_id | 无 | 
+| BkAppSecretInEnvVar | paasng.utils.models.TimestampedModel | 无 | bk_app_code, bk_app_secret_id | 无 |
     环境变量默认密钥：内置环境变量 BKPAAS_APP_SECRET 使用的密钥
      |
 
@@ -26300,7 +26300,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_random_secret_key | `def get_random_secret_key():` | 无 | 
+| get_random_secret_key | `def get_random_secret_key():` | 无 |
     Return a 50 character random string usable as... |
 | create_oauth2_client | `def create_oauth2_client(bk_app_code: str, region: str) -> bool:` | 无 | Create oauth2 client for application |
 | get_app_secret_in_env_var | `def get_app_secret_in_env_var(bk_app_code: str) -> BkAppSecret:` | 无 | 应用部署时，写入环境变量中的密钥
@@ -26544,10 +26544,10 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_app_operation_created | `@receiver(post_save):` | receiver | When an app operation object was created, we shoul... |
-| on_model_post_save | `@receiver(post_save):` | receiver | 记录应用、模块创建操作记录 |
-| on_deploy_finished | `@receiver(post_appenv_deploy):` | receiver | 当普通应用部署完成后，记录操作审计记录 |
-| on_cnative_deploy_finished | `@receiver(post_cnative_env_deploy):` | receiver | 当云原生应用部署完成后，记录操作审计记录 |
+| on_app_operation_created | `def on_app_operation_created(sender, instance, created, raw, using, update_fields, *args, **kwargs):` | receiver | When an app operation object was created, we shoul... |
+| on_model_post_save | `def on_model_post_save(sender, instance, created, raw, using, update_fields, *args, **kwargs):` | receiver | 记录应用、模块创建操作记录 |
+| on_deploy_finished | `def on_deploy_finished(sender: ModuleEnvironment, deployment: Deployment, **kwargs):` | receiver | 当普通应用部署完成后，记录操作审计记录 |
+| on_cnative_deploy_finished | `def on_cnative_deploy_finished(sender: ModuleEnvironment, deploy: AppModelDeploy, **kwargs):` | receiver | 当云原生应用部署完成后，记录操作审计记录 |
 
 
 ---
@@ -26761,10 +26761,10 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | report_event_to_bk_audit | `def report_event_to_bk_audit(record: AppOperationRecord):` | 无 | 将操作记录中的数据上报到审计中心 |
-| add_app_audit_record | `def add_app_audit_record(app_code: str, user: str, action_id: str, operation: str, target: str, attribute: Optional[str] = None, module_name: Optional[str] = None, environment: Optional[str] = None, access_type: int = constants.AccessType.WEB, result_code: int = constants.ResultCode.SUCCESS, data_before: Optional[DataDetail] = None, data_after: Optional[DataDetail] = None) -> AppOperationRecord:` | 无 | 
+| add_app_audit_record | `def add_app_audit_record(app_code: str, user: str, action_id: str, operation: str, target: str, attribute: Optional[str] = None, module_name: Optional[str] = None, environment: Optional[str] = None, access_type: int = constants.AccessType.WEB, result_code: int = constants.ResultCode.SUCCESS, data_before: Optional[DataDetail] = None, data_after: Optional[DataDetail] = None) -> AppOperationRecord:` | 无 |
     创建应用审计记录，并根据配置决定是否上报到审计中心。
     说明：已讨论确认在操作过程结... |
-| add_admin_audit_record | `def add_admin_audit_record(user: str, operation: str, target: str, app_code: Optional[str] = None, attribute: Optional[str] = None, module_name: Optional[str] = None, environment: Optional[str] = None, access_type: int = constants.AccessType.WEB, result_code: int = constants.ResultCode.SUCCESS, data_before: Optional[DataDetail] = None, data_after: Optional[DataDetail] = None) -> AdminOperationRecord:` | 无 | 
+| add_admin_audit_record | `def add_admin_audit_record(user: str, operation: str, target: str, app_code: Optional[str] = None, attribute: Optional[str] = None, module_name: Optional[str] = None, environment: Optional[str] = None, access_type: int = constants.AccessType.WEB, result_code: int = constants.ResultCode.SUCCESS, data_before: Optional[DataDetail] = None, data_after: Optional[DataDetail] = None) -> AdminOperationRecord:` | 无 |
     创建 admin42 审计记录
 
     :param user: encode 后的用户... |
@@ -26775,7 +26775,7 @@
 |------|------|------|------|--------|----------|
 | AppBaseObj | 无 | 无 | 无 | define | 不适用 |
 | DataDetail | 无 | 无 | 无 | define | 不适用 |
-| ApplicationInstance | bk_audit.log.models.AuditInstance | __init__, instance_id, instance_name | 无 | 无 | 不适用 |
+| ApplicationInstance | bk_audit.log.models.AuditInstance | instance_id, instance_name | 无 | 无 | 不适用 |
 
 ---
 
@@ -26835,11 +26835,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationAuditRecordViewSet | rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | filter_queryset, list | serializer_class, permission_classes, queryset | 无 | 
+| ApplicationAuditRecordViewSet | rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | filter_queryset, list | serializer_class, permission_classes, queryset | 无 |
     应用的操作审计记录
     list: 单应用的操作记录
     - 接口返回的顺序为按操... |
-| LatestApplicationsViewSet | rest_framework.views.APIView | get_queryset, get | 无 | 无 | 
+| LatestApplicationsViewSet | rest_framework.views.APIView | get_queryset, get | 无 | 无 |
     最近操作的应用列表
     get: 最近操作的应用列表
     - [测试地址](/ap... |
@@ -26900,7 +26900,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | LogDetail | 无 | 无 | 无 | define | 不适用 |
-| Changelog | 无 | __init__, list_logs, _parse_log | 无 | 无 | 
+| Changelog | 无 | list_logs | 无 | 无 |
     变更(版本)日志
 
     :param log_path: 版本日志存放目录. 目录下包... |
@@ -27145,12 +27145,12 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CallbackMetric | typing_extensions.Protocol | calc_metric, describe_metric | 无 | 无 | 
+| CallbackMetric | typing_extensions.Protocol | calc_metric, describe_metric | 无 | 无 |
     支持回调求值的 Metric
 
     :param name: 指标名
     :par... |
-| CallbackMetricCollector | 无 | __init__, add, collect, describe | 无 | 无 | 采集器: 采集支持回调求值的 Metric |
+| CallbackMetricCollector | 无 | add, collect, describe | 无 | 无 | 采集器: 采集支持回调求值的 Metric |
 
 ---
 
@@ -27330,7 +27330,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKConsoleProbe | blue_krill.monitoring.probe.mysql.MySQLProbe | __init__ | name, is_core | 无 | 不适用 |
+| BKConsoleProbe | blue_krill.monitoring.probe.mysql.MySQLProbe | 无 | name, is_core | 无 | 不适用 |
 | PlatformMysqlProbe | blue_krill.monitoring.probe.mysql.MySQLProbe | 无 | name, config | 无 | 不适用 |
 | WorkloadsMysqlProbe | blue_krill.monitoring.probe.mysql.MySQLProbe | 无 | name, config | 无 | 不适用 |
 | ESBProbe | blue_krill.monitoring.probe.http.BKHttpProbe | 无 | name, url, params | 无 | 不适用 |
@@ -27473,7 +27473,7 @@
 | MetricQuery | 无 | is_ranged | 无 | dataclass | Metric Query
     封装 query 提供更快捷的查询
      |
-| MetricSeriesResult | 无 | __len__ | 无 | dataclass | metrics series result |
+| MetricSeriesResult | 无 | 无 | 无 | dataclass | metrics series result |
 
 ---
 
@@ -27517,7 +27517,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkMonitorMetricClient | 无 | __init__, general_query, get_query_promql, _query_range, _request | query_tmpl_config | 无 | 不适用 |
+| BkMonitorMetricClient | 无 | general_query, get_query_promql | query_tmpl_config | 无 | 不适用 |
 | BkPromRangeSingleMetric | 无 | container_name, from_raw, to_raw | 无 | define | 蓝鲸监控 PromQL 查询指标数据 |
 | BkPromResult | 无 | from_series, get_raw_by_container_name | 无 | define | 蓝鲸监控 PromQL 查询时序数据结果解析器 |
 
@@ -27564,7 +27564,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PrometheusMetricClient | 无 | __init__, general_query, get_query_promql, _query_range, _request | query_tmpl_config | 无 | 不适用 |
+| PrometheusMetricClient | 无 | general_query, get_query_promql | query_tmpl_config | 无 | 不适用 |
 | PromRangeSingleMetric | 无 | container_name, from_raw, to_raw | 无 | dataclass | 不适用 |
 | PromResult | 无 | from_resp, get_raw_by_container_name | 无 | dataclass | 原生 Prometheus 结果解析器 |
 
@@ -27611,7 +27611,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RequestMetricBackendError | Exception | __init__, get_error_code, get_error_message, __str__ | 无 | 无 | got exception during requesting to prometheus |
+| RequestMetricBackendError | Exception | get_error_code, get_error_message | 无 | 无 | got exception during requesting to prometheus |
 | AppMetricNotSupportedError | Exception | 无 | 无 | 无 | 配置缺失或版本不支持，无法提供应用指标信息 |
 | AppInstancesNotFoundError | Exception | 无 | 无 | 无 | 因获取 APP 实例信息失败，无法查询指标信息 |
 
@@ -27667,7 +27667,7 @@
 |------|------|------|------|--------|----------|
 | Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | Analyze all applications's deployment, highlight p... |
 | NodeMismatchRecord | 无 | 无 | 无 | dataclass | 不适用 |
-| NodeStateMismatch | 无 | __init__, get_results, _get_desired_labels, _get_current_labels | 无 | 无 | Find nodes with wrong state related labels |
+| NodeStateMismatch | 无 | get_results | 无 | 无 | Find nodes with wrong state related labels |
 | AppProcess | 无 | from_pod | 无 | dataclass | App's process object |
 | ProcessClusterStat | 无 | has_single_host | 无 | dataclass | Process stats in one cluster |
 | ProcessStat | 无 | get_stat | 无 | dataclass | Process stats |
@@ -27772,8 +27772,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | MetricsResourceResult | 无 | 无 | 无 | dataclass | 不适用 |
-| MetricsInstanceResult | 无 | __len__ | 无 | dataclass | 不适用 |
-| ResourceMetricManager | 无 | __init__, gen_all_series_query, gen_series_query, get_instance_metrics, get_all_instances_metrics | 无 | 无 | 不适用 |
+| MetricsInstanceResult | 无 | 无 | 无 | dataclass | 不适用 |
+| ResourceMetricManager | 无 | gen_all_series_query, gen_series_query, get_instance_metrics, get_all_instances_metrics | 无 | 无 | 不适用 |
 
 ---
 
@@ -27838,7 +27838,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MetricSmartTimeRange | 无 | __hash__, from_request_data, _bake_timestamp, range_to_delta, __post_init__, to_dict | time_format | dataclass | 
+| MetricSmartTimeRange | 无 | from_request_data, range_to_delta, to_dict | time_format | dataclass |
     A smart model for handling time range
 
     - ... |
@@ -27886,7 +27886,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AsCodeClient | 无 | __init__, apply_notice_group, apply_rule_configs, _validate, _update_metric_name_prefixes, _get_docs_url, _render_rule_configs, _apply_rule_configs | 无 | 无 | AsCodeClient 用于向 bkmonitor 下发告警规则
+| AsCodeClient | 无 | apply_notice_group, apply_rule_configs | 无 | 无 | AsCodeClient 用于向 bkmonitor 下发告警规则
 
     :param app_... |
 
@@ -27975,15 +27975,15 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SupportedAlertCodes | typing.NamedTuple | 无 | 无 | 无 | 
+| SupportedAlertCodes | typing.NamedTuple | 无 | 无 | 无 |
     应用支持的告警码
      |
 | RuleConfig | typing_extensions.Protocol | from_alert_rule_obj, to_alert_rule_obj, to_dict, is_valid | 无 | 无 | 不适用 |
-| AppScopedRuleConfig | 无 | __attrs_post_init__, from_alert_rule_obj, to_alert_rule_obj, to_dict, is_valid | 无 | define | app 维度告警策略配置
+| AppScopedRuleConfig | 无 | from_alert_rule_obj, to_alert_rule_obj, to_dict, is_valid | 无 | define | app 维度告警策略配置
 
     :param alert_code: 告警策略标识
     :p... |
-| ModuleScopedRuleConfig | AppScopedRuleConfig | __attrs_post_init__, from_alert_rule_obj, to_alert_rule_obj | 无 | define | app 模块维度的告警策略配置, 如 default 模块的 cpu 使用率过高的告警
+| ModuleScopedRuleConfig | AppScopedRuleConfig | from_alert_rule_obj, to_alert_rule_obj | 无 | define | app 模块维度的告警策略配置, 如 default 模块的 cpu 使用率过高的告警
 
     :... |
 
@@ -28063,7 +28063,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppRuleConfigGenerator | 无 | __init__, gen_app_scoped_rule_configs, gen_module_scoped_rule_configs | 无 | 无 | 告警规则配置生成器 |
+| AppRuleConfigGenerator | 无 | gen_app_scoped_rule_configs, gen_module_scoped_rule_configs | 无 | 无 | 告警规则配置生成器 |
 
 ---
 
@@ -28113,7 +28113,7 @@
 | get_bkrepo_public_bucket | `def get_bkrepo_public_bucket(app_code: str, run_env: str, module_name: Optional[str] = None) -> str:` | 无 | 获取 bkrepo 增强服务实例对应的 public bucket |
 | get_gcs_mysql_user | `def get_gcs_mysql_user(app_code: str, run_env: str, module_name: Optional[str] = None) -> str:` | 无 | 获取 gcs mysql 增强服务实例对应的 user |
 | get_namespace | `def get_namespace(app_code: str, run_env: str, module_name: Optional[str] = None) -> str:` | 无 | 不适用 |
-| get_cluster_id | `def get_cluster_id(app_code: str, run_env: str, module_name: Optional[str] = None) -> str:` | 无 | 
+| get_cluster_id | `def get_cluster_id(app_code: str, run_env: str, module_name: Optional[str] = None) -> str:` | 无 |
     获取集群 ID
 
     :param app_code: 应用 code
@@ -28155,8 +28155,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| create_rules_after_deploy | `@receiver(post_appenv_deploy):` | receiver | 不适用 |
-| update_notice_group | `@receiver(application_member_updated):` | receiver | 不适用 |
+| create_rules_after_deploy | `def create_rules_after_deploy(sender: ApplicationEnvironment, deployment: Deployment, **kwargs):` | receiver | 不适用 |
+| update_notice_group | `def update_notice_group(sender, application, **kwargs):` | receiver | 不适用 |
 
 
 ---
@@ -28203,9 +28203,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ManagerProtocol | typing.Protocol | __init__, init_rules, create_rules, update_notice_group | 无 | 无 | 不适用 |
-| AlertRuleManager | 无 | __init__, init_rules, create_rules, update_notice_group, _get_app_scoped_rules, _get_module_scoped_rules, _apply_rule_configs, _save_rule_configs | 无 | 无 | 告警规则管理器 |
-| NullManager | 无 | __init__, init_rules, create_rules, update_notice_group | 无 | 无 | 不适用 |
+| ManagerProtocol | typing.Protocol | init_rules, create_rules, update_notice_group | 无 | 无 | 不适用 |
+| AlertRuleManager | 无 | init_rules, create_rules, update_notice_group | 无 | 无 | 告警规则管理器 |
+| NullManager | 无 | init_rules, create_rules, update_notice_group | 无 | 无 | 不适用 |
 
 ---
 
@@ -28237,8 +28237,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| create_rules | `@shared_task:` | shared_task | 不适用 |
-| update_notice_group | `@shared_task:` | shared_task | 不适用 |
+| create_rules | `def create_rules(app_code: str, module_name: str, run_env: str):` | shared_task | 不适用 |
+| update_notice_group | `def update_notice_group(app_code: str):` | shared_task | 不适用 |
 
 
 ---
@@ -28276,7 +28276,7 @@
 | 变量名 | 值 | 语句 | 代码块 |
 |--------|---|------|-------|
 | TITLE | 【蓝鲸PaaS】应用 {{ app_code }} 内 {{ proc_name }} 进程运行异常通知 | `TITLE = '【蓝鲸PaaS】应用 {{ app_code }} 内 {{ proc_name }} 进程运行异常通知'` | module |
-| BASE_MESSAGE_TEMPLATE | 
+| BASE_MESSAGE_TEMPLATE |
 {% if mail -%}<pre>{% endif %}
 应用名称:   {{app_name}}
 应用ID:   {{app_code}}
@@ -28284,7 +28284,7 @@
 异常进程:   {{proc_name}}
 
  | `BASE_MESSAGE_TEMPLATE = '\n{% if mail -%}<pre>{% endif %}\n应用名称:   {{app_name}}\n应用ID:   {{app_code}}\n应用环境:   {{app_env}}\n异常进程:   {{proc_name}}\n\n'` | module |
-| ABNORMAL_APP_MESSAGE_TEMPLATE | 
+| ABNORMAL_APP_MESSAGE_TEMPLATE |
 {% if mail -%}<pre>{% endif %}
 应用名称:   {{app_name}}
 应用ID:   {{app_code}}
@@ -28295,7 +28295,7 @@
 应用运行异常，请及时查看<a href="{{bkpaas_url}}/developer-center/apps/{{app_code}}/process">异常日志</a>并进行修复异常！
 {% if mail -%}</pre>{% endif %}
  | `ABNORMAL_APP_MESSAGE_TEMPLATE = BASE_MESSAGE_TEMPLATE + '\n应用运行异常，请及时查看<a href="{{bkpaas_url}}/developer-center/apps/{{app_code}}/process">异常日志</a>并进行修复异常！\n{% if mail -%}</pre>{% endif %}\n'` | module |
-| SCALE_DOWN_APP_MESSAGE_TEMPLATE | 
+| SCALE_DOWN_APP_MESSAGE_TEMPLATE |
 {% if mail -%}<pre>{% endif %}
 应用名称:   {{app_name}}
 应用ID:   {{app_code}}
@@ -28345,7 +28345,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| import_dashboard_after_deploy | `@receiver(post_appenv_deploy):` | receiver | 不适用 |
+| import_dashboard_after_deploy | `def import_dashboard_after_deploy(sender: ApplicationEnvironment, deployment: Deployment, **kwargs):` | receiver | 不适用 |
 
 
 ---
@@ -28391,9 +28391,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ManagerProtocol | typing.Protocol | __init__, init_builtin_dashboard | 无 | 无 | 不适用 |
-| BkDashboardManager | 无 | __init__, init_builtin_dashboard | 无 | 无 | 蓝鲸监控仪表盘管理器 |
-| NullManager | 无 | __init__, init_builtin_dashboard | 无 | 无 | 不适用 |
+| ManagerProtocol | typing.Protocol | init_builtin_dashboard | 无 | 无 | 不适用 |
+| BkDashboardManager | 无 | init_builtin_dashboard | 无 | 无 | 蓝鲸监控仪表盘管理器 |
+| NullManager | 无 | init_builtin_dashboard | 无 | 无 | 不适用 |
 
 ---
 
@@ -28442,7 +28442,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _write_invalid_codes, _init_rules | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -28472,7 +28472,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _write_invalid_codes, _init_dashboards | 无 | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | 无 | 无 | 不适用 |
 
 ---
 
@@ -28551,9 +28551,9 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | AppAlertRuleManager | django.db.models.Manager | filter_app_scoped, filter_module_scoped | 无 | 无 | 不适用 |
-| AppAlertRule | paasng.utils.models.AuditedModel | __str__ | alert_code, display_name, enabled, threshold_expr, receivers, application, environment, module, objects | 无 | 记录 app 初始的告警规则配置 |
+| AppAlertRule | paasng.utils.models.AuditedModel | 无 | alert_code, display_name, enabled, threshold_expr, receivers, application, environment, module, objects | 无 | 记录 app 初始的告警规则配置 |
 | AppDashboardTemplate | paasng.utils.models.AuditedModel | 无 | name, display_name, version, language, is_plugin_template | 无 | 仪表盘模板，只需要记录名称和版本号，模板的内容在蓝鲸监控侧维护 |
-| AppDashboard | paasng.utils.models.AuditedModel | __str__ | application, name, display_name, template_version, language | 无 | 记录 APP 初始化的仪表盘信息 |
+| AppDashboard | paasng.utils.models.AuditedModel | 无 | application, name, display_name, template_version, language | 无 | 记录 APP 初始化的仪表盘信息 |
 
 ---
 
@@ -28569,10 +28569,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Monitor | 无 | 无 | 无 | 无 | 
+| Monitor | 无 | 无 | 无 | 无 |
     AppMonitor / ProcessMonitor
      |
-| ProcessMonitor | Monitor | 无 | 无 | 无 | 
+| ProcessMonitor | Monitor | 无 | 无 | 无 |
     Q: 为什么 ProcessMonitor 不从最上层（Application）开始调用，... |
 
 ---
@@ -28622,7 +28622,7 @@
 | EventRecordMetricsResult | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | GroupedEventRecord | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | GroupedEventRecordResult | BaseResult | 无 | 无 | 无 | 不适用 |
-| Client | 无 | _get_record_filters, request, get_event_records, get_event_record_metrics, get_event_record_details, get_event_genre, get_grouped_records | 无 | dataclass | 不适用 |
+| Client | 无 | request, get_event_records, get_event_record_metrics, get_event_record_details, get_event_genre, get_grouped_records | 无 | dataclass | 不适用 |
 
 ---
 
@@ -28759,7 +28759,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ServiceMonitorController | 无 | __init__, sync, _upsert, _delete, _build_service_monitor_name, _build_service_monitor | 无 | 无 | 不适用 |
+| ServiceMonitorController | 无 | sync | 无 | 无 | 不适用 |
 | NullController | 无 | sync | 无 | 无 | 不适用 |
 
 ---
@@ -28984,13 +28984,13 @@
 |------|------|------|------|--------|----------|
 | Operation | django.db.models.Model | get_operator, get_operate_display | region, created, user, application, type, is_hidden, source_object_id, module_name, extra_values | 无 | 不适用 |
 | ApplicationLatestOp | django.db.models.Model | 无 | application, operation_type, operation, latest_operated_at | 无 | A mapper table which saves application's latest op... |
-| OperationObj | 无 | __init__, get_text_display | 无 | 无 | Common operation object |
-| UnknownTypeOperationObj | OperationObj | __init__, get_text_display | 无 | 无 | 不适用 |
+| OperationObj | 无 | get_text_display | 无 | 无 | Common operation object |
+| UnknownTypeOperationObj | OperationObj | get_text_display | 无 | 无 | 不适用 |
 | ProcessOperationObj | OperationObj | get_text_display | _text_tmpls | 无 | Operation object: processs start/stop |
 | DeployOpValues | 无 | 无 | 无 | dataclass | 不适用 |
-| AppDeploymentOperationObj | OperationObj | __init__, create_from_deployment, get_text_display, get_tmpl_from_status | default_op_type, values_type | 无 | Operation object: app deployment |
-| CNativeAppDeployOperationObj | OperationObj | __init__, create_from_deploy, get_text_display | default_op_type, values_type | 无 | Operation object: paas_wl.bk_app.cnative.specs.mod... |
-| AppOfflineOperationObj | OperationObj | __init__, get_operation_type, assemble_operation_params, update_operation, create_operation, get_text_display | values_type | 无 | 不适用 |
+| AppDeploymentOperationObj | OperationObj | create_from_deployment, get_text_display, get_tmpl_from_status | default_op_type, values_type | 无 | Operation object: app deployment |
+| CNativeAppDeployOperationObj | OperationObj | create_from_deploy, get_text_display | default_op_type, values_type | 无 | Operation object: paas_wl.bk_app.cnative.specs.mod... |
+| AppOfflineOperationObj | OperationObj | get_operation_type, assemble_operation_params, update_operation, create_operation, get_text_display | values_type | 无 | 不适用 |
 | CreateModuleOperationObj | OperationObj | get_text_display | 无 | 无 | Operation object: create a new module |
 | ApplyCloudApiOperationObj | OperationObj | get_text_display | _text_tmpls | 无 | Operation object: apply for or renew ApiGateway AP... |
 
@@ -29088,11 +29088,11 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OperationRepresentHelper | 无 | get_supported_types, get_event_props | _type_props_map, type_props_map | 无 | Helps representing an application operation to use... |
-| LatestApplicationsViewSet | rest_framework.views.APIView | get_queryset, _transform_op, _attach_represent_info, get | serializer_class, lookup_field, ordering_fields, pagination_class | 无 | 
+| LatestApplicationsViewSet | rest_framework.views.APIView | get_queryset, get | serializer_class, lookup_field, ordering_fields, pagination_class | 无 |
     最近操作的应用列表
     get: 最近操作的应用列表
     - [测试地址](/ap... |
-| ApplicationOperationsViewSet | rest_framework.viewsets.ModelViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_queryset, list | serializer_class, permission_classes, queryset, lookup_field, ordering_fields | 无 | 
+| ApplicationOperationsViewSet | rest_framework.viewsets.ModelViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_queryset, list | serializer_class, permission_classes, queryset, lookup_field, ordering_fields | 无 |
     单应用的操作记录
     list: 单应用的操作记录
     - [测试地址](/api... |
@@ -29215,7 +29215,7 @@
 | SearchDocResults | 无 | 无 | 无 | dataclass | Search results |
 | BaseSearcher | 无 | search | 无 | 无 | 不适用 |
 | BKDocumentSearcher | BaseSearcher | search | BKDOC_SEARCH_BASE_URL | 无 | 不适用 |
-| MixSearcher | 无 | __init__, to_simple_payload, search | 无 | 无 | 不适用 |
+| MixSearcher | 无 | to_simple_payload, search | 无 | 无 | 不适用 |
 
 ---
 
@@ -29345,43 +29345,43 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| transform_app_desc_spec2_to_spec3 | `def transform_app_desc_spec2_to_spec3(spec2):` | 无 | 
+| transform_app_desc_spec2_to_spec3 | `def transform_app_desc_spec2_to_spec3(spec2):` | 无 |
     Converts an application description file from... |
-| transform_app_section | `def transform_app_section(app):` | 无 | 
+| transform_app_section | `def transform_app_section(app):` | 无 |
     Transforms the 'app' section.
 
     :param app... |
-| transform_display_options | `def transform_display_options(display_options):` | 无 | 
+| transform_display_options | `def transform_display_options(display_options):` | 无 |
     Transforms the 'displayOptions' section withi... |
-| transform_modules_section | `def transform_modules_section(modules):` | 无 | 
+| transform_modules_section | `def transform_modules_section(modules):` | 无 |
     Transforms the 'modules' section.
 
     :param... |
-| transform_module | `def transform_module(module):` | 无 | 
+| transform_module | `def transform_module(module):` | 无 |
     Transforms a single module.
 
     :param modul... |
-| transform_module_spec | `def transform_module_spec(spec, key, value):` | 无 | 
+| transform_module_spec | `def transform_module_spec(spec, key, value):` | 无 |
     Transforms module fields like 'services', 'en... |
-| transform_services | `def transform_services(services):` | 无 | 
+| transform_services | `def transform_services(services):` | 无 |
     Transforms the 'services' field of module.
 
  ... |
-| transform_env_variables | `def transform_env_variables(env_vars):` | 无 | 
+| transform_env_variables | `def transform_env_variables(env_vars):` | 无 |
     Transforms the 'env_variables' field of modul... |
-| transform_processes | `def transform_processes(processes):` | 无 | 
+| transform_processes | `def transform_processes(processes):` | 无 |
     Transforms the 'processes' field of module.
 
 ... |
-| transform_process | `def transform_process(process_name, process_info):` | 无 | 
+| transform_process | `def transform_process(process_name, process_info):` | 无 |
     Transforms a single process, adding associate... |
-| create_service | `def create_service(process_name):` | 无 | 
+| create_service | `def create_service(process_name):` | 无 |
     Creates service information for the given pro... |
-| transform_process_probes | `def transform_process_probes(probes):` | 无 | 
+| transform_process_probes | `def transform_process_probes(probes):` | 无 |
     Transforms the process probes in process.
 
   ... |
-| transform_bk_saas | `def transform_bk_saas(bk_saas):` | 无 | 
+| transform_bk_saas | `def transform_bk_saas(bk_saas):` | 无 |
     Transforms the 'bk_saas' section in 'svc_disc... |
 
 
@@ -29463,7 +29463,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| worker_process_init_otel_trace_setup | `@worker_process_init.connect(weak=False):` | worker_process_init.connect | 不适用 |
+| worker_process_init_otel_trace_setup | `def worker_process_init_otel_trace_setup(*args, **kwargs):` | worker_process_init.connect | 不适用 |
 
 #### 类
 
@@ -29507,10 +29507,10 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| requests_callback | `def requests_callback(span: Span, response: Optional[Response]):` | 无 | 
+| requests_callback | `def requests_callback(span: Span, response: Optional[Response]):` | 无 |
     处理蓝鲸标准协议响应
      |
-| django_response_hook | `def django_response_hook(span: Span, request, response):` | 无 | 
+| django_response_hook | `def django_response_hook(span: Span, request, response):` | 无 |
     处理 PaasNG Django 响应
      |
 
@@ -29518,7 +29518,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKAppInstrumentor | opentelemetry.instrumentation.instrumentor.BaseInstrumentor | instrumentation_dependencies, _instrument, _uninstrument | 无 | 无 | 不适用 |
+| BKAppInstrumentor | opentelemetry.instrumentation.instrumentor.BaseInstrumentor | instrumentation_dependencies | 无 | 无 | 不适用 |
 
 ---
 
@@ -30097,7 +30097,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SourceTypeSpecConfigSLZ | rest_framework.serializers.ModelSerializer | validate_server_config, validate_display_info_zh_cn, validate_display_info_en, validate_oauth_display_info_zh_cn, validate_oauth_display_info_en, validate, _validate_display_info, _validate_oauth_display_info | 无 | 无 | 不适用 |
+| SourceTypeSpecConfigSLZ | rest_framework.serializers.ModelSerializer | validate_server_config, validate_display_info_zh_cn, validate_display_info_en, validate_oauth_display_info_zh_cn, validate_oauth_display_info_en, validate | 无 | 无 | 不适用 |
 
 ---
 
@@ -30180,8 +30180,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| to_json | `@register.filter(is_safe=True):` | register.filter | 不适用 |
-| get_user_site_perms | `@register.simple_tag(takes_context=True):` | register.simple_tag | 不适用 |
+| to_json | `def to_json(value):` | register.filter | 不适用 |
+| get_user_site_perms | `def get_user_site_perms(context):` | register.simple_tag | 不适用 |
 
 
 ---
@@ -30315,10 +30315,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RetrieveModelMixin | 无 | retrieve | 无 | 无 | 
+| RetrieveModelMixin | 无 | retrieve | 无 | 无 |
     Retrieve a model instance.
      |
-| ListModelMixin | 无 | list | 无 | 无 | 
+| ListModelMixin | 无 | list | 无 | 无 |
     List model instances.
      |
 | PaginationMixin | 无 | get_pagination_context | 无 | 无 | 获取分页上下文的mixin |
@@ -30522,7 +30522,7 @@
 | ApplicationOverviewView | ApplicationDetailBaseView | get_context_data | queryset, serializer_class, template_name, name | 无 | 应用详情概览页 |
 | AppEnvConfManageView | rest_framework.viewsets.GenericViewSet | bind_cluster | permission_classes | 无 | 应用部署环境配置管理 |
 | ApplicationMembersManageView | ApplicationDetailBaseView | get_context_data | template_name, name | 无 | Application 应用成员管理页 |
-| ApplicationMembersManageViewSet | rest_framework.viewsets.GenericViewSet | _gen_data_detail, list, destroy, update, sync_membership | permission_classes | 无 | Application应用成员 CRUD 接口 |
+| ApplicationMembersManageViewSet | rest_framework.viewsets.GenericViewSet | list, destroy, update, sync_membership | permission_classes | 无 | Application应用成员 CRUD 接口 |
 | ApplicationFeatureFlagsView | ApplicationDetailBaseView | get_context_data | template_name, name | 无 | Application应用特性管理页 |
 | ApplicationFeatureFlagsViewset | rest_framework.viewsets.GenericViewSet | list, update | serializer_class, permission_classes | 无 | Application应用特性 CRUD 接口 |
 
@@ -30616,7 +30616,7 @@
 | BKPluginTagView | rest_framework.viewsets.GenericViewSet, rest_framework.mixins.ListModelMixin | create, update, destroy | queryset, serializer_class, permission_classes | 无 | 平台服务管理-插件分类配置API |
 | BKPluginDistributorsManageView | paasng.plat_admin.admin42.utils.mixins.GenericTemplateView | 无 | template_name, permission_classes, name | 无 | 平台服务管理-插件使用方配置 |
 | BKPluginDistributorsView | rest_framework.viewsets.GenericViewSet, rest_framework.mixins.ListModelMixin | create, update, destroy | queryset, serializer_class, permission_classes | 无 | 平台服务管理-插件使用方配置API |
-| BKPluginMembersManageViewSet | rest_framework.viewsets.ViewSet | _gen_data_detail, update | permission_classes | 无 | 插件成员管理接口 |
+| BKPluginMembersManageViewSet | rest_framework.viewsets.ViewSet | update | permission_classes | 无 | 插件成员管理接口 |
 
 ---
 
@@ -30799,7 +30799,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ConfigVarManageView | paasng.plat_admin.admin42.views.applications.ApplicationDetailBaseView | get_context_data | name, template_name | 无 | 不适用 |
-| ConfigVarViewSet | BaseConfigVarViewSet | get_queryset, get_serializer_context, _gen_data_detail, create, update, destroy | schema, serializer_class, permission_classes | 无 | 不适用 |
+| ConfigVarViewSet | BaseConfigVarViewSet | get_queryset, get_serializer_context, create, update, destroy | schema, serializer_class, permission_classes | 无 | 不适用 |
 
 ---
 
@@ -30904,7 +30904,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | EgressManageView | paasng.plat_admin.admin42.views.applications.ApplicationDetailBaseView | 无 | name, template_name | 无 | 不适用 |
-| EgressManageViewSet | rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | _gen_spec_data, get, create, destroy, get_egress_ips, _get_wl_app | permission_classes | 无 | Egress 管理 API |
+| EgressManageViewSet | rest_framework.mixins.ListModelMixin, rest_framework.viewsets.GenericViewSet | get, create, destroy, get_egress_ips | permission_classes | 无 | Egress 管理 API |
 
 ---
 
@@ -31094,8 +31094,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleRuntimeSLZ | 无 | __init__, to_dict | 无 | 无 | 不适用 |
-| RuntimeStack | 无 | __init__, to_dict | 无 | 无 | 不适用 |
+| ModuleRuntimeSLZ | 无 | to_dict | 无 | 无 | 不适用 |
+| RuntimeStack | 无 | to_dict | 无 | 无 | 不适用 |
 | RuntimeManageView | paasng.plat_admin.admin42.views.applications.ApplicationDetailBaseView | get_context_data | name, template_name | 无 | 不适用 |
 | RuntimeManageViewSet | rest_framework.viewsets.GenericViewSet | list, bind | schema, permission_classes | 无 | 运行时管理 API |
 
@@ -31284,7 +31284,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ApplicationServicesView | paasng.plat_admin.admin42.views.applications.ApplicationDetailBaseView | get_context_data | template_name, permission_classes, name | 无 | Application应用增强服务页 |
-| ApplicationServicesManageViewSet | rest_framework.viewsets.GenericViewSet | _gen_service_data_detail, list, provision_instance, recycle_resource | schema, serializer_class, permission_classes | 无 | 应用增强服务管理-服务管理API |
+| ApplicationServicesManageViewSet | rest_framework.viewsets.GenericViewSet | list, provision_instance, recycle_resource | schema, serializer_class, permission_classes | 无 | 应用增强服务管理-服务管理API |
 | PlatformServicesView | paasng.plat_admin.admin42.utils.mixins.GenericTemplateView | get_context_data | template_name, permission_classes, name | 无 | 平台增强服务管理-增强服务页 |
 | PlatformServicesManageViewSet | rest_framework.viewsets.GenericViewSet | create, list, destroy, update | schema, permission_classes | 无 | 平台增强服务管理-服务管理API |
 | PlatformPlanView | paasng.plat_admin.admin42.utils.mixins.GenericTemplateView | get_context_data | template_name, permission_classes, name | 无 | 平台增强服务管理-方案管理页 |
@@ -31517,7 +31517,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand, paasng.plat_admin.admin_cli.cmd_utils.CommandBasicMixin | add_arguments, handle, _archive_app | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand, paasng.plat_admin.admin_cli.cmd_utils.CommandBasicMixin | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -31563,7 +31563,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | CommandAction | blue_krill.data_types.enum.StrStructuredEnum | 无 | UPGRADE, ROLLBACK, CLEAN_V1 | 无 | A command action. |
-| Command | django.core.management.base.BaseCommand, paasng.plat_admin.admin_cli.cmd_utils.CommandBasicMixin | add_arguments, handle, _handle_upgrade, _upgrade_env, _handle_rollback, _handle_clean_v1 | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand, paasng.plat_admin.admin_cli.cmd_utils.CommandBasicMixin | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -31665,7 +31665,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ExtraDefinitionsInspectorMixin | 无 | get_response_serializers | 无 | 无 | 把自定义Responses中的schema definition添加到全局的Definitions |
-| BaseModelRequestBodyInspectorMixin | 无 | _get_request_body_override | 无 | 无 | 将 swagger_auto_schema 中继承自 pydantic.BaseModel 的 re... |
+| BaseModelRequestBodyInspectorMixin | 无 | 无 | 无 | 无 | 将 swagger_auto_schema 中继承自 pydantic.BaseModel 的 re... |
 | ExtendedSwaggerAutoSchema | BaseModelRequestBodyInspectorMixin, ExtraDefinitionsInspectorMixin, drf_yasg.inspectors.SwaggerAutoSchema | get_consumes, get_default_response_serializer | 无 | 无 | 自定义的 schema 生成器 |
 
 ---
@@ -31702,7 +31702,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| patch_replace_unnamed_groups | `@contextmanager:` | contextmanager | 
+| patch_replace_unnamed_groups | `def patch_replace_unnamed_groups():` | contextmanager |
     patch django.contrib.admindocs.views.replace_... |
 
 #### 类
@@ -31731,7 +31731,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IsOwner | rest_framework.permissions.BasePermission | has_object_permission | 无 | 无 | 
+| IsOwner | rest_framework.permissions.BasePermission | has_object_permission | 无 | 无 |
     Object-level permission to allow only owners ... |
 
 ---
@@ -31791,7 +31791,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FullSwaggerConfigurationView | schema_view | get, _merge_paths, _merge_definitions | 无 | 无 | A swagger view base on auto generate docs, and mer... |
+| FullSwaggerConfigurationView | schema_view | get | 无 | 无 | A swagger view base on auto generate docs, and mer... |
 
 ---
 
@@ -31854,7 +31854,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| allow_resource_exists | `@contextmanager:` | contextmanager | 不适用 |
+| allow_resource_exists | `def allow_resource_exists():` | contextmanager | 不适用 |
 
 #### 类
 
@@ -31949,7 +31949,7 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_pv_uv_for_env | `def get_pv_uv_for_env(*args, **kwargs) -> Tuple[int, int]:` | 无 | Return a fake value when paas_analysis module is n... |
-| count_all_app_visit_record_30days | `@lru_cache():` | lru_cache | 统计所有应用的访问次数 |
+| count_all_app_visit_record_30days | `def count_all_app_visit_record_30days():` | lru_cache | 统计所有应用的访问次数 |
 | uniq_apps | `def uniq_apps(apps: Iterable[SimpleApp]) -> Generator[SimpleApp, None, None]:` | 无 | Return de-duplicated apps, check uniqueness by app... |
 | group_apps_by_developers | `def group_apps_by_developers(filter_developers: Optional[List[str]] = None) -> Generator[Tuple[str, Dict[str, Any], List[SimpleApp]], None, None]:` | 无 | Return apps grouped by user, include both legacy a... |
 | calculate_user_contribution_in_app | `def calculate_user_contribution_in_app(username: str, app: SimpleApp):` | 无 | 不适用 |
@@ -31973,9 +31973,9 @@
 | SimpleApp | 无 | app_visit_count_30days | 无 | dataclass | An universal app model which is compatible with bo... |
 | Contribution | 无 | 无 | 无 | dataclass | 不适用 |
 | AppDataBuilder | 无 | set_filter_developers, set_filter_app_codes, get_results | 无 | 无 | Abstract class of AppDataBuilder |
-| DefaultAppDataBuilder | AppDataBuilder | __init__, get_deploy_status, get_pv_uv, get_tag_display_name, get_market_address, set_filter_developers, set_filter_app_codes, exclude_unqualified, get_results | 无 | 无 | Build app data for default platform |
-| LegacyAppDataBuilder | AppDataBuilder | __init__, get_default_qs, get_deploy_status, get_market_address, get_tag_display_name, set_filter_developers, set_filter_app_codes, get_results | 无 | 无 | Build app data for legacy platform |
-| Table | 无 | __init__, set_indent, add_row | 无 | 无 | Table for data representation |
+| DefaultAppDataBuilder | AppDataBuilder | get_deploy_status, get_pv_uv, get_tag_display_name, get_market_address, set_filter_developers, set_filter_app_codes, exclude_unqualified, get_results | 无 | 无 | Build app data for default platform |
+| LegacyAppDataBuilder | AppDataBuilder | get_default_qs, get_deploy_status, get_market_address, get_tag_display_name, set_filter_developers, set_filter_app_codes, get_results | 无 | 无 | Build app data for legacy platform |
+| Table | 无 | set_indent, add_row | 无 | 无 | Table for data representation |
 | Column | 无 | format_value | 无 | 无 | 不适用 |
 | AutoMapperColumn | Column | 无 | 无 | 无 | 不适用 |
 | AppColumn | AutoMapperColumn | 无 | row_attr_name | 无 | 不适用 |
@@ -32152,7 +32152,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LegacyAppNormalizer | 无 | __init__, get_region, get_developers, get_creator, get_logo_url | 无 | 无 | Normalize legacy application object |
+| LegacyAppNormalizer | 无 | get_region, get_developers, get_creator, get_logo_url | 无 | 无 | Normalize legacy application object |
 
 ---
 
@@ -32311,7 +32311,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SysUniApplicationViewSet | rest_framework.viewsets.ViewSet | get_contact_info_data, get_deploy_info_data, serialize_app_details, query_by_id, query_by_username, list_minimal_app | 无 | ForceAllowAuthedApp.mark_view_set | System universal application view sets |
-| SysAddonsAPIViewSet | rest_framework.viewsets.ViewSet | query_credentials, provision_service, list_services, retrieve_specs_by_uuid, _get_pub_recommended_specs | 无 | 无 | System api for managing Application Addons |
+| SysAddonsAPIViewSet | rest_framework.viewsets.ViewSet | query_credentials, provision_service, list_services, retrieve_specs_by_uuid | 无 | 无 | System api for managing Application Addons |
 | LessCodeSystemAPIViewSet | rest_framework.viewsets.ViewSet | query_db_credentials, bind_db_service, get_db_service | 无 | 无 | System api for lesscode |
 | ClusterNamespaceInfoView | rest_framework.viewsets.ViewSet | list_by_app_code | 无 | 无 | System api for query app cluster/namespace info |
 
@@ -32378,7 +32378,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationCleaner | 无 | __init__, clean, delete_iam_resources, delete_application | 无 | 无 | 不适用 |
+| ApplicationCleaner | 无 | clean, delete_iam_resources, delete_application | 无 | 无 | 不适用 |
 
 ---
 
@@ -32412,7 +32412,7 @@
 |------|------|------|------|--------|----------|
 | ApplicationType | blue_krill.data_types.enum.StrStructuredEnum | 无 | DEFAULT, ENGINELESS_APP, CLOUD_NATIVE | 无 | 不适用 |
 | ApplicationRole | blue_krill.data_types.enum.IntStructuredEnum | get_roles | NOBODY, COLLABORATOR, ADMINISTRATOR, DEVELOPER, OPERATOR | 无 | 不适用 |
-| AppLanguage | blue_krill.data_types.enum.StrStructuredEnum | _missing_, __str__ | PYTHON, PHP, GO, NODEJS, JAVA | 无 | 不适用 |
+| AppLanguage | blue_krill.data_types.enum.StrStructuredEnum | 无 | PYTHON, PHP, GO, NODEJS, JAVA | 无 | 不适用 |
 | AppEnvironment | blue_krill.data_types.enum.StrStructuredEnum | 无 | STAGING, PRODUCTION | 无 | 不适用 |
 | AppFeatureFlag | blue_krill.data_types.enum.FeatureFlag | 无 | RELEASE_TO_WEIXIN_QIYE, ACCESS_CONTROL_EXEMPT_MODE, PA_WEBSITE_ANALYTICS, PA_CUSTOM_EVENT_ANALYTICS, PA_INGRESS_ANALYTICS, APPLICATION_DESCRIPTION, MODIFY_ENVIRONMENT_VARIABLE, ENABLE_BK_LOG_COLLECTOR, ENABLE_BK_LOG_CLIENT, TOGGLE_EGRESS_BINDING, ENABLE_PERSISTENT_STORAGE | 无 | App feature 常量表 |
 | LightApplicationViewSetErrorCode | blue_krill.data_types.enum.StrStructuredEnum | 无 | SUCCESS, PARAM_NOT_VALID, CREATE_APP_ERROR, EDIT_APP_ERROR, ESB_NOT_VALID, APP_NOT_EXIST, NO_PERMISSION | 无 | 不适用 |
@@ -32436,10 +32436,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| IntegrityError | Exception | __init__, get_field_display | _fields_display | 无 | 不适用 |
-| AppFieldValidationError | Exception | __init__ | REASONS | 无 | Error when external app field validation failed |
+| IntegrityError | Exception | get_field_display | _fields_display | 无 | 不适用 |
+| AppFieldValidationError | Exception | 无 | REASONS | 无 | Error when external app field validation failed |
 | AppResourceProtected | Exception | 无 | 无 | 无 | Raised when application's resources were protected... |
-| LightAppAPIError | Exception | __init__ | 无 | 无 | 轻应用错误接口 |
+| LightAppAPIError | Exception | 无 | 无 | 无 | 轻应用错误接口 |
 
 ---
 
@@ -32493,15 +32493,15 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| initialize_application_members | `@receiver(post_create_application):` | receiver | 
+| initialize_application_members | `def initialize_application_members(sender, application: Application, **kwargs):` | receiver |
     默认为每个新建的蓝鲸应用创建三个用户组（管理者，开发者，运营者），以及该应用对应的分级管理... |
-| turn_on_bk_log_feature_for_app | `@receiver(post_create_application):` | receiver | 将符合灰度条件的应用采集/查询日志的链路切换至日志平台 |
-| extra_setup_tasks | `@receiver(post_create_application):` | receiver | Extra tasks to create an application |
-| update_app_counter | `@receiver(post_create_application):` | receiver | Update new application counter |
-| on_environment_offlined | `@receiver(module_environment_offline_success):` | receiver | 当应用某环境成功下架后触发。判断该应用是否所有环境都已经处于下架状态，如果是。将应用置为不可用 |
-| on_model_post_save | `@receiver(post_save, sender=Deployment):` | receiver | 当 Deployment 数据被创建或修改时触发。如果应用该次部署已经成功，将应用由不可用状态置为可... |
-| extra_setup_logo | `@receiver(application_logo_updated):` | receiver | Do some extra setup works for logo, such as set ob... |
-| duplicate_logo_to_extra_bucket | `@receiver(application_logo_updated):` | receiver | Duplicate app logo to another bucket if an extra b... |
+| turn_on_bk_log_feature_for_app | `def turn_on_bk_log_feature_for_app(sender, application: Application, **kwargs):` | receiver | 将符合灰度条件的应用采集/查询日志的链路切换至日志平台 |
+| extra_setup_tasks | `def extra_setup_tasks(sender, application: Application, **kwargs):` | receiver | Extra tasks to create an application |
+| update_app_counter | `def update_app_counter(sender, application: Application, **kwargs):` | receiver | Update new application counter |
+| on_environment_offlined | `def on_environment_offlined(sender, offline_instance, environment, **kwargs):` | receiver | 当应用某环境成功下架后触发。判断该应用是否所有环境都已经处于下架状态，如果是。将应用置为不可用 |
+| on_model_post_save | `def on_model_post_save(sender, instance, created, raw, using, update_fields, *args, **kwargs):` | receiver | 当 Deployment 数据被创建或修改时触发。如果应用该次部署已经成功，将应用由不可用状态置为可... |
+| extra_setup_logo | `def extra_setup_logo(sender, application: Application, **kwargs):` | receiver | Do some extra setup works for logo, such as set ob... |
+| duplicate_logo_to_extra_bucket | `def duplicate_logo_to_extra_bucket(sender, application: Application, **kwargs):` | receiver | Duplicate app logo to another bucket if an extra b... |
 | initialize_app_logo_metadata | `def initialize_app_logo_metadata(storage: Storage, bucket_name: str, key: str):` | 无 | Initialize app logo's S3 metadata, set it as publi... |
 | turn_on_bk_log_feature | `def turn_on_bk_log_feature(application: Application):` | 无 | 根据集群特性开启应用的日志采集 FeatureFlag
 
@@ -32542,7 +32542,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| register_builtin_user_groups_and_grade_manager | `def register_builtin_user_groups_and_grade_manager(application: Application):` | 无 | 
+| register_builtin_user_groups_and_grade_manager | `def register_builtin_user_groups_and_grade_manager(application: Application):` | 无 |
     默认为每个新建的蓝鲸应用创建三个用户组（管理者，开发者，运营者），以及该应用对应的分级管理... |
 
 
@@ -33049,7 +33049,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationCodeInPathMixin | 无 | get_application_without_perm, get_application, get_module_via_path, get_env_via_path, get_engine_app_via_path, get_wl_app_via_path, _get_param_from_kwargs | 无 | 无 | 
+| ApplicationCodeInPathMixin | 无 | get_application_without_perm, get_application, get_module_via_path, get_env_via_path, get_engine_app_via_path, get_wl_app_via_path | 无 | 无 |
     Provide a shortcut to get current application... |
 
 ---
@@ -33125,27 +33125,27 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationQuerySet | django.db.models.QuerySet | get_user_id, get_username, _filter_by_user, search_by_code_or_name, only_active, filter_by_regions, filter_by_languages, filter_by_user, filter_by_source_origin | 无 | 无 | QuerySet for Applications |
+| ApplicationQuerySet | django.db.models.QuerySet | get_user_id, get_username, search_by_code_or_name, only_active, filter_by_regions, filter_by_languages, filter_by_user, filter_by_source_origin | 无 | 无 | QuerySet for Applications |
 | ApplicationManager | django.db.models.Manager | get_queryset | 无 | 无 | Manager for Applications |
 | BaseApplicationFilter | 无 | filter_queryset, process_order_by | 无 | 无 | Base Application Filter |
-| JustLeaveAppManager | 无 | __init__, add, list | 无 | 无 | 
+| JustLeaveAppManager | 无 | add, list | 无 | 无 |
     刚退出的应用管理器
 
     Q：为什么需要有这个管理器
     A：开发者中心接入权限中... |
-| UserApplicationFilter | 无 | __init__, filter | 无 | 无 | List user applications |
-| Application | paasng.utils.models.OwnerTimestampedModel | has_deployed, config_info, engine_enabled, get_source_obj, get_engine_app, get_module_with_lock, get_default_module_with_lock, default_module, get_default_module, get_module, get_app_envs, get_product, get_administrators, get_devopses, get_developers, has_customized_logo, get_logo_url, delete, __str__ | id, code, name, name_en, type, is_smart_app, is_scene_app, is_plugin_app, is_ai_agent_app, language, creator, is_active, is_deleted, last_deployed_date, logo, default_objects | 无 | 蓝鲸应用 |
-| ApplicationMembership | paasng.utils.models.TimestampedModel | __str__ | user, application, role | 无 | [deprecated] 切换为权限中心用户组存储用户信息
+| UserApplicationFilter | 无 | filter | 无 | 无 | List user applications |
+| Application | paasng.utils.models.OwnerTimestampedModel | has_deployed, config_info, engine_enabled, get_source_obj, get_engine_app, get_module_with_lock, get_default_module_with_lock, default_module, get_default_module, get_module, get_app_envs, get_product, get_administrators, get_devopses, get_developers, has_customized_logo, get_logo_url, delete | id, code, name, name_en, type, is_smart_app, is_scene_app, is_plugin_app, is_ai_agent_app, language, creator, is_active, is_deleted, last_deployed_date, logo, default_objects | 无 | 蓝鲸应用 |
+| ApplicationMembership | paasng.utils.models.TimestampedModel | 无 | user, application, role | 无 | [deprecated] 切换为权限中心用户组存储用户信息
 
     Members for one... |
-| ApplicationEnvironment | paasng.utils.models.TimestampedModel | __str__, get_engine_app, wl_app, is_production, is_running, restore_archived | application, module, engine_app, environment, is_offlined | 无 | 记录蓝鲸应用在不同部署环境下对应的 Engine App |
-| ApplicationFeatureFlagManager | django.db.models.Manager | get_application_features, set_feature, has_feature, _build_queryset | 无 | 无 | 所有方法均同时兼容两种调用方式:
+| ApplicationEnvironment | paasng.utils.models.TimestampedModel | get_engine_app, wl_app, is_production, is_running, restore_archived | application, module, engine_app, environment, is_offlined | 无 | 记录蓝鲸应用在不同部署环境下对应的 Engine App |
+| ApplicationFeatureFlagManager | django.db.models.Manager | get_application_features, set_feature, has_feature | 无 | 无 | 所有方法均同时兼容两种调用方式:
 
     - 通过外键对象查询, 例如 application.f... |
-| ApplicationFeatureFlag | paasng.utils.models.TimestampedModel | 无 | application, effect, name, objects | 无 | 
+| ApplicationFeatureFlag | paasng.utils.models.TimestampedModel | 无 | application, effect, name, objects | 无 |
     移动端、应用市场白名单等app特性标记
      |
-| UserMarkedApplication | paasng.utils.models.OwnerTimestampedModel | __str__, code | application, objects | 无 | 不适用 |
+| UserMarkedApplication | paasng.utils.models.OwnerTimestampedModel | code | application, objects | 无 | 不适用 |
 | ApplicationDeploymentModuleOrder | django.db.models.Model | 无 | module, order | 无 | 不适用 |
 
 ---
@@ -33280,10 +33280,10 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseAppResProtectCondition | paasng.core.core.protections.base.BaseCondition | __init__, validate | 无 | 无 | 不适用 |
+| BaseAppResProtectCondition | paasng.core.core.protections.base.BaseCondition | validate | 无 | 无 | 不适用 |
 | ProtectedRes | enum.Enum | 无 | BASIC_INFO_MODIFICATIONS, SERVICES_MODIFICATIONS, DISABLE_APP_DESC | 无 | Protected application resources, it is usually a v... |
 | AppDescDisableProtectCondition | BaseAppResProtectCondition | validate | action | 无 | 不适用 |
-| AppResProtector | 无 | __init__, list_status, get_status, register_precondition, override_preconditions | 无 | 无 | protects application's related resource |
+| AppResProtector | 无 | list_status, get_status, register_precondition, override_preconditions | 无 | 无 | protects application's related resource |
 
 ---
 
@@ -33407,7 +33407,7 @@
 | CreateAIAgentAppSLZ | apiserver.paasng.paasng.platform.applications.serializers.mixins.AppBasicInfoMixin | to_internal_value | 无 | 无 | 不适用 |
 | CreateThirdPartyApplicationSLZ | apiserver.paasng.paasng.platform.applications.serializers.mixins.AppBasicInfoMixin | validate | engine_enabled, market_params | 无 | 创建外链应用的表单 |
 | SysThirdPartyApplicationSLZ | apiserver.paasng.paasng.platform.applications.serializers.mixins.AppBasicInfoMixin | validate_code | operator | 无 | 创建系统外链应用 |
-| UpdateApplicationSLZ | rest_framework.serializers.Serializer | _validate_duplicated_field, validate, update | name, logo_url | i18n | Serializer for update application |
+| UpdateApplicationSLZ | rest_framework.serializers.Serializer | validate, update | name, logo_url | i18n | Serializer for update application |
 | SearchApplicationSLZ | rest_framework.serializers.Serializer | 无 | keyword, include_inactive, prefer_marked | 无 | 不适用 |
 | IdleModuleEnvSLZ | rest_framework.serializers.Serializer | 无 | module_name, env_name, cpu_quota, memory_quota, cpu_usage_avg, latest_deployed_at | 无 | 不适用 |
 | IdleApplicationSLZ | rest_framework.serializers.Serializer | 无 | code, name, type, is_plugin_app, logo_url, administrators, developers, module_envs | 无 | 不适用 |
@@ -33421,7 +33421,7 @@
 | ApplicationSLZ | rest_framework.serializers.ModelSerializer | get_modules | name, region_name, logo_url, config_info, modules, creator, owner | 无 | 不适用 |
 | ApplicationWithDeployInfoSLZ | ApplicationSLZ | 无 | deploy_info | 无 | 不适用 |
 | ApplicationRelationSLZ | rest_framework.serializers.Serializer | to_internal_value | id, code, name | 无 | 不适用 |
-| ApplicationListDetailedSLZ | rest_framework.serializers.Serializer | validate_order_by, _validate_choice, validate_region, validate_language, validate_source_origin, validate_type | valid_order_by_fields, exclude_collaborated, include_inactive, region, language, search_term, source_origin, type, order_by, prefer_marked | 无 | Serializer for detailed app list |
+| ApplicationListDetailedSLZ | rest_framework.serializers.Serializer | validate_order_by, validate_region, validate_language, validate_source_origin, validate_type | valid_order_by_fields, exclude_collaborated, include_inactive, region, language, search_term, source_origin, type, order_by, prefer_marked | 无 | Serializer for detailed app list |
 | ApplicationListMinimalSLZ | rest_framework.serializers.Serializer | 无 | include_inactive, source_origin | 无 | 不适用 |
 | ApplicationGroupFieldSLZ | rest_framework.serializers.Serializer | validate_field | include_inactive, field | 无 | Serializer for detailed app list |
 | ProductSLZ | rest_framework.serializers.Serializer | 无 | name, logo | 无 | 不适用 |
@@ -33433,7 +33433,7 @@
 | ApplicationWithLogoMinimalSLZ | rest_framework.serializers.ModelSerializer | 无 | name, logo_url | 无 | 用于带Logo URL的简化应用列表 |
 | MarketAppMinimalSLZ | rest_framework.serializers.Serializer | 无 | name | 无 | 不适用 |
 | ApplicationWithMarketMinimalSLZ | rest_framework.serializers.Serializer | 无 | application, product | 无 | 不适用 |
-| ApplicationMarkedSLZ | rest_framework.serializers.ModelSerializer | validate, create, __repr__ | url, application_code, application_name, application | 无 | 不适用 |
+| ApplicationMarkedSLZ | rest_framework.serializers.ModelSerializer | validate, create | url, application_code, application_name, application | 无 | 不适用 |
 | ModuleEnvSLZ | rest_framework.serializers.Serializer | 无 | module, environment | 无 | 不适用 |
 | ApplicationFeatureFlagSLZ | rest_framework.serializers.Serializer | 无 | name, effect | 无 | 不适用 |
 | ProtectionStatusSLZ | rest_framework.serializers.Serializer | 无 | activated, reason | 无 | Serialize app resource protection status |
@@ -33473,7 +33473,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CreateCloudNativeAppSLZ | apiserver.paasng.paasng.platform.applications.serializers.mixins.AppBasicInfoMixin | validate, _validate_image_credential | source_config, bkapp_spec, advanced_options, is_plugin_app | 无 | 创建云原生架构应用的表单 |
+| CreateCloudNativeAppSLZ | apiserver.paasng.paasng.platform.applications.serializers.mixins.AppBasicInfoMixin | validate | source_config, bkapp_spec, advanced_options, is_plugin_app | 无 | 创建云原生架构应用的表单 |
 
 ---
 
@@ -33508,12 +33508,12 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppIDField | rest_framework.serializers.RegexField | __init__ | 无 | 无 | Field for validating application ID |
-| AppIDSMartField | rest_framework.serializers.RegexField | __init__ | pattern | 无 | Field for validating S-mart applications's ID, the... |
+| AppIDField | rest_framework.serializers.RegexField | 无 | 无 | 无 | Field for validating application ID |
+| AppIDSMartField | rest_framework.serializers.RegexField | 无 | pattern | 无 | Field for validating S-mart applications's ID, the... |
 | ApplicationField | rest_framework.serializers.SlugRelatedField | get_queryset | 无 | 无 | 不适用 |
-| AppNameField | paasng.utils.serializers.NickNameField | __init__ | 无 | 无 | Field for validating application name |
-| SourceDirField | paasng.utils.serializers.SafePathField | __init__ | default_error_messages | 无 | Field for validating source directory |
-| DockerfilePathField | paasng.utils.serializers.SafePathField | __init__ | default_error_messages | 无 | Field for validating Dockerfile path |
+| AppNameField | paasng.utils.serializers.NickNameField | 无 | 无 | 无 | Field for validating application name |
+| SourceDirField | paasng.utils.serializers.SafePathField | 无 | default_error_messages | 无 | Field for validating source directory |
+| DockerfilePathField | paasng.utils.serializers.SafePathField | 无 | default_error_messages | 无 | Field for validating Dockerfile path |
 
 ---
 
@@ -33626,9 +33626,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppUniqueValidator | rest_framework.validators.UniqueValidator | __init__, __call__, signal_external, get_message | field_name, field_label | 无 | Similar to the original UniqueValidator with some ... |
+| AppUniqueValidator | rest_framework.validators.UniqueValidator | signal_external, get_message | field_name, field_label | 无 | Similar to the original UniqueValidator with some ... |
 | AppNameUniqueValidator | AppUniqueValidator | 无 | field_name, field_label, signal | 无 | 不适用 |
-| AppIDUniqueValidator | AppUniqueValidator | __call__ | field_name, field_label, signal | 无 | 不适用 |
+| AppIDUniqueValidator | AppUniqueValidator | 无 | field_name, field_label, signal | 无 | 不适用 |
 
 ---
 
@@ -33697,8 +33697,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppSpecs | 无 | __init__, engine_enabled, can_create_extra_modules, confirm_required_when_publish, market_published, to_dict | 无 | 无 | Read application's specifications which were deter... |
-| AppTypeSpecs | abc.ABC | __init_subclass__, get_by_type | 无 | 无 | App's specifications derived from type |
+| AppSpecs | 无 | engine_enabled, can_create_extra_modules, confirm_required_when_publish, market_published, to_dict | 无 | 无 | Read application's specifications which were deter... |
+| AppTypeSpecs | abc.ABC | get_by_type | 无 | 无 | App's specifications derived from type |
 | DefaultTypeSpecs | AppTypeSpecs | 无 | type_, engine_enabled, can_create_extra_modules | 无 | Specs for default type |
 | EnginelessAppTypeSpecs | AppTypeSpecs | 无 | type_, engine_enabled, can_create_extra_modules | 无 | Specs for engineless_app type |
 | CloudNativeTypeSpecs | AppTypeSpecs | 无 | type_, engine_enabled, can_create_extra_modules | 无 | Specs for cloud-native type |
@@ -33739,8 +33739,8 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| sync_developers_to_sentry | `@shared_task:` | shared_task | Sync the developers list to sentry |
-| cal_app_resource_quotas | `@shared_task:` | shared_task | Calculate resource quotas for all apps for sorting... |
+| sync_developers_to_sentry | `def sync_developers_to_sentry(application_id):` | shared_task | Sync the developers list to sentry |
+| cal_app_resource_quotas | `def cal_app_resource_quotas():` | shared_task | Calculate resource quotas for all apps for sorting... |
 
 
 ---
@@ -33820,7 +33820,7 @@
     :pa... |
 | create_application | `def create_application(region: str, code: str, name: str, name_en: str, type_: str, operator: str, is_plugin_app: bool, is_ai_agent_app: bool = False):` | 无 | 创建 Application 模型 |
 | create_market_config | `def create_market_config(application: Application, source_url_type: ProductSourceUrlType, source_tp_url: Optional[str] = None, prefer_https: bool = False) -> MarketConfig:` | 无 | 创建市场模型 |
-| create_third_app | `@transaction.atomic:` | transaction.atomic | 创建第三方（外链）应用 |
+| create_third_app | `def create_third_app(region: str, code: str, name: str, name_en: str, operator: str, market_params: Optional[dict] = None) -> Application:` | transaction.atomic | 创建第三方（外链）应用 |
 | get_app_overview | `def get_app_overview(application: Application) -> dict:` | 无 | 普通应用、云原生应用的概览信息
     包含：每个模块下各个环境的访问地址和进程信息
 
@@ -33988,11 +33988,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationListViewSet | rest_framework.viewsets.ViewSet | list_detailed, list_minimal, list_search, list_idle, _list_idle_module_envs, list_evaluation, list_evaluation_issue_count | 无 | 无 | View class for application lists. |
-| ApplicationViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, destroy, _delete_all_module, _delete_application, update, get_overview | 无 | 无 | View class for a single application. |
-| ApplicationCreateViewSet | rest_framework.viewsets.ViewSet | create_third_party, create_v2, create_lesscode_app, _create_app_in_lesscode, create_cloud_native, create_ai_agent_app, get_creation_options, validate_region_perm, _get_cluster_entrance_https_enabled, _init_normal_app, _init_scene_app, _init_image_credential | serializer_class, permission_classes | 无 | 不适用 |
+| ApplicationListViewSet | rest_framework.viewsets.ViewSet | list_detailed, list_minimal, list_search, list_idle, list_evaluation, list_evaluation_issue_count | 无 | 无 | View class for application lists. |
+| ApplicationViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, destroy, update, get_overview | 无 | 无 | View class for a single application. |
+| ApplicationCreateViewSet | rest_framework.viewsets.ViewSet | create_third_party, create_v2, create_lesscode_app, create_cloud_native, create_ai_agent_app, get_creation_options, validate_region_perm | serializer_class, permission_classes | 无 | 不适用 |
 | ApplicationMembersViewSet | rest_framework.viewsets.ModelViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, create, update, leave, destroy, check_admin_count, get_roles | pagination_class, permission_classes | 无 | Viewset for application members management |
-| ApplicationMarkedViewSet | rest_framework.viewsets.ModelViewSet | get_queryset, get_object | lookup_field, serializer_class, queryset, pagination_class | 无 | 
+| ApplicationMarkedViewSet | rest_framework.viewsets.ModelViewSet | get_queryset, get_object | lookup_field, serializer_class, queryset, pagination_class | 无 |
     用户标记的应用
     list: 获取用户标记的应用列表
     - [测试地址](/a... |
@@ -34076,7 +34076,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DummyLessCodeClient | 无 | create_app, get_address | 无 | 无 | 不适用 |
-| LessCodeClient | 无 | __init__, _make_api_client, _prepare_headers, create_app, get_address | 无 | 无 | bk_lesscode 通过 APIGW 提供的 API |
+| LessCodeClient | 无 | create_app, get_address | 无 | 无 | bk_lesscode 通过 APIGW 提供的 API |
 
 ---
 
@@ -34092,7 +34092,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LessCodeGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| LessCodeGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | LessCodeApiError | LessCodeGatewayServiceError | 无 | 无 | 无 | When calling the lesscode api, lesscode returns an... |
 
 ---
@@ -34304,7 +34304,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppBuildConfig | pydantic.BaseModel | 无 | 无 | 无 | 
+| AppBuildConfig | pydantic.BaseModel | 无 | 无 | 无 |
     构建配置
 
     :param image: 镜像名称
@@ -34332,7 +34332,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| HostAlias | pydantic.BaseModel | __hash__, __eq__ | 无 | prepare_json_field | 域名解析
+| HostAlias | pydantic.BaseModel | 无 | 无 | prepare_json_field | 域名解析
 
     :param ip: ip 地址
     :param hostnames: 域... |
@@ -34390,8 +34390,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| HookCmd | pydantic.BaseModel | __init__ | 无 | 无 | The HookCmd describes a hook command. |
-| Hooks | pydantic.BaseModel | __init__ | 无 | 无 | 不适用 |
+| HookCmd | pydantic.BaseModel | 无 | 无 | 无 | The HookCmd describes a hook command. |
+| Hooks | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -34416,12 +34416,12 @@
 | ConfigMapSource | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | PersistentStorage | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | VolumeSource | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
-| Mount | pydantic.BaseModel | 无 | 无 | 无 | 
+| Mount | pydantic.BaseModel | 无 | 无 | 无 |
     Mount
 
     :param mount_path: 挂载路径
     :param... |
-| MountOverlay | Mount | 无 | 无 | 无 | 
+| MountOverlay | Mount | 无 | 无 | 无 |
     Mount Overlay
 
     :param env_name: 生效环境名
@@ -34486,12 +34486,12 @@
 | HTTPGetAction | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | TCPSocketAction | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | ProbeHandler | pydantic.BaseModel | 无 | 无 | prepare_json_field | 不适用 |
-| Probe | pydantic.BaseModel | get_probe_handler, render_port | 无 | 无 | 
+| Probe | pydantic.BaseModel | get_probe_handler, render_port | 无 | 无 |
     健康探针
 
     :param exec: 命令行执行探测
     :param htt... |
-| ProbeSet | pydantic.BaseModel | render_port | 无 | prepare_json_field | 
+| ProbeSet | pydantic.BaseModel | render_port | 无 | prepare_json_field |
     健康探针集
 
     :param liveness: 存活探针
@@ -34527,17 +34527,17 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ResQuotaOverlay | pydantic.BaseModel | 无 | 无 | 无 | 
+| ResQuotaOverlay | pydantic.BaseModel | 无 | 无 | 无 |
     资源配额 Overlay
 
     :param env_name: 生效环境名
     ... |
-| ReplicasOverlay | pydantic.BaseModel | 无 | 无 | 无 | 
+| ReplicasOverlay | pydantic.BaseModel | 无 | 无 | 无 |
     副本数 Overlay
 
     :param env_name: 生效环境名
     :... |
-| AutoscalingOverlay | apiserver.paasng.paasng.platform.bkapp_model.entities.scaling_config.AutoscalingConfig | 无 | 无 | 无 | 
+| AutoscalingOverlay | apiserver.paasng.paasng.platform.bkapp_model.entities.scaling_config.AutoscalingConfig | 无 | 无 | 无 |
     自动扩缩容 Overlay
 
     :param env_name: 生效环境名
@@ -34570,7 +34570,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ExposedType | pydantic.BaseModel | 无 | 无 | 无 | ExposedType is the exposed type of the ProcService... |
-| ProcService | pydantic.BaseModel | render_port | 无 | prepare_json_field | 
+| ProcService | pydantic.BaseModel | render_port | 无 | prepare_json_field |
     ProcService is a process service which used t... |
 
 ---
@@ -34607,7 +34607,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Process | paasng.utils.structure.AllowNotsetModel | __init__, get_proc_command | 无 | 无 | 
+| Process | paasng.utils.structure.AllowNotsetModel | get_proc_command | 无 | 无 |
     模块进程
 
     :param name: 进程名称
@@ -34634,7 +34634,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AutoscalingConfig | pydantic.BaseModel | 无 | 无 | prepare_json_field | 
+| AutoscalingConfig | pydantic.BaseModel | 无 | 无 | prepare_json_field |
     自动扩缩容配置
 
     :param min_replicas: 最小副本数量
@@ -34664,7 +34664,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SvcDiscEntryBkSaaS | pydantic.BaseModel | __init__, __hash__, __eq__ | 无 | prepare_json_field | A service discovery entry that represents an appli... |
+| SvcDiscEntryBkSaaS | pydantic.BaseModel | 无 | 无 | prepare_json_field | A service discovery entry that represents an appli... |
 | SvcDiscConfig | pydantic.BaseModel | 无 | 无 | 无 | Service discovery config |
 
 ---
@@ -35014,7 +35014,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| OverlayDataSyncer | 无 | __init__, sync, _sync_notset, _build_specs_and_index, _get_not_managed_proc_envs, _is_already_empty | 无 | 无 | Sync overlay data to db model.
+| OverlayDataSyncer | 无 | sync | 无 | 无 | Sync overlay data to db model.
 
     :param algo: T... |
 | SyncerFieldAlgo | abc.ABC | get_empty_values, get_values, get_field_mgr_key | 无 | 无 | The algorithm to sync the overlay data to the db m... |
@@ -35058,7 +35058,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ManagedFieldValues | 无 | __init__, get_target_replicas, set_field_mgr_target_replicas, reset_field_mgr_target_replicas, get_autoscaling, set_field_mgr_autoscaling, reset_field_mgr_autoscaling | default_replicas | 无 | This class helps to get the values of the fields t... |
+| ManagedFieldValues | 无 | get_target_replicas, set_field_mgr_target_replicas, reset_field_mgr_target_replicas, get_autoscaling, set_field_mgr_autoscaling, reset_field_mgr_autoscaling | default_replicas | 无 | This class helps to get the values of the fields t... |
 
 ---
 
@@ -35129,7 +35129,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ManifestConstructorError | Exception | 无 | 无 | 无 | Error when building the manifest of bkapp model. |
-| ManifestImportError | Exception | __init__, build_message_by_detail, from_validation_error | 无 | 无 | Error importing a manifest data.
+| ManifestImportError | Exception | build_message_by_detail, from_validation_error | 无 | 无 | Error importing a manifest data.
 
     :param detai... |
 
@@ -35217,7 +35217,7 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ManagerFieldsRow | 无 | contains, add, remove | 无 | define | A simple row data structure that contains a manage... |
-| ManagerFieldsRowGroup | 无 | __init__, _validate_rows, get_manager, set_manager, reset_manager, get_updated_rows, clean_updated | 无 | 无 | A group of `ManagerFieldsRow` containing data from... |
+| ManagerFieldsRowGroup | 无 | get_manager, set_manager, reset_manager, get_updated_rows, clean_updated | 无 | 无 | A group of `ManagerFieldsRow` containing data from... |
 
 ---
 
@@ -35244,9 +35244,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FieldManager | 无 | __init__, is_managed_by, get, set, reset | 无 | 无 | This class helps manage the management status of a... |
-| MultiFieldsManager | 无 | __init__, set_many, reset_many | 无 | 无 | This class helps manage the management status of a... |
-| RowGroupStore | 无 | __init__, get, save | 无 | 无 | The managed fields row group store.
+| FieldManager | 无 | is_managed_by, get, set, reset | 无 | 无 | This class helps manage the management status of a... |
+| MultiFieldsManager | 无 | set_many, reset_many | 无 | 无 | This class helps manage the management status of a... |
+| RowGroupStore | 无 | get, save | 无 | 无 | The managed fields row group store.
 
     :param mo... |
 
@@ -35363,7 +35363,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleProcessSpecManager | 无 | __init__, set_replicas, set_autoscaling | 无 | 无 | The manager for ModuleProcessSpec objects. |
+| ModuleProcessSpecManager | 无 | set_replicas, set_autoscaling | 无 | 无 | The manager for ModuleProcessSpec objects. |
 
 ---
 
@@ -35485,10 +35485,10 @@
 | AccessControlManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the access-control part. |
 | BuiltinAnnotsManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the built-in annotations. |
 | BuildConfigManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the build config. |
-| ProcessesManifestConstructor | ManifestConstructor | apply_to, apply_to_proc_overlay, get_quota_plan, get_command_and_args, _sanitize_args | 无 | 无 | Construct the processes part. |
+| ProcessesManifestConstructor | ManifestConstructor | apply_to, apply_to_proc_overlay, get_quota_plan, get_command_and_args | 无 | 无 | Construct the processes part. |
 | EnvVarsManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the env variables part. |
 | HooksManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the hooks part. |
-| MountsManifestConstructor | ManifestConstructor | apply_to, _apply_addons_tls_certs, _apply_mounts | 无 | 无 | Construct the mounts part. |
+| MountsManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the mounts part. |
 | SvcDiscoveryManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the svc discovery part. |
 | DomainResolutionManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the domain resolution part. |
 | ObservabilityManifestConstructor | ManifestConstructor | apply_to | 无 | 无 | Construct the observability part. |
@@ -36018,13 +36018,13 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleProcessSpec | paas_wl.utils.models.TimestampedModel | get_proc_command, _sanitize_proc_command | module, name, proc_command, port, target_replicas, plan_name, autoscaling, get_target_replicas, get_plan_name, get_autoscaling, get_scaling_config | 无 | 模块维度的进程定义, 表示模块当前所定义的进程, 该模型只通过 API 变更
+| ModuleProcessSpec | paas_wl.utils.models.TimestampedModel | get_proc_command | module, name, proc_command, port, target_replicas, plan_name, autoscaling, get_target_replicas, get_plan_name, get_autoscaling, get_scaling_config | 无 | 模块维度的进程定义, 表示模块当前所定义的进程, 该模型只通过 API 变更
 
     部署应用时会... |
 | ProcessSpecEnvOverlayManager | django.db.models.Manager | save_by_module | 无 | 无 | Custom manager for ProcessSpecEnvOverlay |
 | ProcessSpecEnvOverlay | paas_wl.utils.models.TimestampedModel | 无 | proc_spec, environment_name, target_replicas, plan_name, autoscaling, objects | 无 | 进程定义中允许按环境覆盖的配置 |
 | ProcessServicesFlag | paas_wl.utils.models.TimestampedModel | 无 | app_environment, implicit_needed | 无 | ProcessServicesFlag 主要用途是标记是否隐式需要 process services... |
-| ModuleDeployHookManager | django.db.models.Manager | _get_caller, enable_hook, disable_hook, get_by_type | 无 | 无 | ModuleDeployHook RelatedManager, should be used by... |
+| ModuleDeployHookManager | django.db.models.Manager | enable_hook, disable_hook, get_by_type | 无 | 无 | ModuleDeployHook RelatedManager, should be used by... |
 | ModuleDeployHook | paas_wl.utils.models.TimestampedModel | get_proc_command, get_command, get_args | module, type, proc_command, enabled, objects | 无 | 钩子命令 |
 | SvcDiscConfig | paas_wl.utils.models.AuditedModel | 无 | application | 无 | 服务发现配置 |
 | DomainResolution | paas_wl.utils.models.AuditedModel | 无 | application | 无 | 域名解析配置 |
@@ -36105,9 +36105,9 @@
 | ProbeSetSLZ | rest_framework.serializers.Serializer | 无 | liveness, readiness, startup | 无 | 探针集合 |
 | MetricSLZ | rest_framework.serializers.Serializer | 无 | service_name, path, params | 无 | 不适用 |
 | MonitoringSLZ | rest_framework.serializers.Serializer | 无 | metric | 无 | 不适用 |
-| ModuleProcessSpecSLZ | rest_framework.serializers.Serializer | validate_services, validate, _validate_monitoring | name, image, command, args, services, port, env_overlay, probes, monitoring | 无 | 进程配置 |
+| ModuleProcessSpecSLZ | rest_framework.serializers.Serializer | validate_services, validate | name, image, command, args, services, port, env_overlay, probes, monitoring | 无 | 进程配置 |
 | ModuleProcessSpecsOutputSLZ | rest_framework.serializers.Serializer | 无 | proc_specs, metadata | 无 | 不适用 |
-| ModuleProcessSpecsInputSLZ | rest_framework.serializers.Serializer | validate, _validate_exposed_types | proc_specs | 无 | 不适用 |
+| ModuleProcessSpecsInputSLZ | rest_framework.serializers.Serializer | validate | proc_specs | 无 | 不适用 |
 | ModuleDeployHookSLZ | rest_framework.serializers.Serializer | 无 | type, proc_command, command, args, enabled | 无 | 钩子命令 |
 | SvcDiscEntryBkSaaSSLZ | rest_framework.serializers.Serializer | to_internal_value | bk_app_code, module_name | 无 | A service discovery entry that represents an appli... |
 | FieldManagerSLZ | rest_framework.serializers.Serializer | 无 | name | 无 | A serializer for the field manager of BkApp model ... |
@@ -36182,7 +36182,7 @@
 | MetricInputSLZ | rest_framework.serializers.Serializer | 无 | process, serviceName, path, params | 无 | 不适用 |
 | MonitoringInputSLZ | rest_framework.serializers.Serializer | 无 | metrics | 无 | 不适用 |
 | ObservabilityInputSLZ | rest_framework.serializers.Serializer | 无 | monitoring | 无 | 不适用 |
-| BkAppSpecInputSLZ | rest_framework.serializers.Serializer | to_internal_value, validate, _validate_proc_services, _validate_observability | build, processes, configuration, addons, mounts, hooks, envOverlay, svcDiscovery, domainResolution, observability | 无 | BkApp resource slz in camel-case format |
+| BkAppSpecInputSLZ | rest_framework.serializers.Serializer | to_internal_value, validate | build, processes, configuration, addons, mounts, hooks, envOverlay, svcDiscovery, domainResolution, observability | 无 | BkApp resource slz in camel-case format |
 
 ---
 
@@ -36376,8 +36376,8 @@
 | BkAppModelManifestsViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, replace | permission_classes | 无 | The main viewset for managing the manifests of blu... |
 | ModuleProcessSpecViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, batch_upsert | permission_classes | 无 | API for CRUD ModuleProcessSpec |
 | ModuleDeployHookViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert | permission_classes | 无 | API for CRUD ModuleDeployHook |
-| SvcDiscConfigViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert, _get_field_manager | permission_classes | 无 | 不适用 |
-| DomainResolutionViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert, _get_field_manager | permission_classes | 无 | 不适用 |
+| SvcDiscConfigViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert | permission_classes | 无 | 不适用 |
+| DomainResolutionViewSet | rest_framework.viewsets.GenericViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert | permission_classes | 无 | 不适用 |
 
 ---
 
@@ -36475,7 +36475,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppDeclarativeController | 无 | __init__, perform_action, perform_create, get_allowed_regions, perform_update, sync_modules, _sync_default_module, sync_market_fields, sync_services_fields, _sync_module_services_fields, save_description | source_origin, update_allowed_fields | 无 | A controller which creates or updates application ... |
+| AppDeclarativeController | 无 | perform_action, perform_create, get_allowed_regions, perform_update, sync_modules, sync_market_fields, sync_services_fields, save_description | source_origin, update_allowed_fields | 无 | A controller which creates or updates application ... |
 
 ---
 
@@ -36509,7 +36509,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppField | 无 | __init__, handle_desc | 无 | 无 | Represents a field in app json data |
+| AppField | 无 | handle_desc | 无 | 无 | Represents a field in app json data |
 | AppNameField | AppField | handle_desc | 无 | 无 | 不适用 |
 | AppRegionField | AppField | handle_desc | 无 | 无 | 不适用 |
 
@@ -36571,7 +36571,7 @@
 |------|------|------|------|--------|----------|
 | DisplayOptions | paasng.platform.declarative.basic.AllowOmittedModel | 无 | 无 | 无 | 不适用 |
 | MarketDesc | paasng.platform.declarative.basic.AllowOmittedModel | 无 | 无 | 无 | 不适用 |
-| ServiceSpec | pydantic.BaseModel | __init__ | 无 | 无 | 不适用 |
+| ServiceSpec | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | DiffItem | pydantic.BaseModel, Generic[M] | 无 | 无 | 无 | 不适用 |
 | ModuleDiffResult | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | ModuleDesc | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
@@ -36773,7 +36773,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| OmittedType | 无 | __repr__, __bool__, __copy__, __deepcopy__, dict | 无 | 无 | 不适用 |
+| OmittedType | 无 | dict | 无 | 无 | 不适用 |
 | AppSpecVersion | blue_krill.data_types.enum.IntStructuredEnum | 无 | VER_1, VER_2, VER_3, UNSPECIFIED | 无 | 不适用 |
 | AppDescPluginType | blue_krill.data_types.enum.StrStructuredEnum | 无 | APP_VERSION | 无 | 不适用 |
 | DiffType | blue_krill.data_types.enum.StrStructuredEnum | 无 | ADDED, DELETED, NOT_MODIFIED | 无 | 不适用 |
@@ -36831,7 +36831,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeploymentDeclarativeController | 无 | __init__, perform_action, handle_desc, _handle_desc_cnative_style, _handle_desc_normal_style, _save_desc_obj, _update_bkmonitor | 无 | 无 | A controller which process deployment description,... |
+| DeploymentDeclarativeController | 无 | perform_action, handle_desc | 无 | 无 | A controller which process deployment description,... |
 
 ---
 
@@ -36866,13 +36866,13 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BluekingMonitor | 无 | __attrs_post_init__ | 无 | define | Resource: BluekingMonitor
+| BluekingMonitor | 无 | 无 | 无 | define | Resource: BluekingMonitor
 
     :param port: Servic... |
 | ProcfileProc | 无 | 无 | 无 | define | The process object defined by Procfile.
 
     :para... |
-| DeploymentDesc | 无 | get_procfile, get_proc_tmpls, get_processes, use_procfile_procs_if_conflict, _equal_with_procs, to_proc_tmpl | 无 | define | Deployment description object, contains spec data ... |
+| DeploymentDesc | 无 | get_procfile, get_proc_tmpls, get_processes, use_procfile_procs_if_conflict, to_proc_tmpl | 无 | define | Deployment description object, contains spec data ... |
 
 ---
 
@@ -36927,7 +36927,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkSaaSEnvVariableFactory | 无 | __init__, make, encode_data, decode_data | variable_name | 无 | Generate env variable from config |
+| BkSaaSEnvVariableFactory | 无 | make, encode_data, decode_data | variable_name | 无 | Generate env variable from config |
 | BkSaaSAddrDiscoverer | 无 | get, extend_with_clusters | 无 | 无 | Get the service addresses of the given SaaS items |
 
 ---
@@ -37058,11 +37058,11 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DescriptionValidationError | Exception | __init__, build_message_by_detail, from_validation_error | 无 | 无 | Raised when any given description was invalid
+| DescriptionValidationError | Exception | build_message_by_detail, from_validation_error | 无 | 无 | Raised when any given description was invalid
 
    ... |
 | UnsupportedSpecVer | Exception | 无 | 无 | 无 | Raised if the app spec data is using an unsupporte... |
-| ControllerError | Exception | __init__ | 无 | 无 | An error occurred when controller is processing th... |
+| ControllerError | Exception | 无 | 无 | 无 | An error occurred when controller is processing th... |
 
 ---
 
@@ -37140,13 +37140,13 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DescriptionHandler | typing_extensions.Protocol | app_desc, handle_app | 无 | 无 | 不适用 |
-| CNativeAppDescriptionHandler | 无 | from_file, __init__, app_desc, handle_app | 无 | 无 | A handler to process cnative application's YAML de... |
-| AppDescriptionHandler | 无 | from_file, __init__, app_desc, handle_app | 无 | 无 | A handler to process application's YAML descriptio... |
-| UnsupportedVerDescriptionHandler | 无 | __init__, app_desc, handle_app | 无 | 无 | A special handler, raise error if the version is n... |
+| CNativeAppDescriptionHandler | 无 | from_file, app_desc, handle_app | 无 | 无 | A handler to process cnative application's YAML de... |
+| AppDescriptionHandler | 无 | from_file, app_desc, handle_app | 无 | 无 | A handler to process application's YAML descriptio... |
+| UnsupportedVerDescriptionHandler | 无 | app_desc, handle_app | 无 | 无 | A special handler, raise error if the version is n... |
 | NoVerDescriptionHandler | 无 | app_desc, handle_app | message | 无 | A special handler, raise error if no version is sp... |
 | DeployDescHandler | typing_extensions.Protocol | handle | 无 | 无 | 不适用 |
-| DefaultDeployDescHandler | 无 | __init__, handle | 无 | 无 | The default handler for handling deployment descri... |
-| ProcfileOnlyDeployDescHandler | 无 | __init__, handle | 无 | 无 | The handler for handling the procfile data only.
+| DefaultDeployDescHandler | 无 | handle | 无 | 无 | The default handler for handling deployment descri... |
+| ProcfileOnlyDeployDescHandler | 无 | handle | 无 | 无 | The handler for handling the procfile data only.
 
 ... |
 
@@ -37658,8 +37658,8 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ImageCredential | 无 | 无 | 无 | dataclass | 不适用 |
-| ImageCredentialManager | 无 | __init__, provide | 无 | 无 | A Helper provide the image pull secret for the giv... |
-| RuntimeImageInfo | 无 | __init__, type, generate_image | 无 | 无 | 提供与当前应用匹配的运行时环境信息的工具 |
+| ImageCredentialManager | 无 | provide | 无 | 无 | A Helper provide the image pull secret for the giv... |
+| RuntimeImageInfo | 无 | type, generate_image | 无 | 无 | 提供与当前应用匹配的运行时环境信息的工具 |
 
 ---
 
@@ -37691,8 +37691,8 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppDefaultDomains | 无 | __init__, initialize_domains, sync, as_env_vars | 无 | 无 | A helper class for dealing with app's default subd... |
-| AppDefaultSubpaths | 无 | __init__, sync, as_env_vars, _build_sub_path_env | 无 | 无 | A helper class for dealing with app's default subp... |
+| AppDefaultDomains | 无 | initialize_domains, sync, as_env_vars | 无 | 无 | A helper class for dealing with app's default subd... |
+| AppDefaultSubpaths | 无 | sync, as_env_vars | 无 | 无 | A helper class for dealing with app's default subp... |
 
 ---
 
@@ -37721,7 +37721,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EnvVariablesProviders | 无 | __init__, register_env, gather | 无 | 无 | Allow registering extra env variables functions fo... |
+| EnvVariablesProviders | 无 | register_env, gather | 无 | 无 | Allow registering extra env variables functions fo... |
 
 ---
 
@@ -37776,8 +37776,8 @@
 |------|------|------|------|--------|----------|
 | MetaDataReader | typing_extensions.Protocol | get_procfile, get_app_desc, get_dockerignore | 无 | 无 | Protocol to read metadata for deploy |
 | MetaDataFileReader | 无 | read_file, get_procfile, get_app_desc, get_dockerignore, safe_read_files | 无 | 无 | 不适用 |
-| VCSMetaDataReader | MetaDataFileReader | __init__, read_file | error_tips | 无 | 不适用 |
-| PackageMetaDataReader | MetaDataFileReader | __init__, get_client, extract_version_info, read_file, get_procfile, get_app_desc | error_tips | 无 | 不适用 |
+| VCSMetaDataReader | MetaDataFileReader | read_file | error_tips | 无 | 不适用 |
+| PackageMetaDataReader | MetaDataFileReader | get_client, extract_version_info, read_file, get_procfile, get_app_desc | error_tips | 无 | 不适用 |
 
 ---
 
@@ -37900,7 +37900,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseArchiveManager | 无 | __init__, perform_env_offline, perform_implement | 无 | 无 | Archive a module environment.
+| BaseArchiveManager | 无 | perform_env_offline, perform_implement | 无 | 无 | Archive a module environment.
 
     :param env: the... |
 | ArchiveResultHandler | blue_krill.async_utils.poll_task.CallbackHandler | handle, finish_archive | 无 | 无 | Handler for archive operation |
@@ -37982,7 +37982,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| archive_related_resources | `@shared_task:` | shared_task | 应用下架时，下架相关资源（service、pre-release-hook、ingress）
+| archive_related_resources | `def archive_related_resources(wl_app_id):` | shared_task | 应用下架时，下架相关资源（service、pre-release-hook、ingress）
 
   ... |
 
@@ -38067,7 +38067,7 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| start_bg_build_process | `@shared_task:` | shared_task | Start a new build process which starts a builder t... |
+| start_bg_build_process | `def start_bg_build_process(deploy_id: UUID, bp_id: UUID, metadata: Dict, stream_channel_id: Optional[str] = None, use_bk_ci_pipeline: bool = False):` | shared_task | Start a new build process which starts a builder t... |
 | interrupt_build_proc | `def interrupt_build_proc(bp_id: UUID) -> bool:` | 无 | Interrupt a build process
 
     :return: Whether th... |
@@ -38157,9 +38157,9 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DefaultBuildProcessExecutor | paasng.platform.engine.workflow.DeployStep | __init__, execute, start_following_logs, wait_for_succeeded, start_slugbuilder, create_and_bind_build_instance, clean_slugbuilder | phase_type | 无 | 
+| DefaultBuildProcessExecutor | paasng.platform.engine.workflow.DeployStep | execute, start_following_logs, wait_for_succeeded, start_slugbuilder, create_and_bind_build_instance, clean_slugbuilder | phase_type | 无 |
     Execute a build process, using k8s pod to bui... |
-| PipelineBuildProcessExecutor | paasng.platform.engine.workflow.DeployStep | __init__, execute, _start_bk_ci_pipeline, _build_env_vars_params, _start_following_logs, _ensure_pipeline_build_success, _create_and_bind_build_instance | phase_type, polling_result_interval, bk_ci_log_level_tag_regex, max_env_var_block_num, mac_env_var_block_length, bk_ci_pipeline_job_id | 无 | 
+| PipelineBuildProcessExecutor | paasng.platform.engine.workflow.DeployStep | execute | phase_type, polling_result_interval, bk_ci_log_level_tag_regex, max_env_var_block_num, mac_env_var_block_length, bk_ci_pipeline_job_id | 无 |
     Execute a build process, using bk_ci pipeline... |
 
 ---
@@ -38262,7 +38262,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PreReleaseDummyExecutor | paasng.platform.engine.workflow.DeployStep | start, _mark_step_start, _perform, _mark_step_stop | phase_type, step_name | 无 | 
+| PreReleaseDummyExecutor | paasng.platform.engine.workflow.DeployStep | start | phase_type, step_name | 无 |
     Dummy executor for BkApp pre-release hook
 
   ... |
@@ -38360,10 +38360,10 @@
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | exec_command | `def exec_command(env: ModuleEnvironment, command_template: CommandTemplate, operator: str, stream_channel_id: Optional[str] = None, extra_envs: Optional[Dict] = None) -> str:` | 无 | run a command in a built slug. |
-| execute_bg_command | `@shared_task:` | shared_task | execute a command.
+| execute_bg_command | `def execute_bg_command(uuid: str, stream_channel_id: Optional[str] = None, extra_envs: Optional[Dict] = None):` | shared_task | execute a command.
 
     :param uuid: pk of Command... |
-| exec_bkapp_hook | `@shared_task:` | shared_task | 不适用 |
+| exec_bkapp_hook | `def exec_bkapp_hook(bkapp_name: str, bkapp_deploy_id: int, deployment_id: str):` | shared_task | 不适用 |
 
 
 ---
@@ -38483,7 +38483,7 @@
 |------|------|------|------|--------|----------|
 | AbortPolicy | abc.ABC | get_reason, is_interrupted, evaluate | 无 | 无 | Base class for wait policy |
 | UserInterruptedPolicy | AbortPolicy | get_reason, is_interrupted, evaluate | 无 | 无 | Abort procedure when user requested an interruptio... |
-| WaitProcedurePoller | blue_krill.async_utils.poll_task.TaskPoller | __init__, query, get_status | overall_timeout_seconds | 无 | Base class of process waiting procedure
+| WaitProcedurePoller | blue_krill.async_utils.poll_task.TaskPoller | query, get_status | overall_timeout_seconds | 无 | Base class of process waiting procedure
 
     `para... |
 | WaitAppModelReady | WaitProcedurePoller | get_status | overall_timeout_seconds | 无 | A task poller to query status for fresh AppModelDe... |
@@ -38546,14 +38546,14 @@
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | AbortPolicy | abc.ABC | get_reason, is_interrupted, evaluate | 无 | 无 | Base class for wait policy |
-| WaitProcedurePoller | blue_krill.async_utils.poll_task.TaskPoller | __init__, query, broadcast_events, _get_current_processes, _get_last_processes, get_status | max_retries_on_error, overall_timeout_seconds, default_retry_delay_seconds | 无 | Base class of process waiting procedure
+| WaitProcedurePoller | blue_krill.async_utils.poll_task.TaskPoller | query, broadcast_events, get_status | max_retries_on_error, overall_timeout_seconds, default_retry_delay_seconds | 无 | Base class of process waiting procedure
 
     `para... |
 | DynamicReadyTimeoutPolicy | AbortPolicy | get_reason, evaluate | max_overall_timeout_seconds | 无 | Calculate overall timeout dynamically based on cur... |
 | TooManyRestartsPolicy | AbortPolicy | get_reason, evaluate | maximum_count | 无 | Abort procedure when instance has been restarted f... |
 | UserInterruptedPolicy | AbortPolicy | get_reason, is_interrupted, evaluate | 无 | 无 | Abort procedure when user requested an interruptio... |
 | WaitForAllStopped | WaitProcedurePoller | get_status | overall_timeout_seconds | 无 | Wait processes to fully stopped |
-| WaitForReleaseAllReady | WaitProcedurePoller | __init__, get_status | abort_policies, overall_timeout_seconds | 无 | Wait for processes to updated to a specified relea... |
+| WaitForReleaseAllReady | WaitProcedurePoller | get_status | abort_policies, overall_timeout_seconds | 无 | Wait for processes to updated to a specified relea... |
 
 ---
 
@@ -38645,10 +38645,10 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| start_build | `@shared_task(base=I18nTask):` | shared_task | Start a deployment process
+| start_build | `def start_build(deployment_id, runtime_type: RuntimeType, *args, **kwargs):` | shared_task | Start a deployment process
 
     :param deployment_... |
-| start_build_error_callback | `@shared_task(base=I18nTask):` | shared_task | 不适用 |
+| start_build_error_callback | `def start_build_error_callback(*args, **kwargs):` | shared_task | 不适用 |
 
 #### 类
 
@@ -38718,13 +38718,13 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| release_without_build | `@shared_task(base=I18nTask):` | shared_task | Skip the build and deploy the application directly... |
+| release_without_build | `def release_without_build(deployment_id, *args, **kwargs):` | shared_task | Skip the build and deploy the application directly... |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ImageReleaseMgr | paasng.platform.engine.workflow.DeployStep | start, _handle_app_processes_and_dummy_build, _handle_processes_by_build, _handle_smart_app_description, _handle_image_app_processes, _create_build, _provision_services, _setup_image_credentials | phase_type | 无 | The main controller for release an Image applicati... |
+| ImageReleaseMgr | paasng.platform.engine.workflow.DeployStep | start | phase_type | 无 | The main controller for release an Image applicati... |
 
 ---
 
@@ -38960,7 +38960,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployTaskRunner | 无 | __init__, start, require_build | 无 | 无 | Start a deploy task.
+| DeployTaskRunner | 无 | start, require_build | 无 | 无 | Start a deploy task.
 
     :param deployment: An in... |
 
@@ -39027,11 +39027,11 @@
 | OfflineOperationExistError | Exception | 无 | 无 | 无 | Offline Operation already exist |
 | ProcessOperationTooOften | Exception | 无 | 无 | 无 | 进程操作过于频繁 |
 | NoUnlinkedDeployPhaseError | Exception | 无 | 无 | 无 | 没有未绑定的部署阶段 |
-| StepNotInPresetListError | Exception | __init__ | 无 | 无 | 不是预设步骤 |
-| DuplicateNameInSamePhaseError | Exception | __init__ | 无 | 无 | 预设步骤名重复 |
+| StepNotInPresetListError | Exception | 无 | 无 | 无 | 不是预设步骤 |
+| DuplicateNameInSamePhaseError | Exception | 无 | 无 | 无 | 预设步骤名重复 |
 | DeployInterruptionFailed | Exception | 无 | 无 | 无 | Unable to interrupt a deployment |
-| DeployShouldAbortError | Exception | __init__, __str__ | 无 | 无 | Raise this exception when a deploy procedure shoul... |
-| HandleAppDescriptionError | Exception | __init__, __str__ | 无 | 无 | Raise this exception when failed to handle a app d... |
+| DeployShouldAbortError | Exception | 无 | 无 | 无 | Raise this exception when a deploy procedure shoul... |
+| HandleAppDescriptionError | Exception | 无 | 无 | 无 | Raise this exception when failed to handle a app d... |
 | InitDeployDescHandlerError | Exception | 无 | 无 | 无 | Error when initialing the description handler for ... |
 
 ---
@@ -39075,12 +39075,12 @@
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| start_phase | `@receiver(pre_phase_start):` | receiver | 开启 阶段 |
-| end_phase | `@receiver(post_phase_end):` | receiver | 结束 阶段
+| start_phase | `def start_phase(sender: 'DeployStepMemObj', phase: DeployPhaseTypes, **kwargs):` | receiver | 开启 阶段 |
+| end_phase | `def end_phase(sender, status: JobStatus, phase: DeployPhaseTypes, **kwargs):` | receiver | 结束 阶段
     :param sender: 需要保证 sender 具备 stream 对象
 ... |
-| attach_all_phases | `@receiver(pre_appenv_deploy):` | receiver | 部署开始，为所有阶段做关联 |
-| update_last_deployed_date | `@receiver(post_appenv_deploy):` | receiver | Update module and application's `last_deployed_dat... |
+| attach_all_phases | `def attach_all_phases(sender: 'ApplicationEnvironment', deployment: 'Deployment', **kwargs):` | receiver | 部署开始，为所有阶段做关联 |
+| update_last_deployed_date | `def update_last_deployed_date(sender, deployment: 'Deployment', **kwargs):` | receiver | Update module and application's `last_deployed_dat... |
 
 
 ---
@@ -39117,7 +39117,7 @@
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeploymentLogStreams | 无 | __init__, main_stream, main_stream_for_write, preparation_stream, preparation_stream_for_write, build_proc_stream, pre_release_cmd_stream, _get_stream_for_write, _get_stream | stream_uuid_fields | 无 | Manages the log streams(in databases) for a deploy... |
+| DeploymentLogStreams | 无 | main_stream, main_stream_for_write, preparation_stream, preparation_stream_for_write, build_proc_stream, pre_release_cmd_stream | stream_uuid_fields | 无 | Manages the log streams(in databases) for a deploy... |
 
 ---
 
@@ -39185,7 +39185,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployError | django.core.management.base.CommandError | __init__ | 无 | 无 | 不适用 |
+| DeployError | django.core.management.base.CommandError | 无 | 无 | 无 | 不适用 |
 | Command | django.core.management.base.BaseCommand | add_arguments, handle, waiting | 无 | 无 | 手动触发部署指令, 并轮询部署结果 |
 
 ---
@@ -39313,7 +39313,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | handle, _sync_step_metas, _sync_default_set, _sync_cnb_set, _sync_slug_pilot_set, _sync_docker_build_set, _sync_image_release_set, _sync_metas | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | handle | help | 无 | 不适用 |
 
 ---
 
@@ -39985,7 +39985,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OperationVersionBase | paasng.utils.models.TimestampedModel | 无 | id, operator, source_type, source_location, source_version_type, source_version_name, source_revision, source_comment | 无 | 带操作版本信息的BaseModel |
-| EngineApp | paasng.utils.models.OwnerTimestampedModel | __str__, to_wl_obj | id, name, region, is_active | 无 | 蓝鲸应用引擎应用 |
+| EngineApp | paasng.utils.models.OwnerTimestampedModel | to_wl_obj | id, name, region, is_active | 无 | 蓝鲸应用引擎应用 |
 | MarkStatusMixin | 无 | get_event_type, to_dict, mark_procedure_status, mark_and_write_to_stream | 无 | 无 | 不适用 |
 
 ---
@@ -40034,8 +40034,8 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ConfigVarQuerySet | django.db.models.QuerySet | filter_by_environment_name | 无 | 无 | Custom QuerySet for ConfigVar model |
-| ConfigVar | paasng.utils.models.TimestampedModel | __str__, environment_name, is_equivalent_to, clone_to | module, is_global, environment, key, value, description, is_builtin, objects | 无 | Config vars for application |
-| BuiltInEnvVarDetail | 无 | __post_init__, to_dict | 无 | dataclass | 不适用 |
+| ConfigVar | paasng.utils.models.TimestampedModel | environment_name, is_equivalent_to, clone_to | module, is_global, environment, key, value, description, is_builtin, objects | 无 | Config vars for application |
+| BuiltInEnvVarDetail | 无 | to_dict | 无 | dataclass | 不适用 |
 | BuiltinConfigVar | paasng.utils.models.AuditedModel | 无 | key, value, description, operator | 无 | Default config vars for global, can be added or ed... |
 
 ---
@@ -40096,10 +40096,10 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | DeploymentQuerySet | django.db.models.QuerySet | filter_by_env, owned_by_module, latest_succeeded | 无 | 无 | Custom QuerySet for Deployment model |
 | AdvancedOptions | 无 | 无 | 无 | define | 不适用 |
-| ProcessTmpl | 无 | __post_init__ | 无 | dataclass | 进程配置
+| ProcessTmpl | 无 | 无 | 无 | dataclass | 进程配置
 
     TODO 尝试使用 bkapp_model.entities.Process 替... |
-| Deployment | paasng.platform.engine.models.base.OperationVersionBase | __str__, update_fields, get_engine_app, get_application, fail_with_error, get_source_dir, has_succeeded, has_requested_int, start_time, complete_time, finished_status, get_version_info, version_info, get_deploy_hooks, get_processes, get_procfile | app_environment, status, build_process_id, build_id, build_status, build_int_requested_at, pre_release_id, pre_release_status, pre_release_int_requested_at, release_id, bkapp_release_id, release_status, release_int_requested_at, err_detail, processes, bkapp_revision_id, preparation_stream_id, main_stream_id, objects | 无 | 部署记录 |
+| Deployment | paasng.platform.engine.models.base.OperationVersionBase | update_fields, get_engine_app, get_application, fail_with_error, get_source_dir, has_succeeded, has_requested_int, start_time, complete_time, finished_status, get_version_info, version_info, get_deploy_hooks, get_processes, get_procfile | app_environment, status, build_process_id, build_id, build_status, build_int_requested_at, pre_release_id, pre_release_status, pre_release_int_requested_at, release_id, bkapp_release_id, release_status, release_int_requested_at, err_detail, processes, bkapp_revision_id, preparation_stream_id, main_stream_id, objects | 无 | 部署记录 |
 
 ---
 
@@ -40146,7 +40146,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployOperationManager | 无 | __init__, has_pending | 无 | 无 | 目前用来统一管理 Deployment & Offline 两类的操作，旨在替换掉 Operatio... |
+| DeployOperationManager | 无 | has_pending | 无 | 无 | 目前用来统一管理 Deployment & Offline 两类的操作，旨在替换掉 Operatio... |
 | ApplyResult | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | PlainConfigVar | pydantic.BaseModel | 无 | 无 | 无 | 不适用 |
 | ExportedConfigVars | pydantic.BaseModel | to_file_content, from_list | 无 | 无 | 不适用 |
@@ -40181,7 +40181,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MobileConfig | paasng.utils.models.TimestampedModel | __str__, access_domain | environment, is_enabled, lb_plan, access_url | 无 | Mobile config switcher for application |
+| MobileConfig | paasng.utils.models.TimestampedModel | access_domain | environment, is_enabled, lb_plan, access_url | 无 | Mobile config switcher for application |
 
 ---
 
@@ -40218,7 +40218,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OfflineOperationQuerySet | django.db.models.QuerySet | latest_succeeded, get_latest_resumable | 无 | 无 | 不适用 |
-| OfflineOperation | apiserver.paasng.paasng.platform.engine.models.base.OperationVersionBase | __str__, set_log, append_log, update_operation_status, has_succeeded, set_failed, set_successful, get_version_info | app_environment, status, log, err_detail, objects | 无 | 部署记录 |
+| OfflineOperation | apiserver.paasng.paasng.platform.engine.models.base.OperationVersionBase | set_log, append_log, update_operation_status, has_succeeded, set_failed, set_successful, get_version_info | app_environment, status, log, err_detail, objects | 无 | 部署记录 |
 
 ---
 
@@ -40251,7 +40251,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | OperationQuerySet | django.db.models.QuerySet | owned_by_module | 无 | 无 | Custom QuerySet for ModuleEnvironmentOperations mo... |
-| ModuleEnvironmentOperations | paasng.utils.models.TimestampedModel | __str__, get_detail, get_offline_obj, get_deployment_obj | id, application, app_environment, operator, operation_type, object_uid, status, objects | 无 | 不适用 |
+| ModuleEnvironmentOperations | paasng.utils.models.TimestampedModel | get_detail, get_offline_obj, get_deployment_obj | id, application, app_environment, operator, operation_type, object_uid, status, objects | 无 | 不适用 |
 
 ---
 
@@ -40292,7 +40292,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | DeployPhaseTypes | blue_krill.data_types.enum.StrStructuredEnum | 无 | PREPARATION, BUILD, RELEASE | 无 | 部署阶段 |
 | DeployPhaseEventSLZ | rest_framework.serializers.Serializer | 无 | name, start_time, complete_time, status | 无 | Phase SeverSendEvent |
-| DeployPhase | paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.MarkStatusMixin | attached, _get_step_pattern_map, get_started_pattern_map, get_finished_pattern_map, get_step_by_name, attach, get_unfinished_steps, to_dict, get_event_type, __str__ | type, engine_app, deployment, status, start_time, complete_time | 无 | 部署阶段 |
+| DeployPhase | paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.MarkStatusMixin | attached, get_started_pattern_map, get_finished_pattern_map, get_step_by_name, attach, get_unfinished_steps, to_dict, get_event_type | type, engine_app, deployment, status, start_time, complete_time | 无 | 部署阶段 |
 
 ---
 
@@ -40360,10 +40360,10 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | DeployStepEventSLZ | rest_framework.serializers.Serializer | get_phase | phase, name, start_time, complete_time, status | 无 | Step SeverSendEvent |
 | DeployStepMetaManager | django.db.models.Manager | get_by_natural_key | 无 | 无 | 不适用 |
-| DeployStepMeta | paasng.utils.models.AuditedModel | __str__, natural_key | phase, name, display_name, started_patterns, finished_patterns, objects | 无 | 部署步骤元信息 |
+| DeployStepMeta | paasng.utils.models.AuditedModel | natural_key | phase, name, display_name, started_patterns, finished_patterns, objects | 无 | 部署步骤元信息 |
 | StepMetaSetManager | django.db.models.Manager | get_by_natural_key | 无 | 无 | 不适用 |
-| StepMetaSet | paasng.utils.models.AuditedModel | __str__, natural_key, create_step_instances, list_metas_by_phase, list_sorted_step_names | name, metas, is_default, objects | 无 | 部署步骤元信息集 |
-| DeployStep | paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.base.MarkStatusMixin | ensure_start_before_complete, to_dict, is_completed, __str__, get_event_type, try_to_bind_meta | name, display_name, phase, skipped, status, start_time, complete_time, meta | 无 | 部署步骤 |
+| StepMetaSet | paasng.utils.models.AuditedModel | natural_key, create_step_instances, list_metas_by_phase, list_sorted_step_names | name, metas, is_default, objects | 无 | 部署步骤元信息集 |
+| DeployStep | paasng.utils.models.UuidAuditedModel, paasng.platform.engine.models.base.MarkStatusMixin | ensure_start_before_complete, to_dict, is_completed, get_event_type, try_to_bind_meta | name, display_name, phase, skipped, status, start_time, complete_time, meta | 无 | 部署步骤 |
 
 ---
 
@@ -40505,7 +40505,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployPhaseManager | 无 | __init__, list_phase_types, get_or_create_all, attach, rebuild_step_if_outdated, _get_or_create, _get_unattached_phase | 无 | 无 | Common manager for DeployPhase model |
+| DeployPhaseManager | 无 | list_phase_types, get_or_create_all, attach, rebuild_step_if_outdated | 无 | 无 | Common manager for DeployPhase model |
 
 ---
 
@@ -40561,7 +40561,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| StepMetaData | 无 | __attrs_post_init__ | 无 | define | 不适用 |
+| StepMetaData | 无 | 无 | 无 | define | 不适用 |
 
 ---
 
@@ -40615,7 +40615,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployStepPicker | 无 | pick, _pick_default_meta_set | 无 | 无 | 部署步骤选择器 |
+| DeployStepPicker | 无 | pick | 无 | 无 | 部署步骤选择器 |
 
 ---
 
@@ -40660,8 +40660,8 @@ s-mart(镜像): 'image:镜像 tag'
 | ProcessEvent | ProcessBaseEvent | 无 | 无 | dataclass | 不适用 |
 | ProcInstEventType | blue_krill.data_types.enum.IntStructuredEnum | 无 | CREATED, REMOVED, UPDATED_BECOME_READY, UPDATED_BECOME_NOT_READY, UPDATED_RESTARTED | 无 | 不适用 |
 | ProcInstEvent | ProcessBaseEvent | 无 | 无 | dataclass | 不适用 |
-| ProcEventsProducer | 无 | __init__, produce, proc_process_pure, proc_process_updated, _get_proc_by_name | 无 | 无 | Produces events according to processes states |
-| ProcInstanceEventsProducer | 无 | __init__, produce, process_updated, _get_inst_by_name | 无 | 无 | Produces events according to process's instances s... |
+| ProcEventsProducer | 无 | produce, proc_process_pure, proc_process_updated | 无 | 无 | Produces events according to processes states |
+| ProcInstanceEventsProducer | 无 | produce, process_updated | 无 | 无 | Produces events according to process's instances s... |
 
 ---
 
@@ -40795,7 +40795,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ProcessesSnapshotStore | 无 | __init__, save, get | data_expires_in | 无 | Stores snapshot of application's processes data, u... |
+| ProcessesSnapshotStore | 无 | save, get | data_expires_in | 无 | Stores snapshot of application's processes data, u... |
 
 ---
 
@@ -40849,7 +40849,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationProcessWebConsoleViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _is_whitelisted_user, _get_webconsole_docs_from_advisor, _get_webconsole_command, open | permission_classes | 无 | 不适用 |
+| ApplicationProcessWebConsoleViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | open | permission_classes | 无 | 不适用 |
 
 ---
 
@@ -40914,7 +40914,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | DeploymentAdvancedOptionsSLZ | rest_framework.serializers.Serializer | 无 | dev_hours_spent, image_pull_policy, build_only, special_tag, build_id, invoke_message | 无 | 不适用 |
-| CreateDeploymentSLZ | rest_framework.serializers.Serializer | validate, _is_expected_revision, _is_image_digest | version_type, version_name, revision, advanced_options | 无 | 创建部署 |
+| CreateDeploymentSLZ | rest_framework.serializers.Serializer | validate | version_type, version_name, revision, advanced_options | 无 | 创建部署 |
 | CreateDeploymentResponseSLZ | rest_framework.serializers.Serializer | 无 | deployment_id, stream_url | 无 | 不适用 |
 | QueryDeploymentsSLZ | rest_framework.serializers.Serializer | 无 | environment, operator | 无 | 不适用 |
 | QueryOperationsSLZ | rest_framework.serializers.Serializer | 无 | environment, operator | 无 | 不适用 |
@@ -40929,7 +40929,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ConfigVarFormatWithIdSLZ | ConfigVarFormatSLZ | 无 | id | 无 | When batch editing, need to pass in the id. |
 | ConfigVarImportSLZ | rest_framework.serializers.Serializer | to_internal_value | file, env_variables | 无 | Serializer for ConfigVarImport |
 | EnvironmentSlugFieldSupportGlobal | rest_framework.serializers.RelatedField | get_choices, get_attribute, to_representation, to_internal_value | queryset, default_error_messages | 无 | 不适用 |
-| ConfigVarUniqueTogetherValidator | rest_framework.validators.UniqueTogetherValidator | __call__ | 无 | 无 | 不适用 |
+| ConfigVarUniqueTogetherValidator | rest_framework.validators.UniqueTogetherValidator | 无 | 无 | 无 | 不适用 |
 | ConfigVarSLZ | rest_framework.serializers.ModelSerializer | to_internal_value | environment_name, key, value, description, is_global, id, is_builtin, created, environment_id | 无 | 不适用 |
 | ListConfigVarsSLZ | rest_framework.serializers.Serializer | validate_environment_name, validate_order_by | valid_order_by_fields, environment_name, order_by | 无 | Serializer for listing ConfigVars |
 | PresetEnvVarSLZ | rest_framework.serializers.Serializer | 无 | key, value, environment_name, description | 无 | 不适用 |
@@ -41159,7 +41159,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EngineDeployClient | 无 | __init__, wl_app, create_build, upsert_image_credentials | 无 | 无 | A high level client for engine, provides functions... |
+| EngineDeployClient | 无 | wl_app, create_build, upsert_image_credentials | 无 | 无 | A high level client for engine, provides functions... |
 
 ---
 
@@ -41201,17 +41201,17 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Style | 无 | 无 | Title, Error, Warning, Comment, NoColor, Black, Red, Green, Yellow, Blue, Magenta, Cyan, White | 无 | 
+| Style | 无 | 无 | Title, Error, Warning, Comment, NoColor, Black, Red, Green, Yellow, Blue, Magenta, Cyan, White | 无 |
     Valid colors:
         ANSI Color: 'black', 'r... |
 | StreamType | blue_krill.data_types.enum.StrStructuredEnum | 无 | STDOUT, STDERR | 无 | 不适用 |
 | DeployStream | 无 | write_title, write_message, write_event, close, from_deployment_id | 无 | 无 | Abstraction class of deployment stream |
-| RedisChannelStream | DeployStream | __init__, write_title, write_message, write_event, close, from_deployment_id | 无 | 无 | Stream using redis channel |
+| RedisChannelStream | DeployStream | write_title, write_message, write_event, close, from_deployment_id | 无 | 无 | Stream using redis channel |
 | ConsoleStream | DeployStream | write_title, write_message, write_event, close, from_deployment_id | 无 | 无 | Stream using console, useful for unit tests |
 | NullStream | DeployStream | write_title, write_message, write_event, close, from_deployment_id | 无 | 无 | 不适用 |
 | MessageWriter | typing.Protocol | write | 无 | 无 | A protocol for types which has output_stream field |
-| ModelStream | 无 | __init__, write_message | 无 | 无 | Stream using model's output_stream field |
-| RedisWithModelStream | RedisChannelStream | __init__, write_message | 无 | 无 | A modified redis channel stream which writes messa... |
+| ModelStream | 无 | write_message | 无 | 无 | Stream using model's output_stream field |
+| RedisWithModelStream | RedisChannelStream | write_message | 无 | 无 | A modified redis channel stream which writes messa... |
 
 ---
 
@@ -41265,8 +41265,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeploymentGetter | 无 | __init__, get_latest_deployment, get_latest_succeeded, get_current_deployment | 无 | 无 | Getter to get meaningful Deployment obj of `env` |
-| OfflineOperationGetter | 无 | __init__, get_latest_operation, get_latest_succeeded, get_current_operation | 无 | 无 | Getter to get meaningful OfflineOperation obj of `... |
+| DeploymentGetter | 无 | get_latest_deployment, get_latest_succeeded, get_current_deployment | 无 | 无 | Getter to get meaningful Deployment obj of `env` |
+| OfflineOperationGetter | 无 | get_latest_operation, get_latest_succeeded, get_current_operation | 无 | 无 | Getter to get meaningful OfflineOperation obj of `... |
 
 ---
 
@@ -41493,7 +41493,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | ConfigVarViewSet | rest_framework.viewsets.ModelViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_object, get_queryset, get_serializer_context, create, update, destroy, retrieve_by_key, upsert_by_key, clone, batch, list | pagination_class, serializer_class, permission_classes | 无 | ViewSet for config vars |
-| ConfigVarBuiltinViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _get_enum_choices_dict, get_builtin_envs_for_app, get_builtin_envs_bk_platform, get_runtime_envs | permission_classes | 无 | View the built-in environment variables of the app |
+| ConfigVarBuiltinViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_builtin_envs_for_app, get_builtin_envs_bk_platform, get_runtime_envs | permission_classes | 无 | View the built-in environment variables of the app |
 | ConfigVarImportExportViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | make_exported_vars_response, get_queryset, import_by_file, export_to_file, template | permission_classes | 无 | 不适用 |
 
 ---
@@ -41609,7 +41609,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeploymentViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, check_preparations, deploy, _get_version_info, _handle_deploy_failed, get_deployment_result, export_deployment_log, list, get_resumable_deployment, user_interrupt | serializer_class, permission_classes | 无 | 
+| DeploymentViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, check_preparations, deploy, get_deployment_result, export_deployment_log, list, get_resumable_deployment, user_interrupt | serializer_class, permission_classes | 无 |
     应用部署相关API
     基于engine的build & release
      |
@@ -41681,15 +41681,15 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| OfflineViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | offline, get_offline_result, get_resumable_offline_operations | serializer_class, permission_classes | 无 | 
+| OfflineViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | offline, get_offline_result, get_resumable_offline_operations | serializer_class, permission_classes | 无 |
     应用下线相关API
     基于stop process实现
      |
-| OperationsViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, list | serializer_class, permission_classes | 无 | 
+| OperationsViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | paginator, list | serializer_class, permission_classes | 无 |
     应用操作记录相关API
     比如：部署记录和下线记录
      |
-| ProcessResourceMetricsViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _format_datetime, list | permission_classes | 无 | 进程资源使用 Metrics API |
+| ProcessResourceMetricsViewset | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list | permission_classes | 无 | 进程资源使用 Metrics API |
 
 ---
 
@@ -41817,12 +41817,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployProcedure | 无 | __init__, __enter__, __exit__, _get_step_obj | 无 | 无 | A application deploy procedure wrapper
+| DeployProcedure | 无 | 无 | 无 | 无 | A application deploy procedure wrapper
 
     :param... |
-| DeploymentStateMgr | 无 | __init__, from_deployment_id, phase, update, finish, _stylize_error | 无 | 无 | Deployment state manager |
-| DeploymentCoordinator | 无 | __init__, acquire_lock, release_lock, set_deployment, get_current_deployment, update_polling_time, status_polling_timeout, release_on_error | DEFAULT_LOCK_TIMEOUT, DEFAULT_TOKEN, POLLING_TIMEOUT | 无 | Manage environment's deploy status to avoid duplic... |
-| DeployStep | 无 | __init__, from_deployment_id, procedures, create_bkapp_revision | 无 | 无 | Base class for a deploy step |
+| DeploymentStateMgr | 无 | from_deployment_id, phase, update, finish | 无 | 无 | Deployment state manager |
+| DeploymentCoordinator | 无 | acquire_lock, release_lock, set_deployment, get_current_deployment, update_polling_time, status_polling_timeout, release_on_error | DEFAULT_LOCK_TIMEOUT, DEFAULT_TOKEN, POLLING_TIMEOUT | 无 | Manage environment's deploy status to avoid duplic... |
+| DeployStep | 无 | from_deployment_id, procedures, create_bkapp_revision | 无 | 无 | Base class for a deploy step |
 
 ---
 
@@ -41900,13 +41900,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DeployCondition | paasng.core.core.protections.base.BaseCondition | validate, __init__ | 无 | 无 | 不适用 |
+| DeployCondition | paasng.core.core.protections.base.BaseCondition | validate | 无 | 无 | 不适用 |
 | ProductInfoCondition | DeployCondition | validate | action_name | 无 | 检查是否已经完善应用信息 |
 | RepoAccessCondition | DeployCondition | validate | 无 | 无 | 检查用户是否有该模块的源码仓库的访问权限 |
 | EnvProtectionCondition | DeployCondition | validate | action_name | 无 | 检查该用户是否有该模块环境的部署权限 |
 | ProcfileCondition | DeployCondition | validate | action_name | 无 | 检查是否已经完善进程启动命名 |
 | PluginTagValidationCondition | DeployCondition | validate | action_name | 无 | 检查插件应用是否设置了分类 |
-| ModuleEnvDeployInspector | paasng.core.core.protections.base.BaseConditionChecker | __init__, __str__ | condition_classes | 无 | Prepare to deploy a ModuleEnvironment |
+| ModuleEnvDeployInspector | paasng.core.core.protections.base.BaseConditionChecker | 无 | condition_classes | 无 | Prepare to deploy a ModuleEnvironment |
 
 ---
 
@@ -42074,7 +42074,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | env_role_protection_check | `def env_role_protection_check(operation: str, env: ModuleEnvironment, roles: List[ApplicationRole]):` | 无 | 检查是否存在环境保护 |
-| batch_save_protections | `@transaction.atomic:` | transaction.atomic | 不适用 |
+| batch_save_protections | `def batch_save_protections(module: Module, operation: str, allowed_roles: list, input_envs: list) -> QuerySet[EnvRoleProtection]:` | transaction.atomic | 不适用 |
 
 
 ---
@@ -42191,7 +42191,7 @@ s-mart(镜像): 'image:镜像 tag'
 | EnvSummary | 无 | 无 | 无 | dataclass | 环境资源使用数据 |
 | ModuleSummary | 无 | 无 | 无 | dataclass | 模块资源使用数据 |
 | AppSummary | 无 | 无 | 无 | dataclass | 应用资源使用数据 |
-| AppDeploymentCollector | 无 | __init__, collect, _calc_module_summary, _calc_env_summaries | 无 | 无 | 应用资源历史使用数据采集器 |
+| AppDeploymentCollector | 无 | collect | 无 | 无 | 应用资源历史使用数据采集器 |
 
 ---
 
@@ -42248,7 +42248,7 @@ s-mart(镜像): 'image:镜像 tag'
 | EnvSummary | 无 | 无 | 无 | dataclass | 环境资源使用数据 |
 | ModuleSummary | 无 | 无 | 无 | dataclass | 模块资源使用数据 |
 | AppSummary | 无 | 无 | 无 | dataclass | 应用资源使用数据 |
-| AppResQuotaCollector | 无 | __init__, collect, _calc_module_summary, _calc_env_summary, _calc_proc_summary, _calc_res_summary, _get_proc_res_quota, _format_cpu, _format_memory | 无 | 无 | 应用资源历史使用数据采集器 |
+| AppResQuotaCollector | 无 | collect | 无 | 无 | 应用资源历史使用数据采集器 |
 
 ---
 
@@ -42292,7 +42292,7 @@ s-mart(镜像): 'image:镜像 tag'
 | EnvSummary | 无 | 无 | 无 | dataclass | 环境资源使用数据 |
 | ModuleSummary | 无 | 无 | 无 | dataclass | 模块资源使用数据 |
 | AppSummary | 无 | 无 | 无 | dataclass | 应用资源使用数据 |
-| AppUserVisitCollector | 无 | __init__, collect, _calc_module_summary, _calc_env_pv_uv | 无 | 无 | 应用访问数据采集器 |
+| AppUserVisitCollector | 无 | collect | 无 | 无 | 应用访问数据采集器 |
 
 ---
 
@@ -42362,7 +42362,7 @@ s-mart(镜像): 'image:镜像 tag'
 | EnvEvaluateResult | 无 | 无 | 无 | dataclass | 环境运营情况评估结果 |
 | ModuleEvaluateResult | 无 | 无 | 无 | dataclass | 模块运营情况评估结果 |
 | AppEvaluateResult | 无 | 无 | 无 | dataclass | 应用运营情况评估结果 |
-| AppOperationEvaluator | 无 | __init__, evaluate, _evaluate_by_operation_history, _evaluate_by_resource_usage, _evaluate_by_user_visit, _evaluate_by_process_status, _evaluate_by_app_members_status, _iter_procs | 无 | 无 | 
+| AppOperationEvaluator | 无 | evaluate | 无 | 无 |
     综合各项指标，评估应用运营情况
 
     注：评估结果有六种，优先级从高到低分别是：
@@ -42390,7 +42390,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| on_environment_offline_succeed | `@receiver(module_environment_offline_success):` | receiver | 如果某个环境被下架，且运营报告存在，需要及时更新运营报告中该环境的评估结果（避免下架后还出现在闲置应... |
+| on_environment_offline_succeed | `def on_environment_offline_succeed(sender, offline_instance: OfflineOperation, environment: str, **kwargs):` | receiver | 如果某个环境被下架，且运营报告存在，需要及时更新运营报告中该环境的评估结果（避免下架后还出现在闲置应... |
 
 
 ---
@@ -42619,7 +42619,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AppOperationReportNotifier | 无 | send, _gen_plat_admin_email_title_and_content, _gen_app_developers_email_title_and_content | 无 | 无 | 将蓝鲸应用的运营报告发送到指定对象 |
+| AppOperationReportNotifier | 无 | send | 无 | 无 | 将蓝鲸应用的运营报告发送到指定对象 |
 
 ---
 
@@ -42696,8 +42696,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| collect_and_update_app_operation_reports | `@shared_task:` | shared_task | 采集并更新指定应用的资源使用情况报告 |
-| send_idle_email_to_app_developers | `@shared_task:` | shared_task | 发送应用闲置模块邮件给应用管理员/开发者 |
+| collect_and_update_app_operation_reports | `def collect_and_update_app_operation_reports(app_codes: List[str]):` | shared_task | 采集并更新指定应用的资源使用情况报告 |
+| send_idle_email_to_app_developers | `def send_idle_email_to_app_developers(app_codes: List[str], only_specified_users: List[str], exclude_specified_users: List[str]):` | shared_task | 发送应用闲置模块邮件给应用管理员/开发者 |
 
 
 ---
@@ -42786,7 +42786,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseMigration | six.with_metaclass(MigrationRegister) | get_description, __init__, set_log, append_log, add_log, update_ongoing, apply_migration, apply_rollback, get_info, migrate, rollback, get_name, should_skip | 无 | 无 | Base class for application migration |
+| BaseMigration | six.with_metaclass(MigrationRegister) | get_description, set_log, append_log, add_log, update_ongoing, apply_migration, apply_rollback, get_info, migrate, rollback, get_name, should_skip | 无 | 无 | Base class for application migration |
 
 ---
 
@@ -42835,7 +42835,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseObjectMigration | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_description, migrate, rollback, _get_type | 无 | 无 | 
+| BaseObjectMigration | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_description, migrate, rollback | 无 | 无 |
     Migrate application object, must happen first... |
 | MainInfoMigration | apiserver.paasng.paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_description, add_application_role, add_engine_app, migrate, rollback | 无 | 无 | Migrate main information of application, must happ... |
 
@@ -42977,7 +42977,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseEnvironmentVariableMigration | paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_description, _get_environment, _add_environment_variable, get_global_envs, get_stag_envs, get_prod_envs, get_custom_envs, transform_system_envs, handle_env, migrate, rollback | 无 | 无 | 不适用 |
+| BaseEnvironmentVariableMigration | paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_description, get_global_envs, get_stag_envs, get_prod_envs, get_custom_envs, transform_system_envs, handle_env, migrate, rollback | 无 | 无 | 不适用 |
 
 ---
 
@@ -43107,7 +43107,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LegacyBaseServiceMigration | paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_service, _bind_service, _get_environment_attachment, _add_service_instance, get_stag_service_data, get_prod_service_data, get_service_data, migrate, rollback | 无 | 无 | 不适用 |
+| LegacyBaseServiceMigration | paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | get_service, get_stag_service_data, get_prod_service_data, get_service_data, migrate, rollback | 无 | 无 | 不适用 |
 | BaseServiceMigration | paasng.platform.mgrlegacy.app_migrations.base.BaseMigration | migrate, rollback, get_service, bind_service_to_default_module, bind_default_plan_as_fallback, migrate_service_instance, rollback_service_instance, get_engine_app_attachment, get_service_instance_info, get_instance_mgr, get_stag_service_instance_info, get_prod_service_instance_info, get_plan_uuid | 无 | 无 | 不适用 |
 | BaseLocalServiceMigration | BaseServiceMigration | get_plan_uuid, get_instance_mgr | service_mgr, engine_app_attachment_cls | 无 | 不适用 |
 | BaseRemoteServiceMigration | BaseServiceMigration | get_plan_uuid, get_instance_mgr | service_mgr, engine_app_attachment_cls | 无 | 不适用 |
@@ -43145,7 +43145,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MysqlServiceMigration | paasng.platform.mgrlegacy.app_migrations.service.BaseRemoteServiceMigration | get_description, should_skip, _add_envs, get_stag_service_instance_info, get_prod_service_instance_info | service_name | 无 | only enabled for smart app(not normal app) |
+| MysqlServiceMigration | paasng.platform.mgrlegacy.app_migrations.service.BaseRemoteServiceMigration | get_description, should_skip, get_stag_service_instance_info, get_prod_service_instance_info | service_name | 无 | only enabled for smart app(not normal app) |
 
 ---
 
@@ -43275,7 +43275,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationTypeMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | _generate_legacy_data, _can_migrate_or_raise, _migrate, _rollback, _update_wl_app_type, _get_wl_app_type | 无 | 无 | ApplicationTypeMigrator to migrate the type field ... |
+| ApplicationTypeMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | 无 | 无 | 无 | ApplicationTypeMigrator to migrate the type field ... |
 
 ---
 
@@ -43315,7 +43315,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CNativeBaseMigrator | abc.ABC | __init__, __init_subclass__, get_class, get_name, migrate, rollback, _backup_legacy_data, _generate_legacy_data, _migrate, _can_migrate_or_raise, _rollback | 无 | 无 | cloud-native base migrator
+| CNativeBaseMigrator | abc.ABC | get_class, get_name, migrate, rollback | 无 | 无 | cloud-native base migrator
 
     :param migration_p... |
 
@@ -43359,7 +43359,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BuildConfigMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | _generate_legacy_data, _can_migrate_or_raise, _migrate, _rollback | 无 | 无 | BuildConfigMigrator to migrate the app all build c... |
+| BuildConfigMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | 无 | 无 | 无 | BuildConfigMigrator to migrate the app all build c... |
 
 ---
 
@@ -43388,7 +43388,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApplicationClusterMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | _generate_legacy_data, _can_migrate_or_raise, _migrate, _rollback | 无 | 无 | ApplicationClusterMigrator to migrate the relation... |
+| ApplicationClusterMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | 无 | 无 | 无 | ApplicationClusterMigrator to migrate the relation... |
 
 ---
 
@@ -43420,8 +43420,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| WlAppBackupMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | _can_migrate_or_raise, _generate_legacy_data, _migrate, _rollback | 无 | 无 | 不适用 |
-| WlAppBackupManager | 无 | __init__, create, delete, get | 无 | 无 | WlApp 备份管理器 |
+| WlAppBackupMigrator | apiserver.paasng.paasng.platform.mgrlegacy.cnative_migrations.base.CNativeBaseMigrator | 无 | 无 | 无 | 不适用 |
+| WlAppBackupManager | 无 | create, delete, get | 无 | 无 | WlApp 备份管理器 |
 
 ---
 
@@ -43444,7 +43444,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MigrationStatus | paasng.utils.basic.ChoicesEnum | get_active_states, check_active | DEFAULT, ON_MIGRATION, FAILED, DONE_MIGRATION, ON_ROLLBACK, ROLLBACKED, ON_CONFIRMING, CONFIRMED, ROLLBACK_FAILED, _choices_labels, _active_states | 无 | 
+| MigrationStatus | paasng.utils.basic.ChoicesEnum | get_active_states, check_active | DEFAULT, ON_MIGRATION, FAILED, DONE_MIGRATION, ON_ROLLBACK, ROLLBACKED, ON_CONFIRMING, CONFIRMED, ROLLBACK_FAILED, _choices_labels, _active_states | 无 |
     new status flow
     start -> ON_MIGRATION -> ... |
 | LegacyAppTag | paasng.utils.basic.ChoicesEnum | 无 | SUPPORT, NOT_SUPPORT, ON_MIGRATION, FINISHED_MIGRATION, _choices_labels | 无 | 不适用 |
@@ -43486,7 +43486,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ClusterLegacyData | pydantic.BaseModel | 无 | 无 | register | Cluster info before migration |
 | BuildLegacyData | pydantic.BaseModel | 无 | 无 | register | Build config info before migration |
 | DefaultAppLegacyData | pydantic.BaseModel | 无 | 无 | register | Data before migration, used for rollback |
-| MigrationResult | pydantic.BaseModel | 无 | 无 | register | 
+| MigrationResult | pydantic.BaseModel | 无 | 无 | register |
     Record the result when the migrator performs ... |
 | ProcessDetails | pydantic.BaseModel | 无 | 无 | register | Details of migration or rollback process |
 
@@ -43552,7 +43552,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LegacyAppProxy | 无 | __init__, is_from_legacy_v1, to_paasv3_region, is_smart, legacy_url, is_third_app, _get_app_type, is_supported, is_celery_enabled, is_celery_beat_enabled, get_source_init_template, get_language, get_secret_key, get_unified_password, get_environment_vars, get_logo_url, get_logo_filename, get_logo_file, is_prod_deployed, is_stag_deployed, has_prod_deployed, has_stag_deployed, offline_url, get_app_members, get_app_creator_id, get_app_description, get_app_type, is_app_resizable | 无 | 无 | 不适用 |
+| LegacyAppProxy | 无 | is_from_legacy_v1, to_paasv3_region, is_smart, legacy_url, is_third_app, is_supported, is_celery_enabled, is_celery_beat_enabled, get_source_init_template, get_language, get_secret_key, get_unified_password, get_environment_vars, get_logo_url, get_logo_filename, get_logo_file, is_prod_deployed, is_stag_deployed, has_prod_deployed, has_stag_deployed, offline_url, get_app_members, get_app_creator_id, get_app_description, get_app_type, is_app_resizable | 无 | 无 | 不适用 |
 
 ---
 
@@ -43658,7 +43658,7 @@ s-mart(镜像): 'image:镜像 tag'
 
     :param... |
 | run_single_rollback | `def run_single_rollback(migration_process, migration_class, session):` | 无 | 不适用 |
-| migrate_default_to_cnative | `def migrate_default_to_cnative(migration_process: CNativeMigrationProcess):` | 无 | 
+| migrate_default_to_cnative | `def migrate_default_to_cnative(migration_process: CNativeMigrationProcess):` | 无 |
     migrate default app to cloud-native app. auto... |
 | rollback_cnative_to_default | `def rollback_cnative_to_default(rollback_process: CNativeMigrationProcess, last_migration_process: CNativeMigrationProcess):` | 无 | rollback cloud-native app to default app
 
@@ -43848,10 +43848,10 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | MigrationProcessManager | django.db.models.Manager | get_or_create_migration_process_for_legacy | 无 | 无 | 不适用 |
-| MigrationProcess | paasng.utils.models.OwnerTimestampedModel | on_migration, failed, confirmed, rollbacked, is_v3_prod_available, is_v3_stag_available, set_app, set_ongoing, append_migration, append_rollback, fail_on, set_status, set_done_migrate_state, set_rollback_state, set_confirmed_state, is_active, run, rollback, finished_operations, __repr__, __str__ | legacy_app_id, app, status, failed_date, migrated_date, confirmed_date, rollbacked_date, ongoing_migration, finished_migrations, finished_rollbacks, legacy_app_logo, legacy_app_is_already_online, legacy_app_state, legacy_app_has_all_deployed, objects | 无 | An migration process |
+| MigrationProcess | paasng.utils.models.OwnerTimestampedModel | on_migration, failed, confirmed, rollbacked, is_v3_prod_available, is_v3_stag_available, set_app, set_ongoing, append_migration, append_rollback, fail_on, set_status, set_done_migrate_state, set_rollback_state, set_confirmed_state, is_active, run, rollback, finished_operations | legacy_app_id, app, status, failed_date, migrated_date, confirmed_date, rollbacked_date, ongoing_migration, finished_migrations, finished_rollbacks, legacy_app_logo, legacy_app_is_already_online, legacy_app_state, legacy_app_has_all_deployed, objects | 无 | An migration process |
 | CNativeMigrationProcess | paasng.utils.models.OwnerTimestampedModel | create_migration_process, create_rollback_process, is_active, append_migration, append_rollback, finish_migration, finish_rollback, confirm | app, status, created_at, confirm_at | 无 | 不适用 |
-| MigrationContext | 无 | __init__ | 无 | 无 | Migration context |
-| MigrationRegister | type | __new__, get_class | 无 | 无 | 不适用 |
+| MigrationContext | 无 | 无 | 无 | 无 | Migration context |
+| MigrationRegister | type | get_class | 无 | 无 | 不适用 |
 | WlAppBackupRel | paasng.utils.models.TimestampedModel | 无 | app_environment, original_id, backup_id | 无 | WlApp 的备份关系表 |
 
 ---
@@ -43974,16 +43974,16 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| migrate_with_rollback_on_failure | `@shared_task:` | shared_task | 
+| migrate_with_rollback_on_failure | `def migrate_with_rollback_on_failure(migration_process_id):` | shared_task |
     根据应用编码同步应用，失败自动回滚
      |
-| rollback_migration_process | `@shared_task:` | shared_task | 
+| rollback_migration_process | `def rollback_migration_process(migration_process_id):` | shared_task |
     回滚应用migration
      |
-| confirm_with_rollback_on_failure | `@shared_task:` | shared_task | 不适用 |
-| migrate_default_to_cnative | `@shared_task:` | shared_task | 不适用 |
-| rollback_cnative_to_default | `@shared_task:` | shared_task | 不适用 |
-| confirm_migration | `@shared_task:` | shared_task | 不适用 |
+| confirm_with_rollback_on_failure | `def confirm_with_rollback_on_failure(migration_process_id):` | shared_task | 不适用 |
+| migrate_default_to_cnative | `def migrate_default_to_cnative(migration_process_id):` | shared_task | 不适用 |
+| rollback_cnative_to_default | `def rollback_cnative_to_default(rollback_process_id, last_migration_process_id):` | shared_task | 不适用 |
+| confirm_migration | `def confirm_migration(migration_process_id):` | shared_task | 不适用 |
 
 
 ---
@@ -44056,7 +44056,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LegacyAppManager | 无 | __init__, is_finished_migration, get_latest_migration_id, is_active, legacy_app_logo, region, app_migration_tag, is_ready_for_migration, is_done_migration, category, is_not_supported_migration, get_logo_url, has_prod_deployed_before_migration, serialize_data, get_language, get_migration_finished_date, get_stag_exposed_link, get_prod_exposed_link | 无 | 无 | 不适用 |
+| LegacyAppManager | 无 | is_finished_migration, get_latest_migration_id, is_active, legacy_app_logo, region, app_migration_tag, is_ready_for_migration, is_done_migration, category, is_not_supported_migration, get_logo_url, has_prod_deployed_before_migration, serialize_data, get_language, get_migration_finished_date, get_stag_exposed_link, get_prod_exposed_link | 无 | 无 | 不适用 |
 
 ---
 
@@ -44158,12 +44158,12 @@ s-mart(镜像): 'image:镜像 tag'
 | MigrationDetailViewset | rest_framework.viewsets.ModelViewSet | get_queryset, state, old_state, rollback | serializer_class | 无 | 不适用 |
 | MigrationConfirmViewset | rest_framework.viewsets.GenericViewSet | get_queryset, confirm | lookup_field, serializer_class | 无 | 不适用 |
 | ApplicationMigrationInfoAPIView | rest_framework.viewsets.ViewSet | retrieve | 无 | 无 | 不适用 |
-| CNativeMigrationViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | migrate, rollback, get_process_by_id, get_latest_process, list_processes, confirm, _can_migrate_or_raise | permission_classes | 无 | 
+| CNativeMigrationViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | migrate, rollback, get_process_by_id, get_latest_process, list_processes, confirm | permission_classes | 无 |
     普通应用向云原生应用迁移的相关接口
      |
-| DefaultAppProcessViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, update, _get_wl_app | permission_classes | 无 | 普通应用进程管理接口 |
+| DefaultAppProcessViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list, update | permission_classes | 无 | 普通应用进程管理接口 |
 | DefaultAppEntranceViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list_all_entrances | permission_classes | 无 | 普通应用访问地址查询接口 |
-| RetrieveChecklistInfoViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get, _get_rcs_binding, _get_app_root_domains | permission_classes | 无 | 普通应用迁移前的 Checklist 数据查询接口 |
+| RetrieveChecklistInfoViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get | permission_classes | 无 | 普通应用迁移前的 Checklist 数据查询接口 |
 
 ---
 
@@ -44218,7 +44218,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ExposedURLType | blue_krill.data_types.enum.IntStructuredEnum | 无 | SUBPATH, SUBDOMAIN | 无 | 不适用 |
 | SourceOrigin | blue_krill.data_types.enum.IntStructuredEnum | get_default_origins, get_package_origins | AUTHORIZED_VCS, BK_LESS_CODE, S_MART, IMAGE_REGISTRY, SCENE, CNATIVE_IMAGE, AI_AGENT | 无 | Source origin defines the origin of module's sourc... |
 | APP_CATEGORY | blue_krill.data_types.enum.StrStructuredEnum | 无 | NORMAL_APP, S_MART_APP, CNATIVE_APP, LEGACY_APP | 无 | Application category, used when setting label to i... |
-| DeployHookType | blue_krill.data_types.enum.StrStructuredEnum | _missing_ | PRE_RELEASE_HOOK | 无 | DeployHook Type |
+| DeployHookType | blue_krill.data_types.enum.StrStructuredEnum | 无 | PRE_RELEASE_HOOK | 无 | DeployHook Type |
 | BuildPackType | blue_krill.data_types.enum.StrStructuredEnum | get_buildpack_builder_type_map | TAR, OCI_EMBEDDED, OCI_IMAGE, OCI_FILE | 无 | 不适用 |
 | AppImageType | blue_krill.data_types.enum.StrStructuredEnum | get_builder_buildpack_type_map | LEGACY, CNB | 无 | 不适用 |
 
@@ -44298,7 +44298,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| async_setup_module_log_model | `@receiver(on_module_initialized):` | receiver | 不适用 |
+| async_setup_module_log_model | `def async_setup_module_log_model(sender, module: Module, **kwargs):` | receiver | 不适用 |
 
 
 ---
@@ -44371,9 +44371,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BuildConfigData | typing.TypedDict | 无 | 无 | 无 | 不适用 |
-| SlugbuilderBinder | 无 | __init__, bind_buildpack, unbind_buildpack, set_buildpacks | 无 | 无 | slugbuilder 和 buildpack 绑定工具 |
-| ModuleRuntimeBinder | 无 | __init__, bind_bp_stack, bind_image, clear_runtime, bind_buildpacks, bind_buildpack, get_ordered_buildpacks_list | 无 | 无 | 模块相关运行时绑定工具 |
-| ModuleRuntimeManager | 无 | __init__, is_secure_encrypted_runtime, is_need_blobstore_env, is_cnb_runtime, get_slug_builder, get_slug_builder, get_slug_builder, get_slug_runner, get_slug_runner, get_slug_runner, list_buildpacks | SECURE_ENCRYPTED_LABEL, HTTP_SUPPORTED_LABEL, CNB_LABEL | 无 | 模块相关运行时查询工具(NG) |
+| SlugbuilderBinder | 无 | bind_buildpack, unbind_buildpack, set_buildpacks | 无 | 无 | slugbuilder 和 buildpack 绑定工具 |
+| ModuleRuntimeBinder | 无 | bind_bp_stack, bind_image, clear_runtime, bind_buildpacks, bind_buildpack, get_ordered_buildpacks_list | 无 | 无 | 模块相关运行时绑定工具 |
+| ModuleRuntimeManager | 无 | is_secure_encrypted_runtime, is_need_blobstore_env, is_cnb_runtime, get_slug_builder, get_slug_runner, list_buildpacks | SECURE_ENCRYPTED_LABEL, HTTP_SUPPORTED_LABEL, CNB_LABEL | 无 | 模块相关运行时查询工具(NG) |
 
 ---
 
@@ -44530,7 +44530,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| patch_ssl_verification | `@contextlib.contextmanager:` | contextlib.contextmanager | Context manager to temporarily disable SSL verific... |
+| patch_ssl_verification | `def patch_ssl_verification(skip_verify: bool):` | contextlib.contextmanager | Context manager to temporarily disable SSL verific... |
 
 #### 类
 
@@ -44634,10 +44634,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleBuildpackPlaner | 无 | __init__, get_required_buildpacks, get_language_buildpack | 无 | 无 | ModuleBuildpackPlaner 的职责是协助 ModuleInitializer 初始化... |
-| ModuleInitializer | 无 | __init__, make_engine_app_name, make_engine_meta_info, create_engine_apps, initialize_vcs_with_template, _should_initialize_vcs, bind_default_services, initialize_docker_build_config, bind_default_runtime, bind_runtime_by_labels, initialize_app_model_resource, _get_or_create_engine_app | default_environments | 无 | Initializer for Module |
-| ModuleCleaner | 无 | __init__, clean, delete_services, delete_engine_apps, delete_module | 无 | 无 | 不适用 |
-| DefaultServicesBinder | 无 | __init__, bind, find_services_from_template, _bind | 无 | 无 | A helper type for binding module's default service... |
+| ModuleBuildpackPlaner | 无 | get_required_buildpacks, get_language_buildpack | 无 | 无 | ModuleBuildpackPlaner 的职责是协助 ModuleInitializer 初始化... |
+| ModuleInitializer | 无 | make_engine_app_name, make_engine_meta_info, create_engine_apps, initialize_vcs_with_template, bind_default_services, initialize_docker_build_config, bind_default_runtime, bind_runtime_by_labels, initialize_app_model_resource | default_environments | 无 | Initializer for Module |
+| ModuleCleaner | 无 | clean, delete_services, delete_engine_apps, delete_module | 无 | 无 | 不适用 |
+| DefaultServicesBinder | 无 | bind, find_services_from_template | 无 | 无 | A helper type for binding module's default service... |
 
 ---
 
@@ -44881,7 +44881,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LegacyModuleRuntimeManager | 无 | __init__, get_slug_builder, get_slug_runner, list_buildpacks | 无 | 无 | 不适用 |
+| LegacyModuleRuntimeManager | 无 | get_slug_builder, get_slug_runner, list_buildpacks | 无 | 无 | 不适用 |
 | Migration | django.db.migrations.Migration | 无 | dependencies, operations | 无 | 不适用 |
 
 ---
@@ -45139,7 +45139,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Hook | 无 | get_command, get_args, get_proc_command | 无 | define | 不适用 |
-| HookList | List[Hook] | get_hook, upsert, disable, __cattrs_structure__, __cattrs_unstructure__ | __origin__ | 无 | 不适用 |
+| HookList | List[Hook] | get_hook, upsert, disable | __origin__ | 无 | 不适用 |
 | DeployConfig | paasng.utils.models.UuidAuditedModel | 无 | module, procfile | 无 | 不适用 |
 
 ---
@@ -45184,7 +45184,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Module | paasng.utils.models.OwnerTimestampedModel | has_deployed, get_source_obj, get_source_origin, get_envs, __str__ | id, application, name, is_default, language, source_init_template, source_origin, source_type, source_repo_id, exposed_url_type, user_preferred_root_domain, last_deployed_date, creator | 无 | Module for Application
+| Module | paasng.utils.models.OwnerTimestampedModel | has_deployed, get_source_obj, get_source_origin, get_envs | id, application, name, is_default, language, source_init_template, source_origin, source_type, source_repo_id, exposed_url_type, user_preferred_root_domain, last_deployed_date, creator | 无 | Module for Application
     Every application has a... |
 
 ---
@@ -45231,10 +45231,10 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BuildpackManager | django.db.models.Manager | filter_module_available, filter_by_region, get_by_natural_key | 无 | 无 | 不适用 |
-| AppBuildPack | paasng.utils.models.TimestampedModel | natural_key, info, __str__ | language, type, name, display_name, address, version, environments, is_hidden, description, modules, objects | 无 | buildpack 配置 |
+| AppBuildPack | paasng.utils.models.TimestampedModel | natural_key, info | language, type, name, display_name, address, version, environments, is_hidden, description, modules, objects | 无 | buildpack 配置 |
 | AppImageStackQuerySet | django.db.models.QuerySet | filter_module_available, filter_by_region, filter_by_full_image, filter_by_labels | 无 | 无 | 不适用 |
 | AppImageStackManager | django.db.models.Manager | filter_module_available, filter_by_full_image, filter_by_labels, select_default_runtime, get_by_natural_key | _queryset_class | 无 | 不适用 |
-| AppImage | paasng.utils.models.TimestampedModel | set_label, get_label, full_image, __str__, natural_key | name, display_name, type, image, tag, is_hidden, is_default, description, environments, labels | 无 | 不适用 |
+| AppImage | paasng.utils.models.TimestampedModel | set_label, get_label, full_image, natural_key | name, display_name, type, image, tag, is_hidden, is_default, description, environments, labels | 无 | 不适用 |
 | AppSlugRunner | AppImage | 无 | modules, objects | 无 | 应用运行环境 |
 | AppSlugBuilder | AppImage | get_buildpack_choices, list_region_available_buildpacks | buildpacks, modules, step_meta_set, objects | 无 | 应用构建环境 |
 
@@ -45265,11 +45265,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleDeleteCondition | paasng.core.core.protections.base.BaseCondition | __init__, validate | 无 | 无 | Abstract base class for delete module condition |
+| ModuleDeleteCondition | paasng.core.core.protections.base.BaseCondition | validate | 无 | 无 | Abstract base class for delete module condition |
 | NoPendingOperationsCondition | ModuleDeleteCondition | validate | action_name | 无 | 检查模块是否存在未完成的操作(部署或下架) |
 | AllEnvsArchivedCondition | ModuleDeleteCondition | validate | action_name | 无 | 检查模块的所有环境是否均已下架 |
 | CustomDomainUnBoundCondition | ModuleDeleteCondition | validate | action_name | 无 | 检查模块是否已解绑所有独立域名 |
-| ModuleDeletionPreparer | paasng.core.core.protections.base.BaseConditionChecker | __init__ | condition_classes | 无 | Prepare to delete a module |
+| ModuleDeletionPreparer | paasng.core.core.protections.base.BaseConditionChecker | 无 | condition_classes | 无 | Prepare to delete a module |
 
 ---
 
@@ -45341,7 +45341,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleNameField | rest_framework.serializers.RegexField | __init__ | 无 | 无 | Field for validating Module Name |
+| ModuleNameField | rest_framework.serializers.RegexField | 无 | 无 | 无 | Field for validating Module Name |
 | ModuleSLZ | rest_framework.serializers.ModelSerializer | get_repo_auth_info, get_web_config, get_template_display_name, get_clusters, get_build_method | repo, repo_auth_info, web_config, template_display_name, source_origin, clusters, creator, owner | 无 | 不适用 |
 | ModuleWithOwnerAndCreatorSLZ | rest_framework.serializers.ModelSerializer | 无 | creator, owner | 无 | 不适用 |
 | MinimalModuleSLZ | rest_framework.serializers.ModelSerializer | 无 | source_origin | 无 | 不适用 |
@@ -45354,7 +45354,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ModuleRuntimeBindSLZ | rest_framework.serializers.Serializer | 无 | image, buildpacks_id | 无 | 不适用 |
 | RepositoryWithPermissionSLZ | paasng.platform.sourcectl.serializers.RepositorySLZ | get_authorized | authorized | 无 | 不适用 |
 | ImageTagOptionsSLZ | rest_framework.serializers.Serializer | validate_prefix, to_internal_value | prefix, with_version, with_build_time, with_commit_id | 无 | 不适用 |
-| ModuleSourceConfigSLZ | rest_framework.serializers.Serializer | validate_source_init_template, validate, _validate_source_repo_url | source_init_template, source_origin, source_control_type, source_repo_url, source_repo_auth_info, source_dir | 无 | 模块源码仓库/模板等信息 |
+| ModuleSourceConfigSLZ | rest_framework.serializers.Serializer | validate_source_init_template, validate | source_init_template, source_origin, source_control_type, source_repo_url, source_repo_auth_info, source_dir | 无 | 模块源码仓库/模板等信息 |
 | ModuleBuildConfigSLZ | rest_framework.serializers.Serializer | validate, validate_use_bk_ci_pipeline | build_method, tag_options, bp_stack_name, buildpacks, dockerfile_path, docker_build_args, image_repository, image_credential_name, use_bk_ci_pipeline | 无 | 模块镜像构建信息 |
 | ImageCredentialSLZ | rest_framework.serializers.Serializer | 无 | name, username, password | 无 | 镜像凭证相关参数 |
 | CreateModuleBuildConfigSLZ | rest_framework.serializers.Serializer | to_internal_value, validate | build_method, tag_options, dockerfile_path, docker_build_args, image_repository, image_credential | 无 | Serializer for create module build config |
@@ -45401,8 +45401,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleSpecs | 无 | __init__, templated_source_enabled, runtime_type, artifact_type, to_dict | has_vcs, has_template_code, deploy_via_package | 无 | Read module's specifications which were determined... |
-| SourceOriginSpecs | abc.ABC | __init_subclass__, get, supported_runtime_types | 无 | 无 | Module's specifications derived from SourceOrigin |
+| ModuleSpecs | 无 | templated_source_enabled, runtime_type, artifact_type, to_dict | has_vcs, has_template_code, deploy_via_package | 无 | Read module's specifications which were determined... |
+| SourceOriginSpecs | abc.ABC | get, supported_runtime_types | 无 | 无 | Module's specifications derived from SourceOrigin |
 | AuthorizedVcsSpecs | SourceOriginSpecs | supported_runtime_types | source_origin, has_vcs, has_template_code, deploy_via_package | 无 | Specs for source_origin: AUTHORIZED_VCS |
 | PackageMixin | 无 | 无 | runtime_type, has_vcs, has_template_code, deploy_via_package | 无 | Stores common mixin properties for external packag... |
 | BkLessCodeSpecs | PackageMixin, SourceOriginSpecs | 无 | source_origin | 无 | Specs for source_origin: BK_LESS_CODE |
@@ -45448,7 +45448,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| parse_assignment_list | `def parse_assignment_list(assignments):` | 无 | 
+| parse_assignment_list | `def parse_assignment_list(assignments):` | 无 |
     Parse assignment expression list, for example... |
 
 
@@ -45555,10 +45555,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ModuleViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | create, list, retrieve, destroy, set_as_default, create_cloud_native_module, _ensure_allow_create_module, _init_image_credential | 无 | 无 | 不适用 |
+| ModuleViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | create, list, retrieve, destroy, set_as_default, create_cloud_native_module | 无 | 无 | 不适用 |
 | ModuleRuntimeViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list_available, retrieve, bind | permission_classes | 无 | 不适用 |
 | ModuleRuntimeOverviewView | rest_framework.views.APIView, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get | permission_classes | 无 | 不适用 |
-| ModuleBuildConfigViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | _gen_build_config_data, retrieve, modify, list_available_bp_runtimes | permission_classes | 无 | 不适用 |
+| ModuleBuildConfigViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, modify, list_available_bp_runtimes | permission_classes | 无 | 不适用 |
 | ModuleDeployConfigViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve, upsert_hook, disable_hook, update_procfile | permission_classes, schema | 无 | 普通应用的「部署配置」API |
 | ModuleTemplateViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve | permission_classes | 无 | 不适用 |
 
@@ -45632,7 +45632,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SceneAPPInitializer | 无 | __init__, execute, _gen_downloadable_app_template | 无 | 无 | 场景 SaaS 应用初始化 |
+| SceneAPPInitializer | 无 | execute | 无 | 无 | 场景 SaaS 应用初始化 |
 
 ---
 
@@ -45731,7 +45731,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| update_remote_services | `@scheduler.scheduled_job('interval', minutes=settings.REMOTE_SERVICES_UPDATE_INTERVAL_MINUTES):` | scheduler.scheduled_job | Update remote services periodically |
+| update_remote_services | `def update_remote_services():` | scheduler.scheduled_job | Update remote services periodically |
 
 
 ---
@@ -46060,7 +46060,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SourcePackageStatReader | 无 | __init__, accessor, get_meta_info, _try_extract_version, compute_sha256_digest, read, _load_logo | 无 | 无 | Read local source package's stats |
+| SourcePackageStatReader | 无 | accessor, get_meta_info, compute_sha256_digest, read | 无 | 无 | Read local source package's stats |
 
 ---
 
@@ -46156,7 +46156,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SMartImageManager | 无 | __init__, get_slugrunner_image_info, get_cnb_runner_image_info, get_image_info | 无 | 无 | 不适用 |
+| SMartImageManager | 无 | get_slugrunner_image_info, get_cnb_runner_image_info, get_image_info | 无 | 无 | 不适用 |
 
 ---
 
@@ -46227,9 +46227,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PathProtocol | typing_extensions.Protocol | __truediv__, write_text, exists, is_file, is_dir, relative_to | 无 | 无 | PathProtocol 是 pathlib.Path 的子集, 声明了 detector 和 pa... |
-| LocalFSPath | os.PathLike | __init__, __truediv__, write_text, exists, is_file, is_dir, relative_to, __fspath__ | 无 | 无 | A PathLike obj, which will auto mkdir parent dir w... |
-| ZipPath | os.PathLike | __init__, __truediv__, write_text, exists, is_file, is_dir, relative_to, __fspath__ | 无 | 无 | A PathLike obj describing the relative path in the... |
+| PathProtocol | typing_extensions.Protocol | write_text, exists, is_file, is_dir, relative_to | 无 | 无 | PathProtocol 是 pathlib.Path 的子集, 声明了 detector 和 pa... |
+| LocalFSPath | os.PathLike | write_text, exists, is_file, is_dir, relative_to | 无 | 无 | A PathLike obj, which will auto mkdir parent dir w... |
+| ZipPath | os.PathLike | write_text, exists, is_file, is_dir, relative_to | 无 | 无 | A PathLike obj describing the relative path in the... |
 
 ---
 
@@ -46256,7 +46256,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PreparedSourcePackage | 无 | __init__, generate_storage_path, store, retrieve | _package_path_key | 无 | Upload a package to remote backend and store info ... |
+| PreparedSourcePackage | 无 | generate_storage_path, store, retrieve | _package_path_key | 无 | Upload a package to remote backend and store info ... |
 
 ---
 
@@ -46431,7 +46431,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | GitRepoProvider | blue_krill.data_types.enum.StrStructuredEnum | 无 | GitHub, Gitee, GitLab | 无 | Git 仓库服务提供方 |
-| BaseGitApiClient | abc.ABC | __init__, list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_last_commit, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution, _fetch_all_items, _fetch_items, _request_with_retry, _validate_resp, _refresh_token | 无 | 无 | Git 基础 API SDK |
+| BaseGitApiClient | abc.ABC | list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_last_commit, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution | 无 | 无 | Git 基础 API SDK |
 
 ---
 
@@ -46505,9 +46505,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | SourceSyncResult | 无 | is_success | 无 | dataclass | The result of one templated source sync procedure |
-| ModuleRepoConnector | abc.ABC | __init__, bind, sync_templated_sources, write_templates_to_dir | 无 | 无 | A ModuleRepoConnector connects application with VC... |
-| DBBasedMixin | 无 | repository_model, _get_or_create_repo_obj, save_repo_info, untie_repo, get_repo | 无 | 无 | Databased based repo connector which provides some... |
-| IntegratedSvnAppRepoConnector | ModuleRepoConnector, DBBasedMixin | __init__, _initial_application_root, _acquire_module_repo, _acquire_repo, bind, sync_templated_sources | auth_method, repository_model | 无 | RepoBinder for integrated svn repository, features... |
+| ModuleRepoConnector | abc.ABC | bind, sync_templated_sources, write_templates_to_dir | 无 | 无 | A ModuleRepoConnector connects application with VC... |
+| DBBasedMixin | 无 | repository_model, save_repo_info, untie_repo, get_repo | 无 | 无 | Databased based repo connector which provides some... |
+| IntegratedSvnAppRepoConnector | ModuleRepoConnector, DBBasedMixin | bind, sync_templated_sources | auth_method, repository_model | 无 | RepoBinder for integrated svn repository, features... |
 | ExternalGitAppRepoConnector | ModuleRepoConnector, DBBasedMixin | bind, sync_templated_sources | auth_method, repository_model | 无 | RepoBinder for external git repository, features:
 ... |
 | ExternalBasicAuthRepoConnector | ModuleRepoConnector, DBBasedMixin | repository_model, update_repo_basic_auth, bind, sync_templated_sources | auth_method | 无 | RepoBinder for external basic auth repository(incl... |
@@ -46601,7 +46601,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BareGitRepoController | 无 | __init__, init_by_module, list_all_repositories, touch, export, list_alternative_versions, transfer_refs_to_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | Git 协议仓库控制器 |
+| BareGitRepoController | 无 | init_by_module, list_all_repositories, touch, export, list_alternative_versions, transfer_refs_to_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | Git 协议仓库控制器 |
 
 ---
 
@@ -46681,7 +46681,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SvnRepoController | 无 | __init__, get_client, init_by_module, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | 不适用 |
+| SvnRepoController | 无 | get_client, init_by_module, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | 不适用 |
 
 ---
 
@@ -46728,7 +46728,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DockerRegistryController | 无 | init_by_module, __init__, touch, get_client, extract_version_info, list_alternative_versions, inspect_version, extract_smart_revision, build_url | 无 | 无 | 不适用 |
+| DockerRegistryController | 无 | init_by_module, touch, get_client, extract_version_info, list_alternative_versions, inspect_version, extract_smart_revision, build_url | 无 | 无 | 不适用 |
 
 ---
 
@@ -46776,7 +46776,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GiteeRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | __init__, get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file, _branch_data_to_version, _build_repo_url_with_auth | 无 | 无 | 不适用 |
+| GiteeRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | 不适用 |
 
 ---
 
@@ -46827,7 +46827,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GitHubRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | __init__, get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file, _branch_data_to_version | 无 | 无 | 不适用 |
+| GitHubRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | 不适用 |
 
 ---
 
@@ -46883,7 +46883,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GitlabRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | __init__, get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file, _branch_data_to_version | 无 | 无 | 不适用 |
+| GitlabRepoController | paasng.platform.sourcectl.repo_controller.BaseGitRepoController | get_client, project, list_all_repositories, touch, export, list_alternative_versions, extract_smart_revision, extract_version_info, build_url, build_compare_url, get_diff_commit_logs, read_file | 无 | 无 | 不适用 |
 
 ---
 
@@ -46926,7 +46926,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| PackageController | 无 | __init__, init_by_module, get_client, extract_version_info, touch, export, list_alternative_versions, inspect_version, extract_smart_revision, build_url | 无 | 无 | This class provides the basic method for reading s... |
+| PackageController | 无 | init_by_module, get_client, extract_version_info, touch, export, list_alternative_versions, inspect_version, extract_smart_revision, build_url | 无 | 无 | This class provides the basic method for reading s... |
 
 ---
 
@@ -46992,11 +46992,11 @@ s-mart(镜像): 'image:镜像 tag'
 | RequestError | Exception | 无 | 无 | 无 | 请求异常 |
 | RequestTimeOutError | RequestError | 无 | 无 | 无 | 请求超时 |
 | AccessTokenMissingError | AccessTokenError | 无 | 无 | 无 | 缺少 access token |
-| ExceptionWithGitProject | Exception | __init__, fullname, __str__ | 无 | 无 | 不适用 |
+| ExceptionWithGitProject | Exception | fullname | 无 | 无 | 不适用 |
 | UserNotBindedToSourceProviderError | ExceptionWithGitProject | 无 | 无 | 无 | 用户未提供服务源码仓库的凭据 |
 | AccessTokenForbidden | ExceptionWithGitProject | 无 | 无 | 无 | Access token 无权限 |
 | AccessTokenRefreshError | AccessTokenError | 无 | 无 | 无 | 不适用 |
-| ExceptionWithMessage | Exception | __init__ | 无 | 无 | 不适用 |
+| ExceptionWithMessage | Exception | 无 | 无 | 无 | 不适用 |
 | GetProcfileError | ExceptionWithMessage | 无 | 无 | 无 | When no valid Procfile can be found in application... |
 | GetProcfileFormatError | GetProcfileError | 无 | 无 | 无 | The Procfile exists but the content format is inco... |
 | GetAppYamlError | ExceptionWithMessage | 无 | 无 | 无 | When no valid app_desc.yaml can be found in applic... |
@@ -47010,7 +47010,7 @@ s-mart(镜像): 'image:镜像 tag'
 | DownloadGitZipBallError | Exception | 无 | 无 | 无 | 下载源码包失败 |
 | CallGitApiFailed | Exception | 无 | 无 | 无 | 调用 Git API 失败 |
 | BasicAuthError | Exception | 无 | 无 | 无 | 用户名/密码错误 |
-| OauthAuthorizationRequired | Exception | __init__ | 无 | 无 | 需要进行 Oauth 授权 |
+| OauthAuthorizationRequired | Exception | 无 | 无 | 无 | 需要进行 Oauth 授权 |
 
 ---
 
@@ -47056,10 +47056,10 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | GitCommandExecutionError | Exception | 无 | 无 | 无 | 执行 git 命令时发生错误 |
-| Ref | 无 | __str__ | 无 | dataclass | 不适用 |
-| GitCommand | 无 | __init__, to_cmd, get_sensitive_texts, __str__ | 无 | 无 | 不适用 |
-| GitCloneCommand | GitCommand | __init__, to_cmd, get_sensitive_texts | 无 | 无 | 不适用 |
-| GitClient | 无 | checkout, clone, clone_no_blob, list_remote, list_remote_raw, list_refs, clean_meta_info, init_repo, add, commit, push, _get_commit_info, parse_ref, run, err_stdout_as_exc | COMMIT_INFO_REGEX, META_GIT_DIR, _git_filepath, _default_timeout | 无 | Git 客户端 |
+| Ref | 无 | 无 | 无 | dataclass | 不适用 |
+| GitCommand | 无 | to_cmd, get_sensitive_texts | 无 | 无 | 不适用 |
+| GitCloneCommand | GitCommand | to_cmd, get_sensitive_texts | 无 | 无 | 不适用 |
+| GitClient | 无 | checkout, clone, clone_no_blob, list_remote, list_remote_raw, list_refs, clean_meta_info, init_repo, add, commit, push, parse_ref, run, err_stdout_as_exc | COMMIT_INFO_REGEX, META_GIT_DIR, _git_filepath, _default_timeout | 无 | Git 客户端 |
 
 ---
 
@@ -47102,7 +47102,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GiteeApiClient | paasng.platform.sourcectl.client.BaseGitApiClient | __init__, list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_last_commit, get_current_user, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution | 无 | 无 | Gitee API SDK |
+| GiteeApiClient | paasng.platform.sourcectl.client.BaseGitApiClient | list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_last_commit, get_current_user, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution | 无 | 无 | Gitee API SDK |
 
 ---
 
@@ -47163,7 +47163,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GitHubApiClient | paasng.platform.sourcectl.client.BaseGitApiClient | __init__, list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_archive, repo_last_commit, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution | 无 | 无 | Github API SDK |
+| GitHubApiClient | paasng.platform.sourcectl.client.BaseGitApiClient | list_repo, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_archive, repo_last_commit, get_user_info, get_project_info, list_all_commit_logs, calculate_user_contribution | 无 | 无 | Github API SDK |
 
 ---
 
@@ -47214,7 +47214,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| GitLabApiClient | 无 | __init__, list_repo, get_project_info, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_compare, list_all_commit_logs, repo_contributors, repo_last_commit, repo_archive, user, calculate_user_contribution, calculate_user_commit_calendar | 无 | 无 | 不适用 |
+| GitLabApiClient | 无 | list_repo, get_project_info, repo_get_raw_file, repo_list_branches, repo_list_tags, repo_compare, list_all_commit_logs, repo_contributors, repo_last_commit, repo_archive, user, calculate_user_contribution, calculate_user_commit_calendar | 无 | 无 | 不适用 |
 
 ---
 
@@ -47249,7 +47249,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | django.core.management.base.BaseCommand | add_arguments, handle, _handle_module | help | 无 | 不适用 |
+| Command | django.core.management.base.BaseCommand | add_arguments, handle | help | 无 | 不适用 |
 
 ---
 
@@ -47651,9 +47651,9 @@ s-mart(镜像): 'image:镜像 tag'
 | SvnRepository | paasng.utils.models.OwnerTimestampedModel, RepositoryMixin | get_repo_fullname, get_repo_url, get_trunk_url | server_name, repo_url, source_dir | 无 | 基于 Svn 的软件存储库 |
 | SvnAccountManager | django.db.models.Manager | generate_account_by_user, create_account, reset_account | 无 | 无 | 不适用 |
 | SvnAccount | paasng.utils.models.TimestampedModel | 无 | account, user, synced_from_paas20, objects | 无 | svn account for developer |
-| GitRepository | paasng.utils.models.OwnerTimestampedModel, RepositoryMixin | get_repo_fullname, _get_alias_name | server_name, repo_url, source_dir | 无 | 基于 Git 的软件存储库 |
+| GitRepository | paasng.utils.models.OwnerTimestampedModel, RepositoryMixin | get_repo_fullname | server_name, repo_url, source_dir | 无 | 基于 Git 的软件存储库 |
 | DockerRepository | paasng.utils.models.OwnerTimestampedModel, RepositoryMixin | display_name, get_repo_fullname | server_name, repo_url, source_dir | 无 | 容器镜像仓库 |
-| SourcePackageRepository | 无 | __init__, get_identity, get_source_type, get_source_dir, get_repo_url, get_repo_fullname, get_display_name | 无 | 无 | 不适用 |
+| SourcePackageRepository | 无 | get_identity, get_source_type, get_source_dir, get_repo_url, get_repo_fullname, get_display_name | 无 | 无 | 不适用 |
 | SourcePackageManager | django.db.models.Manager | get_queryset, store | 无 | 无 | 不适用 |
 | SourcePackage | paasng.utils.models.OwnerTimestampedModel | 无 | module, version, package_name, package_size, storage_engine, storage_path, storage_url, meta_info, sha256_signature, relative_path, is_deleted, objects, default_objects | 无 | 源码包存储信息 |
 | SPStat | 无 | 无 | 无 | dataclass | SourcePackage stats.
@@ -47668,8 +47668,8 @@ s-mart(镜像): 'image:镜像 tag'
 
     对于 SVN 仓库而言:
       ... |
-| GenericPage | Generic[T] | __iter__, __len__ | 无 | dataclass | 不适用 |
-| GitProject | 无 | parse_from_repo_url, parse_from_path_with_namespace, path_with_namespace | 无 | dataclass | 
+| GenericPage | Generic[T] | 无 | 无 | dataclass | 不适用 |
+| GitProject | 无 | parse_from_repo_url, parse_from_path_with_namespace, path_with_namespace | 无 | dataclass |
     Git项目
      |
 | BasicAuthHolderManager | django.db.models.Manager | exists_by_repo, get_by_repo | 无 | 无 | 不适用 |
@@ -47808,12 +47808,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BasePackageClient | 无 | read_file, export, close, list, __enter__, __exit__ | 无 | 无 | 不适用 |
-| TarClient | BasePackageClient | __init__, read_file, export, close, list | 无 | 无 | 基于本地 tar 包初始化的 client |
-| BinaryTarClient | BasePackageClient | __init__, read_file, export, close, list, _is_invalid_file_format_error, _is_not_found_error | 无 | 无 | A tarball extractor faster than the tarfile librar... |
-| ZipClient | BasePackageClient | __init__, read_file, export, close, list | 无 | 无 | 基于本地 zip 包初始化的 client |
-| GenericLocalClient | BasePackageClient | __init__, detect_client, read_file, export, close, list | 无 | 无 | 同时支持 zip, tar 格式的 SourcePackage 客户端 |
-| GenericRemoteClient | GenericLocalClient | __init__, close | 无 | 无 | 操作远程 tar 包的 通用 client |
+| BasePackageClient | 无 | read_file, export, close, list | 无 | 无 | 不适用 |
+| TarClient | BasePackageClient | read_file, export, close, list | 无 | 无 | 基于本地 tar 包初始化的 client |
+| BinaryTarClient | BasePackageClient | read_file, export, close, list | 无 | 无 | A tarball extractor faster than the tarfile librar... |
+| ZipClient | BasePackageClient | read_file, export, close, list | 无 | 无 | 基于本地 zip 包初始化的 client |
+| GenericLocalClient | BasePackageClient | detect_client, read_file, export, close, list | 无 | 无 | 同时支持 zip, tar 格式的 SourcePackage 客户端 |
+| GenericRemoteClient | GenericLocalClient | close | 无 | 无 | 操作远程 tar 包的 通用 client |
 
 ---
 
@@ -47965,7 +47965,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| UserSourceProviders | 无 | __init__, list_available, list_module_available | 无 | 无 | An object to manage which source providers can a u... |
+| UserSourceProviders | 无 | list_available, list_module_available | 无 | 无 | An object to manage which source providers can a u... |
 
 ---
 
@@ -48028,7 +48028,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | RepoController | typing_extensions.Protocol | init_by_module, list_all_repositories, touch, export, build_url, build_compare_url, extract_version_info, extract_smart_revision, list_alternative_versions, get_diff_commit_logs, read_file | 无 | 无 | RepoController 是一种用于操作源码仓库的对象，主要功能包括读取某个（特定版本的）文件内... |
-| BaseGitRepoController | 无 | __init__, get_client, init_by_module, get_user_credentials | 无 | 无 | Git RepoController 基类 |
+| BaseGitRepoController | 无 | get_client, init_by_module, get_user_credentials | 无 | 无 | Git RepoController 基类 |
 
 ---
 
@@ -48181,11 +48181,11 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | DisplayInfo | typing.NamedTuple | 无 | 无 | 无 | The sourcectl type information to be displayed on ... |
 | DiffFeature | 无 | to_dict | 无 | dataclass | describe diff feature of source type |
-| SourceTypeSpec | 无 | __init__, support_oauth, make_oauth_backend, get_server_config, config_as_arguments, make_feature_flag_field | 无 | 无 | Source type specifications |
-| ServerConfig | 无 | __init__, get, get_region_agnostic | 无 | 无 | A region related server config wrapper tool class
+| SourceTypeSpec | 无 | support_oauth, make_oauth_backend, get_server_config, config_as_arguments, make_feature_flag_field | 无 | 无 | Source type specifications |
+| ServerConfig | 无 | get, get_region_agnostic | 无 | 无 | A region related server config wrapper tool class
 ... |
-| SourceTypes | 无 | __init__, items, get_choices, get_choice_label, get, search, find_by_type, clear, load_from_configs | 无 | 无 | Stores source types |
-| SourcectlTypeNames | 无 | __init__, get, get_default, filter_by_basic_type, validate_svn, validate_git, __getattr__, _build_name_index, _build_type_name_index, _build_shorter_type_name_index | common_spec_type_suffix | 无 | Source type "NAME" helper class |
+| SourceTypes | 无 | items, get_choices, get_choice_label, get, search, find_by_type, clear, load_from_configs | 无 | 无 | Stores source types |
+| SourcectlTypeNames | 无 | get, get_default, filter_by_basic_type, validate_svn, validate_git | common_spec_type_suffix | 无 | Source type "NAME" helper class |
 | DockerRegistryConf | pydantic.BaseModel | reload | 无 | 无 | 不适用 |
 
 ---
@@ -48246,16 +48246,16 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | get_svn_authorization_manager_cls | `def get_svn_authorization_manager_cls(region: str) -> Type[SvnApplicationAuthorization]:` | 无 | 不适用 |
 | get_svn_authorization_manager | `def get_svn_authorization_manager(application):` | 无 | 不适用 |
-| promote_repo_privilege_temporary | `@contextlib.contextmanager:` | contextlib.contextmanager | 不适用 |
+| promote_repo_privilege_temporary | `def promote_repo_privilege_temporary(application):` | contextlib.contextmanager | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BaseSvnAuthClient | 无 | add_user, reset_user, add_dir, add_group, mod_authz, mod_authz_common, del_authz | 无 | 无 | 不适用 |
-| BaseRealSvnAuthClient | BaseSvnAuthClient | __init__, get_admin_url, request, add_user, reset_user, add_dir, add_group, mod_authz, mod_authz_common, del_authz | SVN_SECRET, SVN_OPERATE_ERROR_NOTIFIER, DUMMY, TIMEOUT, SSL_VERIFY, BASE_SVN_ADD_USER, BASE_SVN_MOD_COMMON, BASE_SVN_MOD_GROUP, BASE_SVN_MOD_AUTHZ, BASE_SVN_ADD_DIR, BASE_SVN_DEL_AUTHZ | 无 | 不适用 |
+| BaseRealSvnAuthClient | BaseSvnAuthClient | get_admin_url, request, add_user, reset_user, add_dir, add_group, mod_authz, mod_authz_common, del_authz | SVN_SECRET, SVN_OPERATE_ERROR_NOTIFIER, DUMMY, TIMEOUT, SSL_VERIFY, BASE_SVN_ADD_USER, BASE_SVN_MOD_COMMON, BASE_SVN_MOD_GROUP, BASE_SVN_MOD_AUTHZ, BASE_SVN_ADD_DIR, BASE_SVN_DEL_AUTHZ | 无 | 不适用 |
 | IeodSvnAuthClient | BaseRealSvnAuthClient | 无 | REGION, BASE_SVN_ADD_DIR | 无 | SVN用户账号注册及授权（互娱内部版） |
-| SvnApplicationAuthorization | 无 | __init__, create_svn_client, group_name, code, initialize, update_developers, set_paas_user_root_privilege, set_paas_user_privilege, destroy | 无 | 无 | 不适用 |
+| SvnApplicationAuthorization | 无 | create_svn_client, group_name, code, initialize, update_developers, set_paas_user_root_privilege, set_paas_user_privilege, destroy | 无 | 无 | 不适用 |
 | SvnAuthClient4Developer | BaseSvnAuthClient | mock, add_user, reset_user, add_dir, add_group, mod_authz, mod_authz_common, del_authz | 无 | 无 | 供开发时使用, 模拟真实的接口 |
 | IeodSvnApplicationAuthorization | SvnApplicationAuthorization | 无 | svn_client_cls | 无 | 不适用 |
 | DummyAppAuthorization | SvnApplicationAuthorization | 无 | svn_client_cls | 无 | Dummy authorization type which does no real author... |
@@ -48318,10 +48318,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| VersionType | 无 | __init__, get_rel_path | 无 | 无 | Version type for svn repository type |
-| SvnVersionTypes | 无 | __init__, get_version_by_type, get_version_by_dirname, parse_smart_revision_str | RE_SMART_REVISION | 无 | All supported svn version types |
-| RepoProvider | 无 | __init__, provision, initialize_repo, make_tag_from_trunk | default_init_repo_message | 无 | Provider for svn repository |
-| SvnRepositoryClient | 无 | __init__, sync_dir, read_file, export, list_alternative_versions, get_latest_revision, get_commit_logs, package, patch_files, extract_smart_revision, __str__ | default_ignores | 无 | Client for SVN Repository |
+| VersionType | 无 | get_rel_path | 无 | 无 | Version type for svn repository type |
+| SvnVersionTypes | 无 | get_version_by_type, get_version_by_dirname, parse_smart_revision_str | RE_SMART_REVISION | 无 | All supported svn version types |
+| RepoProvider | 无 | provision, initialize_repo, make_tag_from_trunk | default_init_repo_message | 无 | Provider for svn repository |
+| SvnRepositoryClient | 无 | sync_dir, read_file, export, list_alternative_versions, get_latest_revision, get_commit_logs, package, patch_files, extract_smart_revision | default_ignores | 无 | Client for SVN Repository |
 | RemoteClient | OrigRemoteClient | checkout, delete, tag_trunk, calculate_user_contribution | 无 | 无 | SVN Remote Client for blueking |
 | LocalClient | OrigLocalClient | add, update, commit, delete | 无 | 无 | SVN Local Client for blueking |
 
@@ -48494,7 +48494,7 @@ s-mart(镜像): 'image:镜像 tag'
     :param sour... |
 | compress_directory | `def compress_directory(source_path, target_path):` | 无 | Compress a directory using tar command |
 | uncompress_directory | `def uncompress_directory(source_path, target_path):` | 无 | uncompress a tar file using tar command |
-| get_all_intermediate_dirs | `def get_all_intermediate_dirs(path: str) -> List[str]:` | 无 | 
+| get_all_intermediate_dirs | `def get_all_intermediate_dirs(path: str) -> List[str]:` | 无 |
     >>> get_all_intermediate_dirs("")
     ['']
   ... |
@@ -48503,7 +48503,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DockerIgnore | 无 | __init__, should_ignore, clean_path, _parse_content | 无 | 无 | DockerIgnore provide a test for whether to ignore ... |
+| DockerIgnore | 无 | should_ignore, clean_path | 无 | 无 | DockerIgnore provide a test for whether to ignore ... |
 
 ---
 
@@ -48564,7 +48564,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | DeployableVersionService | typing_extensions.Protocol | touch, build_url, extract_smart_revision, list_alternative_versions, inspect_version | 无 | 无 | DeployableVersionService 负责管理当前模块的可部署的版本信息:
     - ... |
-| RepoVersionService | 无 | __init__, touch, build_url, extract_smart_revision, list_alternative_versions, inspect_version | 无 | 无 | 不适用 |
+| RepoVersionService | 无 | touch, build_url, extract_smart_revision, list_alternative_versions, inspect_version | 无 | 无 | 不适用 |
 
 ---
 
@@ -48656,7 +48656,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SvnAccountViewSet | rest_framework.viewsets.ModelViewSet | get_queryset, list, process_password, notify_svn_account_changed, get_create_serializer, create, update | required_session_code_verifier_methods, queryset, serializer_class, pagination_class, lookup_field | 无 | 
+| SvnAccountViewSet | rest_framework.viewsets.ModelViewSet | get_queryset, list, process_password, notify_svn_account_changed, get_create_serializer, create, update | required_session_code_verifier_methods, queryset, serializer_class, pagination_class, lookup_field | 无 |
     SVN账户 相关
     list: 账户列表
     - [测试地址](/api/use... |
@@ -48664,8 +48664,8 @@ s-mart(镜像): 'image:镜像 tag'
 | AccountAllowAppSourceControlView | rest_framework.views.APIView | get | 无 | 无 | 返回 用户支持的 APP 仓储列表 |
 | ModuleSourceProvidersViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | list | permission_classes | 无 | 获取某个应用模块可用的源码仓库 |
 | ModuleSourcePackageViewSet | rest_framework.viewsets.ModelViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_module, get_queryset, handle_exception, upload_via_url | serializer_class, permission_classes, filter_backends, search_fields, ordering, ordering_fields, parser_classes | method_decorator | 管理某个应用模块的源码包 |
-| ModuleInitTemplateViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | download, download_default, _create_downloadable_address | permission_classes | 无 | 重新生成应用模块初始化代码，并提供下载地址 |
-| RepoBackendControlViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | modify, _modify_image | permission_classes | 无 | 源码仓库控制 |
+| ModuleInitTemplateViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | download, download_default | permission_classes | 无 | 重新生成应用模块初始化代码，并提供下载地址 |
+| RepoBackendControlViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | modify | permission_classes | 无 | 源码仓库控制 |
 | RepoDataViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | get_repo_branches, get_diff_commit_logs, get_compare_url | permission_classes | 无 | 不适用 |
 | SVNRepoTagsView | rest_framework.views.APIView, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | post | permission_classes | 无 | 不适用 |
 | RevisionInspectViewSet | rest_framework.viewsets.ViewSet, paasng.platform.applications.mixins.ApplicationCodeInPathMixin | retrieve | permission_classes | 无 | This ViewSet provides a service for querying detai... |
@@ -48730,7 +48730,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EnhancedTemplateCommand | 无 | __init__, should_ignore, render, handle | IGNORE_PATTERNS | 无 | Enhanced TemplateCommand, based on django's defaul... |
+| EnhancedTemplateCommand | 无 | should_ignore, render, handle | IGNORE_PATTERNS | 无 | Enhanced TemplateCommand, based on django's defaul... |
 
 ---
 
@@ -48794,7 +48794,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseFixture | 无 | __init__, write_tmpl, write_to_file, append_to_file, render_string | 无 | 无 | Base class for fixture |
+| BaseFixture | 无 | write_tmpl, write_to_file, append_to_file, render_string | 无 | 无 | Base class for fixture |
 | ProcfileFixture | BaseFixture | setup | fixtures_dirname | 无 | Fixture for Profile |
 
 ---
@@ -48844,7 +48844,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TemplateRuntimeManager | 无 | __init__, get_preset_services_config, get_docker_build_config, get_required_buildpacks, get_template_required_buildpacks, get_language_buildpack | 无 | 无 | 模板的运行时管理器 |
+| TemplateRuntimeManager | 无 | get_preset_services_config, get_docker_build_config, get_required_buildpacks, get_template_required_buildpacks, get_language_buildpack | 无 | 无 | 模板的运行时管理器 |
 
 ---
 
@@ -49073,7 +49073,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Templater | 无 | __init__, download_tmpl, write_to_dir | 无 | 无 | 不适用 |
+| Templater | 无 | download_tmpl, write_to_dir | 无 | 无 | 不适用 |
 
 ---
 
@@ -49620,7 +49620,7 @@ s-mart(镜像): 'image:镜像 tag'
 | get_database_conf | `def get_database_conf(settings: LazySettings, encrypted_url_var: str = 'DATABASE_URL', env_var_prefix: str = '', for_tests: bool = False) -> Optional[Dict]:` | 无 | Get a database config dict, will try to read encry... |
 | get_paas_service_jwt_clients | `def get_paas_service_jwt_clients(settings: LazySettings) -> List:` | 无 | Get PAAS_SERVICE_JWT_CLIENTS from LazySettings obj... |
 | get_default_keepalive_options | `def get_default_keepalive_options() -> Optional[Dict]:` | 无 | MacOS's socket module does not have below attrs, r... |
-| get_service_remote_endpoints | `def get_service_remote_endpoints(settings: LazySettings) -> List[Dict]:` | 无 | 
+| get_service_remote_endpoints | `def get_service_remote_endpoints(settings: LazySettings) -> List[Dict]:` | 无 |
     远程增强服务配置，支持简配的三类模板（mysql，bkrepo，rabbitmq）
 
   ... |
@@ -49781,9 +49781,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| AddonsUrlRegister | 无 | __init__, register | 无 | 无 | register extra urlpatterns to the one provided |
+| AddonsUrlRegister | 无 | register | 无 | 无 | register extra urlpatterns to the one provided |
 | PlugableAppConfig | django.apps.AppConfig | ready | default | 无 | 不适用 |
-| ReplaceableFunction | 无 | __init__, __call__, use | 无 | 无 | A dummy placeholder to register extra logic in oth... |
+| ReplaceableFunction | 无 | use | 无 | 无 | A dummy placeholder to register extra logic in oth... |
 
 ---
 
@@ -49854,7 +49854,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| save_redis | `def save_redis(doc: Dict):` | 无 | 
+| save_redis | `def save_redis(doc: Dict):` | 无 |
     保存日志数据到 Redis 队列
      |
 
@@ -49862,7 +49862,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApiLogMiddleware | 无 | __init__, __call__, truncate, get_api_data, save_data | project_code, index_name, max_content_size, doc_type | 无 | 不适用 |
+| ApiLogMiddleware | 无 | truncate, get_api_data, save_data | project_code, index_name, max_content_size, doc_type | 无 | 不适用 |
 
 ---
 
@@ -49932,7 +49932,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | ChoicesEnum | aenum.Enum | get_choices, get_choice_label | 无 | 无 | Enum with choices |
 | LegacyRegexPattern | django.urls.resolvers.RegexPattern | match | 无 | 无 | This is a RegexPattern, which work like with the o... |
-| UniqueIDGenerator | typing_extensions.Protocol | __call__ | 无 | 无 | 不适用 |
+| UniqueIDGenerator | typing_extensions.Protocol | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -50016,7 +50016,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| dict_to_camel | `def dict_to_camel(data: Dict[str, Any]) -> Dict[str, Any]:` | 无 | 
+| dict_to_camel | `def dict_to_camel(data: Dict[str, Any]) -> Dict[str, Any]:` | 无 |
     Converts dict keys from snake case to camel c... |
 | snake_to_camel | `def snake_to_camel(snake_string: str) -> str:` | 无 | Converts a snake case string to camel case.
 
@@ -50058,7 +50058,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RegionAwareConfig | 无 | __init__, get, __bool__ | 无 | 无 | A region aware config wrapper tool class
+| RegionAwareConfig | 无 | get | 无 | 无 | A region aware config wrapper tool class
 
     :par... |
 
@@ -50095,20 +50095,20 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_time_delta | `def get_time_delta(time_delta_string: str):` | 无 | 
+| get_time_delta | `def get_time_delta(time_delta_string: str):` | 无 |
     5m -> datetime.timedelta(minutes=5)
     5d ->... |
-| calculate_interval | `def calculate_interval(start_time, end_time, wide=False) -> str:` | 无 | 
+| calculate_interval | `def calculate_interval(start_time, end_time, wide=False) -> str:` | 无 |
     interval via the gap of query time
     fit fo... |
 | calculate_gap_seconds_interval | `def calculate_gap_seconds_interval(gap_seconds, wide=False) -> str:` | 无 | 不适用 |
-| trans_ts_to_local | `def trans_ts_to_local(ts):` | 无 | 
+| trans_ts_to_local | `def trans_ts_to_local(ts):` | 无 |
     to localtime
      |
-| time_to_epoch_millis | `def time_to_epoch_millis(t, is_end=False):` | 无 | 
+| time_to_epoch_millis | `def time_to_epoch_millis(t, is_end=False):` | 无 |
     utc datetime to epoch_millis
      |
-| strftime_ms | `def strftime_ms(ms, fmt='%Y-%m-%d %H:%M:%S') -> str:` | 无 | 
+| strftime_ms | `def strftime_ms(ms, fmt='%Y-%m-%d %H:%M:%S') -> str:` | 无 |
     the timezone is local timezone
      |
 | convert_timestamp_to_str | `def convert_timestamp_to_str(timestamp: int, timespec: str = 'seconds') -> str:` | 无 | 基于 datetime 的 isoformat, 将整型的时间戳转化成标准化的时间字符串
@@ -50140,7 +50140,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_items | `def get_items(obj: Dict[str, Any], paths: Union[List[str], str], default: Any = None) -> Any:` | 无 | 
+| get_items | `def get_items(obj: Dict[str, Any], paths: Union[List[str], str], default: Any = None) -> Any:` | 无 |
     根据指定的路径从字典中获取对应的值
 
     :param obj: 字典类型对象
@@ -50170,7 +50170,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| EncryptHandler | 无 | __init__, encrypt, decrypt | 无 | 无 | 密码加解密类 |
+| EncryptHandler | 无 | encrypt, decrypt | 无 | 无 | 密码加解密类 |
 
 ---
 
@@ -50193,7 +50193,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ReEncryptCommand | django.core.management.base.BaseCommand | add_arguments, handle, refresh_encrypt_fields, _get_model_classes | help | 无 | 不适用 |
+| ReEncryptCommand | django.core.management.base.BaseCommand | add_arguments, handle, refresh_encrypt_fields | help | 无 | 不适用 |
 
 ---
 
@@ -50368,7 +50368,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FlattenLog | typing.TypedDict | 无 | 无 | 无 | 
+| FlattenLog | typing.TypedDict | 无 | 无 | 无 |
     :param timestamp: linux timestamp(seconds)
   ... |
 | LogLine | 无 | 无 | __attrs_post_init__ | define | LogLine is object type of FlattenLog
@@ -50408,7 +50408,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SmartSearch | 无 | __init__, filter, exclude, limit_offset, query, sort, agg, highlight, to_dict | 无 | 无 | Proxy to elasticsearch_dsl.Search, will inject tim... |
+| SmartSearch | 无 | filter, exclude, limit_offset, query, sort, agg, highlight, to_dict | 无 | 无 | Proxy to elasticsearch_dsl.Search, will inject tim... |
 
 ---
 
@@ -50444,7 +50444,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| get_time_delta | `def get_time_delta(time_delta_string) -> datetime.timedelta:` | 无 | 
+| get_time_delta | `def get_time_delta(time_delta_string) -> datetime.timedelta:` | 无 |
     5m -> datetime.timedelta(minutes=5)
     5d ->... |
 | get_epoch_milliseconds | `def get_epoch_milliseconds(dt: datetime.datetime, ignore_timezone: bool = False) -> int:` | 无 | Return total number of milliseconds to EPOCH.
@@ -50454,7 +50454,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SmartTimeRange | 无 | __init__, is_absolute, _get_epoch_millis, get_head_and_tail, get_time_range_filter, detect_date_histogram_interval | 无 | 无 | 
+| SmartTimeRange | 无 | is_absolute, get_head_and_tail, get_time_range_filter, detect_date_histogram_interval | 无 | 无 |
     A tool class for LogClient, transfer time_ran... |
 
 ---
@@ -50541,7 +50541,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| I18nTask | celery.Task | apply_async, __call__ | LANGUAGE_CODE_KEY | 无 | Celery Task with django i18n context |
+| I18nTask | celery.Task | apply_async | LANGUAGE_CODE_KEY | 无 | Celery Task with django i18n context |
 
 ---
 
@@ -50635,10 +50635,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| I18NExtend | 无 | __init__, __set_name__, field | 无 | 无 | i18n extend flag for drf Serializer class.
+| I18NExtend | 无 | field | 无 | 无 | i18n extend flag for drf Serializer class.
     Thi... |
-| TranslatedCharField | rest_framework.serializers.CharField | __init__, get_attribute, get_value, run_validation | 无 | 无 | A CharField supported i18n, which will work with d... |
-| FallbackMixin | _Base | __init__, bind, get_value, get_attribute, override_field_name | 无 | 无 | A Mixin for drf.Field
+| TranslatedCharField | rest_framework.serializers.CharField | get_attribute, get_value, run_validation | 无 | 无 | A CharField supported i18n, which will work with d... |
+| FallbackMixin | _Base | bind, get_value, get_attribute, override_field_name | 无 | 无 | A Mixin for drf.Field
     which will get value/att... |
 | DjangoTranslatedCharField | rest_framework.serializers.CharField | to_representation | 无 | 无 | Translate strings using django gettext method |
 
@@ -50678,8 +50678,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Singleton | 无 | __new__ | _instance | 无 | 不适用 |
-| Local | Singleton | request, request, request_id, get_http_request_id, release | 无 | 无 | local 对象，配合中间件 RequestProvider 使用 |
+| Singleton | 无 | 无 | _instance | 无 | 不适用 |
+| Local | Singleton | request, request_id, get_http_request_id, release | 无 | 无 | local 对象，配合中间件 RequestProvider 使用 |
 
 ---
 
@@ -50712,7 +50712,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| LogstashRedisHandler | logging.Handler | __init__, emit | 无 | 无 | 不适用 |
+| LogstashRedisHandler | logging.Handler | emit | 无 | 无 | 不适用 |
 | RequestIDFilter | logging.Filter | filter | 无 | 无 | RequestID 过滤器. 将 local.request_id 写入 LogRecord, 用于... |
 
 ---
@@ -50754,7 +50754,7 @@ s-mart(镜像): 'image:镜像 tag'
 | scrub_data | `def scrub_data(data: Dict[str, Any]) -> Dict[str, Any]:` | 无 | Scrub the data, mask all sensitive data fields.
 
  ... |
-| mask_sensitive_data | `def mask_sensitive_data(request):` | 无 | 
+| mask_sensitive_data | `def mask_sensitive_data(request):` | 无 |
     脱敏请求对象中的敏感数据。
      |
 | to_curl | `def to_curl(request, compressed=False, verify=True):` | 无 | 将请求对象转换为一个 cURL 命令，同时对敏感信息进行脱敏处理。 |
@@ -50794,7 +50794,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | WhiteNoiseRespectPrefixMiddleware | whitenoise.middleware.WhiteNoiseMiddleware | process_request | 无 | 无 | Hack WhiteNoise middleware to respect FORCE_SCRIPT... |
-| AutoDisableCSRFMiddleware | 无 | __init__, __call__, process_view | 无 | 无 | Disable CSRF checks on purpose |
+| AutoDisableCSRFMiddleware | 无 | process_view | 无 | 无 | Disable CSRF checks on purpose |
 | APILanguageMiddleware | django.utils.deprecation.MiddlewareMixin | process_request | 无 | 无 | Set the language for API requests |
 
 ---
@@ -50853,7 +50853,7 @@ s-mart(镜像): 'image:镜像 tag'
 | is_mapping | `def is_mapping(type: Any) -> bool:` | 无 | 判断 type 是否 mapping 类型 |
 | is_bare | `def is_bare(type: Any) -> bool:` | 无 | 判断 type 是否空的 typing.Generic 类型 |
 | is_sequence | `def is_sequence(type: Any) -> bool:` | 无 | 判断 type 是否 Sequence 类型 |
-| generate | `def generate(generator, filename: str = '<memory>'):` | 无 | 
+| generate | `def generate(generator, filename: str = '<memory>'):` | 无 |
     Calls the ``generate()`` method of a generato... |
 | make_legacy_json_field | `def make_legacy_json_field(cls_name: str, py_model: Type[M], module: Optional[str] = None) -> Type[JSONField]:` | 无 | 生成会自动进行类型转换为 `py_model` 的 jsonfield.JSONField
 
@@ -50873,17 +50873,17 @@ s-mart(镜像): 'image:镜像 tag'
 | ProcessedImageField | OrigProcessedImageField | deconstruct | attr_class | 无 | Clone of ProcessedImageField
 
     Removes `storage... |
-| BkUserFieldAttribute | django.db.models.query_utils.DeferredAttribute | __set__ | 无 | 无 | A wrapper for BkUserField, always transform value ... |
-| BkUserField | django.db.models.CharField | __init__, from_db_value | description, descriptor_class | 无 | Field for storing blueking user pk |
+| BkUserFieldAttribute | django.db.models.query_utils.DeferredAttribute | 无 | 无 | 无 | A wrapper for BkUserField, always transform value ... |
+| BkUserField | django.db.models.CharField | from_db_value | description, descriptor_class | 无 | Field for storing blueking user pk |
 | SimpleUserIDWrapper | str | username | 无 | 无 | A simple user wrapper for convenience |
-| RegionListField | django.db.models.CharField | __init__, _default_value, get_db_prep_value, from_db_value | description | 无 | Field for storing region list
+| RegionListField | django.db.models.CharField | get_db_prep_value, from_db_value | description | 无 | Field for storing region list
     receive region o... |
 | TimestampedModel | django.db.models.Model | get_region_display | region, created, updated | 无 | Model with 'created' and 'updated' fields. |
 | OwnerTimestampedModel | TimestampedModel | 无 | owner | 无 | Model with 'created' and 'updated' fields. |
 | WithOwnerManager | django.db.models.Manager | get_user_id, owned_by | 无 | 无 | Manager for Models with a 'owner' field |
 | AuditedModel | django.db.models.Model | 无 | created, updated | 无 | Audited model with 'created' and 'updated' fields. |
 | UuidAuditedModel | AuditedModel | 无 | uuid | 无 | Add a UUID primary key to an :class:`AuditedModel`... |
-| OrderByField | 无 | from_string, __str__ | 无 | dataclass | a helper class for process order_by string |
+| OrderByField | 无 | from_string | 无 | dataclass | a helper class for process order_by string |
 
 ---
 
@@ -50958,7 +50958,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseComponentAPIPlugin | paasng.utils.notifier.UserNotificationPlugin | __init__, get_common_params, _call_api, _get_inner_auth_pair, cat_names | 无 | 无 | Base class for notification plugins using componen... |
+| BaseComponentAPIPlugin | paasng.utils.notifier.UserNotificationPlugin | get_common_params, cat_names | 无 | 无 | Base class for notification plugins using componen... |
 | MailNotificationPlugin | BaseComponentAPIPlugin | send | 无 | 无 | Send mail notification |
 | WeComNotificationPlugin | BaseComponentAPIPlugin | send | 无 | 无 | Send WeCom(企业微信) notification |
 | WeChatNotificationPlugin | BaseComponentAPIPlugin | send | 无 | 无 | Send WeChat notification |
@@ -51006,7 +51006,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | UserNotificationPlugin | 无 | send | 无 | 无 | An object which sends notification to users |
 | DummyUserNotificationPlugin | UserNotificationPlugin | send | 无 | 无 | A dummy implementation of user notification plugin |
-| UserNotificationBackend | 无 | __init__, register, __getattr__ | 无 | 无 | Backend type for sending notifications to user |
+| UserNotificationBackend | 无 | register | 无 | 无 | Backend type for sending notifications to user |
 
 ---
 
@@ -51043,7 +51043,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | MatchType | blue_krill.data_types.enum.IntStructuredEnum | 无 | Unknown, Excat, Prefix, Suffix, Regexp | 无 | 不适用 |
 | Pattern | 无 | match, compile | 无 | dataclass | Pattern defines a single regexp used to filter fil... |
-| Scanner | 无 | __init__, peek, next, is_eof, _next | EOF | 无 | Scanner implements the minimum behavior of golang ... |
+| Scanner | 无 | peek, next, is_eof | EOF | 无 | Scanner implements the minimum behavior of golang ... |
 
 ---
 
@@ -51090,7 +51090,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| UserAction | blue_krill.data_types.enum.IntStructuredEnum | 无 | FETCH_DEPLOY_LOG, WATCH_PROCESS | 无 | 
+| UserAction | blue_krill.data_types.enum.IntStructuredEnum | 无 | FETCH_DEPLOY_LOG, WATCH_PROCESS | 无 |
     用于频率限制的用户操作
 
     Q: 为什么需要有 UserAction 这个枚举类，而... |
@@ -51130,8 +51130,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RedisFixedWindowRateLimiter | abc.ABC | __init__, is_allowed, _gen_key | 无 | 无 | 基于 Redis 的固定窗口速率控制器 |
-| UserActionRateLimiter | RedisFixedWindowRateLimiter | __init__, _gen_key | 无 | 无 | 针对用户行为的速率控制器 |
+| RedisFixedWindowRateLimiter | abc.ABC | is_allowed | 无 | 无 | 基于 Redis 的固定窗口速率控制器 |
+| UserActionRateLimiter | RedisFixedWindowRateLimiter | 无 | 无 | 无 | 针对用户行为的速率控制器 |
 
 ---
 
@@ -51160,8 +51160,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RedisTokenBucketRateLimiter | abc.ABC | __init__, is_allowed, _gen_key | 无 | 无 | 基于 Redis 的令牌桶速率控制器 |
-| UserActionRateLimiter | RedisTokenBucketRateLimiter | __init__, _gen_key | 无 | 无 | 针对用户行为的速率控制器 |
+| RedisTokenBucketRateLimiter | abc.ABC | is_allowed | 无 | 无 | 基于 Redis 的令牌桶速率控制器 |
+| UserActionRateLimiter | RedisTokenBucketRateLimiter | 无 | 无 | 无 | 针对用户行为的速率控制器 |
 
 ---
 
@@ -51296,27 +51296,27 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| VerificationCodeField | rest_framework.serializers.RegexField | __init__ | 无 | 无 | 不适用 |
+| VerificationCodeField | rest_framework.serializers.RegexField | 无 | 无 | 无 | 不适用 |
 | UserField | rest_framework.serializers.Field | to_representation, to_internal_value | 无 | 无 | User field for present user friendly user object |
 | UserNameField | rest_framework.serializers.Field | to_representation, to_internal_value | 无 | 无 | UserName field for present username friendly user ... |
 | MaskField | rest_framework.serializers.CharField | to_internal_value | REGEX | 无 | 掩码字段: 只匹配符合正则规则的字符 |
-| NickNameField | MaskField | 无 | REGEX | 无 | 
+| NickNameField | MaskField | 无 | REGEX | 无 |
     名称字段，过滤[中文\w\-_]字符集
     >>> "".join(re.compil... |
-| ChineseField | MaskField | 无 | REGEX | 无 | 
+| ChineseField | MaskField | 无 | REGEX | 无 |
     中文字段
      |
-| RichTextField | rest_framework.serializers.CharField | to_internal_value | 无 | 无 | 
+| RichTextField | rest_framework.serializers.CharField | to_internal_value | 无 | 无 |
     富文本字段，带XSS过滤供
      |
 | MultiUserField | rest_framework.serializers.CharField | to_internal_value, to_representation | regex, validator, split_regex | 无 | 用于表示多个user |
 | HumanizeDateTimeField | rest_framework.serializers.DateTimeField | to_representation | 无 | 无 | 不适用 |
 | HumanizeTimestampField | rest_framework.serializers.Field | to_representation | 无 | 无 | 不适用 |
 | Base64FileField | rest_framework.serializers.Field | to_internal_value, to_representation | _prefix, default_error_messages | 无 | This Field wrap bytes or base64 content into File-... |
-| SourceControlField | rest_framework.serializers.ChoiceField | __init__, grouped_choices, choice_strings_to_values, _get_choices, _set_choices, to_internal_value | choices | 无 | This Field provide dynamic source type choices. |
-| ConfigVarReservedKeyValidator | 无 | __init__, __call__ | 无 | 无 | 不适用 |
+| SourceControlField | rest_framework.serializers.ChoiceField | grouped_choices, choice_strings_to_values, to_internal_value | choices | 无 | This Field provide dynamic source type choices. |
+| ConfigVarReservedKeyValidator | 无 | 无 | 无 | 无 | 不适用 |
 | IntegerOrCharField | rest_framework.serializers.CharField | to_internal_value, to_representation | 无 | 无 | 整型或字符串字段，优先整型 |
-| SafePathField | rest_framework.serializers.RegexField | __init__, run_validation | regex, default_error_messages | 无 | 安全路径字段，只允许包含字母、数字、下划线、横线、点、斜杠，不允许绝对路径 & 路径逃逸（../） |
+| SafePathField | rest_framework.serializers.RegexField | run_validation | regex, default_error_messages | 无 | 安全路径字段，只允许包含字母、数字、下划线、横线、点、斜杠，不允许绝对路径 & 路径逃逸（../） |
 
 ---
 
@@ -51361,7 +51361,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| NotSetType | 无 | __repr__, __bool__, __copy__, __deepcopy__, dict | 无 | 无 | A simple type representing an absent value, can be... |
+| NotSetType | 无 | dict | 无 | 无 | A simple type representing an absent value, can be... |
 | AllowNotsetModel | pydantic.BaseModel | dict | 无 | 无 | Add support for NOTSET |
 
 ---
@@ -51396,9 +51396,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| colorize | `def colorize(text: str = '', fg: Optional[str] = None, bg: Optional[str] = None, opts: tuple = ()):` | 无 | 
+| colorize | `def colorize(text: str = '', fg: Optional[str] = None, bg: Optional[str] = None, opts: tuple = ()):` | 无 |
     Return your text, enclosed in ANSI graphics c... |
-| make_style | `def make_style(fg: Optional[str] = None, bg: Optional[str] = None, opts: tuple = ()):` | 无 | 
+| make_style | `def make_style(fg: Optional[str] = None, bg: Optional[str] = None, opts: tuple = ()):` | 无 |
     Return a function with default parameters for... |
 | pick_color | `def pick_color(color: str = 'black', position: str = 'fg'):` | 无 | 不适用 |
 | no_color | `def no_color(text):` | 无 | 不适用 |
@@ -51445,7 +51445,7 @@ s-mart(镜像): 'image:镜像 tag'
 | camel_to_snake | `def camel_to_snake(name: str) -> str:` | 无 | Turn CamelCase string input snake_case.
 
     >>> c... |
-| calculate_percentage | `def calculate_percentage(x: float, y: float, decimal_places: int = 2) -> str:` | 无 | 
+| calculate_percentage | `def calculate_percentage(x: float, y: float, decimal_places: int = 2) -> str:` | 无 |
     计算 x 除以 y 的值，并将结果转换为百分比的字符串形式。
 
     如果 y 等于0，... |
@@ -51515,10 +51515,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| DnsSafeNameValidator | 无 | __init__, __call__ | 无 | deconstructible | DNS name safe validator |
-| ReservedWordValidator | 无 | __init__, __call__ | 无 | deconstructible | Reserved word validator |
-| RegionListValidator | 无 | __call__, is_formatted_string | 无 | deconstructible | 不适用 |
-| Base64Validator | 无 | __call__ | 无 | deconstructible | 不适用 |
+| DnsSafeNameValidator | 无 | 无 | 无 | deconstructible | DNS name safe validator |
+| ReservedWordValidator | 无 | 无 | 无 | deconstructible | Reserved word validator |
+| RegionListValidator | 无 | is_formatted_string | 无 | deconstructible | 不适用 |
+| Base64Validator | 无 | 无 | 无 | deconstructible | 不适用 |
 
 ---
 
@@ -51587,7 +51587,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| HookChain | 无 | __init__, __call__ | 无 | 无 | 为链式调用 hook 提供封装的工具类 |
+| HookChain | 无 | 无 | 无 | 无 | 为链式调用 hook 提供封装的工具类 |
 | IgnoreClientContentNegotiation | rest_framework.negotiation.BaseContentNegotiation | select_parser, select_renderer | 无 | 无 | 不适用 |
 | EventStreamRender | rest_framework.renderers.BaseRenderer | render | media_type, format, charset, render_style | 无 | 不适用 |
 | BkStandardApiJSONRenderer | rest_framework.renderers.JSONRenderer | render, wrap_successful, wrap_error | format, _successful_code, _default_code, _default_error_message | 无 | Renderer which wraps original JSON response with a... |
@@ -51683,8 +51683,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_app_code | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_app_code | `def bk_app_code():` | pytest.fixture | 不适用 |
+| bk_app_name | `def bk_app_name():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -51730,9 +51730,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_app_code | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| lesscode_public_params | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_app_code | `def bk_app_code():` | pytest.fixture | 不适用 |
+| bk_app_name | `def bk_app_name():` | pytest.fixture | 不适用 |
+| lesscode_public_params | `def lesscode_public_params():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -51809,8 +51809,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| module_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| create_module_params | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| module_name | `def module_name():` | pytest.fixture | 不适用 |
+| create_module_params | `def create_module_params():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -51879,7 +51879,7 @@ s-mart(镜像): 'image:镜像 tag'
 | TestGetContactInfo | 无 | test_normal, test_recent_deployment_operators | 无 | 无 | Test cases for getting app's contact info |
 | TestLessCodeSystemAPIViewSet | 无 | mixed_service_mgr, test_query_db_credentials | 无 | 无 | 不适用 |
 | TestSysAddonsAPIViewSet | 无 | mixed_service_mgr, service_name, service, test_query_credentials, test_query_credentials_404, test_provision_service, test_retrieve_specs, test_retrieve_specs_but_unprovision | 无 | 无 | 不适用 |
-| TestClusterNamespaceInfoViewSet | 无 | _create_cluster_obj, test_list_by_code | 无 | 无 | 不适用 |
+| TestClusterNamespaceInfoViewSet | 无 | test_list_by_code | 无 | 无 | 不适用 |
 
 ---
 
@@ -51920,7 +51920,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestModuleProcessSpecViewSet | 无 | web, celery_worker, test_retrieve, test_save | 无 | 无 | 不适用 |
 | TestModuleProcessSpecWithProcServicesViewSet | 无 | web, test_validate, test_validate_duplicated_exposed_type, test_save, test_retrieve | 无 | 无 | 不适用 |
-| TestModuleProcessSpecWithMonitoringViewSet | 无 | _create_web_process_and_monitoring, test_validate, test_save, test_retrieve | 无 | 无 | 不适用 |
+| TestModuleProcessSpecWithMonitoringViewSet | 无 | test_validate, test_save, test_retrieve | 无 | 无 | 不适用 |
 
 ---
 
@@ -51953,9 +51953,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| base_manifest | `@pytest.fixture():` | pytest.fixture | A very basic manifest that can pass the validation... |
-| random_resource_name | `@pytest.fixture():` | pytest.fixture | A random name used as kubernetes resource name to ... |
-| init_model_resource | `@pytest.fixture():` | pytest.fixture | Initialize the app model resource |
+| base_manifest | `def base_manifest(bk_app):` | pytest.fixture | A very basic manifest that can pass the validation... |
+| random_resource_name | `def random_resource_name():` | pytest.fixture | A random name used as kubernetes resource name to ... |
+| init_model_resource | `def init_model_resource(bk_app, bk_module, random_resource_name):` | pytest.fixture | Initialize the app model resource |
 
 #### 类
 
@@ -51993,7 +51993,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_app2 | `@pytest.fixture(autouse=True):` | pytest.fixture | Create another application for testing |
+| bk_app2 | `def bk_app2() -> Application:` | pytest.fixture | Create another application for testing |
 
 #### 类
 
@@ -52031,7 +52031,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FakeMiddleware | 无 | __init__, __call__ | 无 | 无 | 不适用 |
+| FakeMiddleware | 无 | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -52084,7 +52084,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestDistributors | 无 | test_list | 无 | 无 | 不适用 |
-| TestDistributorRels | 无 | _do_preparations, test_update, test_integrated | 无 | 无 | Test APIS of managing distributors of a single bk_... |
+| TestDistributorRels | 无 | test_update, test_integrated | 无 | 无 | Test APIS of managing distributors of a single bk_... |
 | TestPluginConfigurationViewSet | 无 | test_sync | 无 | 无 | Test APIS of syncing configurations |
 
 ---
@@ -52121,10 +52121,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| one_enabled_app_secret_list | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| two_enabled_app_secret_list | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| change_default_app_secret | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| two_disabled_app_secret_list | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| one_enabled_app_secret_list | `def one_enabled_app_secret_list(bk_app):` | pytest.fixture | 不适用 |
+| two_enabled_app_secret_list | `def two_enabled_app_secret_list(bk_app):` | pytest.fixture | 不适用 |
+| change_default_app_secret | `def change_default_app_secret(bk_app):` | pytest.fixture | 不适用 |
+| two_disabled_app_secret_list | `def two_disabled_app_secret_list(bk_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -52202,7 +52202,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| another_user | `@pytest.fixture():` | pytest.fixture | Generate a random user |
+| another_user | `def another_user(request):` | pytest.fixture | Generate a random user |
 
 #### 类
 
@@ -52213,8 +52213,8 @@ s-mart(镜像): 'image:镜像 tag'
 | TestApplicationCreateWithoutEngine | 无 | test_create_non_engine, test_region_permission_control | 无 | 无 | Test application creation APIs with engine disable... |
 | TestApplicationUpdate | 无 | test_normal, test_duplicated, test_desc_app | 无 | 无 | Test update application API |
 | TestApplicationDeletion | 无 | test_normal, test_rollback | 无 | 无 | Test delete application API |
-| TestCreateBkPlugin | 无 | test_normal, test_forbidden_via_config, _send_creation_request | 无 | 无 | Test 'bk_plugin' type application's creation |
-| TestCreateCloudNativeApp | 无 | _setup, test_create_with_image, test_create_with_buildpack, test_create_with_dockerfile, test_create_with_bk_log_feature | 无 | 无 | Test 'cloud_native' type application's creation |
+| TestCreateBkPlugin | 无 | test_normal, test_forbidden_via_config | 无 | 无 | Test 'bk_plugin' type application's creation |
+| TestCreateCloudNativeApp | 无 | test_create_with_image, test_create_with_buildpack, test_create_with_dockerfile, test_create_with_bk_log_feature | 无 | 无 | Test 'cloud_native' type application's creation |
 | TestListEvaluation | 无 | latest_collection_task, app_operation_report1, app_operation_report2, inactive_app, test_list_evaluation, test_issue_count | 无 | 无 | 不适用 |
 | TestDeploymentModuleOrder | 无 | test_module_order, test_module_order_missing_module, test_module_order_extra_module | 无 | 无 | 不适用 |
 
@@ -52291,7 +52291,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestModuleBuildConfigViewSet | 无 | _setup_settings, bp_stack_name, buildpack_x, buildpack_y, buildpack_z, slugbuilder, slugrunner, test_retrieve_legacy_bp, test_retrieve_bp, test_retrieve_docker, test_retrieve_custom_image, test_modify_bp, test_modify_dockerbuild, test_modify_dockerbuild_with_emtpy_build_args, test_modify_custom_image, test_modify_wrong_args | 无 | 无 | 不适用 |
+| TestModuleBuildConfigViewSet | 无 | bp_stack_name, buildpack_x, buildpack_y, buildpack_z, slugbuilder, slugrunner, test_retrieve_legacy_bp, test_retrieve_bp, test_retrieve_docker, test_retrieve_custom_image, test_modify_bp, test_modify_dockerbuild, test_modify_dockerbuild_with_emtpy_build_args, test_modify_custom_image, test_modify_wrong_args | 无 | 无 | 不适用 |
 
 ---
 
@@ -52326,7 +52326,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestCNative | 无 | _mock_dependencies, test_retrieve | 无 | 无 | 不适用 |
+| TestCNative | 无 | test_retrieve | 无 | 无 | 不适用 |
 
 ---
 
@@ -52378,9 +52378,9 @@ s-mart(镜像): 'image:镜像 tag'
 | TestRollbackCNativeMigrationViewSet | 无 | test_rollback, test_rollback_when_last_migration_failed, test_rollback_when_never_migrated | 无 | 无 | 不适用 |
 | TestQueryProcessCNativeMigrationViewSet | 无 | test_get_process_by_id, test_get_process_by_id_404, test_get_latest_process, list_processes | 无 | 无 | 不适用 |
 | TestConfirmCNativeMigrationViewSet | 无 | test_confirm, test_confirm_failed | 无 | 无 | 不适用 |
-| TestDefaultAppProcessViewSet | 无 | wl_app, _mock_get_wl_app, processes_info, test_list, test_update | 无 | 无 | 不适用 |
-| TestDefaultAppEntranceViewSet | 无 | _save_entrances, test_list_all_entrances | 无 | 无 | 不适用 |
-| TestChecklistInfoViewSet | 无 | _set_default_cluster, _set_rcs_binding, test_get | 无 | 无 | 不适用 |
+| TestDefaultAppProcessViewSet | 无 | wl_app, processes_info, test_list, test_update | 无 | 无 | 不适用 |
+| TestDefaultAppEntranceViewSet | 无 | test_list_all_entrances | 无 | 无 | 不适用 |
+| TestChecklistInfoViewSet | 无 | test_get | 无 | 无 | 不适用 |
 
 ---
 
@@ -52415,7 +52415,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_configvar_by_key | `@pytest.mark.parametrize(('init_env', 'init_value', 'update_env', 'update_value', 'expected_envs', 'expected_values'), [(None, None, stag_env, 'v1', [stag_env], ['v1']), (stag_env, 'stag_v', prod_env, 'prod_v', [stag_env, prod_env], ['stag_v', 'prod_v']), (prod_env, 'old_prod', prod_env, 'new_prod', [prod_env], ['new_prod']), (global_env, 'global_v', prod_env, 'prod_v', [global_env, prod_env], ['global_v', 'prod_v'])]):` | pytest.mark.parametrize | 不适用 |
+| test_configvar_by_key | `def test_configvar_by_key(api_client, bk_module, init_env, init_value, update_env, update_value, expected_envs, expected_values):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -52448,7 +52448,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_preset_config_var | `@pytest.mark.parametrize('environment_name', [ConfigVarEnvName.GLOBAL.value, ConfigVarEnvName.STAG.value, ConfigVarEnvName.PROD.value]):` | pytest.mark.parametrize | 不适用 |
+| test_get_preset_config_var | `def test_get_preset_config_var(api_client, bk_module, environment_name):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -52680,16 +52680,16 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| existed_app | `@pytest.fixture():` | pytest.fixture | Create a existed app to test conflicted situations |
-| tag | `@pytest.fixture():` | pytest.fixture | A tag fixture for testing |
-| creation_params | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| existed_app | `def existed_app(bk_app):` | pytest.fixture | Create a existed app to test conflicted situations |
+| tag | `def tag(bk_app):` | pytest.fixture | A tag fixture for testing |
+| creation_params | `def creation_params(bk_app, tag):` | pytest.fixture | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestCreateMarketApp | 无 | test_name_conflicted_with_existed_app, test_duplicated_creation, test_normal | 无 | 无 | 不适用 |
-| TestGetAndUpdateProduct | 无 | _existed_product, test_get_market_app, test_update_market_app | 无 | 无 | 不适用 |
+| TestGetAndUpdateProduct | 无 | test_get_market_app, test_update_market_app | 无 | 无 | 不适用 |
 | TestSetEntrance | 无 | test_set_builtin_entrance, test_set_builtin_custom, test_set_failed, test_set_third_party_url | 无 | pytest.mark.django_db, pytest.mark.usefixtures | 不适用 |
 
 ---
@@ -52732,7 +52732,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_create_then_release | `@pytest.mark.usefixtures('_init_tmpls'):` | pytest.mark.usefixtures, pytest.mark.parametrize | 不适用 |
+| test_create_then_release | `def test_create_then_release(api_client, mock_wl_services_in_creation, mock_paas_analysis_client, mock_initialize_vcs_with_template, confirm_required_when_publish, auto_enable_when_deploy, deployment_status, released_state, console_state):` | pytest.mark.usefixtures, pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -52788,9 +52788,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestModuleCreation | 无 | test_create_different_engine_params, test_create_nondefault_origin | 无 | 无 | Test module creation APIs |
-| TestCreateCloudNativeModule | 无 | _setup, test_create_with_image, test_create_with_buildpack, test_create_with_dockerfile | 无 | 无 | 不适用 |
+| TestCreateCloudNativeModule | 无 | test_create_with_image, test_create_with_buildpack, test_create_with_dockerfile | 无 | 无 | 不适用 |
 | TestModuleDeployConfigViewSet | 无 | the_hook, the_procfile, test_retrieve, test_upsert_hook, test_disable_hook, test_update_procfile | 无 | 无 | 不适用 |
-| TestModuleDeletion | 无 | _mock_validate_custom_domain, test_delete_main_module, test_delete_module, test_delete_rollback | 无 | 无 | Test delete module API |
+| TestModuleDeletion | 无 | test_delete_main_module, test_delete_module, test_delete_rollback | 无 | 无 | Test delete module API |
 | TestDefaultModuleSwitch | 无 | init_another_module, test_source_module, test_with_custom_domain | 无 | 无 | Test set as default API |
 
 ---
@@ -52827,7 +52827,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_monitor_space | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_monitor_space | `def bk_monitor_space(bk_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -52872,7 +52872,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestSceneApp | 无 | _init_scene_tmpls, test_list, _mock_create_scene_app, test_create | 无 | 无 | 不适用 |
+| TestSceneApp | 无 | test_list, test_create | 无 | 无 | 不适用 |
 
 ---
 
@@ -52991,8 +52991,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mocked_call_api | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| svn_account | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mocked_call_api | `def mocked_call_api():` | pytest.fixture | 不适用 |
+| svn_account | `def svn_account(bk_user):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -53036,12 +53036,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| image_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| py_buildpack | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| nodejs_buildpack | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| extra_buildpack | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugbuilder | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugrunner | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| image_name | `def image_name():` | pytest.fixture | 不适用 |
+| py_buildpack | `def py_buildpack():` | pytest.fixture | 不适用 |
+| nodejs_buildpack | `def nodejs_buildpack():` | pytest.fixture | 不适用 |
+| extra_buildpack | `def extra_buildpack():` | pytest.fixture | 不适用 |
+| slugbuilder | `def slugbuilder(py_buildpack, nodejs_buildpack, extra_buildpack, image_name):` | pytest.fixture | 不适用 |
+| slugrunner | `def slugrunner(image_name):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -53189,39 +53189,39 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | pytest_addoption | `def pytest_addoption(parser):` | 无 | 不适用 |
-| django_db_setup | `@pytest.fixture(scope='session'):` | pytest.fixture | Create the default cluster for testing. |
+| django_db_setup | `def django_db_setup(django_db_setup, django_db_blocker):` | pytest.fixture | Create the default cluster for testing. |
 | pytest_sessionstart | `def pytest_sessionstart(session):` | 无 | Called before running all tests:
 
     - Reset `mak... |
-| legacy_app_code | `@pytest.fixture():` | pytest.fixture | The legacy App code using for Unit test |
-| random_name | `@pytest.fixture():` | pytest.fixture | Generate an random name which can be used for app'... |
-| bk_user | `@pytest.fixture():` | pytest.fixture | Generate a random user |
-| bk_app | `@pytest.fixture():` | pytest.fixture | Generate a random application owned by current use... |
-| bk_cnative_app | `@pytest.fixture():` | pytest.fixture | Generate a random cloud-native application owned b... |
-| bk_plugin_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_full | `@pytest.fixture():` | pytest.fixture | Generate a random *fully featured* application own... |
-| bk_module | `@pytest.fixture():` | pytest.fixture | Return the default module if current application f... |
-| bk_module_full | `@pytest.fixture():` | pytest.fixture | Return the *fully featured* default module |
-| bk_stag_env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_prod_env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_deployment | `@pytest.fixture():` | pytest.fixture | Generate a simple deployment object |
-| bk_deployment_full | `@pytest.fixture():` | pytest.fixture | Generate a simple deployment object for bk_module_... |
-| api_client | `@pytest.fixture():` | pytest.fixture | Return an authenticated client |
-| sys_api_client | `@pytest.fixture():` | pytest.fixture | Return an authenticated client which has an authen... |
-| sys_light_api_client | `@pytest.fixture():` | pytest.fixture | Return an authenticated client which has an authen... |
-| sys_lesscode_api_client | `@pytest.fixture():` | pytest.fixture | Return an authenticated client which has an authen... |
-| svn_repo_credentials | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dummy_svn_spec | `@pytest.fixture():` | pytest.fixture | Local Svn address for running unittest |
-| dummy_gitlab_spec | `@pytest.fixture():` | pytest.fixture | Local GitLab address for running unittest |
-| create_custom_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_module_2 | `@pytest.fixture():` | pytest.fixture | Another module other than the default one, for tes... |
+| legacy_app_code | `def legacy_app_code():` | pytest.fixture | The legacy App code using for Unit test |
+| random_name | `def random_name():` | pytest.fixture | Generate an random name which can be used for app'... |
+| bk_user | `def bk_user(request):` | pytest.fixture | Generate a random user |
+| bk_app | `def bk_app(request, bk_user) -> Application:` | pytest.fixture | Generate a random application owned by current use... |
+| bk_cnative_app | `def bk_cnative_app(request, bk_user):` | pytest.fixture | Generate a random cloud-native application owned b... |
+| bk_plugin_app | `def bk_plugin_app(bk_app):` | pytest.fixture | 不适用 |
+| bk_app_full | `def bk_app_full(request, bk_user) -> Application:` | pytest.fixture | Generate a random *fully featured* application own... |
+| bk_module | `def bk_module(request) -> Module:` | pytest.fixture | Return the default module if current application f... |
+| bk_module_full | `def bk_module_full(request) -> Module:` | pytest.fixture | Return the *fully featured* default module |
+| bk_stag_env | `def bk_stag_env(request, bk_module) -> ModuleEnvironment:` | pytest.fixture | 不适用 |
+| bk_prod_env | `def bk_prod_env(request, bk_module) -> ModuleEnvironment:` | pytest.fixture | 不适用 |
+| bk_env | `def bk_env(request):` | pytest.fixture | 不适用 |
+| bk_deployment | `def bk_deployment(bk_module):` | pytest.fixture | Generate a simple deployment object |
+| bk_deployment_full | `def bk_deployment_full(bk_module_full):` | pytest.fixture | Generate a simple deployment object for bk_module_... |
+| api_client | `def api_client(request, bk_user):` | pytest.fixture | Return an authenticated client |
+| sys_api_client | `def sys_api_client(bk_user):` | pytest.fixture | Return an authenticated client which has an authen... |
+| sys_light_api_client | `def sys_light_api_client(bk_user):` | pytest.fixture | Return an authenticated client which has an authen... |
+| sys_lesscode_api_client | `def sys_lesscode_api_client(bk_user):` | pytest.fixture | Return an authenticated client which has an authen... |
+| svn_repo_credentials | `def svn_repo_credentials():` | pytest.fixture | 不适用 |
+| dummy_svn_spec | `def dummy_svn_spec():` | pytest.fixture | Local Svn address for running unittest |
+| dummy_gitlab_spec | `def dummy_gitlab_spec():` | pytest.fixture | Local GitLab address for running unittest |
+| create_custom_app | `def create_custom_app():` | pytest.fixture | 不适用 |
+| bk_module_2 | `def bk_module_2(bk_app):` | pytest.fixture | Another module other than the default one, for tes... |
 | check_legacy_enabled | `def check_legacy_enabled():` | 无 | check if legacy database was configured properly |
 | skip_if_legacy_not_configured | `def skip_if_legacy_not_configured():` | 无 | Return a pytest mark to skip tests when legacy dat... |
 | check_console_enabled | `def check_console_enabled():` | 无 | check if console database was configured properly |
 | mark_skip_if_console_not_configured | `def mark_skip_if_console_not_configured():` | 无 | Return a pytest mark to skip tests when console da... |
-| mock_env_is_running | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| mock_get_builtin_addresses | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_env_is_running | `def mock_env_is_running():` | pytest.fixture | 不适用 |
+| mock_get_builtin_addresses | `def mock_get_builtin_addresses(mock_env_is_running):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -53296,8 +53296,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| image_credential | `@pytest.fixture():` | pytest.fixture | 创建一个 AppUserCredential 对象 |
-| build_config | `@pytest.fixture():` | pytest.fixture | 创建一个 BuildConfig 对象 |
+| image_credential | `def image_credential(bk_app):` | pytest.fixture | 创建一个 AppUserCredential 对象 |
+| build_config | `def build_config(bk_app, bk_module, image_credential):` | pytest.fixture | 创建一个 BuildConfig 对象 |
 
 #### 类
 
@@ -53334,7 +53334,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| client | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| client | `def client(wl_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -53380,18 +53380,18 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mount_configmap | `@pytest.fixture():` | pytest.fixture | 创建一个 configmap mount 对象 |
-| pvc_source | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| pvc_source_update | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| mount_pvc | `@pytest.fixture():` | pytest.fixture | 创建一个 pvc mount 对象 |
-| mounts | `@pytest.fixture():` | pytest.fixture | 创建一个包含 15 个 mount 对象的集合 |
+| mount_configmap | `def mount_configmap(bk_app, bk_module, bk_stag_env, bk_stag_wl_app):` | pytest.fixture | 创建一个 configmap mount 对象 |
+| pvc_source | `def pvc_source(bk_app, bk_module):` | pytest.fixture | 不适用 |
+| pvc_source_update | `def pvc_source_update(bk_app, bk_module):` | pytest.fixture | 不适用 |
+| mount_pvc | `def mount_pvc(bk_app, bk_module, pvc_source):` | pytest.fixture | 创建一个 pvc mount 对象 |
+| mounts | `def mounts(bk_app, bk_module):` | pytest.fixture | 创建一个包含 15 个 mount 对象的集合 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestVolumeMountViewSet | 无 | test_list, test_create_configmap, test_create_pvc, test_create_with_source_name, test_create_error, test_update_configmap, test_destroy_configmap, test_update_pvc, test_destroy_pvc, test_destroy_error | 无 | 无 | 不适用 |
-| TestMountSourceViewSet | 无 | _mount_sources, test_list, test_create, test_create_with_invalid_storage_size, test_update, test_destroy, test_destroy_with_bound | 无 | 无 | 不适用 |
+| TestMountSourceViewSet | 无 | test_list, test_create, test_create_with_invalid_storage_size, test_update, test_destroy, test_destroy_with_bound | 无 | 无 | 不适用 |
 
 ---
 
@@ -53424,7 +53424,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| helm_release_secret | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| helm_release_secret | `def helm_release_secret() -> ResourceInstance:` | pytest.fixture | 不适用 |
 | test_HelmReleaseParser | `def test_HelmReleaseParser(helm_release_secret):` | 无 | 不适用 |
 
 
@@ -53522,7 +53522,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_mark_as_latest_artifact | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
+| test_mark_as_latest_artifact | `def test_mark_as_latest_artifact(bk_module, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
 
 
 ---
@@ -53624,9 +53624,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_create_app_ignore_duplicated | `@pytest.mark.django_db(databases=['workloads']):` | pytest.mark.django_db | 不适用 |
-| test_metadata_funcs | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
-| test_delete_wl_resources | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
+| test_create_app_ignore_duplicated | `def test_create_app_ignore_duplicated():` | pytest.mark.django_db | 不适用 |
+| test_metadata_funcs | `def test_metadata_funcs(bk_app, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
+| test_delete_wl_resources | `def test_delete_wl_resources(bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
 
 
 ---
@@ -53844,9 +53844,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| spec_example | `@pytest.fixture():` | pytest.fixture | An example spec |
-| resource_name | `@pytest.fixture():` | pytest.fixture | Make a name which follows the constraints of metad... |
-| init_model_resource | `@pytest.fixture():` | pytest.fixture | Initialize the app model resource |
+| spec_example | `def spec_example():` | pytest.fixture | An example spec |
+| resource_name | `def resource_name(bk_app):` | pytest.fixture | Make a name which follows the constraints of metad... |
+| init_model_resource | `def init_model_resource(bk_app, bk_module, resource_name):` | pytest.fixture | Initialize the app model resource |
 | test_bkapp_name_with_default_module | `def test_bkapp_name_with_default_module(bk_app, bk_stag_env):` | 无 | 不适用 |
 
 #### 类
@@ -53899,7 +53899,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestVolumeSourceController | 无 | _create_configmap_resource, _create_namespace, test_deploy, mount_configmap, test_delete_configmap, mount_pvc, test_delete_pvc | 无 | 无 | 不适用 |
+| TestVolumeSourceController | 无 | test_deploy, mount_configmap, test_delete_configmap, mount_pvc, test_delete_pvc | 无 | 无 | 不适用 |
 
 ---
 
@@ -54032,8 +54032,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| dp | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| poller | `@pytest.fixture():` | pytest.fixture | A poller fixture for testing |
+| dp | `def dp(bk_stag_env, bk_stag_wl_app, bk_user):` | pytest.fixture | 不适用 |
+| poller | `def poller(bk_stag_env, dp):` | pytest.fixture | A poller fixture for testing |
 
 #### 类
 
@@ -54085,7 +54085,7 @@ s-mart(镜像): 'image:镜像 tag'
 | create_res_with_conds | `def create_res_with_conds(conditions: List[MetaV1Condition], phase: MResPhaseType = MResPhaseType.AppPending) -> BkAppResource:` | 无 | 不适用 |
 | with_conds | `def with_conds(conditions: List[MetaV1Condition], phase: MResPhaseType = MResPhaseType.AppPending):` | 无 | 不适用 |
 | with_deploy_id | `def with_deploy_id(deploy_id: str, status_deploy_id: Union[str, 'builtins.ellipsis'] = Ellipsis):` | 无 | 不适用 |
-| create_res | `def create_res(*applys):` | 无 | 不适用 |
+| create_res | `def create_res(*applys: Callable[[BkAppResource], None]):` | 无 | 不适用 |
 
 
 ---
@@ -54113,7 +54113,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_reader | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_reader | `def mock_reader():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -54203,7 +54203,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestObsoleteProcessesCleaner | 无 | test_find_all_latest_mapper_v2, test_find_all_latest_mapper_v1, _assert_equal_find_all_results | 无 | 无 | 不适用 |
+| TestObsoleteProcessesCleaner | 无 | test_find_all_latest_mapper_v2, test_find_all_latest_mapper_v1 | 无 | 无 | 不适用 |
 
 ---
 
@@ -54246,7 +54246,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestAppCommandExecutor | 无 | stream, hook_maker, _disable_termcolor, test_perform_successful, test_perform_logs_unready, test_perform_but_pod_dead, test_perform_but_be_interrupt | 无 | 无 | 不适用 |
+| TestAppCommandExecutor | 无 | stream, hook_maker, test_perform_successful, test_perform_logs_unready, test_perform_but_pod_dead, test_perform_but_be_interrupt | 无 | 无 | 不适用 |
 
 ---
 
@@ -54317,8 +54317,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestCommand | 无 | _skip_if, command_model, command, handler, test_run, sidecar, test_run_with_sidecar, test_delete_with_sidecar | 无 | pytest.mark.auto_create_ns | 不适用 |
-| TestProcessHandler | 无 | _set_res_version, web_process, worker_process, test_deploy_processes, test_scale_process, test_shutdown_process, test_shutdown_web_processes | 无 | 无 | 不适用 |
+| TestCommand | 无 | command_model, command, handler, test_run, sidecar, test_run_with_sidecar, test_delete_with_sidecar | 无 | pytest.mark.auto_create_ns | 不适用 |
+| TestProcessHandler | 无 | web_process, worker_process, test_deploy_processes, test_scale_process, test_shutdown_process, test_shutdown_web_processes | 无 | 无 | 不适用 |
 
 ---
 
@@ -54370,7 +54370,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| build_handler | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| build_handler | `def build_handler(wl_app) -> BuildHandler:` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -54455,14 +54455,14 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| web_proc_factory | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| web_proc_factory | `def web_proc_factory(bk_module, bk_stag_wl_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestProcSpecUpdater | 无 | test_set_start, test_set_stop, test_change_replicas_integrated, test_set_autoscaling_integrated | 无 | 无 | 不适用 |
-| TestCNativeProcController | 无 | _create_module_process_spec, test_scale_static_integrated, test_autoscaling_integrated, test_scale_down_to_module_target_replicas | 无 | pytest.mark.skip_when_no_crds | 不适用 |
+| TestCNativeProcController | 无 | test_scale_static_integrated, test_autoscaling_integrated, test_scale_down_to_module_target_replicas | 无 | pytest.mark.skip_when_no_crds | 不适用 |
 
 ---
 
@@ -54500,19 +54500,19 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| default_dev_sandbox_cluster | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_runtime | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| module_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_sandbox_code | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_wl_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_sandbox_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| user_dev_wl_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| source_configured_dev_sandbox_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| code_editor_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_sandbox_service_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| code_editor_service_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_sandbox_ingress_entity | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dev_sandbox_ingress_entity_with_dev_sandbox_code | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| default_dev_sandbox_cluster | `def default_dev_sandbox_cluster():` | pytest.fixture | 不适用 |
+| dev_runtime | `def dev_runtime():` | pytest.fixture | 不适用 |
+| module_name | `def module_name():` | pytest.fixture | 不适用 |
+| dev_sandbox_code | `def dev_sandbox_code():` | pytest.fixture | 不适用 |
+| dev_wl_app | `def dev_wl_app(bk_app, module_name):` | pytest.fixture | 不适用 |
+| dev_sandbox_entity | `def dev_sandbox_entity(dev_wl_app, dev_runtime):` | pytest.fixture | 不适用 |
+| user_dev_wl_app | `def user_dev_wl_app(bk_app, module_name, dev_sandbox_code):` | pytest.fixture | 不适用 |
+| source_configured_dev_sandbox_entity | `def source_configured_dev_sandbox_entity(user_dev_wl_app, dev_runtime):` | pytest.fixture | 不适用 |
+| code_editor_entity | `def code_editor_entity(user_dev_wl_app, dev_runtime):` | pytest.fixture | 不适用 |
+| dev_sandbox_service_entity | `def dev_sandbox_service_entity(dev_wl_app):` | pytest.fixture | 不适用 |
+| code_editor_service_entity | `def code_editor_service_entity(dev_wl_app):` | pytest.fixture | 不适用 |
+| dev_sandbox_ingress_entity | `def dev_sandbox_ingress_entity(bk_app, dev_wl_app, module_name):` | pytest.fixture | 不适用 |
+| dev_sandbox_ingress_entity_with_dev_sandbox_code | `def dev_sandbox_ingress_entity_with_dev_sandbox_code(bk_app, dev_wl_app, module_name, dev_sandbox_code):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -54557,8 +54557,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestDevSandboxController | 无 | controller, _do_deploy, test_deploy_success, test_deploy_when_already_exists, test_get_sandbox_detail | 无 | 无 | 不适用 |
-| TestDevSandboxWithCodeEditorController | 无 | controller, _do_deploy, test_deploy_success, test_deploy_when_already_exists, test_get_sandbox_detail | 无 | 无 | 不适用 |
+| TestDevSandboxController | 无 | controller, test_deploy_success, test_deploy_when_already_exists, test_get_sandbox_detail | 无 | 无 | 不适用 |
+| TestDevSandboxWithCodeEditorController | 无 | controller, test_deploy_success, test_deploy_when_already_exists, test_get_sandbox_detail | 无 | 无 | 不适用 |
 
 ---
 
@@ -54640,7 +54640,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| client | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| client | `def client(wl_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -54726,7 +54726,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestBuilder | 无 | builtin_relabelings, test_normal, test_with_extra_field | 无 | 无 | 不适用 |
-| TestAppMonitorController | 无 | _setup, _setup_crd, monitor, test_normal, test_no_monitor, test_disable, test_global_disable | 无 | 无 | 不适用 |
+| TestAppMonitorController | 无 | monitor, test_normal, test_no_monitor, test_disable, test_global_disable | 无 | 无 | 不适用 |
 
 ---
 
@@ -54797,8 +54797,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| gvk_config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bklog_manifest | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| gvk_config | `def gvk_config():` | pytest.fixture | 不适用 |
+| bklog_manifest | `def bklog_manifest(wl_app, bk_stag_env) -> Dict[str, Any]:` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -54916,12 +54916,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| client | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| release | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| process | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| process_manager | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| v2_mapper | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| pod_body | `@pytest.fixture():` | pytest.fixture | Create a instance pod body. |
+| client | `def client(wl_app):` | pytest.fixture | 不适用 |
+| release | `def release(wl_app, set_structure):` | pytest.fixture | 不适用 |
+| process | `def process(release):` | pytest.fixture | 不适用 |
+| process_manager | `def process_manager():` | pytest.fixture | 不适用 |
+| v2_mapper | `def v2_mapper(process):` | pytest.fixture | 不适用 |
+| pod_body | `def pod_body(wl_app, process_manager, process, v2_mapper):` | pytest.fixture | Create a instance pod body. |
 
 #### 类
 
@@ -55011,7 +55011,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | testlist_gen_cnative_process_specs | `def testlist_gen_cnative_process_specs():` | 无 | 不适用 |
-| test_list_cnative_module_processes_specs | `@pytest.mark.usefixtures('bk_stag_wl_app'):` | pytest.mark.usefixtures | 不适用 |
+| test_list_cnative_module_processes_specs | `def test_list_cnative_module_processes_specs(bk_cnative_app):` | pytest.mark.usefixtures | 不适用 |
 
 #### 类
 
@@ -55084,8 +55084,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestProcess | 无 | _setup, test_command_name_normal, test_command_name_celery, test_commnad_name_with_slash | 无 | 无 | 不适用 |
-| TestProcessManager | 无 | _setup, test_assemble_process, test_assemble_processes | 无 | 无 | 不适用 |
+| TestProcess | 无 | test_command_name_normal, test_command_name_celery, test_commnad_name_with_slash | 无 | 无 | 不适用 |
+| TestProcessManager | 无 | test_assemble_process, test_assemble_processes | 无 | 无 | 不适用 |
 
 ---
 
@@ -55148,24 +55148,24 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| django_db_setup | `@pytest.fixture(scope='session'):` | pytest.fixture | Some initialization jobs before running tests. |
-| crds_is_configured | `@pytest.fixture(scope='session', autouse=True):` | pytest.fixture | Configure 'BkApp' and other CRDs when tests starts... |
-| k8s_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| k8s_version | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| namespace_maker | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| resource_name | `@pytest.fixture():` | pytest.fixture | A random resource name |
-| patch_ingress_config | `@pytest.fixture():` | pytest.fixture | Patch ingress_config of the default cluster, usage... |
+| django_db_setup | `def django_db_setup(django_db_setup, django_db_blocker):` | pytest.fixture | Some initialization jobs before running tests. |
+| crds_is_configured | `def crds_is_configured(django_db_setup, django_db_blocker):` | pytest.fixture | Configure 'BkApp' and other CRDs when tests starts... |
+| k8s_client | `def k8s_client(settings):` | pytest.fixture | 不适用 |
+| k8s_version | `def k8s_version(k8s_client):` | pytest.fixture | 不适用 |
+| namespace_maker | `def namespace_maker(django_db_setup, django_db_blocker):` | pytest.fixture | 不适用 |
+| resource_name | `def resource_name() -> str:` | pytest.fixture | A random resource name |
+| patch_ingress_config | `def patch_ingress_config():` | pytest.fixture | Patch ingress_config of the default cluster, usage... |
 | get_cluster_with_hook | `def get_cluster_with_hook(hook_func: Callable) -> Callable:` | 无 | Modify the original get_cluster function with extr... |
-| clear_kubernetes_dynamic_discoverer_cache | `@atexit.register:` | atexit.register | 不适用 |
-| default_process_spec_plan | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| set_structure | `@pytest.fixture():` | pytest.fixture | A factory fixture, returns a function which update... |
-| bk_stag_wl_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_prod_wl_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| wl_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| wl_release | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| wl_dirty_release | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| build_proc | `@pytest.fixture():` | pytest.fixture | A new BuildProcess object with random info |
-| wl_build | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| clear_kubernetes_dynamic_discoverer_cache | `def clear_kubernetes_dynamic_discoverer_cache():` | atexit.register | 不适用 |
+| default_process_spec_plan | `def default_process_spec_plan():` | pytest.fixture | 不适用 |
+| set_structure | `def set_structure(default_process_spec_plan):` | pytest.fixture | A factory fixture, returns a function which update... |
+| bk_stag_wl_app | `def bk_stag_wl_app(bk_stag_env, _with_wl_apps):` | pytest.fixture | 不适用 |
+| bk_prod_wl_app | `def bk_prod_wl_app(bk_prod_env, _with_wl_apps):` | pytest.fixture | 不适用 |
+| wl_app | `def wl_app(bk_stag_wl_app) -> WlApp:` | pytest.fixture | 不适用 |
+| wl_release | `def wl_release(wl_app):` | pytest.fixture | 不适用 |
+| wl_dirty_release | `def wl_dirty_release(wl_app):` | pytest.fixture | 不适用 |
+| build_proc | `def build_proc(wl_app) -> BuildProcess:` | pytest.fixture | A new BuildProcess object with random info |
+| wl_build | `def wl_build(bk_stag_wl_app, bk_user) -> Build:` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55274,21 +55274,21 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| ingress_nginx_ns | `@pytest.fixture(scope='session'):` | pytest.fixture | 不适用 |
-| cluster | `@pytest.fixture(scope='session'):` | pytest.fixture | 不适用 |
-| k8s_client | `@pytest.fixture(scope='session'):` | pytest.fixture | 不适用 |
-| ingress_nginx_reload_checker | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| framework | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| http_client | `@pytest.fixture(scope='session'):` | pytest.fixture | 不适用 |
-| echo_hostname | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| root_path | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| foo_path | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| multi_layer_path_endswith_slash | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| http_ingress_domain | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| e2e_app | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
-| echo_ingress | `@pytest.fixture(scope='function'):` | pytest.fixture | Ingress for EchoService |
-| echo_pod | `@pytest.fixture(scope='module'):` | pytest.fixture | An echo server is a server that replicates the req... |
-| echo_service | `@pytest.fixture(scope='module'):` | pytest.fixture | Service for EchoPod |
+| ingress_nginx_ns | `def ingress_nginx_ns():` | pytest.fixture | 不适用 |
+| cluster | `def cluster(django_db_setup, django_db_blocker):` | pytest.fixture | 不适用 |
+| k8s_client | `def k8s_client(cluster):` | pytest.fixture | 不适用 |
+| ingress_nginx_reload_checker | `def ingress_nginx_reload_checker():` | pytest.fixture | 不适用 |
+| framework | `def framework(_setup_ingress_nginx_controller, ingress_nginx_ns, ingress_nginx_reload_checker, k8s_client) -> E2EFramework:` | pytest.fixture | 不适用 |
+| http_client | `def http_client():` | pytest.fixture | 不适用 |
+| echo_hostname | `def echo_hostname():` | pytest.fixture | 不适用 |
+| root_path | `def root_path():` | pytest.fixture | 不适用 |
+| foo_path | `def foo_path():` | pytest.fixture | 不适用 |
+| multi_layer_path_endswith_slash | `def multi_layer_path_endswith_slash():` | pytest.fixture | 不适用 |
+| http_ingress_domain | `def http_ingress_domain(echo_hostname, root_path, foo_path, multi_layer_path_endswith_slash):` | pytest.fixture | 不适用 |
+| e2e_app | `def e2e_app(namespace_maker, django_db_setup, django_db_blocker):` | pytest.fixture | 不适用 |
+| echo_ingress | `def echo_ingress(e2e_app, http_ingress_domain, echo_service):` | pytest.fixture | Ingress for EchoService |
+| echo_pod | `def echo_pod(namespace_maker, framework, e2e_app):` | pytest.fixture | An echo server is a server that replicates the req... |
+| echo_service | `def echo_service(framework, e2e_app) -> ProcessService:` | pytest.fixture | Service for EchoPod |
 
 
 ---
@@ -55345,7 +55345,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | E2EFramework | 无 | ensure_ingress, create_ingress, delete_ingress | 无 | define | 不适用 |
 | HttpClient | 无 | patch_connection, get, post, put, patch, delete | 无 | define | 不适用 |
-| IngressNginxReloadChecker | 无 | __init__, check_keyword_from_logs | 无 | 无 | An implement of nginx reload checker, which will f... |
+| IngressNginxReloadChecker | 无 | check_keyword_from_logs | 无 | 无 | An implement of nginx reload checker, which will f... |
 
 ---
 
@@ -55377,7 +55377,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| ingress_nginx_reload_checker | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
+| ingress_nginx_reload_checker | `def ingress_nginx_reload_checker():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55408,8 +55408,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer/'), ('/multi/layer/foo', '/foo', '/multi/layer/'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer/')]):` | pytest.mark.parametrize | 不适用 |
-| test_post | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer/'), ('/multi/layer/foo', '/foo', '/multi/layer/'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer/')]):` | pytest.mark.parametrize | 不适用 |
+| test_get | `def test_get(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
+| test_post | `def test_post(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -55442,7 +55442,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| ingress_nginx_reload_checker | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
+| ingress_nginx_reload_checker | `def ingress_nginx_reload_checker():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55473,8 +55473,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
-| test_post | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
+| test_get | `def test_get(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
+| test_post | `def test_post(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -55507,7 +55507,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| ingress_nginx_reload_checker | `@pytest.fixture(scope='module'):` | pytest.fixture | 不适用 |
+| ingress_nginx_reload_checker | `def ingress_nginx_reload_checker():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55538,8 +55538,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
-| test_post | `@pytest.mark.parametrize(('request_path', 'original_path', 'x_script_name'), [('/', '/', '/'), ('/bar', '/bar', '/'), ('/bar/', '/bar/', '/'), ('/foo', '/', '/foo'), ('/foo/', '/', '/foo'), ('/foo/bar', '/bar', '/foo'), ('/foo/bar/baz/', '/bar/baz/', '/foo'), ('/multi/layer', '/multi/layer', '/'), ('/multi/layer/', '/', '/multi/layer'), ('/multi/layer/foo', '/foo', '/multi/layer'), ('/multi/layer/foo/bar/', '/foo/bar/', '/multi/layer')]):` | pytest.mark.parametrize | 不适用 |
+| test_get | `def test_get(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
+| test_post | `def test_post(framework, echo_pod, echo_service, echo_ingress, echo_hostname, http_client, request_path, original_path, x_script_name):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -55568,11 +55568,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| example_cluster_config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| clusters | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| ca_data | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| cert_data | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| key_data | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| example_cluster_config | `def example_cluster_config():` | pytest.fixture | 不适用 |
+| clusters | `def clusters():` | pytest.fixture | 不适用 |
+| ca_data | `def ca_data() -> str:` | pytest.fixture | 不适用 |
+| cert_data | `def cert_data() -> str:` | pytest.fixture | 不适用 |
+| key_data | `def key_data() -> str:` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55607,7 +55607,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_init_cluster | `@pytest.mark.usefixtures('_cluster_envs'):` | pytest.mark.usefixtures, pytest.mark.parametrize | 不适用 |
+| test_init_cluster | `def test_init_cluster(https_enabled, expect):` | pytest.mark.usefixtures, pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -55646,13 +55646,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| cluster_creator | `@pytest.fixture(autouse=True):` | pytest.fixture | 不适用 |
+| cluster_creator | `def cluster_creator(ca_data, cert_data, key_data):` | pytest.fixture | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestLoader | 无 | _setup, test_get_all_cluster_names, test_list_configurations_by_name | 无 | 无 | 不适用 |
+| TestLoader | 无 | test_get_all_cluster_names, test_list_configurations_by_name | 无 | 无 | 不适用 |
 | TestLoaderNoInitialClusters | 无 | test_auth_types | 无 | 无 | 不适用 |
 | TestEnhancedKubeConfigLoader | 无 | test_get_all_tags, test_list_configurations_by_tag | 无 | 无 | 需要配合 assets/example-kube-config 进行测试 |
 
@@ -55728,8 +55728,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| region | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| default_cluster_creator | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| region | `def region():` | pytest.fixture | 不适用 |
+| default_cluster_creator | `def default_cluster_creator(example_cluster_config):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -55809,7 +55809,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestGetClusterByApp | 无 | _setup, test_get_cluster_by_app_normal, test_get_cluster_by_app_cluster_configured | 无 | 无 | 不适用 |
+| TestGetClusterByApp | 无 | test_get_cluster_by_app_normal, test_get_cluster_by_app_cluster_configured | 无 | 无 | 不适用 |
 
 ---
 
@@ -55836,19 +55836,19 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| sidecar_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| sidecar_addon_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| probe_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| probe_addon_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| probe_handler_templates | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| port_env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| shm_volume_mount_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| shm_volume_mount_addon_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| shm_volume_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| shm_volume_addon_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| secret_volume_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| process_type | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| secret_volume_addon_template | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| sidecar_template | `def sidecar_template():` | pytest.fixture | 不适用 |
+| sidecar_addon_template | `def sidecar_addon_template(sidecar_template):` | pytest.fixture | 不适用 |
+| probe_template | `def probe_template():` | pytest.fixture | 不适用 |
+| probe_addon_template | `def probe_addon_template(probe_template):` | pytest.fixture | 不适用 |
+| probe_handler_templates | `def probe_handler_templates():` | pytest.fixture | 不适用 |
+| port_env | `def port_env():` | pytest.fixture | 不适用 |
+| shm_volume_mount_template | `def shm_volume_mount_template():` | pytest.fixture | 不适用 |
+| shm_volume_mount_addon_template | `def shm_volume_mount_addon_template(shm_volume_mount_template):` | pytest.fixture | 不适用 |
+| shm_volume_template | `def shm_volume_template():` | pytest.fixture | 不适用 |
+| shm_volume_addon_template | `def shm_volume_addon_template(shm_volume_template):` | pytest.fixture | 不适用 |
+| secret_volume_template | `def secret_volume_template():` | pytest.fixture | 不适用 |
+| process_type | `def process_type():` | pytest.fixture | 不适用 |
+| secret_volume_addon_template | `def secret_volume_addon_template(secret_volume_template):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -55958,7 +55958,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestImageCredentialsHandler | 无 | kube_res_name, _clear_builtin_auth, test_create_empty, test_create, test_update, test_not_found | 无 | pytest.mark.auto_create_ns | 不适用 |
+| TestImageCredentialsHandler | 无 | kube_res_name, test_create_empty, test_create, test_update, test_not_found | 无 | pytest.mark.auto_create_ns | 不适用 |
 
 ---
 
@@ -56113,7 +56113,7 @@ s-mart(镜像): 'image:镜像 tag'
 | DummyObj | paas_wl.infras.resources.kube_res.base.AppEntity | 无 | 无 | dataclass | 不适用 |
 | TestDummyReader | 无 | test_watch_with_error_event, test_watch_with_expired_exception | 无 | 无 | 不适用 |
 | TestDummyManager | 无 | test_create | 无 | 无 | 不适用 |
-| TestEntitySerializerPicker | 无 | _setup_gvk_config, test_priority, test_api_version_not_supported | 无 | 无 | 不适用 |
+| TestEntitySerializerPicker | 无 | test_priority, test_api_version_not_supported | 无 | 无 | 不适用 |
 
 ---
 
@@ -56146,7 +56146,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestProcessScheduler | 无 | _setup, test_update_process_deploy_info | 无 | 无 | 不适用 |
+| TestProcessScheduler | 无 | test_update_process_deploy_info | 无 | 无 | 不适用 |
 
 ---
 
@@ -56243,9 +56243,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_status | `def make_status(message: str = '', reason: str = '', status: HealthStatusType = HealthStatusType.UNKNOWN) -> HealthStatus:` | 无 | 不适用 |
-| test_parse_pod | `@pytest.mark.parametrize(('instance', 'expected'), [(ResourceInstance(None, {'kind': ''}), V1Pod(kind='')), (ResourceInstance(None, {'kind': 'Pod'}), V1Pod(kind='Pod')), (ResourceInstance(None, {'kind': 'Pod', 'spec': {'containers': [{'name': 'foo'}]}}), V1Pod(kind='Pod', spec=V1PodSpec(containers=[V1Container(name='foo')]))), pytest.param(ResourceInstance(None, {'kind': 'Pod', 'spec': {}}), None, marks=pytest.mark.xfail(raises=ValueError))]):` | pytest.mark.parametrize | 不适用 |
-| test_extract_exit_code | `@pytest.mark.parametrize(('health_status', 'expected'), [(make_status(message='foo'), None), (make_status(message='failed with exit code 0'), 0), (make_status(message='failed with exit code 1111111111'), 1111111111), (make_status(message='failed with exit code -1'), -1)]):` | pytest.mark.parametrize | 不适用 |
-| test_get_any_container_fail_message | `@pytest.mark.parametrize(('container_statuses', 'expected'), [([], None), ([make_container_status({}, {})], None), ([make_container_status({'terminated': {'message': 'foo', 'exitCode': 1}}, {})], 'foo'), ([make_container_status({'terminated': {'reason': 'OOMKilled', 'exitCode': 1}}, {})], 'OOMKilled'), ([make_container_status({'terminated': {'exitCode': 127}}, {})], 'failed with exit code 127')]):` | pytest.mark.parametrize | 不适用 |
+| test_parse_pod | `def test_parse_pod(instance, expected):` | pytest.mark.parametrize | 不适用 |
+| test_extract_exit_code | `def test_extract_exit_code(health_status, expected):` | pytest.mark.parametrize | 不适用 |
+| test_get_any_container_fail_message | `def test_get_any_container_fail_message(container_statuses, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -56293,7 +56293,7 @@ s-mart(镜像): 'image:镜像 tag'
 | TestConstants | 无 | test_make_enum_choices | 无 | 无 | 不适用 |
 | TestDigestIfLengthExceeded | 无 | test_short_str, test_long_str | 无 | 无 | 不适用 |
 | FooType | 无 | 无 | 无 | define | 不适用 |
-| FooCustomAsDict | 无 | __init__, as_dict | 无 | 无 | 不适用 |
+| FooCustomAsDict | 无 | as_dict | 无 | 无 | 不适用 |
 | TestDynamicJSONField | 无 | test_make_json_field, test_get_prep_value | 无 | 无 | 不适用 |
 | TestConvertKeyToCamel | 无 | test_convert_key_to_camel | 无 | 无 | 不适用 |
 
@@ -56459,9 +56459,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| gpa_gvk_config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| gpa_manifest | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| scaling | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| gpa_gvk_config | `def gpa_gvk_config():` | pytest.fixture | 不适用 |
+| gpa_manifest | `def gpa_manifest() -> Dict[str, Any]:` | pytest.fixture | 不适用 |
+| scaling | `def scaling(wl_app) -> ProcAutoscaling:` | pytest.fixture | 不适用 |
 | test_ProcAutoscalingSerializer | `def test_ProcAutoscalingSerializer(wl_app, wl_release, gpa_gvk_config, gpa_manifest, scaling):` | 无 | 不适用 |
 | test_ProcAutoscalingDeserializer | `def test_ProcAutoscalingDeserializer(wl_app, gpa_gvk_config, gpa_manifest, scaling):` | 无 | 不适用 |
 
@@ -56527,7 +56527,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestCommandGenState | 无 | existing_node_names, node_maker, default_node_name, _setup, test_normal, test_with_adding_node, test_ignore_labels, test_ignore_multi_labels, test_ignore_masters | 无 | 无 | 不适用 |
+| TestCommandGenState | 无 | existing_node_names, node_maker, default_node_name, test_normal, test_with_adding_node, test_ignore_labels, test_ignore_multi_labels, test_ignore_masters | 无 | 无 | 不适用 |
 
 ---
 
@@ -56600,7 +56600,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_check_domain_used_by_market | `@pytest.mark.parametrize(('domain_cfg', 'domain_url', 'expected'), [({'name': 'foo.com', 'path_prefix': '/'}, 'https://bar.foo.com', False), ({'name': 'bar.foo.com', 'path_prefix': '/'}, 'https://bar.foo.com', True), ({'name': 'bar.foo.com', 'path_prefix': '/'}, 'https://bar.foo.com/', True), ({'name': 'baz.bar.foo.com', 'path_prefix': '/'}, 'https://bar.foo.com', False), ({'name': 'bar.foo.com', 'path_prefix': '/baz'}, 'https://bar.foo.com/baz', True), ({'name': 'bar.foo.com', 'path_prefix': '/baz/'}, 'https://bar.foo.com/baz', True), ({'name': 'bar.foo.com', 'path_prefix': '/baz'}, 'https://bar.foo.com/baz/', True), ({'name': 'bar.foo.com', 'path_prefix': '/baz/'}, 'https://bar.foo.com/baz/', True), ({'name': 'bar.foo.com', 'path_prefix': '/baz/x'}, 'https://bar.foo.com/baz/', False)]):` | pytest.mark.parametrize | 不适用 |
+| test_check_domain_used_by_market | `def test_check_domain_used_by_market(bk_app, bk_module, domain_cfg, domain_url, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -56656,15 +56656,15 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| root_path | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| foo_path | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| foo_path_endswith_slash | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| https_ingress_domain | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| http_ingress_domain | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| ingress | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| subpath_ingress | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| fallback_configuration_snippet | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| pattern_configuration_snippet | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| root_path | `def root_path():` | pytest.fixture | 不适用 |
+| foo_path | `def foo_path():` | pytest.fixture | 不适用 |
+| foo_path_endswith_slash | `def foo_path_endswith_slash(foo_path):` | pytest.fixture | 不适用 |
+| https_ingress_domain | `def https_ingress_domain(root_path, foo_path, foo_path_endswith_slash):` | pytest.fixture | 不适用 |
+| http_ingress_domain | `def http_ingress_domain(root_path, foo_path, foo_path_endswith_slash):` | pytest.fixture | 不适用 |
+| ingress | `def ingress(bk_stag_wl_app, https_ingress_domain, http_ingress_domain):` | pytest.fixture | 不适用 |
+| subpath_ingress | `def subpath_ingress(bk_stag_wl_app, https_ingress_domain, http_ingress_domain):` | pytest.fixture | 不适用 |
+| fallback_configuration_snippet | `def fallback_configuration_snippet(https_ingress_domain):` | pytest.fixture | 不适用 |
+| pattern_configuration_snippet | `def pattern_configuration_snippet():` | pytest.fixture | 不适用 |
 | build_v1beta1_ingress_path | `def build_v1beta1_ingress_path(path) -> Dict:` | 无 | 不适用 |
 | build_v1_ingress_path | `def build_v1_ingress_path(path_str) -> Dict:` | 无 | 不适用 |
 | build_legacy_pattern | `def build_legacy_pattern(path_str):` | 无 | 不适用 |
@@ -56673,10 +56673,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestProcessIngress | 无 | _setup_data, service, test_normal, test_paths, test_serializer_ordering, test_deserializer_ordering | 无 | 无 | 不适用 |
+| TestProcessIngress | 无 | service, test_normal, test_paths, test_serializer_ordering, test_deserializer_ordering | 无 | 无 | 不适用 |
 | TestIngressV1Beta1 | 无 | spec, subpath_spec, gvk_config, test_serialize, test_serialize_subpath, kube_data, subpath_kube_data, test_deserialize, test_deserialize_subpath | 无 | pytest.mark.parametrize | 不适用 |
-| TestProcessIngressV1 | 无 | _setup, subpath_spec, gvk_config, test_serialize_subpath, subpath_kube_data, test_deserialize_subpath | 无 | 无 | 不适用 |
-| TestPatternCompatible | 无 | _setup, v1beta1_spec, v1_spec, test_deserialize | 无 | 无 | 测试兼容旧版的正则表达式规则 |
+| TestProcessIngressV1 | 无 | subpath_spec, gvk_config, test_serialize_subpath, subpath_kube_data, test_deserialize_subpath | 无 | 无 | 不适用 |
+| TestPatternCompatible | 无 | v1beta1_spec, v1_spec, test_deserialize | 无 | 无 | 测试兼容旧版的正则表达式规则 |
 
 ---
 
@@ -56711,7 +56711,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestProcessService | 无 | _setup_data, test_integrated, test_get_not_found, test_get_normal, test_update_not_found, test_update, test_update_with_less_ports | 无 | 无 | 不适用 |
+| TestProcessService | 无 | test_integrated, test_get_not_found, test_get_normal, test_update_not_found, test_update, test_update_with_less_ports | 无 | 无 | 不适用 |
 
 ---
 
@@ -56760,8 +56760,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestAssignDomains | 无 | _foo_shared_cert, test_brand_new_domains, test_create_https_domains, test_domain_transfer_partially, test_domain_transfer_fully | 无 | pytest.mark.auto_create_ns | 不适用 |
-| TestSubdomainAppIngressMgrCommon | 无 | _setup_data, test_sync_no_domains, test_sync_creation_with_no_default_server_name, test_sync_creation, test_sync_update, test_delete_non_existed, test_integrated, test_update_target, test_rewrite_ingress_path_to_root | 无 | pytest.mark.auto_create_ns | Test common interfaces for `SubdomainAppIngressMgr... |
+| TestAssignDomains | 无 | test_brand_new_domains, test_create_https_domains, test_domain_transfer_partially, test_domain_transfer_fully | 无 | pytest.mark.auto_create_ns | 不适用 |
+| TestSubdomainAppIngressMgrCommon | 无 | test_sync_no_domains, test_sync_creation_with_no_default_server_name, test_sync_creation, test_sync_update, test_delete_non_existed, test_integrated, test_update_target, test_rewrite_ingress_path_to_root | 无 | pytest.mark.auto_create_ns | Test common interfaces for `SubdomainAppIngressMgr... |
 | TestSubdomainAppIngressMgr | 无 | test_list_desired_domains, test_list_desired_domains_with_extra, test_list_desired_domains_with_wrong_source | 无 | 无 | 不适用 |
 | TestCustomDomainIngressMgr | 无 | test_create, test_normal_delete, test_get_ingress_class | 无 | pytest.mark.mock_get_structured_app, pytest.mark.auto_create_ns | 不适用 |
 | TestIntegratedDomains | 无 | test_assign_custom_hosts_affects_no_independent_domains | 无 | pytest.mark.auto_create_ns | Test cases for some combined situations |
@@ -56919,7 +56919,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestSubPathAppIngressMgr | 无 | test_list_desired_domains_configured, test_list_desired_domains_not_configured | 无 | 无 | 不适用 |
-| TestAssignSubpaths | 无 | _configure, test_brand_new_paths, test_subpath_transfer_partally, test_subpath_transfer_fully, test_get_ingress_class | 无 | pytest.mark.auto_create_ns | 不适用 |
+| TestAssignSubpaths | 无 | test_brand_new_paths, test_subpath_transfer_partally, test_subpath_transfer_fully, test_get_ingress_class | 无 | pytest.mark.auto_create_ns | 不适用 |
 
 ---
 
@@ -56961,7 +56961,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestEnvAddresses | 无 | _setup_data, test_not_deployed, test_integrated | 无 | 无 | 不适用 |
+| TestEnvAddresses | 无 | test_not_deployed, test_integrated | 无 | 无 | 不适用 |
 
 ---
 
@@ -57290,13 +57290,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| request_factory | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| request_factory | `def request_factory(bk_user):` | pytest.fixture | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| APIRequestFactory | DRFAPIRequestFactory | __init__, request | 无 | 无 | 不适用 |
+| APIRequestFactory | DRFAPIRequestFactory | request | 无 | 无 | 不适用 |
 
 ---
 
@@ -57492,15 +57492,15 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| all_filters | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_count_filters_options_from_agg | `@pytest.mark.parametrize(('aggregations', 'expected'), [({'foo': {'buckets': [{'key': 'example'}, {'key': 'another example'}]}}, {'foo': FieldFilter(name='foo', key='foo.keyword', options=[('example', '50.00%'), ('another example', '50.00%')]), 'bar': FieldFilter(name='bar', key='bar'), 'b.a.z': FieldFilter(name='b.a.z', key='b.a.z')}), ({'foo': {'buckets': [{'key': 'example'}, {'key': 'another example'}]}, 'b.a.r': {'buckets': [{'key': 'example'}, {'key': 'another example'}]}}, {'foo': FieldFilter(name='foo', key='foo.keyword', options=[('example', '50.00%'), ('another example', '50.00%')]), 'bar': FieldFilter(name='bar', key='bar'), 'b.a.z': FieldFilter(name='b.a.z', key='b.a.z')})]):` | pytest.mark.parametrize | 不适用 |
-| test_count_filters_options_from_logs | `@pytest.mark.parametrize(('logs', 'expected'), [([], {}), ([{'foo': '1', 'bar': '1', 'b': {'a': {'z': '1'}}}], {'foo': FieldFilter(name='foo', key='foo.keyword', options=[('1', '100.00%')], total=1), 'bar': FieldFilter(name='bar', key='bar', options=[('1', '100.00%')], total=1), 'b.a.z': FieldFilter(name='b.a.z', key='b.a.z', options=[('1', '100.00%')], total=1)}), ([{'foo': '1', 'bar': '1', 'b': {'a': {'z': '1'}}}, {'foo': '1', 'bar': '2'}], {'foo': FieldFilter(name='foo', key='foo.keyword', options=[('1', '100.00%')], total=2), 'bar': FieldFilter(name='bar', key='bar', options=[('1', '50.00%'), ('2', '50.00%')], total=2), 'b.a.z': FieldFilter(name='b.a.z', key='b.a.z', options=[('1', '100.00%')], total=1)})]):` | pytest.mark.parametrize | 不适用 |
+| all_filters | `def all_filters() -> Dict[str, FieldFilter]:` | pytest.fixture | 不适用 |
+| test_count_filters_options_from_agg | `def test_count_filters_options_from_agg(all_filters, aggregations, expected):` | pytest.mark.parametrize | 不适用 |
+| test_count_filters_options_from_logs | `def test_count_filters_options_from_logs(all_filters, logs, expected):` | pytest.mark.parametrize | 不适用 |
 | test_count_filters_options_from_logs_when_options_has_been_set | `def test_count_filters_options_from_logs_when_options_has_been_set(all_filters):` | 无 | 不适用 |
-| bk_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_module | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| search | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_clean_property | `@pytest.mark.parametrize(('nested_name', 'mapping', 'expected'), [(['a'], {'properties': {'a': {'type': 'text'}, 'b': {'type': 'int'}}}, [FieldFilter(name='a.a', key='a.a.keyword'), FieldFilter(name='a.b', key='a.b')]), (['a', 'b', 'c'], {'properties': {'d': {'properties': {'e': {'properties': {'f': {'properties': {'g': {'type': 'text'}}}}}}}}}, [FieldFilter(name='a.b.c.d.e.f.g', key='a.b.c.d.e.f.g.keyword')]), (['a'], {'a': {'type': 'text'}, 'b': {'type': 'int'}}, [])]):` | pytest.mark.parametrize | 不适用 |
+| bk_app | `def bk_app(bk_app):` | pytest.fixture | 不适用 |
+| bk_module | `def bk_module(bk_module):` | pytest.fixture | 不适用 |
+| env | `def env(bk_stag_env):` | pytest.fixture | 不适用 |
+| search | `def search():` | pytest.fixture | 不适用 |
+| test_clean_property | `def test_clean_property(nested_name, mapping, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -57546,8 +57546,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| search_params | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| make_fake_hit | `@pytest.fixture():` | pytest.fixture | 一个用于测试的日志返回结果 |
+| search_params | `def search_params():` | pytest.fixture | 不适用 |
+| make_fake_hit | `def make_fake_hit():` | pytest.fixture | 一个用于测试的日志返回结果 |
 
 #### 类
 
@@ -57587,11 +57587,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| make_stats_indexes_fake_resp | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_get_es_term | `@pytest.mark.parametrize(('query_term', 'mappings', 'expected'), [('dd', {'dd': {'type': 'text'}}, 'dd.keyword'), ('dd', {'dd': {'type': 'int'}}, 'dd'), ('dd', {'dd': {'type': 'keyword'}}, 'dd'), ('dd', {'xxx': {'type': 'keyword'}}, 'dd'), ('json.levelname', {'json': {'properties': {'levelname': {'type': 'text'}}}}, 'json.levelname.keyword'), ('json.levelname', {'json': {'properties': {'levelname': {'type': 'keyword'}}}}, 'json.levelname'), ('json.levelname.no', {'json': {'properties': {'levelname': {'properties': {'no': {'type': 'keyword'}}}}}}, 'json.levelname.no'), ('json.levelname.no', {'json': {'properties': {'levelname': {'properties': {'no': {'type': 'text'}}}}}}, 'json.levelname.no.keyword'), ('pod_name', {}, 'pod_name'), ('pod_name', {'__ext': {'properties': {'io_kubernetes_pod': {'type': 'keyword'}}}}, '__ext.io_kubernetes_pod'), ('region', {'__ext': {'properties': {'labels': {'properties': {'bkapp_paas_bk_tencent_com_region': {'type': 'keyword'}}}}}}, '__ext.labels.bkapp_paas_bk_tencent_com_region'), ('app_code', {'__ext': {'properties': {'labels': {'properties': {'bkapp_paas_bk_tencent_com_code': {'type': 'keyword'}}}}}}, '__ext.labels.bkapp_paas_bk_tencent_com_code'), ('module_name', {'__ext': {'properties': {'labels': {'properties': {'bkapp_paas_bk_tencent_com_module_name': {'type': 'keyword'}}}}}}, '__ext.labels.bkapp_paas_bk_tencent_com_module_name'), ('environment', {'__ext': {'properties': {'labels': {'properties': {'bkapp_paas_bk_tencent_com_environment': {'type': 'keyword'}}}}}}, '__ext.labels.bkapp_paas_bk_tencent_com_environment'), ('process_id', {'__ext': {'properties': {'labels': {'properties': {'bkapp_paas_bk_tencent_com_process_name': {'type': 'keyword'}}}}}}, '__ext.labels.bkapp_paas_bk_tencent_com_process_name')]):` | pytest.mark.parametrize | 不适用 |
-| test_rename_log_fields | `@pytest.mark.parametrize(('log', 'expected'), [({'__ext.labels.bkapp_paas_bk_tencent_com_region': 'default'}, {**_default_log, '__ext.labels.bkapp_paas_bk_tencent_com_region': 'default', 'region': 'default'}), ({'__ext.labels.bkapp_paas_bk_tencent_com_environment': 'stag'}, {**_default_log, '__ext.labels.bkapp_paas_bk_tencent_com_environment': 'stag', 'environment': 'stag'}), ({'__ext.labels.bkapp_paas_bk_tencent_com_region': 'default', '__ext.labels.bkapp_paas_bk_tencent_com_code': 'code', '__ext.labels.bkapp_paas_bk_tencent_com_module_name': 'default', '__ext.labels.bkapp_paas_bk_tencent_com_environment': 'stag', '__ext.labels.bkapp_paas_bk_tencent_com_process_name': 'web', '__ext.io_kubernetes_pod': 'bkapp-code-stag--web-8449579sh9d2'}, {'__ext.labels.bkapp_paas_bk_tencent_com_region': 'default', '__ext.labels.bkapp_paas_bk_tencent_com_code': 'code', '__ext.labels.bkapp_paas_bk_tencent_com_module_name': 'default', '__ext.labels.bkapp_paas_bk_tencent_com_environment': 'stag', '__ext.labels.bkapp_paas_bk_tencent_com_process_name': 'web', '__ext.io_kubernetes_pod': 'bkapp-code-stag--web-8449579sh9d2', 'region': 'default', 'app_code': 'code', 'module_name': 'default', 'environment': 'stag', 'process_id': 'web', 'pod_name': 'bkapp-code-stag--web-8449579sh9d2', 'stream': NOT_SET})]):` | pytest.mark.parametrize | 不适用 |
-| test_parse_request_to_es_dsl | `@pytest.mark.parametrize(('query_conditions', 'mappings', 'expected'), [(SearchRequestSchema(query={'query_string': 'foo'}), {}, {'query_string': {'query': 'foo', 'analyze_wildcard': True}}), (SearchRequestSchema(query={'query_string': 'foo', 'terms': {'app_code': {'foo'}}}), {}, {'bool': {'must': [{'query_string': {'query': 'foo', 'analyze_wildcard': True}}, {'terms': {'app_code': ['foo']}}]}}), (SearchRequestSchema(query={'query_string': 'foo', 'terms': {'app_code': ['foo']}}), {'app_code': {'type': 'text'}}, {'bool': {'must': [{'query_string': {'query': 'foo', 'analyze_wildcard': True}}, {'terms': {'app_code.keyword': ['foo']}}]}}), (SearchRequestSchema(query={'query_string': 'foo', 'terms': {'app_code': ['foo']}, 'exclude': {'module_name': ['bar']}}, sort={'response_time': 'desc'}), {'app_code': {'type': 'text'}}, {'bool': {'must': [{'query_string': {'query': 'foo', 'analyze_wildcard': True}}, {'terms': {'app_code.keyword': ['foo']}}], 'must_not': [{'terms': {'module_name': ['bar']}}]}})]):` | pytest.mark.parametrize | 不适用 |
-| test_legacy_ts_field | `@pytest.mark.parametrize(('es_timestamp', 'expected_ts'), [('2023-04-11T11:13:58.102Z', '2023-04-11 19:13:58'), ('2023-04-11T11:13:57.958Z', '2023-04-11 19:13:57')]):` | pytest.mark.parametrize | 不适用 |
+| make_stats_indexes_fake_resp | `def make_stats_indexes_fake_resp():` | pytest.fixture | 不适用 |
+| test_get_es_term | `def test_get_es_term(query_term, mappings, expected):` | pytest.mark.parametrize | 不适用 |
+| test_rename_log_fields | `def test_rename_log_fields(log, expected):` | pytest.mark.parametrize | 不适用 |
+| test_parse_request_to_es_dsl | `def test_parse_request_to_es_dsl(query_conditions, mappings, expected):` | pytest.mark.parametrize | 不适用 |
+| test_legacy_ts_field | `def test_legacy_ts_field(es_timestamp: str, expected_ts):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -57617,17 +57617,17 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| site_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| site | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| site_dict | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| page_view_config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| interval_metrics | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| total_data_metrics | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dimension_metrics | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| pv_agg_by_interval_metrics | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| ce_agg_by_interval_metrics | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| custom_event_overview | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| custom_event_category_detail | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| site_name | `def site_name(bk_app, bk_module):` | pytest.fixture | 不适用 |
+| site | `def site(site_name, bk_app):` | pytest.fixture | 不适用 |
+| site_dict | `def site_dict(site):` | pytest.fixture | 不适用 |
+| page_view_config | `def page_view_config(site_dict):` | pytest.fixture | 不适用 |
+| interval_metrics | `def interval_metrics(site_dict):` | pytest.fixture | 不适用 |
+| total_data_metrics | `def total_data_metrics(site_dict):` | pytest.fixture | 不适用 |
+| dimension_metrics | `def dimension_metrics(site_dict):` | pytest.fixture | 不适用 |
+| pv_agg_by_interval_metrics | `def pv_agg_by_interval_metrics(site_dict):` | pytest.fixture | 不适用 |
+| ce_agg_by_interval_metrics | `def ce_agg_by_interval_metrics(site_dict):` | pytest.fixture | 不适用 |
+| custom_event_overview | `def custom_event_overview():` | pytest.fixture | 不适用 |
+| custom_event_category_detail | `def custom_event_category_detail():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -57696,8 +57696,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| tag_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| create_default_tag | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| tag_name | `def tag_name():` | pytest.fixture | 不适用 |
+| create_default_tag | `def create_default_tag(tag_name):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -57737,7 +57737,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_app | `def bk_app(bk_app):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -57747,7 +57747,7 @@ s-mart(镜像): 'image:镜像 tag'
 | TestModuleEnvDomains | 无 | test_prod_default, test_stag_default, test_stag_non_default, test_enable_https_by_default | 无 | 无 | 不适用 |
 | TestModuleEnvDomainsCodeWithUnderscore | 无 | bk_app, test_prod_default | 无 | 无 | 不适用 |
 | TestSubDomainAllocator | 无 | allocator, domain_cfg, test_list_available_universal, test_list_available_default, test_get_highest_priority_universal, test_get_highest_priority_default, test_get_highest_priority_default_prod | 无 | 无 | 不适用 |
-| TestGetPreallocatedDomainsByEnv | 无 | _setup_cluster, test_default_prod_env, test_non_default | 无 | 无 | 不适用 |
+| TestGetPreallocatedDomainsByEnv | 无 | test_default_prod_env, test_non_default | 无 | 无 | 不适用 |
 
 ---
 
@@ -57839,7 +57839,7 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestGetExposedUrlType | 无 | test_non_existent, test_non_existent_module, test_normal | 无 | 无 | 不适用 |
 | TestGetPreallocatedAddress | 无 | test_not_configured, test_normal, test_preferred_url_type, test_with_clusters | 无 | 无 | 不适用 |
-| TestDefaultEntrance | 无 | _setup, test_single_entrance, test_sub_domain, test_get_preallocated_urls_legacy | 无 | 无 | 不适用 |
+| TestDefaultEntrance | 无 | test_single_entrance, test_sub_domain, test_get_preallocated_urls_legacy | 无 | 无 | 不适用 |
 
 ---
 
@@ -57886,11 +57886,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestModuleEnvSubpaths | 无 | bk_app, _setup_cluster, test_prod_default, test_stag_default, test_stag_non_default, test_disable_legacy_pattern | 无 | 无 | 不适用 |
-| TestModuleEnvSubpathsNotConfigured | 无 | _setup_cluster, test_prod_default | 无 | 无 | 不适用 |
+| TestModuleEnvSubpaths | 无 | bk_app, test_prod_default, test_stag_default, test_stag_non_default, test_disable_legacy_pattern | 无 | 无 | 不适用 |
+| TestModuleEnvSubpathsNotConfigured | 无 | test_prod_default | 无 | 无 | 不适用 |
 | TestGetPreallocatedPath | 无 | test_no_module_name, test_with_module_name, test_https | 无 | 无 | 不适用 |
 | TestSubPathAllocator | 无 | allocator, domain_cfg, test_list_available_universal, test_list_available_default, test_get_highest_priority_universal, test_get_highest_priority_default, test_get_highest_priority_default_prod | 无 | 无 | 不适用 |
-| TestGetPreallocatedPathsByEnv | 无 | _setup_cluster, test_default_prod_env, test_non_default | 无 | 无 | 不适用 |
+| TestGetPreallocatedPathsByEnv | 无 | test_default_prod_env, test_non_default | 无 | 无 | 不适用 |
 
 ---
 
@@ -57923,8 +57923,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_sync_default_entrances_for_module_switching | `@mock.patch('paas_wl.workloads.networking.entrance.handlers.refresh_module_subpaths'):` | mock.patch, mock.patch | 不适用 |
-| test_sync_default_entrances_for_cnative_module_switching | `@mock.patch('paas_wl.bk_app.cnative.specs.handlers.sync_networking'):` | mock.patch | 不适用 |
+| test_sync_default_entrances_for_module_switching | `def test_sync_default_entrances_for_module_switching(mocker_subpath, mocker_domain, bk_app, bk_module):` | mock.patch, mock.patch | 不适用 |
+| test_sync_default_entrances_for_cnative_module_switching | `def test_sync_default_entrances_for_cnative_module_switching(sync_networking, bk_cnative_app, bk_module):` | mock.patch | 不适用 |
 
 
 ---
@@ -58034,13 +58034,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| set_custom_domain | `@pytest.fixture():` | pytest.fixture | Allow to set custom domains by mocking |
+| set_custom_domain | `def set_custom_domain():` | pytest.fixture | Allow to set custom domains by mocking |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestMarketAvailableAddressHelper | 无 | _setup, test_filter_domain_address_not_found, test_access_entrance, test_access_entrance_for_custom_domain, test_different_access_entrance_url_type | 无 | 无 | 不适用 |
+| TestMarketAvailableAddressHelper | 无 | test_filter_domain_address_not_found, test_access_entrance, test_access_entrance_for_custom_domain, test_different_access_entrance_url_type | 无 | 无 | 不适用 |
 
 ---
 
@@ -58158,7 +58158,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestAppMembers | 无 | init_data, test_init_members, test_delete_members, test_add_members | 无 | 无 | 不适用 |
-| TestApp | 无 | test_validate_app_code, test_validate_app_name, test_change_app_name, test_register_app, test_app_state | 无 | 无 | 
+| TestApp | 无 | test_validate_app_code, test_validate_app_name, test_change_app_name, test_register_app, test_app_state | 无 | 无 |
     部分功能的单元测试已经包含在其他模块
     - 同步应用信息：tests/api/tes... |
 | TestHandlers | 无 | test_sync_app_deploy_records | 无 | 无 | 不适用 |
@@ -58210,7 +58210,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_app | `def bk_app(bk_app):` | pytest.fixture | 不适用 |
 | test_get_module_exposed_links | `def test_get_module_exposed_links(bk_module, bk_stag_env, bk_prod_env, mock_env_is_running, mock_get_builtin_addresses):` | 无 | 不适用 |
 
 #### 类
@@ -58218,7 +58218,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestIntegratedNotDeployed | 无 | test_normal | 无 | 无 | 不适用 |
-| TestUpdateExposedURLType | 无 | _setup, test_normal, test_with_legacy_market | 无 | 无 | 不适用 |
+| TestUpdateExposedURLType | 无 | test_normal, test_with_legacy_market | 无 | 无 | 不适用 |
 
 ---
 
@@ -58249,10 +58249,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_service_r1 | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan_r1_v1 | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan_r1_v2 | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan_r2_v1 | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_service_r1 | `def bk_service_r1():` | pytest.fixture | 不适用 |
+| bk_plan_r1_v1 | `def bk_plan_r1_v1():` | pytest.fixture | 不适用 |
+| bk_plan_r1_v2 | `def bk_plan_r1_v2():` | pytest.fixture | 不适用 |
+| bk_plan_r2_v1 | `def bk_plan_r2_v1():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -58305,14 +58305,14 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| store | `@pytest.fixture():` | pytest.fixture | Mocked Store |
-| raw_store | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_service_ver | `@pytest.fixture():` | pytest.fixture | specifications 限制 version的 service |
-| bk_service_ver_zone | `@pytest.fixture():` | pytest.fixture | specifications 限制 version 和 app_zone 的 service |
-| bk_plan_r1_v1 | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan_r1_v2 | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan_r2_v1 | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| store | `def store(raw_store, config):` | pytest.fixture | Mocked Store |
+| raw_store | `def raw_store():` | pytest.fixture | 不适用 |
+| config | `def config():` | pytest.fixture | 不适用 |
+| bk_service_ver | `def bk_service_ver():` | pytest.fixture | specifications 限制 version的 service |
+| bk_service_ver_zone | `def bk_service_ver_zone():` | pytest.fixture | specifications 限制 version 和 app_zone 的 service |
+| bk_plan_r1_v1 | `def bk_plan_r1_v1():` | pytest.fixture | 不适用 |
+| bk_plan_r1_v2 | `def bk_plan_r1_v2():` | pytest.fixture | 不适用 |
+| bk_plan_r2_v1 | `def bk_plan_r2_v1():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -58468,11 +58468,11 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestRemotePlanObj | 无 | test_from_data | 无 | 无 | 不适用 |
-| TestRemoteEngineAppInstanceRel | 无 | _setup_data, test_get_plan, test_provision, test_render_params | 无 | 无 | 不适用 |
-| TestRemoteMgrWithRealStore | 无 | _setup_data, bk_service, test_find_by_name, test_bind_with_specs, test_module_rebind_failed_after_provision | 无 | 无 | 与 remote store 相关的集成测试(即不 mock store 的行为) |
-| TestRemoteMgrWithMockedStore | 无 | _reset_region, test_bind_service, test_bind_service_errors, test_bind_service_mixed_plans, test_bound_with_diff_app_zone | 无 | 无 | 不适用 |
-| TestRemoteMgr | 无 | _setup_data, store, test_list_binded, test_get_instance_has_create_time_attr, test_get_instance, test_get_env_vars_with_exclude_disabled, test_get_attachment_by_instance_id | app_region | 无 | 不适用 |
-| TestLegacyRemoteMgr | 无 | _setup_data, store, test_bind_service, test_bind_service_wrong_region, test_list_binded, test_module_rebind, test_module_rebind_failed_after_provision | app_region, uuid | 无 | 不适用 |
+| TestRemoteEngineAppInstanceRel | 无 | test_get_plan, test_provision, test_render_params | 无 | 无 | 不适用 |
+| TestRemoteMgrWithRealStore | 无 | bk_service, test_find_by_name, test_bind_with_specs, test_module_rebind_failed_after_provision | 无 | 无 | 与 remote store 相关的集成测试(即不 mock store 的行为) |
+| TestRemoteMgrWithMockedStore | 无 | test_bind_service, test_bind_service_errors, test_bind_service_mixed_plans, test_bound_with_diff_app_zone | 无 | 无 | 不适用 |
+| TestRemoteMgr | 无 | store, test_list_binded, test_get_instance_has_create_time_attr, test_get_instance, test_get_env_vars_with_exclude_disabled, test_get_attachment_by_instance_id | app_region | 无 | 不适用 |
+| TestLegacyRemoteMgr | 无 | store, test_bind_service, test_bind_service_wrong_region, test_list_binded, test_module_rebind, test_module_rebind_failed_after_provision | app_region, uuid | 无 | 不适用 |
 | TestMetaInfo | 无 | test_semantic_version_gte_none_version, test_semantic_version_gte_normal | 无 | 无 | 不适用 |
 
 ---
@@ -58513,7 +58513,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestRemoteStore | 无 | _setup_data, test_get_non_exists, test_get_normal, test_list_all, test_list_by_category, test_get_source_config, test_get_by_unsupported_region, test_bulk_get, test_bulk_get_unregistered_service, test_bulk_get_by_unsupported_region, test_all, test_empty, test_bulk_update_conflict | 无 | 无 | 不适用 |
+| TestRemoteStore | 无 | test_get_non_exists, test_get_normal, test_list_all, test_list_by_category, test_get_source_config, test_get_by_unsupported_region, test_bulk_get, test_bulk_get_unregistered_service, test_bulk_get_by_unsupported_region, test_all, test_empty, test_bulk_update_conflict | 无 | 无 | 不适用 |
 
 ---
 
@@ -58680,12 +58680,12 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | create_module | `def create_module(bk_app):` | 无 | 不适用 |
-| local_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| remote_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| local_service | `def local_service(request):` | pytest.fixture | 不适用 |
+| remote_service | `def remote_service(_faked_remote_services):` | pytest.fixture | 不适用 |
 | pick_different_category | `def pick_different_category(service_obj: ServiceObj) -> int:` | 无 | Pick a category different with given service objec... |
-| service_obj | `@pytest.fixture(params=['legacy-local', 'newly-local', 'remote']):` | pytest.fixture | 
+| service_obj | `def service_obj(request, local_service, remote_service):` | pytest.fixture |
     Service object for testing, this fixture will... |
-| ref_module | `@pytest.fixture():` | pytest.fixture | A fixture which creates a module sharing service o... |
+| ref_module | `def ref_module(bk_app, bk_module, service_obj):` | pytest.fixture | A fixture which creates a module sharing service o... |
 
 #### 类
 
@@ -58754,8 +58754,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_plan | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_service | `def bk_service():` | pytest.fixture | 不适用 |
+| bk_plan | `def bk_plan(bk_service):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -58859,7 +58859,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_plan | `@pytest.fixture(autouse=True, params=[{'recyclable': True}, {}]):` | pytest.fixture | 不适用 |
+| bk_plan | `def bk_plan(request, bk_service):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -58911,7 +58911,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestWRR | 无 | test_normal, test_no_weight, test_weight_zero, test_multi_weighted | 无 | 无 | 不适用 |
-| TestGetUniqueID | 无 | _setup_data, latest_id, test_normal, test_max_length, test_divide_char, test_divide_char_max_length | 无 | 无 | 不适用 |
+| TestGetUniqueID | 无 | latest_id, test_normal, test_max_length, test_divide_char, test_divide_char_max_length | 无 | 无 | 不适用 |
 
 ---
 
@@ -59068,8 +59068,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_plugin | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| mock_apigw_api_client | `@pytest.fixture():` | pytest.fixture | Replace the default API Gateway client with a fake... |
+| bk_plugin | `def bk_plugin(bk_plugin_app):` | pytest.fixture | 不适用 |
+| mock_apigw_api_client | `def mock_apigw_api_client():` | pytest.fixture | Replace the default API Gateway client with a fake... |
 
 
 ---
@@ -59108,8 +59108,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| fake_good_client | `@pytest.fixture():` | pytest.fixture | Make a fake client which produce successful result |
-| fake_bad_client | `@pytest.fixture():` | pytest.fixture | Make a fake client which produce failed result |
+| fake_good_client | `def fake_good_client():` | pytest.fixture | Make a fake client which produce successful result |
+| fake_bad_client | `def fake_bad_client():` | pytest.fixture | Make a fake client which produce failed result |
 | test_safe_sync_apigw_succeeded | `def test_safe_sync_apigw_succeeded(bk_plugin_app, fake_good_client):` | 无 | 不适用 |
 | test_safe_sync_apigw_failed | `def test_safe_sync_apigw_failed(bk_plugin_app, fake_bad_client):` | 无 | 不适用 |
 
@@ -59150,7 +59150,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_on_pre_deployment | `@patch('paasng.bk_plugins.bk_plugins.handlers.safe_sync_apigw'):` | patch | 不适用 |
+| test_on_pre_deployment | `def test_on_pre_deployment(safe_sync_apigw, bk_plugin_app):` | patch | 不适用 |
 
 
 ---
@@ -59194,12 +59194,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_deployed_statuses | `@pytest.mark.usefixtures('_with_empty_live_addrs'):` | pytest.mark.usefixtures | 不适用 |
+| test_get_deployed_statuses | `def test_get_deployed_statuses(bk_plugin_app):` | pytest.mark.usefixtures | 不适用 |
 | test_make_bk_plugin_normal | `def test_make_bk_plugin_normal(bk_app):` | 无 | 不适用 |
 | test_make_bk_plugin_wrong_type | `def test_make_bk_plugin_wrong_type(bk_app):` | 无 | 不适用 |
 | test_get_or_create_by_application | `def test_get_or_create_by_application(bk_app):` | 无 | 不适用 |
-| test_plugin_to_detailed_default | `@pytest.mark.usefixtures('_with_empty_live_addrs'):` | pytest.mark.usefixtures | 不适用 |
-| test_plugin_to_detailed_no_addresses | `@pytest.mark.usefixtures('_with_empty_live_addrs'):` | pytest.mark.usefixtures | 不适用 |
+| test_plugin_to_detailed_default | `def test_plugin_to_detailed_default(bk_plugin):` | pytest.mark.usefixtures | 不适用 |
+| test_plugin_to_detailed_no_addresses | `def test_plugin_to_detailed_no_addresses(bk_plugin):` | pytest.mark.usefixtures | 不适用 |
 | test_get_plugin_env_variables | `def test_get_plugin_env_variables(bk_plugin):` | 无 | Test the normal case |
 
 #### 类
@@ -59259,20 +59259,20 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_api_resource | `def make_api_resource(path: str = ''):` | 无 | 不适用 |
-| pd | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| plugin | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| plugin_with_role | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| release | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| subpage_stage | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| itsm_online_stage | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| online_approval_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| visible_range_approval_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| gray_release_approval_service | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| thirdparty_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| iam_policy_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_release | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| itsm_test_stage | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| release_strategy | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| pd | `def pd():` | pytest.fixture | 不适用 |
+| plugin | `def plugin(pd, bk_user):` | pytest.fixture | 不适用 |
+| plugin_with_role | `def plugin_with_role(plugin):` | pytest.fixture | 不适用 |
+| release | `def release(plugin):` | pytest.fixture | 不适用 |
+| subpage_stage | `def subpage_stage(release):` | pytest.fixture | 不适用 |
+| itsm_online_stage | `def itsm_online_stage(release):` | pytest.fixture | 不适用 |
+| online_approval_service | `def online_approval_service():` | pytest.fixture | 不适用 |
+| visible_range_approval_service | `def visible_range_approval_service():` | pytest.fixture | 不适用 |
+| gray_release_approval_service | `def gray_release_approval_service():` | pytest.fixture | 不适用 |
+| thirdparty_client | `def thirdparty_client():` | pytest.fixture | 不适用 |
+| iam_policy_client | `def iam_policy_client():` | pytest.fixture | 不适用 |
+| test_release | `def test_release(plugin):` | pytest.fixture | 不适用 |
+| itsm_test_stage | `def itsm_test_stage(release):` | pytest.fixture | 不适用 |
+| release_strategy | `def release_strategy(plugin, bk_user):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -59299,7 +59299,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| iam_management_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| iam_management_client | `def iam_management_client():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -59428,7 +59428,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| iam_policy_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| iam_policy_client | `def iam_policy_client():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -59492,7 +59492,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_view | `def make_view(plugin, actions: List[PluginPermissionActions]):` | 无 | 不适用 |
-| drf_request | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| drf_request | `def drf_request(bk_user):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -59535,7 +59535,7 @@ s-mart(镜像): 'image:镜像 tag'
 | test_gen_iam_resource_name | `def test_gen_iam_resource_name(plugin):` | 无 | 不适用 |
 | test_gen_iam_resource | `def test_gen_iam_resource(plugin):` | 无 | 不适用 |
 | test_gen_iam_grade_manager | `def test_gen_iam_grade_manager(pd, plugin):` | 无 | 不适用 |
-| test_gen_plugin_user_group | `@pytest.mark.parametrize(('role', 'name', 'description'), [(PluginRole.ADMINISTRATOR, '{pd_name}-{plugin_name}-管理者', '{pd_name}（{plugin_name}）管理者，拥有应用的全部权限。'), (PluginRole.DEVELOPER, '{pd_name}-{plugin_name}-开发者', '{pd_name}（{plugin_name}）开发者，拥有应用的开发权限，如基础开发，版本发布等。')]):` | pytest.mark.parametrize | 不适用 |
+| test_gen_plugin_user_group | `def test_gen_plugin_user_group(pd, plugin, role, name, description):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -59605,8 +59605,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| log_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| time_range | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| log_client | `def log_client():` | pytest.fixture | 不适用 |
+| time_range | `def time_range():` | pytest.fixture | 不适用 |
 | make_hit | `def make_hit(fields: Dict) -> Hit:` | 无 | 不适用 |
 | test_query_standard_output_logs | `def test_query_standard_output_logs(pd, plugin, log_client, time_range):` | 无 | 不适用 |
 | test_query_structure_logs | `def test_query_structure_logs(pd, plugin, log_client, time_range):` | 无 | 不适用 |
@@ -59638,7 +59638,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_clean_property | `@pytest.mark.parametrize(('nested_name', 'mapping', 'expected'), [(['a'], {'properties': {'a': {'type': 'text'}, 'b': {'type': 'int'}}}, [FieldFilter(name='a.a', key='a.a.keyword'), FieldFilter(name='a.b', key='a.b')]), (['a', 'b', 'c'], {'properties': {'d': {'properties': {'e': {'properties': {'f': {'properties': {'g': {'type': 'text'}}}}}}}}}, [FieldFilter(name='a.b.c.d.e.f.g', key='a.b.c.d.e.f.g.keyword')]), (['a'], {'a': {'type': 'text'}, 'b': {'type': 'int'}}, [])]):` | pytest.mark.parametrize | 不适用 |
+| test_clean_property | `def test_clean_property(nested_name, mapping, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -59693,7 +59693,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| thirdparty_client | `@pytest.fixture(autouse=True):` | pytest.fixture | 不适用 |
+| thirdparty_client | `def thirdparty_client(thirdparty_client):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -59743,7 +59743,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | FakeTaskPoller | blue_krill.async_utils.poll_task.TaskPoller | query | 无 | 无 | A task poller for testing |
-| TestPluginReleaseExecutor | 无 | _setup_release_stages, release, stage_class_setter, test_enter_next_stage, test_rerun_current_stage, test_execute_current_stage, test_rollback_current_stage_failed, test_rollback_current_stage, test_reset, test_cancel, test_pre_command, test_post_command | 无 | 无 | 不适用 |
+| TestPluginReleaseExecutor | 无 | release, stage_class_setter, test_enter_next_stage, test_rerun_current_stage, test_execute_current_stage, test_rollback_current_stage_failed, test_rollback_current_stage, test_reset, test_cancel, test_pre_command, test_post_command | 无 | 无 | 不适用 |
 
 ---
 
@@ -59776,7 +59776,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestPipelineStage | 无 | _setup, test_build_pipeline_params | 无 | 无 | 不适用 |
+| TestPipelineStage | 无 | test_build_pipeline_params | 无 | 无 | 不适用 |
 
 ---
 
@@ -59811,7 +59811,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| release | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| release | `def release(_setup_release_stages, release) -> PluginRelease:` | pytest.fixture | 不适用 |
 | test_stage_types | `def test_stage_types():` | 无 | 不适用 |
 | test_render_base_info | `def test_render_base_info(release):` | 无 | 不适用 |
 
@@ -59858,7 +59858,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| thirdparty_client | `@pytest.fixture(autouse=True):` | pytest.fixture | 不适用 |
+| thirdparty_client | `def thirdparty_client(thirdparty_client):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -59940,7 +59940,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestReleaseStages | 无 | _mock_refresh_source_hash, _setup_release_stages, test_create_canry_release_version, test_create_release_version, test_release_version | 无 | 无 | Release 状态扭转的集成测试 |
+| TestReleaseStages | 无 | test_create_canry_release_version, test_create_release_version, test_release_version | 无 | 无 | Release 状态扭转的集成测试 |
 | TestOperationRecord | 无 | test_record | 无 | 无 | 测试操作记录 |
 
 ---
@@ -59976,9 +59976,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_client_session | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_execute_itsm_stage | `@pytest.mark.usefixtures('_set_itsm_to_current_stage'):` | pytest.mark.usefixtures | 测试执行 itsm 阶段 |
-| test_itsm_render | `@pytest.mark.usefixtures('_set_itsm_to_current_stage'):` | pytest.mark.usefixtures | 不适用 |
+| mock_client_session | `def mock_client_session():` | pytest.fixture | 不适用 |
+| test_execute_itsm_stage | `def test_execute_itsm_stage(mock_client_session, online_approval_service, pd, plugin, release, bk_user):` | pytest.mark.usefixtures | 测试执行 itsm 阶段 |
+| test_itsm_render | `def test_itsm_render(mock_client_session):` | pytest.mark.usefixtures | 不适用 |
 
 
 ---
@@ -60021,15 +60021,15 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_translate_fields | `def make_translate_fields(field, value) -> Dict:` | 无 | 不适用 |
-| mocked_plugin_repo_accessor | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_make_create_plugin_validator | `@pytest.mark.parametrize(('data', 'is_valid', 'expected'), [({'id': 1, 'name': '2', 'template': 'foo'}, True, {'id': '1', **make_translate_fields('name', '2'), 'template': cattr.structure({'id': 'foo', 'name': 'Foo Template', 'language': 'Python', 'repository': 'https://example.com/foo'}, PluginCodeTemplate), 'extra_fields': {}}), ({'id': '12345678901', 'name': '2', 'template': 'foo'}, False, {'id': [ErrorDetail(string='请确保这个字段不能超过 10 个字符。', code='max_length')]}), ({'id': 1, 'name': '2', 'template': 'foo', 'extra_fields': {'email': 'foo@example.com', 'distributor_codes': ['1', '2']}}, True, {'id': '1', **make_translate_fields('name', '2'), 'template': cattr.structure({'id': 'foo', 'name': 'Foo Template', 'language': 'Python', 'repository': 'https://example.com/foo'}, PluginCodeTemplate), 'extra_fields': {'email': 'foo@example.com', 'distributor_codes': ['1', '2']}}), ({'id': 'invalid_id', 'name': '2', 'template': 'foo'}, False, {'id': [ErrorDetail(string=_('This value does not match the required pattern.'), code='invalid')]}), ({'id': '1', 'name': '2', 'template': 'foo', 'extra_fields': {'email': 'invalid.email', 'distributor_codes': []}}, False, {'extra_fields': {'email': [ErrorDetail(string=_('This value does not match the required pattern.'), code='invalid')]}})]):` | pytest.mark.parametrize | 不适用 |
-| test_make_create_plugin_validator_conflict | `@pytest.mark.parametrize(('field', 'value', 'expected'), [('id', 1, {'non_field_errors': [ErrorDetail(string='插件ID 为 1 的插件已存在', code='unique')]}), ('name_en', 'FLAG', {'non_field_errors': [ErrorDetail(string='插件名称 为 FLAG 的插件已存在', code='unique')]}), ('name_zh_cn', 'FLAG', {'non_field_errors': [ErrorDetail(string='插件名称 为 FLAG 的插件已存在', code='unique')]})]):` | pytest.mark.parametrize | 不适用 |
-| test_validate_automatic_semver | `@pytest.mark.parametrize(('previous_version', 'data', 'is_valid'), [('0.1.2', {'semver_type': 'major', 'version': '1.0.0', **COMMON_DATA}, True), ('0.1.2', {'semver_type': 'minor', 'version': '0.2.0', **COMMON_DATA}, True), ('0.1.2', {'semver_type': 'patch', 'version': '0.1.3', **COMMON_DATA}, True), ('0.1.2', {'semver_type': 'patch', 'version': '0.2.2', **COMMON_DATA}, False), ('0.1.2', {'semver_type': 'patch', 'version': '0.1.3.4', **COMMON_DATA}, False)]):` | pytest.mark.parametrize | 不适用 |
-| test_validate_revision_eq_source_revision | `@pytest.mark.parametrize(('data', 'is_valid'), [({'version': '1.0.0', **COMMON_DATA, 'source_version_name': '1.0.0'}, True), ({'version': '1.0.0', **COMMON_DATA, 'source_version_name': '2.0.0'}, False)]):` | pytest.mark.parametrize | 不适用 |
-| test_validate_revision_eq_commit_hash | `@pytest.mark.parametrize(('source_hash', 'data', 'is_valid'), [('a407e44060597e4030d1872d1588c279686e90cb', {'version': 'a407e44060597e4030d1872d1588c279686e90cb', **COMMON_DATA}, True), ('46d1c7f757b690b741a01b8d677c2f9ce931b6a1', {'version': '1.0.0', **COMMON_DATA}, False)]):` | pytest.mark.parametrize | 不适用 |
-| test_validate_tested_version | `@pytest.mark.parametrize(('data', 'is_valid'), [({'release_id': '1', 'version': '1.0.0', **COMMON_DATA, 'source_version_name': '1.0.0'}, True), ({'release_id': '', 'version': '1.0.0', **COMMON_DATA, 'source_version_name': '1.0.0'}, False), ({'version': '1.0.0', **COMMON_DATA, 'source_version_name': '2.0.0'}, False)]):` | pytest.mark.parametrize | 不适用 |
-| test_validate_release_policy | `@pytest.mark.parametrize(('data', 'revision_policy', 'is_valid'), [({'version': '1.0.0', **COMMON_DATA, 'source_version_name': 'master'}, None, True), ({'version': '1.0.0', **COMMON_DATA, 'source_version_name': 'master'}, 'disallow_released_source_version', False), ({'version': '1.0.0', **COMMON_DATA, 'source_version_name': 'master'}, 'disallow_releasing_source_version', False)]):` | pytest.mark.parametrize | 不适用 |
-| test_market_info_validator | `@pytest.mark.parametrize(('data', 'is_valid'), [({'category': '1', 'introduction': '2', 'description': '3', 'contact': '4'}, True), ({'category': '1', 'introduction_zh_cn': '2', 'description': '3', 'contact': '4'}, False), ({'category': '1', 'introduction_en': '2', 'description': '3', 'contact': '4'}, False), ({'category': '1', 'introduction_zh_cn': '2', 'introduction_en': '2', 'description': '3', 'contact': '4'}, True)]):` | pytest.mark.parametrize | 不适用 |
+| mocked_plugin_repo_accessor | `def mocked_plugin_repo_accessor():` | pytest.fixture | 不适用 |
+| test_make_create_plugin_validator | `def test_make_create_plugin_validator(pd, data, is_valid, expected, mocked_plugin_repo_accessor):` | pytest.mark.parametrize | 不适用 |
+| test_make_create_plugin_validator_conflict | `def test_make_create_plugin_validator_conflict(pd, plugin, field, value, expected):` | pytest.mark.parametrize | 不适用 |
+| test_validate_automatic_semver | `def test_validate_automatic_semver(plugin, previous_version, data, is_valid, mocked_plugin_repo_accessor):` | pytest.mark.parametrize | 不适用 |
+| test_validate_revision_eq_source_revision | `def test_validate_revision_eq_source_revision(plugin, data, is_valid, mocked_plugin_repo_accessor):` | pytest.mark.parametrize | 不适用 |
+| test_validate_revision_eq_commit_hash | `def test_validate_revision_eq_commit_hash(plugin, source_hash, data, is_valid, mocked_plugin_repo_accessor):` | pytest.mark.parametrize | 不适用 |
+| test_validate_tested_version | `def test_validate_tested_version(plugin, data, is_valid):` | pytest.mark.parametrize | 不适用 |
+| test_validate_release_policy | `def test_validate_release_policy(plugin, release, data, revision_policy, is_valid, mocked_plugin_repo_accessor):` | pytest.mark.parametrize | 不适用 |
+| test_market_info_validator | `def test_market_info_validator(pd, data, is_valid):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -60096,7 +60096,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| thirdparty_client_session | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| thirdparty_client_session | `def thirdparty_client_session():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -60134,7 +60134,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | make_response | `def make_response(data: Dict) -> Response:` | 无 | 不适用 |
-| test_transform_exception | `@pytest.mark.parametrize(('exception', 'expected_exception'), [(Exception(), APIError(code='UnknownError', message='system error')), (ResponseError(response=make_response({})), APIError(code='APIError', message='[invalid response body]')), (ResponseError(response=make_response({'message': '错误信息'})), APIError(code='APIError', message='错误信息')), (ResponseError(response=make_response({'message': '错误信息'}), response_headers_representer=mock.MagicMock(request_id='foo')), APIError(code='APIError', message='<request_id: foo> 错误信息')), (ResponseError(response=make_response({'detail': '错误信息'}), response_headers_representer=mock.MagicMock(request_id='foo')), APIError(code='APIError', message='<request_id: foo> 错误信息'))]):` | pytest.mark.parametrize | 不适用 |
+| test_transform_exception | `def test_transform_exception(pd, plugin, exception, expected_exception):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -60167,7 +60167,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_instance_upsert_api | `@pytest.mark.parametrize('handler', [instance.create_instance, instance.update_instance]):` | pytest.mark.parametrize | 测试 instance create/update 接口的序列化 |
+| test_instance_upsert_api | `def test_instance_upsert_api(thirdparty_client, pd, plugin, handler):` | pytest.mark.parametrize | 测试 instance create/update 接口的序列化 |
 | test_instance_delete_api | `def test_instance_delete_api(thirdparty_client_session, pd, plugin):` | 无 | 不适用 |
 
 
@@ -60205,8 +60205,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| market_info | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_market_upsert_api | `@pytest.mark.parametrize('handler', [market.create_market_info, market.update_market_info]):` | pytest.mark.parametrize | 测试 market create/update 接口的序列化 |
+| market_info | `def market_info(plugin):` | pytest.fixture | 不适用 |
+| test_market_upsert_api | `def test_market_upsert_api(thirdparty_client, pd, plugin, market_info, handler):` | pytest.mark.parametrize | 测试 market create/update 接口的序列化 |
 | test_market_read_api | `def test_market_read_api(thirdparty_client, pd, plugin):` | 无 | 不适用 |
 
 
@@ -60240,8 +60240,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| release_version | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_release_upsert_api | `@pytest.mark.parametrize('handler', [release_api.create_release, release_api.update_release]):` | pytest.mark.parametrize | 测试 ReleaseVersion create/update 接口的序列化 |
+| release_version | `def release_version(plugin) -> PluginRelease:` | pytest.fixture | 不适用 |
+| test_release_upsert_api | `def test_release_upsert_api(thirdparty_client, pd, plugin, handler, release_version):` | pytest.mark.parametrize | 测试 ReleaseVersion create/update 接口的序列化 |
 
 
 ---
@@ -60268,7 +60268,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_make_sa_conn_string | `@pytest.mark.parametrize(('driver_type', 'config', 'expected'), [('test', dict(NAME='f1', USER='f2', PASSWORD='f3', HOST='f4', PORT='f5'), 'mysql+test://f2:f3@f4:f5/f1?charset=utf8')]):` | pytest.mark.parametrize | 不适用 |
+| test_make_sa_conn_string | `def test_make_sa_conn_string(driver_type, config, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -60522,7 +60522,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | generate_apply_url | `def generate_apply_url(username: str, action_request_list: List[ActionResourcesRequest]) -> str:` | 无 | 不适用 |
-| app_permission_obj | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| app_permission_obj | `def app_permission_obj():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -60648,8 +60648,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_oauth_client_id | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_oauth_client_key | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_oauth_client_id | `def bk_oauth_client_id():` | pytest.fixture | 不适用 |
+| bk_oauth_client_key | `def bk_oauth_client_key():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -60832,11 +60832,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_import_configs | `@pytest.fixture(autouse=True):` | pytest.fixture | 不适用 |
-| wl_namespaces | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| create_module_for_alert | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_init_rule_configs | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| cpu_usage_alert_rule_obj | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_import_configs | `def mock_import_configs():` | pytest.fixture | 不适用 |
+| wl_namespaces | `def wl_namespaces(bk_stag_env, bk_prod_env, _with_wl_apps) -> Dict[str, str]:` | pytest.fixture | 不适用 |
+| create_module_for_alert | `def create_module_for_alert(bk_module_2, _with_wl_apps):` | pytest.fixture | 不适用 |
+| bk_app_init_rule_configs | `def bk_app_init_rule_configs(bk_app, wl_namespaces):` | pytest.fixture | 不适用 |
+| cpu_usage_alert_rule_obj | `def cpu_usage_alert_rule_obj(bk_app):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -60871,7 +60871,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestAlertRulesView | 无 | _init_rules, test_list_rules, test_list_supported_alert_rules | 无 | 无 | 不适用 |
+| TestAlertRulesView | 无 | test_list_rules, test_list_supported_alert_rules | 无 | 无 | 不适用 |
 | TestInitAlertRulesAPI | 无 | test_init_alert_rules | 无 | 无 | 不适用 |
 
 ---
@@ -60981,7 +60981,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestResourceMetricManager | 无 | _set_up, metric_client, test_normal_gen_series_query, test_empty_gen_series_query, test_exception_gen_series_query, test_gen_series_query, test_gen_all_series_query | 无 | 无 | 不适用 |
+| TestResourceMetricManager | 无 | metric_client, test_normal_gen_series_query, test_empty_gen_series_query, test_exception_gen_series_query, test_gen_series_query, test_gen_all_series_query | 无 | 无 | 不适用 |
 | TestTimeRange | 无 | test_simple_date_string, test_to_now | 无 | 无 | 不适用 |
 
 ---
@@ -61064,8 +61064,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| clear_filelock | `@atexit.register:` | atexit.register | 不适用 |
-| bk_monitor_space | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| clear_filelock | `def clear_filelock():` | atexit.register | 不适用 |
+| bk_monitor_space | `def bk_monitor_space():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -61107,9 +61107,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_monitor_space | `@pytest.fixture:` | pytest.fixture | 不适用 |
-| init_dashboard_templates | `@pytest.fixture:` | pytest.fixture | 不适用 |
-| test_init_dashboard_command | `@pytest.mark.usefixtures('init_dashboard_templates'):` | pytest.mark.usefixtures | 不适用 |
+| bk_monitor_space | `def bk_monitor_space(bk_app):` | pytest.fixture | 不适用 |
+| init_dashboard_templates | `def init_dashboard_templates(bk_app):` | pytest.fixture | 不适用 |
+| test_init_dashboard_command | `def test_init_dashboard_command(bk_app, bk_monitor_space):` | pytest.mark.usefixtures | 不适用 |
 
 
 ---
@@ -61143,13 +61143,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_invalid_cluster_id | `@mock.patch('paasng.misc.monitoring.monitor.alert_rules.config.metric_label._get_cluster_info_cache'):` | mock.patch, pytest.mark.parametrize | 不适用 |
+| test_get_invalid_cluster_id | `def test_get_invalid_cluster_id(mock_get_cluster_info_cache, bk_app, version_info):` | mock.patch, pytest.mark.parametrize | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FakeVersionInfo | 无 | __init__, to_str | 无 | 无 | 不适用 |
+| FakeVersionInfo | 无 | to_str | 无 | 无 | 不适用 |
 
 ---
 
@@ -61224,7 +61224,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestChangelog | 无 | _init_changelog_dir, test_list_logs | 无 | 无 | 不适用 |
+| TestChangelog | 无 | test_list_logs | 无 | 无 | 不适用 |
 
 ---
 
@@ -61255,10 +61255,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_create_service | `@pytest.mark.parametrize(('service_input', 'expected_service_output'), [('web', {'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}), ('worker', {'name': 'worker', 'protocol': 'TCP', 'targetPort': settings.CONTAINER_PORT, 'port': 80})]):` | pytest.mark.parametrize | 不适用 |
-| test_transform_module_spec | `@pytest.mark.parametrize(('spec_input', 'expected_spec_output'), [({'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}]}, OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}]})), ({'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}, OrderedDict({'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}})), ({'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}, 'worker': {'command': 'python manage.py runserver', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}}, OrderedDict({'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]}), OrderedDict({'name': 'worker', 'procCommand': 'python manage.py runserver', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'worker', 'protocol': 'TCP', 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})]})), ({'scripts': {'pre_release_hook': 'bin/pre-release.sh'}}, OrderedDict({'hooks': {'preRelease': {'procCommand': 'bin/pre-release.sh'}}})), ({'svc_discovery': {'bk_saas': [{'bk_app_code': 'bk-iam'}, {'bk_app_code': 'bk-user', 'module_name': 'api'}]}}, OrderedDict({'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user', 'moduleName': 'api'}]}}))]):` | pytest.mark.parametrize | 不适用 |
-| test_transform_modules_section | `@pytest.mark.parametrize(('modules_data', 'expected_modules_data'), [({'default': {'is_default': True, 'source_dir': 'src/server', 'language': 'Python', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}]}, 'frontend': {'is_default': False, 'source_dir': 'src/frontend', 'language': 'NodeJS', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}], 'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}}}, [OrderedDict({'name': 'default', 'isDefault': True, 'sourceDir': 'src/server', 'language': 'Python', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}]}})}), OrderedDict({'name': 'frontend', 'isDefault': False, 'sourceDir': 'src/frontend', 'language': 'NodeJS', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'BAR', 'value': 'value_of_bar', 'description': '另一个环境变量'}]}, 'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})]})})]), ({'api_server': {'is_default': False, 'source_dir': 'src/backend', 'language': 'Python', 'services': [{'name': 'mysql', 'share_from': 'default'}, {'name': 'rabbitmq', 'share_from': 'default'}], 'env_variables': [{'key': 'API_KEY', 'value': 'api_value', 'description': 'API 密钥'}], 'processes': {'worker': {'command': 'python manage.py runserver', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}, 'scripts': {'pre_release_hook': 'python manage.py migrate'}, 'svc_discovery': {'bk_saas': [{'bk_app_code': 'bk-iam'}, {'bk_app_code': 'bk-user', 'module_name': 'api'}]}}}, [OrderedDict({'name': 'api_server', 'isDefault': False, 'sourceDir': 'src/backend', 'language': 'Python', 'spec': OrderedDict({'addons': [{'name': 'mysql', 'shareFrom': 'default'}, {'name': 'rabbitmq', 'shareFrom': 'default'}], 'configuration': {'env': [{'name': 'API_KEY', 'value': 'api_value', 'description': 'API 密钥'}]}, 'processes': [OrderedDict({'name': 'worker', 'procCommand': 'python manage.py runserver', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['/bin/bash', '-c', 'echo ready']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'worker', 'protocol': 'TCP', 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})], 'hooks': {'preRelease': {'procCommand': 'python manage.py migrate'}}, 'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user', 'moduleName': 'api'}]}})})])]):` | pytest.mark.parametrize | 不适用 |
-| test_transform_app_desc_spec2_to_spec3 | `@pytest.mark.parametrize(('spec2_data', 'expected_spec3_data'), [({'spec_version': 2, 'app_version': '1.0', 'app': {'region': 'default', 'bk_app_code': 'foo-app', 'bk_app_name': '默认应用名称', 'market': {'category': '运维工具', 'introduction': '应用简介', 'description': '应用描述', 'display_options': {'width': 800, 'height': 600, 'open_mode': 'desktop', 'is_win_maximize': False, 'visible': True}}}, 'module': {'source_dir': 'src/frontend', 'language': 'NodeJS', 'services': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'env_variables': [{'key': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'key': 'Baa', 'value': 'value_of_baa', 'description': '环境变量'}], 'processes': {'web': {'command': 'npm run server', 'plan': '4C1G5R', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'http_get': {'path': '/healthz', 'port': 80}}}}}, 'scripts': {'pre_release_hook': 'bin/pre-release.sh'}, 'svc_discovery': {'bk_saas': ['bk-iam', 'bk-user']}}}, OrderedDict({'specVersion': 3, 'appVersion': '1.0', 'app': OrderedDict({'region': 'default', 'bkAppCode': 'foo-app', 'bkAppName': '默认应用名称', 'market': {'category': '运维工具', 'introduction': '应用简介', 'description': '应用描述', 'displayOptions': {'width': 800, 'height': 600, 'openMode': 'desktop', 'isWinMaximize': False, 'visible': True}}}), 'module': OrderedDict({'name': 'default', 'sourceDir': 'src/frontend', 'language': 'NodeJS', 'spec': OrderedDict({'addons': [{'name': 'mysql'}, {'name': 'rabbitmq'}], 'configuration': {'env': [{'name': 'FOO', 'value': 'value_of_foo', 'description': '环境变量'}, {'name': 'Baa', 'value': 'value_of_baa', 'description': '环境变量'}]}, 'processes': [OrderedDict({'name': 'web', 'procCommand': 'npm run server', 'resQuotaPlan': '4C1G', 'replicas': 2, 'probes': {'liveness': {'exec': {'command': ['cat']}}, 'readiness': {'httpGet': {'path': '/healthz', 'port': 80}}}, 'services': [{'name': 'web', 'protocol': 'TCP', 'exposedType': {'name': 'bk/http'}, 'targetPort': settings.CONTAINER_PORT, 'port': 80}]})], 'hooks': {'preRelease': {'procCommand': 'bin/pre-release.sh'}}, 'svcDiscovery': {'bkSaaS': [{'bkAppCode': 'bk-iam'}, {'bkAppCode': 'bk-user'}]}})})}))]):` | pytest.mark.parametrize | 不适用 |
+| test_create_service | `def test_create_service(service_input, expected_service_output):` | pytest.mark.parametrize | 不适用 |
+| test_transform_module_spec | `def test_transform_module_spec(spec_input, expected_spec_output):` | pytest.mark.parametrize | 不适用 |
+| test_transform_modules_section | `def test_transform_modules_section(modules_data, expected_modules_data):` | pytest.mark.parametrize | 不适用 |
+| test_transform_app_desc_spec2_to_spec3 | `def test_transform_app_desc_spec2_to_spec3(spec2_data, expected_spec3_data):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -61395,7 +61395,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestCreateDefaultModule | 无 | test_create_default_module | 无 | 无 | 不适用 |
-| BaseCaseWithApps | 无 | _setup_data | 无 | 无 | 不适用 |
+| BaseCaseWithApps | 无 | 无 | 无 | 无 | 不适用 |
 | TestApplicationManager | BaseCaseWithApps | test_filter_by_user_normal, test_filter_by_userremove, test_filter_language, test_active_only, test_search_by_code_or_name, test_filter_by_user, test_filter_by_source_origin | 无 | 无 | 不适用 |
 | TestUserApplication | BaseCaseWithApps | test_filter, test_filter_by_type_ | 无 | 无 | 不适用 |
 
@@ -61462,8 +61462,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| legacy_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| legacy_tag | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| legacy_app | `def legacy_app():` | pytest.fixture | 不适用 |
+| legacy_tag | `def legacy_tag():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -61610,8 +61610,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| proc_web | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| proc_celery | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| proc_web | `def proc_web(bk_module) -> ModuleProcessSpec:` | pytest.fixture | 不适用 |
+| proc_celery | `def proc_celery(bk_module) -> ModuleProcessSpec:` | pytest.fixture | 不适用 |
 
 
 ---
@@ -62074,9 +62074,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| base_manifest | `@pytest.fixture():` | pytest.fixture | A very basic manifest that can pass the validation... |
-| manifest_no_replicas | `@pytest.fixture():` | pytest.fixture | A very basic manifest that can pass the validation... |
-| manifest_replicas_3 | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| base_manifest | `def base_manifest(bk_app):` | pytest.fixture | A very basic manifest that can pass the validation... |
+| manifest_no_replicas | `def manifest_no_replicas(base_manifest):` | pytest.fixture | A very basic manifest that can pass the validation... |
+| manifest_replicas_3 | `def manifest_replicas_3(manifest_no_replicas):` | pytest.fixture | 不适用 |
 | test_import_with_enum_type | `def test_import_with_enum_type(bk_module, base_manifest):` | 无 | test import from bkapp serialize from pydantic |
 
 #### 类
@@ -62125,7 +62125,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| process_web | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| process_web | `def process_web(bk_module) -> ModuleProcessSpec:` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -62213,19 +62213,19 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| blank_resource | `@pytest.fixture():` | pytest.fixture | A blank resource object. |
-| blank_resource_with_processes | `@pytest.fixture():` | pytest.fixture | A resource object have processes spec. |
-| local_service | `@pytest.fixture():` | pytest.fixture | A local service object. |
-| process_web | `@pytest.fixture():` | pytest.fixture | ProcessSpec for web |
-| process_web_overlay | `@pytest.fixture():` | pytest.fixture | An overlay data for web process |
+| blank_resource | `def blank_resource() -> crd.BkAppResource:` | pytest.fixture | A blank resource object. |
+| blank_resource_with_processes | `def blank_resource_with_processes() -> crd.BkAppResource:` | pytest.fixture | A resource object have processes spec. |
+| local_service | `def local_service(bk_app):` | pytest.fixture | A local service object. |
+| process_web | `def process_web(bk_module) -> ModuleProcessSpec:` | pytest.fixture | ProcessSpec for web |
+| process_web_overlay | `def process_web_overlay(process_web) -> ProcessSpecEnvOverlay:` | pytest.fixture | An overlay data for web process |
 | test_get_manifest | `def test_get_manifest(bk_module):` | 无 | 不适用 |
-| test_apply_env_annots | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
-| test_apply_env_annots_with_deploy_id | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
-| test_apply_builtin_env_vars | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
-| test_builtin_env_has_high_priority | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
+| test_apply_env_annots | `def test_apply_env_annots(blank_resource, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
+| test_apply_env_annots_with_deploy_id | `def test_apply_env_annots_with_deploy_id(blank_resource, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
+| test_apply_builtin_env_vars | `def test_apply_builtin_env_vars(blank_resource, bk_stag_env, bk_deployment):` | pytest.mark.usefixtures | 不适用 |
+| test_builtin_env_has_high_priority | `def test_builtin_env_has_high_priority(blank_resource, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
 | test_apply_proc_svc_if_implicit_needed_is_false | `def test_apply_proc_svc_if_implicit_needed_is_false(blank_resource, bk_stag_env):` | 无 | 不适用 |
 | test_apply_proc_svc_if_implicit_needed_is_true | `def test_apply_proc_svc_if_implicit_needed_is_true(blank_resource_with_processes, bk_stag_env):` | 无 | 不适用 |
-| test_apply_egress_annotations | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
+| test_apply_egress_annotations | `def test_apply_egress_annotations(blank_resource, bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
 
 #### 类
 
@@ -62272,7 +62272,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| proc_web | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| proc_web | `def proc_web(bk_module) -> ModuleProcessSpec:` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -62331,9 +62331,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_merge_env_vars | `@pytest.mark.parametrize(('x', 'y', 'strategy', 'z'), [([], [], MergeStrategy.OVERRIDE, []), ([], [EnvVar(name='a', value='a')], MergeStrategy.OVERRIDE, [EnvVar(name='a', value='a')]), ([EnvVar(name='a', value='a')], [], MergeStrategy.OVERRIDE, [EnvVar(name='a', value='a')]), ([EnvVar(name='a', value='a')], [EnvVar(name='a', value='A')], MergeStrategy.OVERRIDE, [EnvVar(name='a', value='A')]), ([EnvVar(name='a', value='a')], [EnvVar(name='a', value='A')], MergeStrategy.IGNORE, [EnvVar(name='a', value='a')]), ([EnvVar(name='a', value='a'), EnvVar(name='b', value='b')], [EnvVar(name='B', value='B'), EnvVar(name='a', value='A')], MergeStrategy.OVERRIDE, [EnvVar(name='a', value='A'), EnvVar(name='b', value='b'), EnvVar(name='B', value='B')])]):` | pytest.mark.parametrize | 不适用 |
-| test_merge_env_vars_overlay | `@pytest.mark.parametrize(('x', 'y', 'strategy', 'z'), [([], [], MergeStrategy.OVERRIDE, []), ([], [EnvVarOverlay(name='a', value='a', envName='stag')], MergeStrategy.OVERRIDE, [EnvVarOverlay(name='a', value='a', envName='stag')]), ([EnvVarOverlay(name='a', value='a', envName='stag')], [], MergeStrategy.OVERRIDE, [EnvVarOverlay(name='a', value='a', envName='stag')]), ([EnvVarOverlay(name='a', value='a', envName='stag')], [EnvVarOverlay(name='a', value='A', envName='stag')], MergeStrategy.OVERRIDE, [EnvVarOverlay(name='a', value='A', envName='stag')]), ([EnvVarOverlay(name='a', value='a', envName='stag')], [EnvVarOverlay(name='a', value='A', envName='stag')], MergeStrategy.IGNORE, [EnvVarOverlay(name='a', value='a', envName='stag')]), ([EnvVarOverlay(name='a', value='a', envName='stag'), EnvVarOverlay(name='b', value='b', envName='stag')], [EnvVarOverlay(name='B', value='B', envName='stag'), EnvVarOverlay(name='a', value='A', envName='stag')], MergeStrategy.OVERRIDE, [EnvVarOverlay(name='a', value='A', envName='stag'), EnvVarOverlay(name='b', value='b', envName='stag'), EnvVarOverlay(name='B', value='B', envName='stag')]), ([EnvVarOverlay(name='a', value='a', envName='stag')], [EnvVarOverlay(name='a', value='A', envName='prod')], MergeStrategy.OVERRIDE, [EnvVarOverlay(name='a', value='a', envName='stag'), EnvVarOverlay(name='a', value='A', envName='prod')])]):` | pytest.mark.parametrize | 不适用 |
-| test_override_env_vars_overlay | `@pytest.mark.parametrize(('x', 'y', 'expected'), [([], [], []), ([], [EnvVarOverlay(name='a', value='a', envName='stag')], []), ([EnvVarOverlay(name='a', value='b', envName='stag')], [EnvVarOverlay(name='a', value='c', envName='stag')], [EnvVarOverlay(name='a', value='c', envName='stag')]), ([EnvVarOverlay(name='a', value='b', envName='stag')], [EnvVarOverlay(name='a', value='c', envName='prod')], [EnvVarOverlay(name='a', value='b', envName='stag')]), ([EnvVarOverlay(name='a', value='b', envName='stag')], [EnvVarOverlay(name='a', value='d', envName='prod'), EnvVarOverlay(name='a', value='dddd', envName='stag')], [EnvVarOverlay(name='a', value='dddd', envName='stag')]), ([EnvVarOverlay(name='a', value='b', envName='stag'), EnvVarOverlay(name='a', value='cccc', envName='prod')], [EnvVarOverlay(name='a', value='d', envName='prod')], [EnvVarOverlay(name='a', value='b', envName='stag'), EnvVarOverlay(name='a', value='d', envName='prod')]), ([EnvVarOverlay(name='a', value='b', envName='stag'), EnvVarOverlay(name='a', value='cccc', envName='prod')], [EnvVarOverlay(name='a', value='d', envName='prod'), EnvVarOverlay(name='b', value='qqq', envName='stag')], [EnvVarOverlay(name='a', value='b', envName='stag'), EnvVarOverlay(name='a', value='d', envName='prod')])]):` | pytest.mark.parametrize | 不适用 |
+| test_merge_env_vars | `def test_merge_env_vars(x, y, strategy, z):` | pytest.mark.parametrize | 不适用 |
+| test_merge_env_vars_overlay | `def test_merge_env_vars_overlay(x, y, strategy, z):` | pytest.mark.parametrize | 不适用 |
+| test_override_env_vars_overlay | `def test_override_env_vars_overlay(x, y, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -62415,7 +62415,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_app_description | `def get_app_description(app_json: Dict) -> ApplicationDesc:` | 无 | A help tool get parse the application json data, d... |
-| tag | `@pytest.fixture(autouse=True):` | pytest.fixture | A tag fixture for testing |
+| tag | `def tag(bk_app):` | pytest.fixture | A tag fixture for testing |
 
 #### 类
 
@@ -62425,7 +62425,7 @@ s-mart(镜像): 'image:镜像 tag'
 | TestAppDeclarativeControllerUpdate | 无 | existed_app, test_without_permission, test_region_modified, test_name_modified, test_normal | 无 | 无 | 不适用 |
 | TestMarketField | 无 | test_creation, test_update_partial | 无 | 无 | 不适用 |
 | TestMarketDisplayOptionsField | 无 | test_creation_omitted, test_update_partial | 无 | 无 | 不适用 |
-| TestServicesField | 无 | _default_services, app_desc, test_creation, test_update_add, test_not_existed_service, test_shared_service, test_shared_service_but_module_not_found | 无 | 无 | 不适用 |
+| TestServicesField | 无 | app_desc, test_creation, test_update_add, test_not_existed_service, test_shared_service, test_shared_service_but_module_not_found | 无 | 无 | 不适用 |
 
 ---
 
@@ -62465,7 +62465,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| tag | `@pytest.fixture(autouse=True):` | pytest.fixture | A tag fixture for testing |
+| tag | `def tag(bk_app):` | pytest.fixture | A tag fixture for testing |
 | get_app_description | `def get_app_description(app_json: Dict) -> ApplicationDesc:` | 无 | A help tool get parse the application json data, d... |
 
 #### 类
@@ -62531,7 +62531,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | get_app_description | `def get_app_description(app_json: Dict) -> ApplicationDesc:` | 无 | A help tool get parse the application json data, d... |
-| tag | `@pytest.fixture(autouse=True):` | pytest.fixture | A tag fixture for testing |
+| tag | `def tag(bk_app):` | pytest.fixture | A tag fixture for testing |
 
 #### 类
 
@@ -62541,7 +62541,7 @@ s-mart(镜像): 'image:镜像 tag'
 | TestAppDeclarativeControllerUpdate | 无 | existed_app, test_without_permission, test_region_modified, test_name_modified, test_normal | 无 | 无 | 不适用 |
 | TestMarketField | 无 | test_creation, test_update_partial | 无 | 无 | 不适用 |
 | TestMarketDisplayOptionsField | 无 | test_creation_omitted, test_update_partial | 无 | 无 | 不适用 |
-| TestServicesField | 无 | _default_services, app_desc, test_creation, test_update_add, test_not_existed_service, test_shared_service, test_shared_service_but_module_not_found | 无 | 无 | 不适用 |
+| TestServicesField | 无 | app_desc, test_creation, test_update_add, test_not_existed_service, test_shared_service, test_shared_service_but_module_not_found | 无 | 无 | 不适用 |
 
 ---
 
@@ -62581,7 +62581,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| tag | `@pytest.fixture(autouse=True):` | pytest.fixture | A tag fixture for testing |
+| tag | `def tag(bk_app):` | pytest.fixture | A tag fixture for testing |
 | get_app_description | `def get_app_description(app_json: Dict) -> ApplicationDesc:` | 无 | A help tool get parse the application json data, d... |
 
 #### 类
@@ -62615,7 +62615,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| one_px_png | `@pytest.fixture():` | pytest.fixture | The binary content of an one pixel png format pict... |
+| one_px_png | `def one_px_png():` | pytest.fixture | The binary content of an one pixel png format pict... |
 
 
 ---
@@ -62995,9 +62995,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| yaml_v1_normal | `@pytest.fixture():` | pytest.fixture | A sample YAML content using v1 spec version. |
-| yaml_v2_normal | `@pytest.fixture():` | pytest.fixture | A sample YAML content using v2 spec version. |
-| yaml_v3_normal | `@pytest.fixture():` | pytest.fixture | A sample YAML content using v3 spec version. |
+| yaml_v1_normal | `def yaml_v1_normal() -> str:` | pytest.fixture | A sample YAML content using v1 spec version. |
+| yaml_v2_normal | `def yaml_v2_normal() -> str:` | pytest.fixture | A sample YAML content using v2 spec version. |
+| yaml_v3_normal | `def yaml_v3_normal() -> str:` | pytest.fixture | A sample YAML content using v3 spec version. |
 | query_proc_dict | `def query_proc_dict(module: Module, deployment: Deployment) -> Dict[str, Tuple[str, int]]:` | 无 | A helper function that queries process specs for c... |
 
 #### 类
@@ -63005,7 +63005,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Test__get_deploy_desc_handler | 无 | test_desc_getter_name, test_unsupported_version | 无 | 无 | Test cases for `get_desc_handler()` function |
-| TestAppDescriptionHandler | 无 | _create_for_test_svc_discovery, test_normal, test_desc_and_procfile_same, test_desc_and_procfile_different, test_procfile_only, test_invalid_desc_and_valid_procfile, test_with_modules_found, test_with_modules_not_found, test_with_modules_not_found_fallback_to_module, test_with_module, test_with_module_and_modules_missing | 无 | 无 | 不适用 |
+| TestAppDescriptionHandler | 无 | test_normal, test_desc_and_procfile_same, test_desc_and_procfile_different, test_procfile_only, test_invalid_desc_and_valid_procfile, test_with_modules_found, test_with_modules_not_found, test_with_modules_not_found_fallback_to_module, test_with_module, test_with_module_and_modules_missing | 无 | 无 | 不适用 |
 
 ---
 
@@ -63038,8 +63038,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| yaml_content | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| yaml_content_after_change | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| yaml_content | `def yaml_content():` | pytest.fixture | 不适用 |
+| yaml_content_after_change | `def yaml_content_after_change():` | pytest.fixture | 不适用 |
 | get_handler | `def get_handler(yaml_content: str):` | 无 | 不适用 |
 
 #### 类
@@ -63137,7 +63137,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| yaml_v3_example | `@pytest.fixture():` | pytest.fixture | An example of YAML content using v3 spec version. |
+| yaml_v3_example | `def yaml_v3_example() -> str:` | pytest.fixture | An example of YAML content using v3 spec version. |
 | query_proc_dict | `def query_proc_dict(module: Module) -> Dict[str, Tuple[str, int]]:` | 无 | A helper function to query module's all process sp... |
 
 #### 类
@@ -63178,8 +63178,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| yaml_content | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| yaml_content_after_change | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| yaml_content | `def yaml_content():` | pytest.fixture | 不适用 |
+| yaml_content_after_change | `def yaml_content_after_change():` | pytest.fixture | 不适用 |
 | get_handler | `def get_handler(yaml_content: str):` | 无 | 不适用 |
 
 #### 类
@@ -63341,13 +63341,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_generate_wl_builtin_env_vars | `@pytest.mark.usefixtures('_with_wl_apps'):` | pytest.mark.usefixtures | 不适用 |
+| test_generate_wl_builtin_env_vars | `def test_generate_wl_builtin_env_vars(bk_stag_env):` | pytest.mark.usefixtures | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestGetEnvVariables | 无 | _create_for_test_svc_discovery, test_param_include_config_vars, test_builtin_id_and_secret, test_wl_vars_exists, test_part_declarative, test_part_saas_services | 无 | pytest.mark.usefixtures | 不适用 |
+| TestGetEnvVariables | 无 | test_param_include_config_vars, test_builtin_id_and_secret, test_wl_vars_exists, test_part_declarative, test_part_saas_services | 无 | pytest.mark.usefixtures | 不适用 |
 | TestBuiltInEnvVars | 无 | test_bk_platform_envs, test_builtin_env_keys, test_param_include_custom_builtin_config_vars | 无 | pytest.mark.usefixtures | 不适用 |
 
 ---
@@ -63387,7 +63387,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| version | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| version | `def version():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -63432,7 +63432,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestAppDefaultSubpaths | 无 | _setup, legacy_sub_path_app, sub_path_key, default_subpath_key, legacy_style_sub_path, normal_style_sub_path, test_as_env, test_get_env_variables, test_sync | 无 | 无 | 不适用 |
+| TestAppDefaultSubpaths | 无 | legacy_sub_path_app, sub_path_key, default_subpath_key, legacy_style_sub_path, normal_style_sub_path, test_as_env, test_get_env_variables, test_sync | 无 | 无 | 不适用 |
 | TestAppDefaultDomains | 无 | test_sync | 无 | 无 | 不适用 |
 
 ---
@@ -63493,8 +63493,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| wl_app | `@pytest.fixture():` | pytest.fixture | A WlApp object |
-| build_proc | `@pytest.fixture():` | pytest.fixture | A new BuildProcess object with random info |
+| wl_app | `def wl_app(bk_stag_env, _with_wl_apps) -> WlApp:` | pytest.fixture | A WlApp object |
+| build_proc | `def build_proc(wl_app) -> BuildProcess:` | pytest.fixture | A new BuildProcess object with random info |
 
 
 ---
@@ -63565,7 +63565,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestDefaultBuildProcessExecutor | 无 | test_create_and_bind_build_instance, test_execute | 无 | 无 | 不适用 |
-| StubBkCIPipelineClient | 无 | __init__, start_build, retrieve_build_status, retrieve_full_log | 无 | 无 | 不适用 |
+| StubBkCIPipelineClient | 无 | start_build, retrieve_build_status, retrieve_full_log | 无 | 无 | 不适用 |
 | TestPipelineBuildProcessExecutor | 无 | test_execute, test_build_env_vars_params | 无 | 无 | 不适用 |
 
 ---
@@ -63672,7 +63672,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestPreReleaseDummyExecutor | 无 | _setup_wl_app, test_start | 无 | 无 | 不适用 |
+| TestPreReleaseDummyExecutor | 无 | test_start | 无 | 无 | 不适用 |
 
 ---
 
@@ -63721,9 +63721,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestNormalApp | 无 | _mock_get_app_yaml, test_failed_when_parsing_processes, test_failed_when_upload_source, test_start_normal | 无 | pytest.mark.usefixtures, pytest.mark.parametrize | Tests for ApplicationBuilder |
+| TestNormalApp | 无 | test_failed_when_parsing_processes, test_failed_when_upload_source, test_start_normal | 无 | pytest.mark.usefixtures, pytest.mark.parametrize | Tests for ApplicationBuilder |
 | TestCloudNative | 无 | model_resource, test_start_build | 无 | pytest.mark.django_db, pytest.mark.parametrize | 不适用 |
-| TestBuildProcessResultHandler | 无 | _auto_binding_phases, deployment, test_failed, test_succeeded | 无 | 无 | Tests for BuildProcessResultHandler |
+| TestBuildProcessResultHandler | 无 | deployment, test_failed, test_succeeded | 无 | 无 | Tests for BuildProcessResultHandler |
 
 ---
 
@@ -63839,7 +63839,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestApplicationPreReleaseExecutor | 无 | _setup_hook, _setup_hook_disable, _setup_empty_command_hook, hook, test_hook_not_found | 无 | 无 | 不适用 |
+| TestApplicationPreReleaseExecutor | 无 | hook, test_hook_not_found | 无 | 无 | 不适用 |
 
 ---
 
@@ -63990,7 +63990,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestDeployStepPicker | 无 | _setup_slugbuilder, runtime_binder, make_step_meta_set, test_pick, test_pick_no_runtime | 无 | 无 | 测试 DeployStep |
+| TestDeployStepPicker | 无 | runtime_binder, make_step_meta_set, test_pick, test_pick_no_runtime | 无 | 无 | 测试 DeployStep |
 | TestUpdateStepByLine | 无 | phase_factory, test_match_and_update | 无 | 无 | Test update_step_by_line function |
 
 ---
@@ -64017,8 +64017,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| instance | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| process | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| instance | `def instance():` | pytest.fixture | 不适用 |
+| process | `def process(instance):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -64087,7 +64087,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| process | `@pytest.fixture():` | pytest.fixture | A Process object |
+| process | `def process():` | pytest.fixture | A Process object |
 
 #### 类
 
@@ -64143,8 +64143,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| metadata | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| poller_mocker | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| metadata | `def metadata():` | pytest.fixture | 不适用 |
+| poller_mocker | `def poller_mocker():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -64229,10 +64229,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| config_var_maker | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| dest_module | `@pytest.fixture():` | pytest.fixture | Return another module if current application fixtu... |
-| dest_prod_env | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| random_config_var_maker | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| config_var_maker | `def config_var_maker():` | pytest.fixture | 不适用 |
+| dest_module | `def dest_module(bk_app):` | pytest.fixture | Return another module if current application fixtu... |
+| dest_prod_env | `def dest_prod_env(dest_module):` | pytest.fixture | 不适用 |
+| random_config_var_maker | `def random_config_var_maker():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -64418,7 +64418,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| bk_deployment | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| bk_deployment | `def bk_deployment(bk_module):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -64594,7 +64594,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TestGetSourcePackagePath | 无 | test_for_svn, test_for_git | 无 | 无 | Test get_source_package_path() |
-| TestDownloadSourceToDir | 无 | _mocked_ctl, make_deploy_desc, test_no_patch_performed_if_process_empty, test_add_procfile | 无 | pytest.mark.usefixtures | Test download_source_to_dir() |
+| TestDownloadSourceToDir | 无 | make_deploy_desc, test_no_patch_performed_if_process_empty, test_add_procfile | 无 | pytest.mark.usefixtures | Test download_source_to_dir() |
 | TestCheckSourcePackage | 无 | test_normal, test_big_package | 无 | 无 | Test check_source_package() |
 | Test__get_source_dir | 无 | test_s_mart_desc_found, test_s_mart_desc_not_found | version_info | 无 | 不适用 |
 
@@ -64717,7 +64717,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| git_client | `@pytest.fixture():` | pytest.fixture | A fixture used to mock Git repo dependency |
+| git_client | `def git_client(bk_module):` | pytest.fixture | A fixture used to mock Git repo dependency |
 
 #### 类
 
@@ -64802,15 +64802,15 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| migration_process | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| rollback_process | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| image_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| cnb_image_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| buildpack | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugbuilder | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugrunner | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| cnb_builder | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| cnb_runner | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| migration_process | `def migration_process(bk_app):` | pytest.fixture | 不适用 |
+| rollback_process | `def rollback_process(bk_app):` | pytest.fixture | 不适用 |
+| image_name | `def image_name():` | pytest.fixture | 不适用 |
+| cnb_image_name | `def cnb_image_name():` | pytest.fixture | 不适用 |
+| buildpack | `def buildpack(bk_module):` | pytest.fixture | 不适用 |
+| slugbuilder | `def slugbuilder(bk_module, buildpack, image_name):` | pytest.fixture | 不适用 |
+| slugrunner | `def slugrunner(bk_module, buildpack, image_name):` | pytest.fixture | 不适用 |
+| cnb_builder | `def cnb_builder(bk_module, buildpack, cnb_image_name):` | pytest.fixture | 不适用 |
+| cnb_runner | `def cnb_runner(bk_module, cnb_image_name):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -64851,7 +64851,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestMigrateAndRollback | 无 | _init_build_config, test_migrate_and_rollback, test_migrate_failed | 无 | 无 | 不适用 |
+| TestMigrateAndRollback | 无 | test_migrate_and_rollback, test_migrate_failed | 无 | 无 | 不适用 |
 
 ---
 
@@ -64899,8 +64899,8 @@ s-mart(镜像): 'image:镜像 tag'
 |------|------|------|------|--------|----------|
 | TestWlAppBackupMigrator | 无 | test_migrate_and_rollback | 无 | 无 | 不适用 |
 | TestApplicationTypeMigrator | 无 | test_migrate_and_rollback | 无 | 无 | 不适用 |
-| TestApplicationClusterMigrator | 无 | _migrate_app_type, test_migrate_and_rollback | 无 | 无 | 不适用 |
-| TestBuildConfigMigrator | 无 | _init_build_config, _migrate_app_type, image_repository_module, test_migrate_and_rollback | 无 | 无 | 不适用 |
+| TestApplicationClusterMigrator | 无 | test_migrate_and_rollback | 无 | 无 | 不适用 |
+| TestBuildConfigMigrator | 无 | image_repository_module, test_migrate_and_rollback | 无 | 无 | 不适用 |
 
 ---
 
@@ -64965,9 +64965,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | pytest_collection_modifyitems | `def pytest_collection_modifyitems(config, items):` | 无 | 不适用 |
-| migration_instance_maker | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| svc_config | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| store | `@pytest.fixture():` | pytest.fixture | Mocked Store |
+| migration_instance_maker | `def migration_instance_maker(bk_app, legacy_app_code):` | pytest.fixture | 不适用 |
+| svc_config | `def svc_config():` | pytest.fixture | 不适用 |
+| store | `def store():` | pytest.fixture | Mocked Store |
 
 
 ---
@@ -65058,8 +65058,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseMigrationTest | 无 | migration, context, pre_migrations, _auto_migrate_and_rollback | MIGRATION_CLS | pytest.mark.usefixtures | Base class for testing migration-related functiona... |
-| TestBaseMigration | BaseMigrationTest | _setup, test_set_log, test_update_ongoing, test_add_log, test_migrate_success, test_migrate_exception, test_rollback_success, test_rollback_exception | MIGRATION_CLS | 无 | 不适用 |
+| BaseMigrationTest | 无 | migration, context, pre_migrations | MIGRATION_CLS | pytest.mark.usefixtures | Base class for testing migration-related functiona... |
+| TestBaseMigration | BaseMigrationTest | test_set_log, test_update_ongoing, test_add_log, test_migrate_success, test_migrate_exception, test_rollback_success, test_rollback_exception | MIGRATION_CLS | 无 | 不适用 |
 | TestBaseObjectMigration | BaseMigrationTest | test_migrate, test_rollback | MIGRATION_CLS | 无 | 不适用 |
 | TestMainInfoMigration | BaseMigrationTest | test_migrate, test_rollback | MIGRATION_CLS, PRECONDITION_MIGRATION_CLS | 无 | 不适用 |
 | TestSourceControlMigration | BaseMigrationTest | test_migrate, test_rollback | MIGRATION_CLS, PRECONDITION_MIGRATION_CLS | 无 | 不适用 |
@@ -65155,7 +65155,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| global_mock | `@contextmanager:` | contextmanager | 不适用 |
+| global_mock | `def global_mock(context: MigrationContext):` | contextmanager | 不适用 |
 | get_legacy_app | `def get_legacy_app(session, code='test'):` | 无 | 不适用 |
 | get_migration_instance | `def get_migration_instance(migration_cls: Type[BaseMigration]) -> BaseMigration:` | 无 | 不适用 |
 
@@ -65187,10 +65187,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| image_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| buildpack | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugbuilder | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| slugrunner | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| image_name | `def image_name():` | pytest.fixture | 不适用 |
+| buildpack | `def buildpack(bk_module):` | pytest.fixture | 不适用 |
+| slugbuilder | `def slugbuilder(bk_module, buildpack, image_name):` | pytest.fixture | 不适用 |
+| slugrunner | `def slugrunner(bk_module, image_name):` | pytest.fixture | 不适用 |
 
 
 ---
@@ -65223,7 +65223,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestDeployConfig | 无 | command, _setup, test_add_hook, test_disable_hook, test_upsert | 无 | 无 | 不适用 |
+| TestDeployConfig | 无 | command, test_add_hook, test_disable_hook, test_upsert | 无 | 无 | 不适用 |
 
 ---
 
@@ -65261,11 +65261,11 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_bind_image | `@pytest.mark.parametrize(('slugbuilder_attrs', 'slugrunner_attrs', 'ok'), [(dict(name=generate_random_string(12)), dict(name=generate_random_string(16)), False), (dict(region=generate_random_string()), dict(), False), (dict(), dict(region=generate_random_string()), False), (dict(), dict(), True)]):` | pytest.mark.parametrize | 不适用 |
-| test_bind_buildpack | `@pytest.mark.parametrize(('slugbuilder_attrs', 'buildpack_attrs', 'linked', 'ok'), [(dict(name=generate_random_string(12)), dict(name=generate_random_string(16)), False, False), (dict(region=generate_random_string()), dict(), False, False), (dict(), dict(region=generate_random_string()), False, False), (dict(name=generate_random_string(12)), dict(name=generate_random_string(16)), True, True), (dict(region=generate_random_string()), dict(), True, False), (dict(), dict(region=generate_random_string()), True, False), (dict(), dict(), True, True)]):` | pytest.mark.parametrize | 不适用 |
+| test_bind_image | `def test_bind_image(bk_module, slugbuilder, slugrunner, slugbuilder_attrs, slugrunner_attrs, ok):` | pytest.mark.parametrize | 不适用 |
+| test_bind_buildpack | `def test_bind_buildpack(bk_module, slugbuilder, slugrunner, buildpack, slugbuilder_attrs, buildpack_attrs, linked, ok):` | pytest.mark.parametrize | 不适用 |
 | test_get_module_clusters | `def test_get_module_clusters(bk_module):` | 无 | 不适用 |
 | test_get_module_clusters_engineless | `def test_get_module_clusters_engineless(bk_module):` | 无 | 不适用 |
-| test_get_module_prod_env_root_domains | `@pytest.mark.parametrize(('exposed_url_type', 'ingress_config', 'include_reserved', 'expected_domains'), [(ExposedURLType.SUBDOMAIN, {'app_root_domains': [{'name': 'foo.com'}, {'name': 'bar.com'}]}, False, [Domain('foo.com'), Domain('bar.com')]), (ExposedURLType.SUBDOMAIN, {'app_root_domains': [{'name': 'foo.com'}, {'name': 'bar.com', 'reserved': True}]}, False, [Domain('foo.com')]), (ExposedURLType.SUBDOMAIN, {'app_root_domains': [{'name': 'foo.com'}, {'name': 'bar.com', 'reserved': True}]}, True, [Domain('foo.com'), Domain('bar.com', reserved=True)]), (ExposedURLType.SUBPATH, {'sub_path_domains': [{'name': 'foo.com'}, {'name': 'bar.com'}]}, False, [Domain('foo.com'), Domain('bar.com')])]):` | pytest.mark.parametrize | 不适用 |
+| test_get_module_prod_env_root_domains | `def test_get_module_prod_env_root_domains(bk_module, exposed_url_type, ingress_config, include_reserved, expected_domains):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -65315,7 +65315,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| raw_module | `@pytest.fixture():` | pytest.fixture | Raw application and module objects without initial... |
+| raw_module | `def raw_module(bk_user) -> Module:` | pytest.fixture | Raw application and module objects without initial... |
 
 #### 类
 
@@ -65509,7 +65509,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestSceneAPPInitializer | 无 | _setup, test_normal | 无 | 无 | 不适用 |
+| TestSceneAPPInitializer | 无 | test_normal | 无 | 无 | 不适用 |
 
 ---
 
@@ -65539,9 +65539,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| contents | `@pytest.fixture():` | pytest.fixture | The default contents for making tar file. |
-| tar_path | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| assets_rootpath | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| contents | `def contents() -> Dict:` | pytest.fixture | The default contents for making tar file. |
+| tar_path | `def tar_path(contents):` | pytest.fixture | 不适用 |
+| assets_rootpath | `def assets_rootpath():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -65623,12 +65623,12 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_adapter | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| image_manifest_content | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| image_config_content | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_adapter | `def mock_adapter():` | pytest.fixture | 不适用 |
+| image_manifest_content | `def image_manifest_content():` | pytest.fixture | 不适用 |
+| image_config_content | `def image_config_content():` | pytest.fixture | 不适用 |
 | test_dispatch_slug_image_to_registry | `def test_dispatch_slug_image_to_registry(bk_module, bk_user, assets_rootpath, mock_adapter, image_manifest_content, image_config_content):` | 无 | 测试将 slug runner 镜像分发到 registry, 涉及多次网络请求, 要保证顺序正确。... |
 | test_dispatch_cnb_image_to_registry | `def test_dispatch_cnb_image_to_registry(bk_module, bk_user, assets_rootpath, mock_adapter, image_manifest_content, image_config_content):` | 无 | 测试将 slug runner 镜像分发到 registry, 涉及多次网络请求, 要保证顺序正确。... |
-| test_dispatch_package_to_modules | `@pytest.mark.parametrize(('package_path', 'dispatcher_uri'), [('cnb-image', 'paasng.platform.smart_app.services.dispatch.dispatch_cnb_image_to_registry'), ('slugrunner-image', 'paasng.platform.smart_app.services.dispatch.dispatch_slug_image_to_registry')]):` | pytest.mark.parametrize | 测试根据 s-mart 包结构选择不同的 dispatcher |
+| test_dispatch_package_to_modules | `def test_dispatch_package_to_modules(bk_app, bk_module, bk_user, assets_rootpath, package_path, dispatcher_uri):` | pytest.mark.parametrize | 测试根据 s-mart 包结构选择不同的 dispatcher |
 
 
 ---
@@ -65701,7 +65701,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | MockResponse | 无 | 无 | 无 | define | 不适用 |
-| MockAdapter | requests.adapters.BaseAdapter | __init__, send, close, register, _find_response | 无 | 无 | 不适用 |
+| MockAdapter | requests.adapters.BaseAdapter | send, close, register | 无 | 无 | 不适用 |
 
 ---
 
@@ -65721,9 +65721,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| gitlab_repo_url | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| github_repo_url | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| gitee_repo_url | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| gitlab_repo_url | `def gitlab_repo_url():` | pytest.fixture | 不适用 |
+| github_repo_url | `def github_repo_url():` | pytest.fixture | 不适用 |
+| gitee_repo_url | `def gitee_repo_url():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -65818,7 +65818,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_adapter | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_adapter | `def mock_adapter():` | pytest.fixture | 不适用 |
 
 
 ---
@@ -65914,7 +65914,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| package_module | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| package_module | `def package_module(bk_module):` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -65947,7 +65947,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_download_file_via_http | `@pytest.mark.parametrize('content', [b'foo\n', b'bar\n', b'foo\nbar\n']):` | pytest.mark.parametrize | 不适用 |
+| test_download_file_via_http | `def test_download_file_via_http(mock_adapter, content):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66006,7 +66006,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_generate_storage_path | `@pytest.mark.parametrize(('stat', 'package_name'), [(SPStat(name='name', version='v1', size=1, meta_info={}, sha256_signature='signature'), 'v1:signature:name'), (SPStat(name='name.tar', version='v2', size=1, meta_info={}, sha256_signature='signature'), 'v2:signature:name.tar')]):` | pytest.mark.parametrize | 不适用 |
+| test_generate_storage_path | `def test_generate_storage_path(bk_module, stat, package_name):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66041,7 +66041,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_app_description | `@pytest.mark.parametrize(('meta_info', 'is_valid', 'name_in_desc'), [({}, False, None), ({'app_name': '阿尔法'}, False, None), ({'spec_version': 2, 'app_version': '0.0.1', 'app': {'bk_app_code': 'foo', 'bk_app_name': '阿尔法', 'bk_app_name_en': 'alpha'}, 'modules': {'default': {'is_default': True, 'language': 'python'}}}, True, gettext_lazy({'zh-cn': '阿尔法', 'en': 'alpha'}))]):` | pytest.mark.parametrize | 不适用 |
+| test_get_app_description | `def test_get_app_description(meta_info, is_valid, name_in_desc):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66076,7 +66076,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | ensure_parent_exists | `def ensure_parent_exists(path: Path):` | 无 | 不适用 |
-| dump_contents_to_fs | `@contextmanager:` | contextmanager | a helper to dumps contents fo file-system
+| dump_contents_to_fs | `def dump_contents_to_fs(contents: Dict[str, Union[str, bytes]] | None = None, symbolic_links: Dict[str, str] | None = None):` | contextmanager | a helper to dumps contents fo file-system
 
     :pa... |
 | gen_tar | `def gen_tar(target_path, contents: Dict[str, Union[str, bytes]] | None = None, symbolic_links: Dict[str, str] | None = None):` | 无 | 不适用 |
@@ -66086,7 +66086,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MockAdapter | requests.adapters.BaseAdapter | __init__, send, close, register, close_fh | 无 | 无 | 不适用 |
+| MockAdapter | requests.adapters.BaseAdapter | send, close, register, close_fh | 无 | 无 | 不适用 |
 
 ---
 
@@ -66113,7 +66113,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| server_config_factory | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| server_config_factory | `def server_config_factory():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -66273,9 +66273,9 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | git_project_maker | `def git_project_maker(url, sourcectl_type='dummy'):` | 无 | 不适用 |
-| test_git_alias_name | `@pytest.mark.parametrize(('repo_url', 'expected'), [('https://foo.com/bar/baz/qux', 'bar/baz/qux'), ('https://foo.com/bar/baz/qux.git', 'bar/baz/qux')]):` | pytest.mark.parametrize | 不适用 |
-| test_store_package | `@pytest.mark.parametrize('policy', [SPStoragePolicy(engine='foo', path='bar', url='scheme://bucket/bar', stat=SPStat(name='name', version='v1', size=1, meta_info={}, sha256_signature='signature'))]):` | pytest.mark.parametrize, pytest.mark.django_db | 不适用 |
-| test_overwrite_package | `@pytest.mark.parametrize(('policy', 'raised'), [(SPStoragePolicy(engine='foo', path='bar', url='scheme://bucket/bar', stat=SPStat(name='name', version='v1', size=1, meta_info={}, sha256_signature='signature')), True), (SPStoragePolicy(engine='foo', path='bar', url='scheme://bucket/bar', stat=SPStat(name='name', version='v1', size=1, meta_info={}, sha256_signature='signature'), allow_overwrite=True), False)]):` | pytest.mark.parametrize, pytest.mark.django_db | 不适用 |
+| test_git_alias_name | `def test_git_alias_name(repo_url, expected):` | pytest.mark.parametrize | 不适用 |
+| test_store_package | `def test_store_package(bk_module, bk_user, policy):` | pytest.mark.parametrize, pytest.mark.django_db | 不适用 |
+| test_overwrite_package | `def test_overwrite_package(bk_user, bk_module, policy, raised):` | pytest.mark.parametrize, pytest.mark.django_db | 不适用 |
 
 #### 类
 
@@ -66354,10 +66354,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| server_config_with_region | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| oauth_credentials | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| oauth_display_info | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| partial_oauth_display_info | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| server_config_with_region | `def server_config_with_region():` | pytest.fixture | 不适用 |
+| oauth_credentials | `def oauth_credentials():` | pytest.fixture | 不适用 |
+| oauth_display_info | `def oauth_display_info():` | pytest.fixture | 不适用 |
+| partial_oauth_display_info | `def partial_oauth_display_info():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -66414,7 +66414,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| mock_gitlab_client | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| mock_gitlab_client | `def mock_gitlab_client():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -66508,7 +66508,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_validate_image_url | `@pytest.mark.parametrize(('url', 'repo_info'), [pytest.param('127.0.0.1:5000/library/python', {'DEFAULT_REGISTRY': '127.0.0.1:5001/library/python', 'ALLOW_THIRD_PARTY_REGISTRY': False}, marks=pytest.mark.xfail), ('127.0.0.1:5000/library/python', {'DEFAULT_REGISTRY': '127.0.0.1:5000', 'ALLOW_THIRD_PARTY_REGISTRY': True})]):` | pytest.mark.parametrize | 不适用 |
+| test_validate_image_url | `def test_validate_image_url(url, repo_info):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66540,13 +66540,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| fake_good_client | `@pytest.fixture():` | pytest.fixture | Make a fake client which produce successful result |
-| fake_bad_client | `@pytest.fixture():` | pytest.fixture | Make a fake client which produce failed result |
-| bk_token | `@pytest.fixture():` | pytest.fixture | user login cookie value |
-| bk_appid | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_code | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_app_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| bk_module_name | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| fake_good_client | `def fake_good_client():` | pytest.fixture | Make a fake client which produce successful result |
+| fake_bad_client | `def fake_bad_client():` | pytest.fixture | Make a fake client which produce failed result |
+| bk_token | `def bk_token():` | pytest.fixture | user login cookie value |
+| bk_appid | `def bk_appid():` | pytest.fixture | 不适用 |
+| bk_app_code | `def bk_app_code():` | pytest.fixture | 不适用 |
+| bk_app_name | `def bk_app_name():` | pytest.fixture | 不适用 |
+| bk_module_name | `def bk_module_name():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -66579,8 +66579,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| indexes | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_filter_indexes_by_time_range | `@pytest.mark.parametrize(('time_range', 'expected'), [(SmartTimeRange(time_range='customized', start_time=arrow.get('2021-10-05').datetime, end_time=arrow.get('2021-10-11').datetime), []), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-05').datetime, end_time=arrow.get('2022-10-11').datetime), ['k8s_app_log_-2022.10.10', 'k8s_app_log_-2022.10.11']), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-05').datetime, end_time=arrow.get('2022-10-10').datetime), ['k8s_app_log_-2022.10.10']), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-05').datetime, end_time=arrow.get('2023-05-10').datetime), ['k8s_app_log_-2022.10.10', 'k8s_app_log_-2022.10.11']), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-05').datetime, end_time=arrow.get('2023-05-21').datetime), ['k8s_app_log_-2022.10.10', 'k8s_app_log_-2022.10.11', 'k8s_app_log_-2023.05.11']), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-11 02:00:00+00:00').datetime, end_time=arrow.get('2022-10-11 03:00:00+00:00').datetime), ['k8s_app_log_-2022.10.11']), (SmartTimeRange(time_range='customized', start_time=arrow.get('2022-10-11 02:00:00+03:00').datetime, end_time=arrow.get('2022-10-11 03:00:00+00:00').datetime), ['k8s_app_log_-2022.10.10', 'k8s_app_log_-2022.10.11'])]):` | pytest.mark.parametrize | 不适用 |
+| indexes | `def indexes():` | pytest.fixture | 不适用 |
+| test_filter_indexes_by_time_range | `def test_filter_indexes_by_time_range(indexes, time_range, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66616,10 +66616,10 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_format_timestamp | `@pytest.mark.parametrize(('value', 'input_format', 'expected'), [(1000, 'timestamp[s]', 1000), (1000, 'timestamp[ns]', 1), (datetime.datetime(1970, 1, 1), 'datetime', 0), (datetime.datetime(1970, 1, 1).replace(tzinfo=pytz.timezone('UTC')), 'datetime', 0), (datetime.datetime(1970, 1, 1).replace(tzinfo=pytz.timezone('Asia/Shanghai')), 'datetime', -28800)]):` | pytest.mark.parametrize | 不适用 |
-| test_count_filters_options | `@pytest.mark.parametrize(('logs', 'filters', 'expected'), [([{'log': 'xxx'}, {'log': 'yyy'}, {'log': 'xxx'}, {'log': 'yyy'}], {'log': FieldFilter(name='log', key='log.keyword'), 'noise': FieldFilter(name='noise', key='noise')}, [FieldFilter(name='log', key='log.keyword', options=[('xxx', '50.00%'), ('yyy', '50.00%')], total=4)]), ([{'nested': {'log': 'x'}}, {'nested': {'log': 'y'}}, {'nested': {'log': 'y'}}, {'nested': {'log': 'x'}}, {'nested': {'...': '...'}}], {'nested.log': FieldFilter(name='nested.log', key='nested.log')}, [FieldFilter(name='nested.log', key='nested.log', options=[('x', '50.00%'), ('y', '50.00%')], total=4)])]):` | pytest.mark.parametrize | 不适用 |
-| test_flatten_structure | `@pytest.mark.parametrize(('structured_fields', 'parent', 'expected_output'), [({}, None, {}), ({'foo': 'bar'}, None, {'foo': 'bar'}), ({'foo': {'bar': 'baz'}}, None, {'foo.bar': 'baz'}), ({'foo': {'bar': 'baz'}}, 'parent', {'parent.foo.bar': 'baz'}), ({}, 'parent', {}), ({'foo': {'bar': 'baz'}, 'qux': 'quux'}, None, {'foo.bar': 'baz', 'qux': 'quux'}), ({'foo': {'bar': 'baz'}, 'qux': 'quux'}, 'parent', {'parent.foo.bar': 'baz', 'parent.qux': 'quux'}), ({'foo': {'bar': {'baz': 'qux'}}}, None, {'foo.bar.baz': 'qux'}), ({'foo': {'bar': {'baz': 'qux'}}}, 'parent', {'parent.foo.bar.baz': 'qux'}), ({'foo': {'bar': {'baz': 'qux', 'quux': 'corge'}}}, 'parent', {'parent.foo.bar.baz': 'qux', 'parent.foo.bar.quux': 'corge'})]):` | pytest.mark.parametrize | 不适用 |
-| test_extra_field | `@pytest.mark.parametrize(('extra_fields', 'data', 'expected'), [({'plugin_code': extra_field('app_code')}, _build_extra_data({'app_code': 'foo'}), _build_expected({'plugin_code': 'foo'})), ({'plugin_code': extra_field('app_code', converter=converters.optional(str))}, _build_extra_data({'app_code': 1}), _build_expected({'plugin_code': '1'})), ({'plugin_code': extra_field('app_code', converter=converters.optional(str))}, _build_extra_data({'app_code': None}), _build_expected({'plugin_code': None})), ({'plugin_code': extra_field(lambda raw: raw['???????????'], converter=converters.optional(str))}, _build_extra_data({'???????????': 0}), _build_expected({'plugin_code': '0'}))]):` | pytest.mark.parametrize | 不适用 |
+| test_format_timestamp | `def test_format_timestamp(value, input_format, expected):` | pytest.mark.parametrize | 不适用 |
+| test_count_filters_options | `def test_count_filters_options(logs, filters, expected):` | pytest.mark.parametrize | 不适用 |
+| test_flatten_structure | `def test_flatten_structure(structured_fields, parent, expected_output):` | pytest.mark.parametrize | 不适用 |
+| test_extra_field | `def test_extra_field(extra_fields, data, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66648,7 +66648,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_epoch_milliseconds | `@pytest.mark.parametrize(('dt', 'ignore_timezone', 'expected'), [(datetime.datetime(2023, 4, 20, 15, 40, 51, 997557), True, 1682005251997), (datetime.datetime(2023, 4, 20, 15, 40, 51, 997557), False, 1682005251997), (datetime.datetime(2023, 4, 20, 15, 40, 51, 997557, tzinfo=datetime.timezone(datetime.timedelta(hours=1))), True, 1682005251997), (datetime.datetime(2023, 4, 20, 15, 40, 51, 997557, tzinfo=datetime.timezone(datetime.timedelta(hours=1))), False, 1682005251997 - 3600 * 1000), (datetime.datetime(2023, 4, 20, 15, 40, 51, 997557, tzinfo=datetime.timezone(datetime.timedelta(hours=-1))), True, 1682005251997), (datetime.datetime(2023, 4, 20, 15, 40, 51, 997557, tzinfo=datetime.timezone(datetime.timedelta(hours=-1))), False, 1682005251997 + 3600 * 1000)]):` | pytest.mark.parametrize | 不适用 |
+| test_get_epoch_milliseconds | `def test_get_epoch_milliseconds(dt, ignore_timezone, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -66722,8 +66722,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| serializer_class | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| i18n_serializer_class | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| serializer_class | `def serializer_class():` | pytest.fixture | 不适用 |
+| i18n_serializer_class | `def i18n_serializer_class():` | pytest.fixture | 不适用 |
 
 #### 类
 
@@ -66761,7 +66761,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_first_true | `@pytest.mark.parametrize(('data', 'default', 'ret'), [([None, 'foo'], None, 'foo'), ([None, ''], None, None), ([None, ()], 'bar', 'bar')]):` | pytest.mark.parametrize | 不适用 |
+| test_first_true | `def test_first_true(data, default, ret):` | pytest.mark.parametrize | 不适用 |
 | test_unique_id_generator | `def test_unique_id_generator():` | 无 | 不适用 |
 
 
@@ -66799,9 +66799,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_detect_default_blob_store | `@pytest.mark.parametrize(('settings', 'expected'), [(dict(**S3_CONFIG, BLOBSTORE_BKREPO_CONFIG=BKREPO_CONFIG), 'bkrepo'), (dict(**S3_CONFIG, BLOBSTORE_BKREPO_CONFIG={}), 's3')]):` | pytest.mark.parametrize | 不适用 |
-| test_make_blob_store_env | `@pytest.mark.parametrize(('settings', 'expected'), [(dict(BLOBSTORE_BUCKET_APP_SOURCE='dummy-bucket', BLOBSTORE_BKREPO_CONFIG=BKREPO_CONFIG), {'BKREPO_CONF': json.dumps(dict(endpoint='dummy://dummy.dummy/generic/', project='dummy-project', bucket='dummy-bucket', user='dummy-username', password='dummy-password'))}), (dict(**S3_CONFIG, BLOBSTORE_BKREPO_CONFIG={}), {'S3CMD_CONF': generate_s3cmd_conf(endpoint='dummy://dummy.com', access_key='dummy-access-key', secret_key='dummy-secret-key', region_name='dummy-region', sig_version='s3v4')}), (dict(**S3_CONFIG, BLOBSTORE_BUCKET_APP_SOURCE='dummy-bucket', BLOBSTORE_BKREPO_CONFIG=BKREPO_CONFIG), {'BKREPO_CONF': json.dumps(dict(endpoint='dummy://dummy.dummy/generic/', project='dummy-project', bucket='dummy-bucket', user='dummy-username', password='dummy-password'))})]):` | pytest.mark.parametrize | 不适用 |
-| test_make_blob_store_encrypt_env | `@pytest.mark.parametrize(('settings', 'expected'), [(dict(**S3_CONFIG, BLOBSTORE_BUCKET_APP_SOURCE='dummy-bucket', BLOBSTORE_BKREPO_CONFIG=BKREPO_CONFIG), ['BKREPO_CONF', '{\\"endpoint\\": \\"dummy://dummy\\.dummy/generic/\\", \\"project\\": \\"dummy-project\\", \\"bucket\\": \\"dummy-bucket\\", \\"user\\": \\"dummy-username\\", \\"password\\": \\"gAAAAAB.+\\"}']), (dict(**S3_CONFIG, BLOBSTORE_BKREPO_CONFIG={}), ['S3CMD_CONF', '# Setup endpoint\nhost_base = dummy\\.com\nhost_bucket = dummy\\.com\nbucket_location = dummy-region\nuse_https = False\n\n# Setup access keys\naccess_key = gAAAAAB.+\nsecret_key = gAAAAAB.+\n\n# Enable S3 v4 signature APIs\nsignature_v2 = False'])]):` | pytest.mark.parametrize | 不适用 |
+| test_detect_default_blob_store | `def test_detect_default_blob_store(settings, expected):` | pytest.mark.parametrize | 不适用 |
+| test_make_blob_store_env | `def test_make_blob_store_env(settings, expected):` | pytest.mark.parametrize | 不适用 |
+| test_make_blob_store_encrypt_env | `def test_make_blob_store_encrypt_env(settings, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66827,7 +66827,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_dict_to_camel | `@pytest.mark.parametrize(('snake_case_dict', 'camel_case_dict'), [({'foo_bar': 'cc'}, {'fooBar': 'cc'}), ({'liveness': {'initial_delay_seconds': 0, 'timeout_seconds': 1}}, {'liveness': {'initialDelaySeconds': 0, 'timeoutSeconds': 1}}), ({'clusters': [{'c_name': 'BCS-01', 'server_port': '443'}, {'c_name': 'BCS-02', 'server_port': '80'}]}, {'clusters': [{'cName': 'BCS-01', 'serverPort': '443'}, {'cName': 'BCS-02', 'serverPort': '80'}]}), ({'monitoring': {'metrics': [{'process': 'web1', 'service_name': 'metric'}, {'process': 'web2', 'service_name': 'metric'}]}}, {'monitoring': {'metrics': [{'process': 'web1', 'serviceName': 'metric'}, {'process': 'web2', 'serviceName': 'metric'}]}})]):` | pytest.mark.parametrize | 不适用 |
+| test_dict_to_camel | `def test_dict_to_camel(snake_case_dict, camel_case_dict):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66862,7 +66862,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TestGetCommandName | 无 | _setup, test_command_name_normal, test_command_name_celery, test_commnad_name_with_slash | 无 | 无 | 不适用 |
+| TestGetCommandName | 无 | test_command_name_normal, test_command_name_celery, test_commnad_name_with_slash | 无 | 无 | 不适用 |
 
 ---
 
@@ -66889,8 +66889,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| config_with_region | `@pytest.fixture():` | pytest.fixture | 不适用 |
-| test_get_region_aware | `@pytest.mark.parametrize(('region', 'result_cls', 'expected_result'), [('r1', None, {'key': 'r1', 'value': 'r1-value'}), ('r1', FooConfig, FooConfig('r1', 'r1-value'))]):` | pytest.mark.parametrize | 不适用 |
+| config_with_region | `def config_with_region():` | pytest.fixture | 不适用 |
+| test_get_region_aware | `def test_get_region_aware(region, result_cls, expected_result, settings):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -66948,8 +66948,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_items | `@pytest.mark.parametrize(('obj', 'paths', 'default', 'expected'), [({'a': {'b': {'c': 1}}}, 'a.b.c', None, 1), ({'a': {'b': {'c': 1}}}, '.a.b.c', None, 1), ({'a': {'b': {'c': 1}}}, ['a', 'b', 'c'], None, 1), ({'a': {'b': {'c': None}}}, 'a.b.c', 'default', None), ({'a': {'b': {}}, 'c': 2}, 'c', 'default', 2), ({'a': {'b': {}}, 'c': 2}, 'd', 'default', 'default'), ({}, 'a', 'default', 'default'), ({'a': 1}, '', 'default', 'default'), ({'a': 1}, 'a', 'default', 1)]):` | pytest.mark.parametrize | 不适用 |
-| test_get_items_exceptions | `@pytest.mark.parametrize(('obj', 'paths', 'default'), [(None, 'a.b.c', None), (None, ['a', 'b', 'c'], None), (1, 'a', 'default')]):` | pytest.mark.parametrize | 不适用 |
+| test_get_items | `def test_get_items(obj, paths, default, expected):` | pytest.mark.parametrize | 不适用 |
+| test_get_items_exceptions | `def test_get_items_exceptions(obj, paths, default):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -66979,13 +66979,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_find_coded_error_message | `@pytest.mark.parametrize(('exception', 'expected'), [(GetClusterEgressInfoError('Detail Message'), '错误码: 4313021, 获取集群信息失败: Detail Message。'), (DummyMsgError('AAAAA'), None), pytest.param('unexpected', '', marks=pytest.mark.xfail(raises=TypeError))]):` | pytest.mark.parametrize | 不适用 |
+| test_find_coded_error_message | `def test_find_coded_error_message(exception, expected):` | pytest.mark.parametrize | 不适用 |
 | a | `def a():` | 无 | 不适用 |
 | b_in_a | `def b_in_a():` | 无 | 不适用 |
 | b | `def b():` | 无 | 不适用 |
 | c_in_b_in_a | `def c_in_b_in_a():` | 无 | 不适用 |
 | c_in_b | `def c_in_b():` | 无 | 不适用 |
-| test_find_innermost_exception | `@pytest.mark.parametrize(('trigger', 'expected'), [(a, DummyMsgError('A')), (b_in_a, DummyMsgError('A')), (c_in_b_in_a, DummyMsgError('A')), (b, DummyMsgError('B')), (c_in_b, DummyMsgError('B'))]):` | pytest.mark.parametrize | 不适用 |
+| test_find_innermost_exception | `def test_find_innermost_exception(trigger, expected):` | pytest.mark.parametrize | 不适用 |
 | test_wrap_validation_error_dict | `def test_wrap_validation_error_dict():` | 无 | 不适用 |
 | test_wrap_validation_error_list | `def test_wrap_validation_error_list():` | 无 | 不适用 |
 | test_wrap_validation_error_str | `def test_wrap_validation_error_str():` | 无 | 不适用 |
@@ -67019,7 +67019,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_path_may_escape | `@pytest.mark.parametrize(('input_path', 'expected'), [('/etc/passwd', True), ('../../../../app_desc.yaml', True), ('../../..', True), ('src/main.py', False), ('folder/../file.txt', False), ('folder/subfolder/../file.txt', False)]):` | pytest.mark.parametrize | 不适用 |
+| test_path_may_escape | `def test_path_may_escape(input_path, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -67099,7 +67099,7 @@ s-mart(镜像): 'image:镜像 tag'
 |--------|------|--------|----------|
 | test_make_legacy_json_field | `def test_make_legacy_json_field():` | 无 | 不适用 |
 | test_make_json_field | `def test_make_json_field():` | 无 | 不适用 |
-| test_pickle | `@pytest.mark.parametrize(('field', 'expected'), [(PickleAbleField1, does_not_raise()), (PickleAbleField2, does_not_raise()), (UnPickleAbleField, pytest.raises(pickle.PicklingError))]):` | pytest.mark.parametrize | 不适用 |
+| test_pickle | `def test_pickle(field, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -67186,7 +67186,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_pattern | `@pytest.mark.parametrize(('pattern', 'path', 'expected'), [('**', 'file', True), ('**', 'file/', True), ('**/', 'file', False), ('**/', 'file/', True), ('**', '/', True), ('**/', '/', True), ('**', 'dir/file', True), ('**/', 'dir/file', False), ('**', 'dir/file/', True), ('**/', 'dir/file/', True), ('**/**', 'dir/file', True), ('**/**', 'dir/file/', True), ('dir/**', 'dir/file', True), ('dir/**', 'dir/file/', True), ('dir/**', 'dir/dir2/file', True), ('dir/**', 'dir/dir2/file/', True), ('**/dir2/*', 'dir/dir2/file', True), ('**/dir2/*', 'dir/dir2/file/', False), ('**/dir2/**', 'dir/dir2/dir3/file', True), ('**/dir2/**', 'dir/dir2/dir3/file/', True), ('**file', 'file', True), ('**file', 'dir/file', True), ('**/file', 'dir/file', True), ('**file', 'dir/dir/file', True), ('**/file', 'dir/dir/file', True), ('**/file*', 'dir/dir/file', True), ('**/file*', 'dir/dir/file.txt', True), ('**/file*txt', 'dir/dir/file.txt', True), ('**/file*.txt', 'dir/dir/file.txt', True), ('**/file*.txt*', 'dir/dir/file.txt', True), ('**/**/*.txt', 'dir/dir/file.txt', True), ('**/**/*.txt2', 'dir/dir/file.txt', False), ('**/*.txt', 'file.txt', True), ('**/**/*.txt', 'file.txt', True), ('a**/*.txt', 'a/file.txt', True), ('a**/*.txt', 'a/dir/file.txt', True), ('a**/*.txt', 'a/dir/dir/file.txt', True), ('a/*.txt', 'a/dir/file.txt', False), ('a/*.txt', 'a/file.txt', True), ('a/*.txt**', 'a/file.txt', True), ('a[b-d]e', 'ae', False), ('a[b-d]e', 'ace', True), ('a[b-d]e', 'aae', False), ('a[^b-d]e', 'aze', True), ('.*', '.foo', True), ('.*', 'foo', False), ('abc.def', 'abcdef', False), ('abc.def', 'abc.def', True), ('abc.def', 'abcZdef', False), ('abc?def', 'abcZdef', True), ('abc?def', 'abcdef', False), ('a\\*b', 'a*b', True), ('a\\', 'a', False), ('a\\', 'a\\', True), ('a\\\\', 'a\\', True), ('**/foo/bar', 'foo/bar', True), ('**/foo/bar', 'dir/foo/bar', True), ('**/foo/bar', 'dir/dir2/foo/bar', True), ('abc/**', 'abc', False), ('abc/**', 'abc/def', True), ('abc/**', 'abc/def/ghi', True)]):` | pytest.mark.parametrize | 不适用 |
+| test_pattern | `def test_pattern(pattern, path, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -67221,7 +67221,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_UserActionRateLimiter | `@pytest.mark.parametrize('limiter_cls', [UserActionTokenBucketRateLimiter, UserActionFixedWindowRateLimiter]):` | pytest.mark.parametrize | 不适用 |
+| test_UserActionRateLimiter | `def test_UserActionRateLimiter(limiter_cls):` | pytest.mark.parametrize | 不适用 |
 | test_rate_limits_on_view_func | `def test_rate_limits_on_view_func():` | 无 | 不适用 |
 
 
@@ -67255,7 +67255,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_config_var_reserved_key_validator | `@pytest.mark.parametrize(('protected_key_list', 'protected_prefix_list', 'key', 'expected'), [([], [], 'foo', nullcontext()), (['foo'], [], 'foo', pytest.raises(ValidationError)), (['foo_'], [], 'foo', nullcontext()), (['f00'], [], 'foo', nullcontext()), ([], ['f'], 'foo', pytest.raises(ValidationError)), ([], ['foo'], 'foo', pytest.raises(ValidationError)), ([], ['foo_'], 'foo', nullcontext())]):` | pytest.mark.parametrize | 不适用 |
+| test_config_var_reserved_key_validator | `def test_config_var_reserved_key_validator(protected_key_list, protected_prefix_list, key, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -67296,9 +67296,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_remove_suffix | `@pytest.mark.parametrize(('input_', 'suffix', 'output'), [('foo', 'bar', 'foo'), ('foobar', 'bar', 'foo'), ('foobar', 'foobar', '')]):` | pytest.mark.parametrize | 不适用 |
-| test_camel_to_snake | `@pytest.mark.parametrize(('input_', 'output'), [('BkSvnSourceTypeSpec', 'bk_svn_source_type_spec'), ('bk_svn', 'bk_svn')]):` | pytest.mark.parametrize | 不适用 |
-| test_calculate_percentage | `@pytest.mark.parametrize(('x', 'y', 'decimal_places', 'expected'), [(1, 1, 2, '100.00%'), (1, 2, 2, '50.00%'), (1, 3, 2, '33.33%'), (1, 4, 2, '25.00%'), (1, 5, 2, '20.00%'), (5, 2, 2, '250.00%'), (1, 0, 2, None), (1, 1, 11, None), (1, 1, 1, '100.0%'), (1, 1, 0, '100%'), (1, 1, -1, None), (0, 1, 2, '<0.01%'), (1, 1, 10, '100.0000000000%'), (1, 1, 9, '100.000000000%'), (1, 1, 8, '100.00000000%'), (1, 1, 7, '100.0000000%'), (1, 1, 6, '100.000000%'), (1, 1, 5, '100.00000%'), (1, 1, 4, '100.0000%'), (1, 1, 3, '100.000%'), (1, 10**13, 10, '<0.0000000001%'), (1, 10**12, 9, '<0.000000001%'), (1, 10**11, 8, '<0.00000001%'), (1, 10**10, 7, '<0.0000001%'), (1, 10**9, 6, '<0.000001%'), (1, 10**8, 5, '<0.00001%'), (1, 10**7, 4, '<0.0001%'), (1, 10**6, 3, '<0.001%'), (1, 10**5, 2, '<0.01%'), (1, 10**4, 1, '<0.1%'), (1, 10**3, 0, '<1%')]):` | pytest.mark.parametrize | 不适用 |
+| test_remove_suffix | `def test_remove_suffix(input_, suffix, output):` | pytest.mark.parametrize | 不适用 |
+| test_camel_to_snake | `def test_camel_to_snake(input_, output):` | pytest.mark.parametrize | 不适用 |
+| test_calculate_percentage | `def test_calculate_percentage(x, y, decimal_places, expected):` | pytest.mark.parametrize | 不适用 |
 
 #### 类
 
@@ -67333,8 +67333,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_get_time_delta | `@pytest.mark.parametrize(('input', 'expected_output'), [('5s', timedelta(seconds=5)), ('12d', timedelta(days=12))]):` | pytest.mark.parametrize | 不适用 |
-| test_humanize_timedelta | `@pytest.mark.parametrize(('delta', 'expected_output'), [(timedelta(days=5, hours=2, minutes=30, seconds=15), '5d2h30m15s'), (timedelta(days=0, hours=8, minutes=45, seconds=32), '8h45m32s'), (timedelta(days=0, hours=0, minutes=25, seconds=9), '25m9s'), (timedelta(seconds=5), '5s'), (timedelta(days=1, seconds=1), '1d0h0m1s'), (timedelta(hours=1, seconds=0), '1h0m0s'), (timedelta(days=0), '0s'), (timedelta(hours=0), '0s'), (timedelta(seconds=0), '0s')]):` | pytest.mark.parametrize | 不适用 |
+| test_get_time_delta | `def test_get_time_delta(input, expected_output):` | pytest.mark.parametrize | 不适用 |
+| test_humanize_timedelta | `def test_humanize_timedelta(delta, expected_output):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -67405,9 +67405,9 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| test_one_line_error | `@pytest.mark.parametrize(('error', 'expected'), [(ValidationError('foo'), 'foo'), (ValidationError({'foo': [ErrorDetail('err1'), ErrorDetail('err2')]}), 'foo: err1')]):` | pytest.mark.parametrize | 不适用 |
+| test_one_line_error | `def test_one_line_error(error, expected):` | pytest.mark.parametrize | 不适用 |
 | dummy_hook | `def dummy_hook(key, value):` | 无 | 不适用 |
-| test_hook_chain | `@pytest.mark.parametrize(('hooks', 'expected'), [([dummy_hook(1, 1), dummy_hook(2, 2)], {1: 1, 2: 2}), ([dummy_hook(1, 1), dummy_hook(1, 2)], {1: 2})]):` | pytest.mark.parametrize | 不适用 |
+| test_hook_chain | `def test_hook_chain(hooks, expected):` | pytest.mark.parametrize | 不适用 |
 | make_permission | `def make_permission():` | 无 | 不适用 |
 | test_permission_classes | `def test_permission_classes():` | 无 | 不适用 |
 
@@ -67448,13 +67448,13 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| settings | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| settings | `def settings():` | pytest.fixture | 不适用 |
 | test_get_database_from_url | `def test_get_database_from_url(settings):` | 无 | 不适用 |
-| test_get_database_for_tests | `@pytest.mark.parametrize(('for_tests', 'name'), [(False, 'foo'), (True, 'test_foo')]):` | pytest.mark.parametrize | 不适用 |
+| test_get_database_for_tests | `def test_get_database_for_tests(settings, for_tests, name):` | pytest.mark.parametrize | 不适用 |
 | test_get_paas_service_jwt_clients_simple | `def test_get_paas_service_jwt_clients_simple(settings):` | 无 | 不适用 |
 | test_get_paas_service_jwt_clients_mixed | `def test_get_paas_service_jwt_clients_mixed(settings):` | 无 | 不适用 |
 | test_get_service_remote_endpoints | `def test_get_service_remote_endpoints(settings):` | 无 | 不适用 |
-| test_is_in_celery_worker | `@pytest.mark.parametrize(('argv', 'expected'), [(['celery', '-A', 'paasng', 'worker', '-l', 'info'], True), (['/usr/local/bin/celery', '-A', 'paasng', 'worker', '-l', 'info'], True), (['python', 'manage.py', 'runserver'], False)]):` | pytest.mark.parametrize | 不适用 |
+| test_is_in_celery_worker | `def test_is_in_celery_worker(argv, expected):` | pytest.mark.parametrize | 不适用 |
 
 
 ---
@@ -67485,7 +67485,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| legacy_app | `@pytest.fixture():` | pytest.fixture | 不适用 |
+| legacy_app | `def legacy_app():` | pytest.fixture | 不适用 |
 | test_create_legacy_app_1 | `def test_create_legacy_app_1(legacy_app):` | 无 | 不适用 |
 | test_create_legacy_app_2 | `def test_create_legacy_app_2(legacy_app):` | 无 | 不适用 |
 
@@ -67629,11 +67629,11 @@ s-mart(镜像): 'image:镜像 tag'
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
 | generate_encrypted_instance | `def generate_encrypted_instance(model_class):` | 无 | 创建一个加密模型，并生成加密字段 |
-| assert_fields_encryped | `def assert_fields_encryped(pk, model_class, unencryped_field_dict, encrypt_header):` | 无 | 
+| assert_fields_encryped | `def assert_fields_encryped(pk, model_class, unencryped_field_dict, encrypt_header):` | 无 |
     断言加密字段是否加密算法加密,且加解密成功
     :param pk: 实例主键
    ... |
-| get_encrypt_header | `def get_encrypt_header(encrypt_type):` | 无 | 
+| get_encrypt_header | `def get_encrypt_header(encrypt_type):` | 无 |
     获取加密算法对应的加密头
     :param encrypt_type: 加密算法类型
 ... |
@@ -67725,15 +67725,15 @@ s-mart(镜像): 'image:镜像 tag'
 | create_legacy_application | `def create_legacy_application(code: Optional[str] = None):` | 无 | Create a simple legacy application, for testing pu... |
 | adaptive_lapplication_fields | `def adaptive_lapplication_fields(field_values: Dict[str, Any]) -> Dict[str, Any]:` | 无 | Update a pair of LApplication field values, make i... |
 | adaptive_lapplicationtag_fields | `def adaptive_lapplicationtag_fields(field_values: Dict[str, Any]) -> Dict[str, Any]:` | 无 | Update a pair of LApplicationTag field values, mak... |
-| override_region_configs | `@contextmanager:` | contextmanager | Override region configs during testing |
-| configure_regions | `@contextmanager:` | contextmanager | Configure multi regions with default template |
+| override_region_configs | `def override_region_configs(region: str, update_conf_func: Callable):` | contextmanager | Override region configs during testing |
+| configure_regions | `def configure_regions(regions: List[str]):` | contextmanager | Configure multi regions with default template |
 | generate_random_string | `def generate_random_string(length=30, chars=DFT_RANDOM_CHARACTER_SET):` | 无 | Generates a non-guessable OAuth token
 
     OAuth (... |
 | create_pending_wl_apps | `def create_pending_wl_apps(bk_app: Application, cluster_name: str):` | 无 | Create WlApp objects of the given application in w... |
 | create_scene_tmpls | `def create_scene_tmpls():` | 无 | 创建单元测试用的场景 SaaS 模板 |
 | create_cnative_app | `def create_cnative_app(owner_username: Optional[str] = None, repo_type: str = '', region: Optional[str] = None, force_info: Optional[dict] = None, cluster_name: Optional[str] = None):` | 无 | Create a cloud-native application, for testing pur... |
-| register_iam_after_create_application | `def register_iam_after_create_application(application: Application):` | 无 | 
+| register_iam_after_create_application | `def register_iam_after_create_application(application: Application):` | 无 |
     默认为每个新建的蓝鲸应用创建三个用户组（管理者，开发者，运营者），以及该应用对应的分级管理... |
 
 
@@ -67815,7 +67815,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| cluster_ingress_config | `@contextmanager:` | contextmanager | Update the cluster ingress config during the conte... |
+| cluster_ingress_config | `def cluster_ingress_config(config: Optional[Dict] = None, replaced_config: Optional[Dict] = None):` | contextmanager | Update the cluster ingress config during the conte... |
 
 
 ---
@@ -67856,7 +67856,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| StubBKIAMClient | 无 | create_grade_managers, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager, delete_grade_manager_members, create_builtin_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, grant_user_group_policies, _get_app_by_grade_manager_id, _get_group_and_app_by_user_group_id | 无 | 无 | bk-iam 通过 APIGW 提供的 API（仅供单元测试使用） |
+| StubBKIAMClient | 无 | create_grade_managers, fetch_grade_manager_members, add_grade_manager_members, delete_grade_manager, delete_grade_manager_members, create_builtin_user_groups, delete_user_groups, fetch_user_group_members, add_user_group_members, delete_user_group_members, grant_user_group_policies | 无 | 无 | bk-iam 通过 APIGW 提供的 API（仅供单元测试使用） |
 
 ---
 
@@ -67985,7 +67985,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| HelmChartUpdater | 无 | __init__, update, _check_target_chart, _patch_chart_file_contents, _wrap_chart_file_contents, _remove_useless_newline, _replace_chart_yaml_files, _check_left_files, _patch_values_file, _diff_values, _clean_workspace, _print_dividing_line | 无 | 无 | 不适用 |
+| HelmChartUpdater | 无 | update | 无 | 无 | 不适用 |
 
 ---
 
@@ -68101,8 +68101,8 @@ s-mart(镜像): 'image:镜像 tag'
 | process_exists | `def process_exists(pid: int):` | 无 | Check whether pid exists in the current process ta... |
 | start_scheduler | `def start_scheduler():` | 无 | 不适用 |
 | clear_lock | `def clear_lock():` | 无 | 不适用 |
-| get_repo_manager | `@functools.lru_cache():` | functools.lru_cache | 不适用 |
-| update_bkrepo_quota_statistics | `@scheduler.scheduled_job('interval', minutes=settings.BKREPO_COLLECT_INTERVAL_MINUTES):` | scheduler.scheduled_job | Update bkrepo quota statistics periodically |
+| get_repo_manager | `def get_repo_manager(plan_id: str):` | functools.lru_cache | 不适用 |
+| update_bkrepo_quota_statistics | `def update_bkrepo_quota_statistics():` | scheduler.scheduled_job | Update bkrepo quota statistics periodically |
 
 
 ---
@@ -68367,7 +68367,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| extend_quota | `def extend_quota(manager: BKGenericRepoManager, bucket: str, extra_size_bytes: int, max_allowed_bytes: int, required_usage_rate: int = None) -> int:` | 无 | 
+| extend_quota | `def extend_quota(manager: BKGenericRepoManager, bucket: str, extra_size_bytes: int, max_allowed_bytes: int, required_usage_rate: int = None) -> int:` | 无 |
     :param extra_size_bytes: extra bytes to be ex... |
 
 
@@ -68406,7 +68406,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RequestError | Exception | __init__ | 无 | 无 | 服务请求异常 |
+| RequestError | Exception | 无 | 无 | 无 | 服务请求异常 |
 | BaseActionError | Exception | 无 | 无 | 无 | Base Exception for Action Error |
 | NoNeedToExtendQuota | Exception | 无 | 无 | 无 | An exception is thrown when there is no need to co... |
 | ExtendQuotaUsageTooLow | BaseActionError | 无 | 无 | 无 | An exception that is thrown when the usage rate is... |
@@ -68450,7 +68450,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BKGenericRepoManager | 无 | __init__, get_client, create_user, update_user, delete_user, create_repo, delete_repo, get_repo_quota, update_repo_quota | 无 | 无 | 蓝鲸通用二进制仓库. |
+| BKGenericRepoManager | 无 | get_client, create_user, update_user, delete_user, create_repo, delete_repo, get_repo_quota, update_repo_quota | 无 | 无 | 蓝鲸通用二进制仓库. |
 
 ---
 
@@ -68471,7 +68471,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| load_data | `def load_data(apps, schema_editor):` | 无 | 
+| load_data | `def load_data(apps, schema_editor):` | 无 |
     修改默认服务的中文名称
      |
 
@@ -68506,7 +68506,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| RepoQuota | 无 | __post_init__ | 无 | dataclass | 不适用 |
+| RepoQuota | 无 | 无 | 无 | dataclass | 不适用 |
 
 ---
 
@@ -69009,8 +69009,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| MySQLEngine | 无 | __post_init__, handler, db, execute, wrap_database_errors | 无 | dataclass | 不适用 |
-| MySQLAuthorizer | MySQLEngine | __post_init__, grant_db | 无 | dataclass | 不适用 |
+| MySQLEngine | 无 | handler, db, execute, wrap_database_errors | 无 | dataclass | 不适用 |
+| MySQLAuthorizer | MySQLEngine | grant_db | 无 | dataclass | 不适用 |
 
 ---
 
@@ -69083,7 +69083,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Server | 无 | 无 | 无 | dataclass | 不适用 |
-| Provider | paas_service.base_vendor.BaseProvider | __post_init__, pick_server, create, delete, patch | 无 | dataclass | 使用 mysql client 管理用户和数据库 |
+| Provider | paas_service.base_vendor.BaseProvider | pick_server, create, delete, patch | 无 | dataclass | 使用 mysql client 管理用户和数据库 |
 
 ---
 
@@ -69162,7 +69162,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| render_app_url | `@register.filter(name='to_v3_url'):` | register.filter | 不适用 |
+| render_app_url | `def render_app_url(app_info):` | register.filter | 不适用 |
 
 
 ---
@@ -69191,7 +69191,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| TLSCertificateManager | 无 | __init__, __enter__, __exit__, get_django_ssl_options, _write_to_tmp_file | 无 | 无 | TLS 证书管理器 |
+| TLSCertificateManager | 无 | get_django_ssl_options | 无 | 无 | TLS 证书管理器 |
 
 ---
 
@@ -69431,7 +69431,7 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | BkMonitorBackend | typing_extensions.Protocol | create_apm_application | 无 | 无 | Describes protocols of calling API service |
-| BkMonitorClient | 无 | __init__, create_apm | 无 | 无 | API provided by BK Monitor
+| BkMonitorClient | 无 | create_apm | 无 | 无 | API provided by BK Monitor
 
     :param backend: cl... |
 
@@ -69449,7 +69449,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BkMonitorGatewayServiceError | Exception | __init__ | 无 | 无 | This error indicates that there's something wrong ... |
+| BkMonitorGatewayServiceError | Exception | 无 | 无 | 无 | This error indicates that there's something wrong ... |
 | BkMonitorApiError | BkMonitorGatewayServiceError | 无 | 无 | 无 | When calling the bk_monitor api, bk_monitor return... |
 | BkMonitorSpaceDoesNotExist | BkMonitorApiError | 无 | 无 | 无 | The namespace applied to BK Monitoring does not ex... |
 
@@ -69665,7 +69665,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ApmData | paas_service.models.AuditedModel | __str__ | bk_app_code, env, app_name, data_token, is_delete | 无 | 不适用 |
+| ApmData | paas_service.models.AuditedModel | 无 | bk_app_code, env, app_name, data_token, is_delete | 无 | 不适用 |
 
 ---
 
@@ -69703,7 +69703,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Provider | paas_service.base_vendor.BaseProvider | _apply_data_token, create, delete, patch | SERVICE_NAME | dataclass | 不适用 |
+| Provider | paas_service.base_vendor.BaseProvider | create, delete, patch | SERVICE_NAME | dataclass | 不适用 |
 
 ---
 
@@ -69926,7 +69926,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| NullHandler | logging.NullHandler | __init__ | 无 | 无 | 不适用 |
+| NullHandler | logging.NullHandler | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -70215,8 +70215,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| CallableWrapper | 无 | __init__, _wrap, __call__ | 无 | 无 | 不适用 |
-| Task | 无 | __init__, apply, __call__, apply_async, cron_task, get_cron_result, register_cron_task | 无 | 无 | 不适用 |
+| CallableWrapper | 无 | 无 | 无 | 无 | 不适用 |
+| Task | 无 | apply, apply_async, cron_task, get_cron_result, register_cron_task | 无 | 无 | 不适用 |
 
 ---
 
@@ -70263,8 +70263,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Sentinel | QSentinel | __init__, schedule, guard | 无 | 无 | 不适用 |
-| Cluster | QCluster | __init__, pid, start | 无 | 无 | 不适用 |
+| Sentinel | QSentinel | schedule, guard | 无 | 无 | 不适用 |
+| Cluster | QCluster | pid, start | 无 | 无 | 不适用 |
 | Command | django_q.management.commands.qcluster.Command | add_arguments, handle | help | 无 | 不适用 |
 
 ---
@@ -70338,11 +70338,11 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | TaskExecuteException | Exception | 无 | 无 | 无 | Task failed when executing |
-| CronTaskContext | 无 | __init__, __enter__, __exit__, call | 无 | 无 | 不适用 |
-| CronTaskResult | 无 | __call__ | 无 | dataclass | 不适用 |
-| CachedCronTaskResult | 无 | cache, flush, __post_init__, __call__ | cache_name | dataclass | 不适用 |
+| CronTaskContext | 无 | call | 无 | 无 | 不适用 |
+| CronTaskResult | 无 | 无 | 无 | dataclass | 不适用 |
+| CachedCronTaskResult | 无 | cache, flush | cache_name | dataclass | 不适用 |
 | CronTaskManager | django.db.models.Manager | prepared_tasks | 无 | 无 | 不适用 |
-| CronTask | django.db.models.Model | __str__, result, apply, forward, do | name, interval, next_run_time, last_run_time, enabled, callable, get_result, pre_call, post_call, objects | 无 | 不适用 |
+| CronTask | django.db.models.Model | result, apply, forward, do | name, interval, next_run_time, last_run_time, enabled, callable, get_result, pre_call, post_call, objects | 无 | 不适用 |
 
 ---
 
@@ -70383,20 +70383,20 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| worker_stats_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| rabbit_cluster_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| instance_alive_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| instance_queue_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| instance_dlx_queue_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| instance_connections_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
-| instance_limit_policy_collector | `@FunctionCollector:` | FunctionCollector | 不适用 |
+| worker_stats_collector | `def worker_stats_collector():` | FunctionCollector | 不适用 |
+| rabbit_cluster_collector | `def rabbit_cluster_collector():` | FunctionCollector | 不适用 |
+| instance_alive_collector | `def instance_alive_collector():` | FunctionCollector | 不适用 |
+| instance_queue_collector | `def instance_queue_collector():` | FunctionCollector | 不适用 |
+| instance_dlx_queue_collector | `def instance_dlx_queue_collector():` | FunctionCollector | 不适用 |
+| instance_connections_collector | `def instance_connections_collector():` | FunctionCollector | 不适用 |
+| instance_limit_policy_collector | `def instance_limit_policy_collector():` | FunctionCollector | 不适用 |
 | ready | `def ready():` | 无 | 不适用 |
 
 #### 类
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| FunctionCollector | 无 | __init__, collect | collect_duration_metric | 无 | 不适用 |
+| FunctionCollector | 无 | collect | collect_duration_metric | 无 | 不适用 |
 
 ---
 
@@ -70447,8 +70447,8 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| SchedulerMonitor | threading.Thread | __init__, _wait_done_signal, stats, handle_cron_tasks, run | 无 | 无 | 不适用 |
-| Scheduler | 无 | stop_global, get, init, __init__, pid, stats, call, start, stop | _global | 无 | 不适用 |
+| SchedulerMonitor | threading.Thread | stats, handle_cron_tasks, run | 无 | 无 | 不适用 |
+| Scheduler | 无 | stop_global, get, init, pid, stats, call, start, stop | _global | 无 | 不适用 |
 
 ---
 
@@ -70621,15 +70621,15 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| API | amqpstorm.management.http_client.HTTPClient | request, _request, _check_for_errors, partial | Exceptions | 无 | 不适用 |
-| DefinitionsHandler | amqpstorm.management.base.ManagementHandler | _get_path, export, load | path | 无 | 不适用 |
+| API | amqpstorm.management.http_client.HTTPClient | request, partial | Exceptions | 无 | 不适用 |
+| DefinitionsHandler | amqpstorm.management.base.ManagementHandler | export, load | path | 无 | 不适用 |
 | PolicyHandler | amqpstorm.management.base.ManagementHandler | list, get, delete | 无 | 无 | 不适用 |
 | UserPolicyHandler | PolicyHandler | create | path | 无 | 不适用 |
 | LimitPolicyHandler | PolicyHandler | create | path | 无 | 不适用 |
 | ConnectionHandler | amqpstorm.management.connection.Connection | channels | API_CONNECTION_CHANNELS | 无 | 不适用 |
 | FederationHandler | amqpstorm.management.base.ManagementHandler | set_upstream, delete_upstream, list_upstream, list_status | 无 | 无 | 不适用 |
-| ManagementClient | 无 | from_cluster, __init__, alive, top | 无 | 无 | details https://rawcdn.githack.com/rabbitmq/rabbit... |
-| CacheClient | ManagementClient | __init__, disable_cache | 无 | 无 | 不适用 |
+| ManagementClient | 无 | from_cluster, alive, top | 无 | 无 | details https://rawcdn.githack.com/rabbitmq/rabbit... |
+| CacheClient | ManagementClient | disable_cache | 无 | 无 | 不适用 |
 
 ---
 
@@ -70744,7 +70744,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ChannelMessageStats | svc-rabbitmq.vendor.utils.BaseFancyModel | 无 | 无 | 无 | 不适用 |
 | ChannelConnectionDetails | svc-rabbitmq.vendor.utils.BaseFancyModel | 无 | 无 | 无 | 不适用 |
 | Channel | svc-rabbitmq.vendor.utils.BaseFancyModel | is_consumer, is_idle | 无 | 无 | 不适用 |
-| Connection | svc-rabbitmq.vendor.utils.BaseFancyModel | is_busy, __str__ | 无 | 无 | 不适用 |
+| Connection | svc-rabbitmq.vendor.utils.BaseFancyModel | is_busy | 无 | 无 | 不适用 |
 
 ---
 
@@ -70765,7 +70765,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| APIError | amqpstorm.management.exception.ApiError | __init__, code, message, reason | 无 | 无 | 不适用 |
+| APIError | amqpstorm.management.exception.ApiError | code, message, reason | 无 | 无 | 不适用 |
 | ResourceNotFound | APIError | 无 | 无 | 无 | code 404 |
 
 ---
@@ -70818,7 +70818,7 @@ s-mart(镜像): 'image:镜像 tag'
 | ClusterRandomStrategy | ClusterSelectStrategy | assess | 无 | 无 | 随机选择 |
 | ClusterSelector | 无 | assess, one | 无 | dataclass | 不适用 |
 | InstanceHelper | 无 | create_instance_data, get_instance, from_db, get_credentials, get_cluster_id, get_cluster, get_bill, get_client | 无 | dataclass | 不适用 |
-| Version | 无 | __init__, __eq__, __ne__, __ge__, __gt__, __le__, __lt__ | 无 | 无 | 不适用 |
+| Version | 无 | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -70844,7 +70844,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| Command | vendor.command.FederationBaseCommand | _get_connections, get_upstream_connections, get_cluster_connections, check_federation_upstream_status, check_vhost, handle | 无 | 无 | 不适用 |
+| Command | vendor.command.FederationBaseCommand | get_upstream_connections, get_cluster_connections, check_federation_upstream_status, check_vhost, handle | 无 | 无 | 不适用 |
 
 ---
 
@@ -71236,7 +71236,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| migrate_cluster_to_plan | `def migrate_cluster_to_plan(apps, schema_editor):` | 无 | 
+| migrate_cluster_to_plan | `def migrate_cluster_to_plan(apps, schema_editor):` | 无 |
     将 RabbitMQ 集群配置从 Cluster Django Model 迁移到 Pla... |
 
 #### 类
@@ -71280,14 +71280,14 @@ s-mart(镜像): 'image:镜像 tag'
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
 | Tag | paas_service.models.AuditedModel | 无 | key, value | 无 | 不适用 |
-| Cluster | paas_service.models.AuditedModel | __str__ | name, host, port, management_api, admin, password, version, enable, extra | 无 | 不适用 |
+| Cluster | paas_service.models.AuditedModel | 无 | name, host, port, management_api, admin, password, version, enable, extra | 无 | 不适用 |
 | ClusterTag | Tag | 无 | instance | 无 | 集群标签，用于分配和分组 |
 | LinkableModel | paas_service.models.AuditedModel | resolve_extend, resolved | link_type, linked | 无 | 不适用 |
 | PolicyTarget | enum.Enum | 无 | all, exchanges, queues | 无 | 不适用 |
-| UserPolicy | LinkableModel | cluster, resolve_extend, dict, __str__ | name, enable, pattern, apply_to, priority, definitions, cluster_id | 无 | 集群下创建 vhost 默认策略，和具体 vhost 无关 |
+| UserPolicy | LinkableModel | cluster, resolve_extend, dict | name, enable, pattern, apply_to, priority, definitions, cluster_id | 无 | 集群下创建 vhost 默认策略，和具体 vhost 无关 |
 | UserPolicyTag | Tag | 无 | instance | 无 | 表示绑定关系 |
 | LimitType | enum.Enum | 无 | max_connections, max_queues | 无 | 不适用 |
-| LimitPolicy | LinkableModel | cluster, __str__ | name, enable, limit, value, cluster_id | 无 | 集群下创建 vhost 限制机制，和具体 vhost 无关 |
+| LimitPolicy | LinkableModel | cluster | name, enable, limit, value, cluster_id | 无 | 集群下创建 vhost 限制机制，和具体 vhost 无关 |
 | LimitPolicyTag | Tag | 无 | instance | 无 | 表示绑定关系 |
 | InstanceBill | paas_service.models.UuidAuditedModel | get_context, set_context, log_context | name, action, context | 无 | 实例单据，保存申请上下文，方便重入 |
 
@@ -71311,7 +71311,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| ClusterMinimalMetricsCollector | 无 | __init__, collect_overview_object_totals, collect_overview_queue_totals, collect_overview_message_stats, collect_overview, collect_node_mem, collect_node_disk, collect_node_fd, collect_node_socket, collect_node_proc, collect_node_basic, collect_nodes, collect | 无 | 无 | 收集集群最核心的指标 |
+| ClusterMinimalMetricsCollector | 无 | collect_overview_object_totals, collect_overview_queue_totals, collect_overview_message_stats, collect_overview, collect_node_mem, collect_node_disk, collect_node_fd, collect_node_socket, collect_node_proc, collect_node_basic, collect_nodes, collect | 无 | 无 | 收集集群最核心的指标 |
 
 ---
 
@@ -71440,7 +71440,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 函数名 | 签名 | 装饰器 | 文档字符串 |
 |--------|------|--------|----------|
-| generate_password | `def generate_password(length=10):` | 无 | 
+| generate_password | `def generate_password(length=10):` | 无 |
     随机生成DB密码
 
     # 生成至少 大小写数字, 且包含至少一位数字的密码
@@ -71452,7 +71452,7 @@ s-mart(镜像): 'image:镜像 tag'
 
 | 类名 | 基类 | 方法 | 属性 | 装饰器 | 文档字符串 |
 |------|------|------|------|--------|----------|
-| BaseFancyModel | pydantic.BaseModel, collections.abc.MutableMapping | __getitem__, __setitem__, __delitem__, __iter__, __len__ | 无 | 无 | 不适用 |
+| BaseFancyModel | pydantic.BaseModel, collections.abc.MutableMapping | 无 | 无 | 无 | 不适用 |
 
 ---
 
@@ -71495,4 +71495,3 @@ s-mart(镜像): 'image:镜像 tag'
 | ClusterMinimalMetricsView | monitor.views.CollectorMetricsView | get_collectors | 无 | 无 | 不适用 |
 
 ---
-

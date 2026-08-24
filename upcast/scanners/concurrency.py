@@ -49,7 +49,7 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
             self._scan_file_patterns(file_path, base_path, patterns)
 
         scan_duration_ms = int((time.time() - start_time) * 1000)
-        summary = self._calculate_summary(patterns, scan_duration_ms)
+        summary = self._calculate_summary(patterns, len(files), scan_duration_ms)
         return ConcurrencyPatternOutput(
             summary=summary, results=patterns, metadata={"scanner_name": "concurrency-patterns"}
         )
@@ -797,7 +797,10 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
         patterns[category][pattern_type].append(usage)
 
     def _calculate_summary(
-        self, patterns: dict[str, dict[str, list[ConcurrencyUsage]]], scan_duration_ms: int
+        self,
+        patterns: dict[str, dict[str, list[ConcurrencyUsage]]],
+        files_scanned: int,
+        scan_duration_ms: int,
     ) -> ConcurrencyPatternSummary:
         """Calculate summary statistics."""
         by_category: dict[str, int] = {}
@@ -809,16 +812,9 @@ class ConcurrencyScanner(BaseScanner[ConcurrencyPatternOutput]):
                 by_category[category] = count
                 total += count
 
-        files = len({
-            usage.file
-            for patterns_by_type in patterns.values()
-            for usages in patterns_by_type.values()
-            for usage in usages
-        })
-
         return ConcurrencyPatternSummary(
             total_count=total,
-            files_scanned=files,
+            files_scanned=files_scanned,
             scan_duration_ms=scan_duration_ms,
             by_category=by_category,
         )

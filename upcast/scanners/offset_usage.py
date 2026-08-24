@@ -37,6 +37,7 @@ class OffsetUsageScanner(BaseScanner[OffsetUsageOutput]):
         "earliest",
         "exclude",
         "filter",
+        "filter_queryset",
         "intersection",
         "latest",
         "none",
@@ -555,14 +556,14 @@ class OffsetUsageScanner(BaseScanner[OffsetUsageOutput]):
         queryset_names: set[str],
     ) -> bool:
         if isinstance(expression, nodes.Name):
-            return expression.name in queryset_names or expression.name.lower() in {"queryset", "qs"}
+            return expression.name in queryset_names
         if isinstance(expression, nodes.Attribute):
             if expression.attrname in {"objects", "all_objects", "queryset"}:
                 return self._looks_like_model_expr(expression.expr, imports)
-            return expression.attrname == "get_queryset"
+            return expression.attrname in {"get_queryset", "filter_queryset"}
         if isinstance(expression, nodes.Call) and isinstance(expression.func, nodes.Attribute):
             method = expression.func.attrname
-            if method == "get_queryset":
+            if method in {"get_queryset", "filter_queryset"}:
                 return True
             if method in self.QUERYSET_METHODS:
                 return self._is_queryset_expr(expression.func.expr, imports, queryset_names)
@@ -575,7 +576,12 @@ class OffsetUsageScanner(BaseScanner[OffsetUsageOutput]):
     def _looks_like_model_expr(self, expression: nodes.NodeNG, imports: dict[str, str]) -> bool:
         if isinstance(expression, nodes.Name):
             qualified_name = imports.get(expression.name, "")
-            return expression.name[:1].isupper() or ".models." in qualified_name or qualified_name.endswith(".models")
+            return (
+                expression.name == "self"
+                or expression.name[:1].isupper()
+                or ".models." in qualified_name
+                or qualified_name.endswith(".models")
+            )
         return isinstance(expression, nodes.Attribute)
 
     def _paginator_constructor(

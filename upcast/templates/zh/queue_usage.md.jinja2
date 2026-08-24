@@ -1,0 +1,42 @@
+{% extends "base.md.jinja2" %}
+
+{% block summary %}
+{{ super() }}
+- **队列使用总数**: {{ summary.total_usages }}
+- **硬编码参数数**: {{ summary.hardcoded_parameters }}
+- **动态参数数**: {{ summary.dynamic_parameters }}
+- **未知参数数**: {{ summary.unknown_parameters }}
+
+### 按类别统计
+{% for category, count in summary.by_category.items() %}
+- **{{ category }}**: {{ count }}
+{% endfor %}
+
+### 按框架统计
+{% for framework, count in summary.by_framework.items() %}
+- **{{ framework }}**: {{ count }}
+{% endfor %}
+{% endblock %}
+
+{% block results %}
+{% for category, usages in results.items() %}
+
+### {{ category }}
+
+| 框架 | 操作 | 文件 | 行号 | 函数 | 类 | 硬编码状态 | 语句 |
+| --- | --- | --- | ---: | --- | --- | --- | --- |
+{% for usage in usages %}
+| {{ usage.framework }} | {{ usage.operation }} | {{ usage.file }} | {{ usage.line }} | {{ usage.function or '无' }} | {{ usage.class_name or '无' }} | {{ usage.hardcoding_status }} | `{{ usage.statement or '无' }}` |
+{% endfor %}
+
+{% for usage in usages if usage.parameters %}
+#### 参数（{{ usage.file }}:{{ usage.line }}）
+
+| 名称 | 表达式 | 值 | 来源类型 | 是否硬编码 |
+| --- | --- | --- | --- | --- |
+{% for parameter in usage.parameters %}
+| {{ parameter.name }} | `{{ parameter.expression or '无' }}` | {{ parameter.value if parameter.value is not none else '无' }} | {{ parameter.source_kind }} | {% if parameter.hardcoded is true %}是{% elif parameter.hardcoded is false %}否{% else %}未知{% endif %} |
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endblock %}
