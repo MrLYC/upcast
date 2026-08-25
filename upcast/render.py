@@ -151,6 +151,7 @@ def render_to_markdown(
         "summary": output.summary,
         "results": output.results,
         "metadata": output.metadata,
+        "unresolved_route_references": getattr(output, "unresolved_route_references", []),
         **extra_context,
     }
 

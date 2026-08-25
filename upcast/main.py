@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from typing import Optional
 
 import click
@@ -28,6 +29,35 @@ from upcast.scanners import (
 @click.group()
 def main():
     pass
+
+
+@main.command(name="generate-report")
+@click.option("-o", "--output", type=click.Path(), help="Output Markdown report path")
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose output")
+@click.argument(
+    "scan_results_dir",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True),
+    default="example/scan-results",
+    required=False,
+)
+def generate_report_cmd(scan_results_dir: str, output: str | None, verbose: bool) -> None:
+    """Generate a Markdown project analysis report from scan results YAML files."""
+    from upcast.report_generator import ReportGenerator
+
+    try:
+        generator = ReportGenerator(scan_results_dir)
+        if verbose:
+            click.echo(f"Loading scan results from: {scan_results_dir}", err=True)
+        report = generator.generate_report()
+        if output:
+            output_path = Path(output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(report + "\n", encoding="utf-8")
+            click.echo(f"Report saved to: {output_path}")
+        else:
+            click.echo(report)
+    except Exception as exc:
+        raise click.ClickException(str(exc)) from exc
 
 
 @main.command(name="scan-complexity-patterns")
@@ -752,7 +782,7 @@ def scan_django_views_cmd(
     exclude: tuple[str, ...],
     no_default_excludes: bool,
 ) -> None:
-    """Scan Python source for Django and Django REST Framework views."""
+    """Scan Django/DRF views by semantic and route evidence, not filename conventions."""
     try:
         scanner = DjangoViewScanner(
             include_patterns=list(include) if include else None,

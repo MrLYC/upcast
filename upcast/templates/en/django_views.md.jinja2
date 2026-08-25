@@ -2,19 +2,68 @@
 
 {% block summary %}
 {{ super() }}
-- **Total Modules**: {{ summary.total_modules }}
 - **Total Views**: {{ summary.total_views }}
+- **Total Actions**: {{ summary.total_actions }}
 {% endblock %}
 
 {% block results %}
-{% for module_path, views in results.items() %}
-### View Module: {{ module_path }}
+{% for view_id, view in results.items() %}
 
-| Kind | Name | Status | Identified By | HTTP Methods | Routes |
-|------|------|--------|---------------|--------------|--------|
-{% for view in views %}
-| {{ view.kind }} | {{ view.name }} | {{ view.status }} | {{ view.identified_by | join(', ') }} | {{ view.http_methods | join(', ') }} | {{ view.route_linkage | length }} |
+### {{ view_id }}
+
+- **Kind**: {{ view.kind }}
+- **Source**: `{{ view.file }}:{{ view.line }}`
+- **Recognition**: {{ view.recognition.status }}
+
+{% if view.route_refs %}
+#### Route references
+
+| Kind | Status | Pattern / Prefix | Router |
+|------|--------|------------------|--------|
+{% for route in view.route_refs %}
+| {{ route.kind }} | {{ route.status }} | {{ route.pattern or route.prefix or '-' }} | {{ route.router_type or '-' }} |
+{% endfor %}
+{% endif %}
+
+#### Security evidence
+
+- Authentication: {{ view.security.authentication.state }}
+- Authorization: {{ view.security.authorization.state }}
+- CSRF: {{ view.security.csrf.state }}
+{% if view.security.raw_signals %}
+- Raw signals: {% for signal in view.security.raw_signals %}`{{ signal.expression }}`{% if not loop.last %}, {% endif %}{% endfor %}
+{% endif %}
+
+{% if view.model_usages %}
+#### Model use
+
+| Model | Role | Operation | Status |
+|-------|------|-----------|--------|
+{% for usage in view.model_usages %}
+| {{ usage.model or '-' }} | {{ usage.role }} | {{ usage.operation }} | {{ usage.evidence.status }} |
+{% endfor %}
+{% endif %}
+
+{% if view.actions %}
+#### Actions
+
+| Action | Origin | Methods | Detail | Authorization |
+|--------|--------|---------|--------|---------------|
+{% for action in view.actions %}
+| {{ action.name }} | {{ action.origin }} | {{ action.methods | join(', ') or '-' }} | {{ action.detail if action.detail is not none else '-' }} | {{ action.security.authorization.state }} |
+{% endfor %}
+{% endif %}
+
+---
 {% endfor %}
 
+{% if unresolved_route_references %}
+### Unresolved route references
+
+| Status | Pattern | Expression |
+|--------|---------|------------|
+{% for route in unresolved_route_references %}
+| {{ route.status }} | {{ route.pattern or '-' }} | {% if route.evidence %}`{{ route.evidence[0].expression }}`{% else %}-{% endif %} |
 {% endfor %}
+{% endif %}
 {% endblock %}

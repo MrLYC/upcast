@@ -88,7 +88,21 @@ __all__ = [
 from upcast.models.django_urls import DjangoUrlOutput, DjangoUrlSummary, UrlModule, UrlPattern
 
 # Django Views
-from upcast.models.django_views import DjangoView, DjangoViewOutput, DjangoViewSummary, ViewAction, ViewRouteLink
+from upcast.models.django_views import (
+    DjangoView,
+    DjangoViewAction,
+    DjangoViewOutput,
+    DjangoViewSummary,
+    ModelUsage,
+    PermissionDefinition,
+    PermissionExpression,
+    Recognition,
+    ResolutionStatus,
+    RouteReference,
+    SecurityControl,
+    SourceEvidence,
+    ViewSecurity,
+)
 
 # Environment variables
 from upcast.models.env_vars import EnvVarInfo, EnvVarLocation, EnvVarOutput, EnvVarSummary
@@ -157,6 +171,7 @@ __all__ = [
     "DjangoUrlOutput",
     "DjangoUrlSummary",
     "DjangoView",
+    "DjangoViewAction",
     "DjangoViewOutput",
     "DjangoViewSummary",
     "EnvVarInfo",
@@ -178,25 +193,32 @@ __all__ = [
     "MetricInfo",
     # Metrics
     "MetricUsage",
+    "ModelUsage",
     # Offset usage
     "OffsetParameter",
     "OffsetUsage",
     "OffsetUsageOutput",
     "OffsetUsageSummary",
+    "PermissionDefinition",
+    "PermissionExpression",
     "PrometheusMetricOutput",
     "PrometheusMetricSummary",
     "QueueParameter",
     "QueueUsage",
     "QueueUsageOutput",
     "QueueUsageSummary",
+    "Recognition",
     "RedisConfig",
     "RedisUsage",
     "RedisUsageOutput",
     "RedisUsageSummary",
     "RedisUsageType",
+    "ResolutionStatus",
+    "RouteReference",
     "ScannerOutput",
     # Base models
     "ScannerSummary",
+    "SecurityControl",
     "SettingDefinition",
     # Django settings
     "SettingsLocation",
@@ -207,6 +229,7 @@ __all__ = [
     "SignalSummary",
     # Signals
     "SignalUsage",
+    "SourceEvidence",
     # Unit tests
     "TargetModule",
     "UnitTestInfo",
@@ -215,6 +238,5 @@ __all__ = [
     "UrlModule",
     # Django URLs
     "UrlPattern",
-    "ViewAction",
-    "ViewRouteLink",
+    "ViewSecurity",
 ]

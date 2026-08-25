@@ -4,15 +4,16 @@
 
 ## 扫描器列表
 
-Upcast 提供 17 个专业的静态代码分析扫描器，用于分析 Python 项目的各个方面：
+Upcast 提供 18 个专业的静态代码分析扫描器，用于分析 Python 项目的各个方面：
 
 ### Django 框架扫描器
 
-| 扫描器          | 命令                   | 说明                                     | 文档                                              |
-| --------------- | ---------------------- | ---------------------------------------- | ------------------------------------------------- |
-| Django Models   | `scan-django-models`   | 分析 Django 模型定义、字段、关系和元数据 | [django-models.md](scanners/django-models.md)     |
-| Django Settings | `scan-django-settings` | 扫描 Django 配置定义和使用               | [django-settings.md](scanners/django-settings.md) |
-| Django URLs     | `scan-django-urls`     | 分析 Django URL 配置和路由               | [django-urls.md](scanners/django-urls.md)         |
+| 扫描器          | 命令                   | 说明                                         | 文档                                              |
+| --------------- | ---------------------- | -------------------------------------------- | ------------------------------------------------- |
+| Django Models   | `scan-django-models`   | 分析 Django 模型定义、字段、关系和元数据     | [django-models.md](scanners/django-models.md)     |
+| Django Settings | `scan-django-settings` | 扫描 Django 配置定义和使用                   | [django-settings.md](scanners/django-settings.md) |
+| Django URLs     | `scan-django-urls`     | 分析 Django URL 配置和路由                   | [django-urls.md](scanners/django-urls.md)         |
+| Django Views    | `scan-django-views`    | 分析 Django/DRF 视图、action、路由与安全证据 | [django-views.md](scanners/django-views.md)       |
 
 ### 通用代码分析扫描器
 
@@ -128,6 +129,16 @@ upcast scan-env-vars . --format json -o results.json
 upcast scan-env-vars . --format markdown -o report.md
 ```
 
+### 汇总项目分析报告
+
+将多个扫描器输出的 YAML 文件汇总成一个稳定的 Markdown 报告：
+
+```bash
+upcast generate-report ./scan-results -o project-analysis.md
+```
+
+命令只读取 `scan-results` 顶层的 YAML 文件；缺少某类扫描结果或字段时会跳过对应小节，不会执行被扫描项目，也不会生成或覆盖示例扫描结果。
+
 ## 使用示例
 
 ### 基础扫描
@@ -217,7 +228,7 @@ upcast scan-blocking-operations . \
 
 选择您感兴趣的扫描器，查看其详细文档：
 
-- 分析 Django 项目？从 [django-models.md](scanners/django-models.md) 开始
+- 分析 Django 项目？从 [django-views.md](scanners/django-views.md) 或 [django-models.md](scanners/django-models.md) 开始
 - 检查环境变量？查看 [env-vars.md](scanners/env-vars.md)
 - 优化代码复杂度？参考 [complexity-patterns.md](scanners/complexity-patterns.md)
 - 分析并发模式？阅读 [concurrency-patterns.md](scanners/concurrency-patterns.md)
